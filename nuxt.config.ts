@@ -67,9 +67,7 @@ export default defineNuxtConfig({
     enabled: true
   },
   runtimeConfig: {
-    authJs: {
-      secret: process.env.NUXT_NEXTAUTH_SECRET 
-    },
+    NUXT_NEXTAUTH_SECRET: process.env.NUXT_NEXTAUTH_SECRET,
     github: {
       clientId: process.env.NUXT_GITHUB_CLIENT_ID,
       clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET
@@ -79,7 +77,7 @@ export default defineNuxtConfig({
     provider: {
       type: "authjs",
     },
-    origin: process.env.VERCEL_URL,
+    origin: process.env.VERCEL_URL || "http://localhost:3000",
     globalAppMiddleware: true
   }
 })
