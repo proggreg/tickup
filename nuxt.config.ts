@@ -18,8 +18,8 @@ export default defineNuxtConfig({
     '@nuxt/devtools',
     '@vueuse/nuxt',
     'nuxt-mongoose',
-    // '@vite-pwa/nuxt',
-    '@nuxtjs/eslint-module'
+    '@nuxtjs/eslint-module',
+    "@sidebase/nuxt-auth"
   ],
 
   experimental: {
@@ -65,5 +65,20 @@ export default defineNuxtConfig({
   },
   devtools: {
     enabled: true
+  },
+  runtimeConfig: {
+    authJs: {
+      secret: process.env.NUXT_NEXTAUTH_SECRET 
+    },
+    github: {
+      clientId: process.env.NUXT_GITHUB_CLIENT_ID,
+      clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET
+    }
+  },
+  auth: {
+    provider: {
+      type: "authjs",
+    },
+    globalAppMiddleware: true
   }
 })

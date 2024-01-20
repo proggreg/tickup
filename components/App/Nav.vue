@@ -3,6 +3,10 @@ const open = useNav()
 const dialog = ref(false)
 const listsStore = useListsStore()
 const { smAndDown } = useDisplay()
+const { signIn, signOut, status } = useAuth()
+
+const loggedIn = computed(() => status.value === 'authenticated')
+
 
 function closeDrawer () {
   listsStore.getTodos()
@@ -24,19 +28,38 @@ function closeDrawer () {
     border
   >
     <template #prepend>
-      <v-btn v-if="smAndDown" size="small" style="padding: 0;" elevation="0" @click="open = !open">
-        <v-icon class="text-h4" size="x-large">
+      <v-btn
+        v-if="smAndDown"
+        size="small"
+        style="padding: 0;"
+        elevation="0"
+        @click="open = !open"
+      >
+        <v-icon
+          class="text-h4"
+          size="x-large"
+        >
           mdi-format-list-bulleted
         </v-icon>
       </v-btn>
     </template>
 
     <template #append>
+      <v-btn
+        v-if="loggedIn"
+        size="small"
+        style="padding: 0;"
+        elevation="0"
+        @click="signOut()"
+      >
+        Sign Out
+      </v-btn>
       <AppDarkMode />
     </template>
   </v-app-bar>
 
   <v-navigation-drawer
+    v-if="loggedIn"
     v-model="open"
     class="pa-2 fill-height"
     :permanent="!smAndDown"
@@ -56,7 +79,12 @@ function closeDrawer () {
 
       <v-list-item>
         <template #append>
-          <v-btn elevation="0" rounded="lg" icon="mdi-plus" @click="dialog = true" />
+          <v-btn
+            elevation="0"
+            rounded="lg"
+            icon="mdi-plus"
+            @click="dialog = true"
+          />
         </template>
         <template #prepend>
           <ListNew
