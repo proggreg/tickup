@@ -2,7 +2,7 @@ import { NuxtAuthHandler } from "#auth";
 import GithubProvider from 'next-auth/providers/github'
 
 export default NuxtAuthHandler({
-  secret: useRuntimeConfig().NUXT_NEXTAUTH_SECRET,
+  secret: useRuntimeConfig().auth.secret,
 
   pages: {
     signIn: "/login",
@@ -10,8 +10,8 @@ export default NuxtAuthHandler({
   providers: [
     // @ts-expect-error
     GithubProvider.default({
-      clientId: '74b05bd89fb504936923',
-      clientSecret: 'e896926bb5da3d1470a569a8524bcdecd9b37edf'
+      clientId: useRuntimeConfig().github.clientId,
+      clientSecret: useRuntimeConfig().github.clientSecret
    })
   ],
 });
