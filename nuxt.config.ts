@@ -79,6 +79,7 @@ export default defineNuxtConfig({
     provider: {
       type: "authjs",
     },
+    origin: process.env.VERCEL_URL,
     globalAppMiddleware: true
   }
 })
