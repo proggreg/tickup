@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { signIn, status } = useAuth()
+const { signIn } = useAuth()
 definePageMeta({
   layout: 'login',
   auth: {
@@ -7,10 +7,7 @@ definePageMeta({
         navigateAuthenticatedTo: '/',
     }
 })
-const loggedIn = computed(() => status.value === 'authenticated')
-// if (loggedIn.value) {
-//   navigateTo('/')
-// }
+
 </script>
 
 <template>
@@ -18,7 +15,7 @@ const loggedIn = computed(() => status.value === 'authenticated')
     <div>
       <v-btn
         append-icon="mdi-github"
-        @click="signIn(`github`)"
+        @click="signIn(`github`, { callbackUrl: 'http://localhost:3000/api/auth/callback/github'})"
       >
         Github Sign In
       </v-btn>
