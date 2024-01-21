@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const store = useListsStore();
 const { statuses } = useSettingsStore();
-const props = defineProps<{ list_id: string }>();
+const props = defineProps<{ list_id?: string }>();
 const newTodo = ref(null)
 const dialog = ref(false);
 const newTodoVariant = ref<'text' | 'outlined'>("text");
