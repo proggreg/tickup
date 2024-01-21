@@ -1,11 +1,8 @@
 <script setup lang="ts">
-const theme = ref('myCustomLightTheme')
-
 </script>
 <template>
   <main>
     <v-theme-provider
-      :theme="theme"
       with-background
     >
       <v-app>
