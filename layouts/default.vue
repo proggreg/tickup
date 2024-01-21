@@ -1,9 +1,14 @@
 <script setup lang="ts">
 const theme = ref('myCustomLightTheme')
+useBugsnag().notify('Some Error')
+
 </script>
 <template>
   <main>
-    <v-theme-provider :theme="theme" with-background>
+    <v-theme-provider
+      :theme="theme"
+      with-background
+    >
       <v-app>
         <v-layout>
           <app-nav />

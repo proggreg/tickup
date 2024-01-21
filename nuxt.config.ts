@@ -19,7 +19,8 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-mongoose',
     // '@vite-pwa/nuxt',
-    '@nuxtjs/eslint-module'
+    '@nuxtjs/eslint-module',
+    'nuxt-bugsnag'
   ],
 
   experimental: {
@@ -62,6 +63,13 @@ export default defineNuxtConfig({
   },
   typescript: {
     strict: true
+  },
+  bugsnag: {
+    config: {
+      apiKey: process.env.BUGSNAG_API_KEY,
+      enabledReleaseStages: ['staging', 'production'],
+      releaseStage: process.env.NODE_ENV,
+    }
   },
   devtools: {
     enabled: true
