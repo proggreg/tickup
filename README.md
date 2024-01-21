@@ -1,5 +1,20 @@
 # TickUp - A task management app to boost productivity 
 
+## How to use
+1. Login with your preferred method
+2. Create lists to organise your tasks
+3. Create the tasks you need to compelete
+4. Update task status to monitor your progress
+
+## Features
+| Feature | Description | Status |
+|---------|-------------|--------|
+| OAuth | Description of Feature 1 | In Progress |
+| Lists | Description of Feature 2 | In Progress |
+| Tasks | Description of Feature 3 | In Progress |
+| Status | Description of Feature 3 | In Progress |
+
+
 Deploy your [Nuxt](https://nuxt.com) project to Vercel with zero configuration.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/vercel/tree/main/examples/nuxtjs&template=nuxtjs)
