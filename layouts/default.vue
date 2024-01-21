@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const theme = ref('myCustomLightTheme')
-useBugsnag().notify('Some Error')
 
 </script>
 <template>
