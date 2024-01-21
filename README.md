@@ -9,10 +9,11 @@
 ## Features
 | Feature | Description | Status |
 |---------|-------------|--------|
-| OAuth | Description of Feature 1 | In Progress |
-| Lists | Description of Feature 2 | In Progress |
-| Tasks | Description of Feature 3 | In Progress |
-| Status | Description of Feature 3 | In Progress |
+| OAuth   | Implement OAuth for secure authentication | In Progress |
+| Lists   | Introduce the ability to create and manage lists | In Progress |
+| Tasks   | Add functionality to create and track tasks | In Progress |
+| Status  | Enhance the status tracking feature for tasks | In Progress |
+
 
 
 Deploy your [Nuxt](https://nuxt.com) project to Vercel with zero configuration.
