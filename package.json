@@ -24,25 +24,26 @@
     "@vue/test-utils": "^2.4.1",
     "@vueuse/core": "^10.3.0",
     "@vueuse/nuxt": "^10.3.0",
-    "eslint": "^8.40.0",
+    "eslint": "^8.53.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
     "happy-dom": "^12.9.0",
     "jsdom": "^22.1.0",
-    "nuxt": "^3.6.3",
+    "nuxt": "^3.8.0",
     "nuxt-vitest": "^0.11.0",
     "prettier": "^3.0.3",
     "typescript": "^5.0.4",
-    "vitest": "0.34.6"
+    "vitest": "0.34.6",
+    "vuetify-nuxt-module": "^0.7.3"
   },
   "dependencies": {
-    "@invictus.codes/nuxt-vuetify": "^0.3.0",
     "@pinia/nuxt": "^0.5.1",
     "@vite-pwa/nuxt": "^0.1.1",
     "@vuepic/vue-datepicker": "^7.0.0",
     "mongoose": "^7.5.0",
+    "nuxt-bugsnag": "^7.2.3",
     "nuxt-mongoose": "^1.0.2",
     "nuxt-time": "^0.1.1",
-    "pinia": "^2.1.4"
+    "pinia": "^2.1.7"
   }
 }

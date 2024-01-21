@@ -32,7 +32,7 @@ async function selectList (list: List) {
       <v-list-item-title>{{ list.name }}</v-list-item-title>
 
       <template #append>
-        <options-menu :list-id="list._id" />
+        <ListOptions v-if="list._id" :list-id="list._id" />
       </template>
     </v-list-item>
   </v-list>

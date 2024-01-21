@@ -1,12 +1,13 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
-
+listsStore.getTodos()
 useHead({ title: 'TickUp:Home' })
 
 </script>
 
 <template>
-  <app-list>
-    <app-list-items v-if="listsStore.todos" :todos="listsStore.todos" list-name="Today" />
-  </app-list>
+  <div>
+    <TodoNew />
+    <ListTable v-if="listsStore.todos" :todos="listsStore.todos" list-name="Today" />
+  </div>
 </template>

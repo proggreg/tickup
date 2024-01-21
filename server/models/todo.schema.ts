@@ -15,6 +15,9 @@ export const TodoSchema = defineMongooseModel({
     },
     status: {
       type: 'string'
+    },
+    desc: {
+      type: 'string'
     }
   }
 })

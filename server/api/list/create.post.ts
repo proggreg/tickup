@@ -3,7 +3,6 @@ export default defineEventHandler(async (event) => {
   try {
     return await new ListSchema(body).save()
   } catch (error) {
-    console.error('here', error)
     return error
   }
 })
