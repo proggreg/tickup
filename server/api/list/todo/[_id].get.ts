@@ -6,7 +6,6 @@ export default defineEventHandler(async (event) => {
 
     return await TodoSchema.find({ list_id: event.context.params._id })
   } catch (e) {
-    console.error(e)
     return e
   }
 })

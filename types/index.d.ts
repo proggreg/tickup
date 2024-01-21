@@ -5,11 +5,14 @@ declare global {
     _id?: string;
     dueDate?: Date,
     list_id?: string;
-    status: Status;
-    desc?: string;
+    status: string;
+    desc: string;
   }
 
-  type Status = 'Open' | 'Done';
+  interface Status {
+    name: string;
+    color: string;
+  }
 
   interface List {
     name: string;

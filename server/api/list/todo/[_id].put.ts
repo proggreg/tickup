@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
       _id: event.context.params._id
     }, body, { new: true })
   } catch (e) {
-    console.error(e)
     return e
   }
 })

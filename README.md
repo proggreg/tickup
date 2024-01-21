@@ -1,20 +1,8 @@
-# TickUp - A task management app to boost productivity 
+# Tickup
 
-## How to use
-1. Login with your preferred method
-2. Create lists to organise your tasks
-3. Create the tasks you need to compelete
-4. Update task status to monitor your progress
+A simple Todo app that has been inspired by Clickup and Ticktick.
 
-## Features
-| Feature | Description | Status |
-|---------|-------------|--------|
-| OAuth   | Implement OAuth for secure authentication | In Progress |
-| Lists   | Introduce the ability to create and manage lists | In Progress |
-| Tasks   | Add functionality to create and track tasks | In Progress |
-| Status  | Enhance the status tracking feature for tasks | In Progress |
-
-
+Built with Nuxt 3, Vuetify and MongoDB. 
 
 Deploy your [Nuxt](https://nuxt.com) project to Vercel with zero configuration.
 

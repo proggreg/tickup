@@ -20,7 +20,8 @@ function closeDrawer () {
     elevation="0"
     align-center
     class="d-flex justify-space-between"
-    style="justify-content: space-between;"
+    style="justify-content: space-between; border-top: none; border-left: none; border-right: none;"
+    border
   >
     <template #prepend>
       <v-btn v-if="smAndDown" size="small" style="padding: 0;" elevation="0" @click="open = !open">
@@ -28,14 +29,10 @@ function closeDrawer () {
           mdi-format-list-bulleted
         </v-icon>
       </v-btn>
-
-      <app-profile />
     </template>
 
-    <app-search />
-    <!-- <v-spacer /> -->
     <template #append>
-      <darkmode-switch />
+      <AppDarkMode />
     </template>
   </v-app-bar>
 
@@ -62,18 +59,14 @@ function closeDrawer () {
           <v-btn elevation="0" rounded="lg" icon="mdi-plus" @click="dialog = true" />
         </template>
         <template #prepend>
-          <dialog-list-new
+          <ListNew
             :open="dialog"
-            @close="(val) => {
-
-              dialog = false;
-
-            }"
+            @close="dialog = false"
           />
         </template>
       </v-list-item>
     </v-list>
     <v-divider />
-    <app-lists />
+    <AppNavItems />
   </v-navigation-drawer>
 </template>
