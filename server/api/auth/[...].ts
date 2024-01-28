@@ -1,9 +1,11 @@
 import { NuxtAuthHandler } from "#auth";
 import GithubProvider from 'next-auth/providers/github'
 import CredentialsProvider from "next-auth/providers/credentials"
-import {UserSchema} from "../../models/users.schema";
+import {UserSchema} from "../../models/users.schema";import { MongoDBAdapter } from "@auth/mongodb-adapter"
+import clientPromise from "./lib/mongodb"
+// console.log('secret', useRuntimeConfig().auth.secret)
 export default NuxtAuthHandler({
-  secret: useRuntimeConfig().auth.secret,
+  // secret: useRuntimeConfig().auth.secret,
 
   pages: {
     signIn: "/login",
@@ -71,4 +73,6 @@ export default NuxtAuthHandler({
       return session;
     },
   },
+  // @ts-expect-error
+  adapter: MongoDBAdapter(clientPromise)
 });

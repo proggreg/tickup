@@ -13,16 +13,17 @@ const headers = [
   { title: "Description", key: "desc", sortable: true },
   { title: "Date", key: "dueDate", sortable: true },
   { title: "", key: "actions", sortable: false },
-  { title: "Status", key: "status", sortable: true, sort: (a, b) => {
+  {
+    title: "Status", key: "status", sortable: true, sort: (a: string, b: string) => {
       return statuses.findIndex(status => status.name === a) - statuses.findIndex(status => status.name === b)
     }
-  }, 
+  },
 ];
 
 const group = ref([
   {
     key: "status",
-    order: true, 
+    order: true,
     title: "Status"
   },
 ]);
@@ -138,12 +139,10 @@ async function createTodo(status: string) {
               v-for="column in columns"
               :key="column.key"
             >
-              <v-hover
-                v-if="column.key !== 'data-table-group' &&
-                  column.key !== 'data-table-expand' &&
-                  column.key !== 'actions'
-                " 
-              >
+              <v-hover v-if="column.key !== 'data-table-group' &&
+                column.key !== 'data-table-expand' &&
+                column.key !== 'actions'
+                ">
                 <template #default="{ isHovering, props }">
                   <th
                     :style="isHovering ? 'cursor: pointer' : ''"
@@ -158,7 +157,7 @@ async function createTodo(status: string) {
                         <v-icon v-if="isHovering && !isSorted(sortBy, column)">
                           mdi-arrow-up
                         </v-icon>
-                    
+
                         <template
                           v-for="sort in sortBy"
                           :key="sort.key"
@@ -170,7 +169,7 @@ async function createTodo(status: string) {
                             mdi-arrow-down
                           </v-icon>
                         </template>
-                      
+
                         <div
                           v-if="isSortedIndex(sortBy, column)"
                           class="v-data-table-header__sort-badge"
@@ -191,7 +190,9 @@ async function createTodo(status: string) {
             :key="item.key"
             @click="showModal(item)"
           >
-            <td><ListStatus :todo="item.raw" /></td>
+            <td>
+              <ListStatus :todo="item.raw" />
+            </td>
             <template
               v-for="column in columns"
               :key="column.key"

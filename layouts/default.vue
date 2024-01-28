@@ -2,9 +2,7 @@
 </script>
 <template>
   <main>
-    <v-theme-provider
-      with-background
-    >
+    <v-theme-provider with-background>
       <v-app>
         <v-layout>
           <app-nav />

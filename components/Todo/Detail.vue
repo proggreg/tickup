@@ -26,14 +26,26 @@ const desc = ref(listsStore.currentTodo.desc)
       <TodoStatus />
     </template>
     <template #append>
-      <AppDueDate :todo-due-date="listsStore.currentTodo.dueDate" :todo="listsStore.currentTodo" :show-detail="true"
-        @set-date="updateDueDate" />
+      <AppDueDate
+        :todo-due-date="listsStore.currentTodo.dueDate"
+        :todo="listsStore.currentTodo"
+        :show-detail="true"
+        @set-date="updateDueDate"
+      />
     </template>
     <v-card-title>
-      <v-text-field v-model="listsStore.currentTodo.name" @blur="updateName" />
+      <v-text-field
+        v-model="listsStore.currentTodo.name"
+        @blur="updateName"
+      />
     </v-card-title>
     <v-card-item>
-      <v-textarea v-model="desc" label="description" variant="solo-inverted" @blur="updateDesc" />
+      <v-textarea
+        v-model="desc"
+        label="description"
+        variant="solo-inverted"
+        @blur="updateDesc"
+      />
     </v-card-item>
 
     <v-card-actions>
