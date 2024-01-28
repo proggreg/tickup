@@ -39,10 +39,12 @@
   },
   "dependencies": {
     "@auth/core": "^0.21.0",
+    "@auth/mongodb-adapter": "^2.0.14",
     "@pinia/nuxt": "^0.5.1",
     "@sidebase/nuxt-auth": "^0.6.5",
     "@vite-pwa/nuxt": "^0.1.1",
     "@vuepic/vue-datepicker": "^7.0.0",
+    "mongodb": "^6.3.0",
     "mongoose": "^7.5.0",
     "next-auth": "4.21.1",
     "nuxt-bugsnag": "^7.2.3",

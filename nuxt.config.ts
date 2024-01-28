@@ -87,6 +87,7 @@ export default defineNuxtConfig({
     provider: {
       type: "authjs",
     },
+    secret: process.env.NUXT_NEXTAUTH_SECRET,
     origin: process.env.VERCEL_URL || "http://localhost:3000",
     globalAppMiddleware: true
   }
