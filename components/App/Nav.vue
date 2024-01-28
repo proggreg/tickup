@@ -8,7 +8,7 @@ const { signOut, status } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
 
 
-function closeDrawer () {
+function closeDrawer() {
   listsStore.getTodos()
   if (smAndDown.value) {
     open.value = false
@@ -26,7 +26,10 @@ function closeDrawer () {
     class="d-flex justify-space-between"
     style="justify-content: space-between; border-top: none; border-left: none; border-right: none;"
   >
-    <template v-if="loggedIn" #prepend>
+    <template
+      v-if="loggedIn"
+      #prepend
+    >
       <v-btn
         v-if="smAndDown"
         size="small"
@@ -43,6 +46,7 @@ function closeDrawer () {
       </v-btn>
       <AppProfile v-else />
     </template>
+    <AppSearch />
 
     <template #append>
       <v-btn
