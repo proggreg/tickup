@@ -13,9 +13,10 @@ definePageMeta({
 <template>
   <div>
     <div>
+      <AppLoginForm />
       <v-btn
         append-icon="mdi-github"
-        @click="signIn(`github`, { callbackUrl: 'http://localhost:3000/api/auth/callback/github'})"
+        @click="signIn(`github`, { callbackUrl: 'http://localhost:3000/'})"
       >
         Github Sign In
       </v-btn>

@@ -2,11 +2,11 @@ export {Todo, Status, List}
 declare global {
   interface Todo {
     name: string;
-    _id?: string;
+    _id: string | undefined;
     dueDate?: Date,
-    list_id?: string;
+    listId?: string;
     status: string;
-    desc: string;
+    desc?: string;
   }
 
   interface Status {

@@ -25,7 +25,6 @@ function closeDrawer () {
     align-center
     class="d-flex justify-space-between"
     style="justify-content: space-between; border-top: none; border-left: none; border-right: none;"
-
   >
     <template #prepend>
       <v-btn
@@ -42,7 +41,7 @@ function closeDrawer () {
           mdi-format-list-bulleted
         </v-icon>
       </v-btn>
-      <AppProfile v-else></AppProfile>
+      <AppProfile v-else />
     </template>
 
     <template #append>

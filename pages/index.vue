@@ -5,15 +5,17 @@ listsStore.getTodos()
 useHead({ title: 'TickUp:Home' })
 
 const loggedIn = computed(() => status.value === 'authenticated')
-
+console.log(loggedIn.value)
 if (!loggedIn.value) {
   navigateTo('/login')
 }
+
 definePageMeta({
   layout: 'default',
   auth: {
     unauthenticatedOnly: false,
     navigateUnauthenticatedTo: '/login',
+
   },
 })
 

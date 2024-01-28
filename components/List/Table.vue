@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const store = useListsStore();
 const { statuses } = useSettingsStore();
-const props = defineProps<{ list_id?: string }>();
+const props = defineProps<{ listId?: string }>();
 const newTodo = ref(null)
 const dialog = ref(false);
 const newTodoVariant = ref<'text' | 'outlined'>("text");
@@ -69,9 +69,10 @@ async function createTodo(status: string) {
   if (newTodoTitle.value) {
     const newTodo: Todo = {
       name: newTodoTitle.value,
+      _id: undefined,
       status,
       desc: "",
-      list_id: props.list_id,
+      listId: props.listId,
     };
     await store.addTodo(newTodo);
     newTodoTitle.value = ''
