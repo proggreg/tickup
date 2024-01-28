@@ -3,9 +3,13 @@ import { useTheme } from 'vuetify'
 const theme = useTheme()
 
 function toggleDarkMode () {
-  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+  theme.global.name.value = theme.global.name.value !== 'myCustomDarkTheme' ? 'myCustomDarkTheme' : 'myCustomLightTheme'   
 }
 </script>
 <template>
-  <v-btn variant="text" :icon="theme.global.current.value.dark ? 'mdi-weather-night' : 'mdi-weather-sunny'" @click="toggleDarkMode" />
+  <v-btn
+    variant="text"
+    :icon="theme.global.current.value.dark ? 'mdi-weather-night' : 'mdi-weather-sunny'"
+    @click="toggleDarkMode"
+  />
 </template>

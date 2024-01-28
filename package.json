@@ -45,6 +45,7 @@
     "@vuepic/vue-datepicker": "^7.0.0",
     "mongoose": "^7.5.0",
     "next-auth": "4.21.1",
+    "nuxt-bugsnag": "^7.2.3",
     "nuxt-mongoose": "^1.0.2",
     "nuxt-time": "^0.1.1",
     "pinia": "^2.1.7"
