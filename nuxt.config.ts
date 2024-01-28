@@ -75,7 +75,9 @@ export default defineNuxtConfig({
     enabled: true
   },
   runtimeConfig: {
-    NUXT_NEXTAUTH_SECRET: process.env.NUXT_NEXTAUTH_SECRET,
+    auth: {
+      secret: process.env.NUXT_NEXTAUTH_SECRET,
+    },
     github: {
       clientId: process.env.NUXT_GITHUB_CLIENT_ID,
       clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET

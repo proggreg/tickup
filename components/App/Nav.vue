@@ -3,7 +3,7 @@ const open = useNav()
 const dialog = ref(false)
 const listsStore = useListsStore()
 const { smAndDown } = useDisplay()
-const { signIn, signOut, status } = useAuth()
+const { signOut, status } = useAuth()
 
 const loggedIn = computed(() => status.value === 'authenticated')
 
@@ -25,7 +25,7 @@ function closeDrawer () {
     align-center
     class="d-flex justify-space-between"
     style="justify-content: space-between; border-top: none; border-left: none; border-right: none;"
-    border
+
   >
     <template #prepend>
       <v-btn
@@ -42,6 +42,7 @@ function closeDrawer () {
           mdi-format-list-bulleted
         </v-icon>
       </v-btn>
+      <AppProfile v-else></AppProfile>
     </template>
 
     <template #append>
