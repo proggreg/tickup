@@ -19,8 +19,18 @@ export default NuxtAuthHandler({
         console.log('authorizing', credentials)
 
         try {
-          const user = UserSchema.findOne({ username: credentials.username }) 
-          console.log('user', user) 
+          const user = UserSchema.findOne({ username: credentials.username })
+          if (!user) {
+            console.log('creating user')
+            try {
+              return await new UserSchema({ username: credentials.username, email: 'test' }).save()
+            } catch (error) {
+              console.log(error)
+            }
+           
+          } 
+
+          // console.log('user', user) 
           return user
         } catch (error) {
           console.error(error)
@@ -48,7 +58,7 @@ export default NuxtAuthHandler({
    })
   ],
   session: {
-    strategy: "jwt",
+    strategy: "database",
   },
 
   callbacks: {
@@ -65,6 +75,8 @@ export default NuxtAuthHandler({
     },
 
     async session({ session, token }) {
+      console.log('session', session, token)
+
       session.user = {
         ...token,
         ...session.user,
