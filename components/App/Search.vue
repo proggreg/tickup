@@ -1,6 +1,5 @@
 <script setup lang="ts">
-
-
+const result = ref<string>('')
 
 </script>
 <template>
