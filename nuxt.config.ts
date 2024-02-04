@@ -19,8 +19,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-mongoose',
     '@nuxtjs/eslint-module',
-    "@sidebase/nuxt-auth",
-    // 'nuxt-bugsnag',
+    'nuxt-bugsnag'
   ],
 
   experimental: {
