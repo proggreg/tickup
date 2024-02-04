@@ -54,19 +54,19 @@ export default defineNuxtConfig({
   vuetify: {
     vuetifyOptions: {
       defaults: {
-          VSheet: {
-            elevation: 10,
-            width: 300,
-            class: 'pa-4',
-            rounded: 'xl'
-          },
-          VBtn: {
-            rounded: 'xl'
-          },
-          VTextField: {
-            rounded: 'xl',
-            variant: 'solo-inverted'
-          }
+        VSheet: {
+          elevation: 10,
+          width: 300,
+          class: 'pa-4',
+          rounded: 'xl'
+        },
+        VBtn: {
+          rounded: 'xl'
+        },
+        VTextField: {
+          rounded: 'xl',
+          variant: 'solo-inverted'
+        }
       },
       theme: {
         themes: {
@@ -105,5 +105,12 @@ export default defineNuxtConfig({
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     origin: process.env.VERCEL_URL || "http://localhost:3000",
     globalAppMiddleware: true
+  },
+  mongoose: {
+    devtools: true,
+    options: {
+      appName: 'Tickup',
+
+    }
   }
 })

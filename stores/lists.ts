@@ -112,6 +112,7 @@ export const useListsStore = defineStore('lists', {
     },
     async getTodos() {
       const { data } = await useFetch<Todo[]>('/api/today')
+      console.log('get today todos', data)
 
       if (data.value) {
         this.todos = data.value

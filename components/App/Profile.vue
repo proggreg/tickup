@@ -5,7 +5,7 @@ const { data } = useAuth()
   <v-menu>
     <template #activator="{ props }">
       <!-- TODO remove shadow and make button fit image -->
-
+      {{ data }}
       <v-btn
         v-bind="props"
         width="50"
