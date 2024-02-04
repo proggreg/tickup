@@ -3,6 +3,7 @@ import GithubProvider from 'next-auth/providers/github'
 import CredentialsProvider from "next-auth/providers/credentials"
 import {UserSchema} from "../../models/users.schema";import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import clientPromise from "./lib/mongodb"
+
 // console.log('secret', useRuntimeConfig().auth.secret)
 export default NuxtAuthHandler({
   // secret: useRuntimeConfig().auth.secret,
@@ -14,16 +15,18 @@ export default NuxtAuthHandler({
     // @ts-expect-error
     CredentialsProvider.default({
       name: "credentials",
-      credentials: {},
+      credentials: {
+        
+      },
       async authorize(credentials: { username: string; password: string }) {
         console.log('authorizing', credentials)
 
         try {
-          const user = UserSchema.findOne({ username: credentials.username })
+          const user = await UserSchema.findOne({ username: credentials.username })
           if (!user) {
-            console.log('creating user')
+            console.log('creating user', user)
             try {
-              return await new UserSchema({ username: credentials.username, email: 'test' }).save()
+              return null
             } catch (error) {
               console.log(error)
             }
@@ -58,7 +61,7 @@ export default NuxtAuthHandler({
    })
   ],
   session: {
-    strategy: "database",
+    strategy: "jwt",
   },
 
   callbacks: {
@@ -67,7 +70,7 @@ export default NuxtAuthHandler({
       if (user) {
         token = {
           ...token,
-          ...user,
+          ...user._doc,
         };
       }
 

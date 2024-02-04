@@ -27,6 +27,7 @@ if (currentList.value) {
   <v-row>
     <v-col>
       <TodoNew :list-id="params.id" />
+      hello
       <!-- <TodoNew :list-id="params.id" /> -->
       <!-- <ListView v-if="todos && currentList" :list-name="currentList.name" :todos="todos" /> -->
       <ListTable :list_id="params.id" />

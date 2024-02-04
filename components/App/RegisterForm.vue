@@ -2,6 +2,23 @@
 const { signIn } = useAuth()
 const username = ref('')
 const password = ref('')
+async function registerUser() {
+    console.log('register user')
+
+    const { data } = await useFetch('/api/auth/user', {
+        method: 'POST',
+        body: {
+            username: username.value,
+            password: password.value
+        }
+    })
+    console.log('user', data)
+    if (data.value) {
+        signIn('credentials', { username, password })
+    }
+    console.log(data.value)
+
+}
 </script>
 <template>
     <v-sheet
@@ -10,7 +27,7 @@ const password = ref('')
         class="pa-4"
         rounded="xl"
     >
-        <v-form width="500">
+        <v-form>
             <v-text-field
                 v-model="username"
                 label="Username"
@@ -30,6 +47,7 @@ const password = ref('')
                     <v-btn
                         color="primary"
                         to="/register"
+                        @click="registerUser"
                     >
                         Register
                     </v-btn>
