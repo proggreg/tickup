@@ -19,8 +19,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-mongoose',
     '@nuxtjs/eslint-module',
-    'nuxt-bugsnag',
-    '@nuxtjs/algolia'
+    'nuxt-bugsnag'
   ],
 
   experimental: {

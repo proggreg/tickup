@@ -37,7 +37,6 @@
     "vuetify-nuxt-module": "^0.7.3"
   },
   "dependencies": {
-    "@nuxtjs/algolia": "^1.10.1",
     "@pinia/nuxt": "^0.5.1",
     "@vite-pwa/nuxt": "^0.1.1",
     "@vuepic/vue-datepicker": "^7.0.0",
