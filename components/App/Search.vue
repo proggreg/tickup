@@ -1,9 +1,6 @@
 <script setup lang="ts">
-const { result, search } = useAlgoliaSearch('todos')
+const result = ref<string>('')
 
-onMounted(async () => {
-  await search({ query: 'Samsung' })
-})
 </script>
 <template>
   <v-text-field
