@@ -3,6 +3,10 @@ import { useDebounceFn } from '@vueuse/core';
 const query = ref<string>('')
 const results = ref([{name: 'test'}])
 const open = ref(false)
+const input = ref(null)
+const todoDialogOpen = ref(false)
+const store = useListsStore()
+
 
 if (process.client) {
   document.addEventListener('keydown', (e) => {
@@ -28,6 +32,20 @@ function search() {
 }
 const debouncedSearch = useDebounceFn(search, 500)
 
+
+function setTextFieldFocus() {
+  setTimeout(() => {
+    input.value.focus()
+  }, 100)
+}
+async function openTodoDialog(result: Todo) {
+  console.log('getting todo...', result._id)
+  const data = await store.getTodo(result._id)
+  console.log(data)
+  todoDialogOpen.value = true
+}
+
+
 </script>
 <template>
   <v-dialog
@@ -44,6 +62,7 @@ const debouncedSearch = useDebounceFn(search, 500)
         variant="solo-filled"
         placeholder="search"
         style="max-width: 300px"
+        @click="setTextFieldFocus"
       >
         <template #append-inner>
           <span style="font-size: 0.70rem; width: 40px;">ctrl + k</span>
@@ -53,10 +72,11 @@ const debouncedSearch = useDebounceFn(search, 500)
 
     <template #default="{isActive}">
       <v-card
-        v-if="isActive"
+        v-show="isActive"
       >
-        <v-layout class="justify-center py-4">
+        <v-layout class="justify-center py-8">
           <v-text-field
+            ref="input"
             v-model="query"
             hide-details
             density="compact"
@@ -64,7 +84,7 @@ const debouncedSearch = useDebounceFn(search, 500)
             variant="solo-filled"
             placeholder="search"
             style="max-width: 300px"
-            :focused="isActive.value"
+            :focused="true"
             @keyup="debouncedSearch"
           >
             <template #append-inner>
@@ -77,6 +97,7 @@ const debouncedSearch = useDebounceFn(search, 500)
           <v-list-item
             v-for="(result, index) in results"
             :key="index"
+            @click="openTodoDialog(result)"
           >
             <v-list-item-title class="font-weight-bold">
               {{ result.name }}
@@ -86,6 +107,12 @@ const debouncedSearch = useDebounceFn(search, 500)
             </v-list-item-subtitle>
           </v-list-item>
         </v-list>
+        <AppDialog
+          :open="todoDialogOpen"
+          @close="todoDialogOpen = false"
+        >
+          <TodoDetail />
+        </AppDialog>
       </v-card>
     </template>
   </v-dialog>
