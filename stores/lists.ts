@@ -118,8 +118,22 @@ export const useListsStore = defineStore('lists', {
         this.currentList = data.value
       }
     },
+<<<<<<< HEAD
     async getTodos() {
       const { data } = await useFetch<Todo[]>('/api/todos')
+=======
+    async getTodo(id: string) {
+      
+      const { data } = await useFetch<Todo>(`/api/todo/${id}`)
+      console.log('getTodo', data.value)
+      if (data.value) {
+        this.currentTodo = data.value
+      }
+      return data
+    },
+    async getTodos () {
+      const { data } = await useFetch<Todo[]>('/api/today')
+>>>>>>> 0861ca5 (Add input and todoDialogOpen refs, setTextFieldFocus and openTodoDialog functions, and TodoDetail component)
 
       if (data.value) {
         this.todos = data.value
