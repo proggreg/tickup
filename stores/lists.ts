@@ -123,7 +123,7 @@ export const useListsStore = defineStore('lists', {
       const { data } = await useFetch<Todo[]>('/api/todos')
 =======
     async getTodo(id: string) {
-      
+
       const { data } = await useFetch<Todo>(`/api/todo/${id}`)
       console.log('getTodo', data.value)
       if (data.value) {

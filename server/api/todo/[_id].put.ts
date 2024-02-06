@@ -5,6 +5,7 @@ export default defineEventHandler(async (event) => {
     if (!event.context.params || !event.context.params._id) {
       throw new Error('no id')
     }
+    body.updatedAt = new Date()
     return await TodoSchema.findOneAndUpdate({
       _id: event.context.params._id
     }, body, { new: true })

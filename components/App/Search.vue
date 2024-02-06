@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { useDebounceFn } from '@vueuse/core';
 const query = ref<string>('')
-const results = ref([{name: 'test'}])
+const results = ref([{name: ''}])
 const open = ref(false)
 const input = ref(null)
 const todoDialogOpen = ref(false)
 const store = useListsStore()
-
 
 if (process.client) {
   document.addEventListener('keydown', (e) => {
@@ -45,13 +44,25 @@ async function openTodoDialog(result: Todo) {
   todoDialogOpen.value = true
 }
 
+function formattedDate(date: string) {
+  if (date) {
+    return new Date(date).toLocaleDateString('en-GB')
+  }
+}
+function formattedTime(d: string) {
+  if (d) {
+    const date = new Date(d)
+    return date.getHours() + ':' + date.getMinutes()
+  }
+}
+
 
 </script>
 <template>
   <v-dialog
     open-on-click
     :model-value="open"
-    width="500"
+    width="1200"
   >
     <template #activator="{ props }">
       <v-text-field
@@ -108,6 +119,12 @@ async function openTodoDialog(result: Todo) {
             <v-list-item-subtitle>
               {{ result.status }}
             </v-list-item-subtitle>
+            <span>
+              Created at: {{ new Date(result.createdAt).toLocaleDateString('en-GB') }} {{ formattedTime(result.createdAt) }}
+            </span>
+            <div>
+              Updated at: {{ new Date(result.updatedAt).toLocaleDateString('en-GB') }} {{ formattedTime(result.updatedAt) }}
+            </div> 
           </v-list-item>
         </v-list>
         <AppDialog
