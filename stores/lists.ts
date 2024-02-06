@@ -3,6 +3,7 @@ interface listsState {
   currentList: List,
   currentTodo: Todo,
   todos?: Todo[]
+  todaysTodos: Todo[]
 }
 
 export const useListsStore = defineStore('lists', {
@@ -17,7 +18,8 @@ export const useListsStore = defineStore('lists', {
       status: 'Done',
       desc: ''
     },
-    todos: []
+    todos: [],
+    todaysTodos: []
   }),
   actions: {
     async addList (listName: string) {
@@ -50,12 +52,14 @@ export const useListsStore = defineStore('lists', {
     },
     async deleteTodo (todoId : string) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const todo = await $fetch(`/api/list/todo/${todoId}`, {
+      const todo = await $fetch(`/api/todo/${todoId}`, {
         method: 'DELETE'
       })
       // TODO do i need todo?
 
       this.getTodos()
+
+      this.todaysTodos = this.todaysTodos.filter(todo => todo._id !== todoId)
 
       if (!this.currentList) { return }
       this.currentList.todos = this.currentList.todos.filter(todo => todo._id !== todoId)
@@ -67,12 +71,19 @@ export const useListsStore = defineStore('lists', {
       this.currentList.todos = todos || []
     },
     async addTodo (newTodo: Todo) {
-      const todo = await $fetch<Todo>('/api/list/todo', {
+      const todo = await $fetch<Todo>('/api/todo', {
         method: 'POST',
         body: newTodo
       })
       this.currentList.todos.push(todo)
       return todo
+    },
+    async updateTodo (todo: Todo) {
+      const updatedTodo = await $fetch<Todo>(`/api/todo/${todo._id}`, {
+        method: 'PUT',
+        body: todo
+      })
+      this.setCurrentTodo(updatedTodo)
     },
     async getListTodos (listId: string) {
       const { data } = await useFetch<Todo[]>(`/api/list/todo/${listId}`)
@@ -108,19 +119,20 @@ export const useListsStore = defineStore('lists', {
       }
     },
     async getTodos () {
-      const { data } = await useFetch<Todo[]>('/api/today')
+      const { data } = await useFetch<Todo[]>('/api/todos')
 
       if (data.value) {
         this.todos = data.value
       }
     },
-    async updateTodo (todo: Todo) {
-      const updatedTodo = await $fetch<Todo>(`/api/list/todo/${todo._id}`, {
-        method: 'PUT',
-        body: todo
-      })
-      this.setCurrentTodo(updatedTodo)
+    async getTodaysTodos() {
+      const { data } = await useFetch<Todo[]>('/api/todos', { query: { today: true } })
+
+      if (data.value) {
+        this.todaysTodos = data.value
+      }
     },
+   
     sortByDate (newDirection: string) {
       this.currentList.todos
         .sort((a, b) => {
