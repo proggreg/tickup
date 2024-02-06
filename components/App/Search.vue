@@ -62,7 +62,7 @@ function formattedTime(d: string) {
   <v-dialog
     open-on-click
     :model-value="open"
-    width="1200"
+    width="500"
   >
     <template #activator="{ props }">
       <v-text-field
@@ -104,7 +104,7 @@ function formattedTime(d: string) {
           </v-text-field>
         </v-layout>
 
-        <v-list>
+        <v-list >
           <v-list-item
             v-for="(result, index) in results"
             :key="index"
@@ -116,11 +116,12 @@ function formattedTime(d: string) {
             <v-list-item-subtitle>
               {{ result.status }}
             </v-list-item-subtitle>
-            <span>
-              Created at: {{ new Date(result.createdAt).toLocaleDateString('en-GB') }} {{ formattedTime(result.createdAt) }}
-            </span>
-            <div>
-              Updated at: {{ new Date(result.updatedAt).toLocaleDateString('en-GB') }} {{ formattedTime(result.updatedAt) }}
+           
+            <div
+              v-if="result.updatedAt"
+              class="text-overline"
+            >
+              Updated at: {{ formattedDate(result.updatedAt) }} {{ formattedTime(result.updatedAt) }}
             </div> 
           </v-list-item>
         </v-list>
