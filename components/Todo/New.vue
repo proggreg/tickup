@@ -3,19 +3,17 @@ const listsStore = useListsStore()
 const props = defineProps<{ listId?: string }>()
 const { data } = useAuth()
 const newTodo = ref<Todo>({
-  userId: '',
   name: '',
   dueDate: undefined,
   status: 'Open',
   desc: '',
-  listId: '',
-  _id: undefined
+  listId: props.listId ? props.listId : '',
+  _id: undefined,
+  userId: data.value?.user.id
 })
 const emit = defineEmits(['newTodo'])
 
 async function addTodo() {
-  newTodo.value.userId = data.value.user._id
-  newTodo.value.list_id = props.listId
   await listsStore.addTodo(newTodo.value)
 
   emit('newTodo', newTodo)
