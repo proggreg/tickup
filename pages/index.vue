@@ -2,6 +2,7 @@
 const listsStore = useListsStore()
 listsStore.getTodaysTodos()
 useHead({ title: 'TickUp:Home' })
+const tab = ref('todo')
 const newTodo = ref<Todo>({
   name: '',
   status: 'open',
@@ -13,6 +14,14 @@ async function addTodayTodo () {
   await listsStore.getTodaysTodos()
   newTodo.value.name = ''
 }
+
+const todaysTodos = computed(() => {
+  return listsStore.todaysTodos.filter((todo) => todo.status !== 'Closed')
+})
+
+const todaysClosedTodos = computed(() => {
+  return listsStore.todaysTodos.filter((todo) => todo.status === 'Closed')
+})
 
 </script>
 
@@ -37,29 +46,70 @@ async function addTodayTodo () {
             </template>
           </v-text-field>
         </div>
-        <v-list v-if="listsStore.todaysTodos.length">
-          <v-list-item
-            v-for="todo in listsStore.todaysTodos"
-            :key="todo._id"
-          >
-            <v-list-item-title>{{ todo.name }}</v-list-item-title>
-            <template #append>
-              <v-btn
-                icon
-                elevation="0"
-                @click="listsStore.deleteTodo(todo._id)"
+        <v-tabs v-model="tab">
+          <v-tab>
+            todo
+          </v-tab>
+          <v-tab>
+            done
+          </v-tab>
+        </v-tabs>
+        <v-window v-model="tab">
+          <v-window-item value="todo">
+            <v-list v-if="todaysTodos.length">
+              <v-list-item
+                v-for="todo in todaysTodos"
+                :key="todo._id"
               >
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </template>
-          </v-list-item>
-        </v-list>
-        <div
-          v-else
-          class="pa-4"
-        >
-          Nothing todo today 🎉
-        </div>
+                <template #prepend>
+                  <ListStatus :todo="todo" />
+                </template>
+                <v-list-item-title class="ml-4">
+                  {{ todo.name }}
+                </v-list-item-title>
+                <template #append>
+                  <v-btn
+                    icon
+                    elevation="0"
+                    @click="listsStore.deleteTodo(todo._id)"
+                  >
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </template>
+              </v-list-item>
+            </v-list>
+            <div
+              v-else
+              class="pa-4"
+            >
+              Nothing todo today 🎉
+            </div>
+          </v-window-item>
+          <v-window-item value="done">
+            <v-list v-if="todaysClosedTodos.length">
+              <v-list-item
+                v-for="todo in todaysClosedTodos"
+                :key="todo._id"
+              >
+                <template #prepend>
+                  <ListStatus :todo="todo" />
+                </template>
+                <v-list-item-title class="ml-4">
+                  {{ todo.name }}
+                </v-list-item-title>
+                <template #append>
+                  <v-btn
+                    icon
+                    elevation="0"
+                    @click="listsStore.deleteTodo(todo._id)"
+                  >
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </template>
+              </v-list-item>
+            </v-list>
+          </v-window-item>
+        </v-window>
       </v-card>
     </v-col>
     <v-col>
