@@ -15,7 +15,7 @@ function selectTodo (todo: Todo) {
 
 function editTodo (todo: Todo, status: Status) {
   todo.status = status.name
-  $fetch(`/api/list/todo/${todo._id}`, {
+  $fetch(`/api/todo/${todo._id}`, {
     method: 'PUT',
     body: todo
   })
@@ -48,10 +48,17 @@ function deleteTodo (todo: Todo) {
           <v-list-item-action start>
             <v-menu>
               <template #activator="{props}">
-                <ListStatus v-bind="props" :todo="todo" />
+                <ListStatus
+                  v-bind="props"
+                  :todo="todo"
+                />
               </template>
               <v-list>
-                <v-list-item v-for="status in statuses" :key="status.name" @click="editTodo(todo, status)">
+                <v-list-item
+                  v-for="status in statuses"
+                  :key="status.name"
+                  @click="editTodo(todo, status)"
+                >
                   {{ status.name }}
                 </v-list-item>
               </v-list>
@@ -64,7 +71,11 @@ function deleteTodo (todo: Todo) {
         </v-list-item-title>
 
         <template #append>
-          <AppDueDate :todo="todo" :todo-due-date="todo.dueDate" :show-detail="!smAndDown" />
+          <AppDueDate
+            :todo="todo"
+            :todo-due-date="todo.dueDate"
+            :show-detail="!smAndDown"
+          />
 
           <v-list-item-action end>
             <v-btn
