@@ -24,9 +24,9 @@ definePageMeta({
 })
 const newTodo = ref<Todo>({
   name: '',
-  status: 'open',
+  status: 'Open',
   dueDate: new Date().toISOString(),
-  userId: data.value.user.id
+  userId: data.value?.user.id
 })
 
 async function addTodayTodo() {
@@ -46,10 +46,12 @@ const todaysClosedTodos = computed(() => {
 </script>
 
 <template>
-  <v-row>
+  <v-row class="fill-height">
     <v-col>
-      <v-card class="pa-4">
-        <h2>Today's Todo's</h2>
+      <v-card class="pa-4 fill-height">
+        <h2 class="pb-4">
+          Today's Todo's
+        </h2>
         <div>
           <v-text-field
             v-model="newTodo.name"
@@ -100,7 +102,7 @@ const todaysClosedTodos = computed(() => {
             </v-list>
             <div
               v-else
-              class="pa-4"
+              class="pa-4 fill-height d-flex justify-center align-center text-caption"
             >
               Nothing todo today 🎉
             </div>
@@ -133,8 +135,10 @@ const todaysClosedTodos = computed(() => {
       </v-card>
     </v-col>
     <v-col>
-      <v-card class="pa-4">
-        <h2>reminders</h2>
+      <v-card class="pa-4 fill-height">
+        <h2 class="pb-4">
+          Reminders
+        </h2>
       </v-card>
     </v-col>
   </v-row>
