@@ -9,7 +9,7 @@
         <v-layout>
           <app-nav />
           <v-main>
-            <v-container>
+            <v-container class="fill-height">
               <NuxtPage />
             </v-container>
           </v-main>
