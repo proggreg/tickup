@@ -18,7 +18,6 @@ export default defineNuxtConfig({
     '@nuxt/devtools',
     '@vueuse/nuxt',
     'nuxt-mongoose',
-    // '@vite-pwa/nuxt',
     '@nuxtjs/eslint-module',
     'nuxt-bugsnag'
   ],

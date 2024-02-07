@@ -18,6 +18,14 @@ export const TodoSchema = defineMongooseModel({
     },
     desc: {
       type: 'string'
+    },
+    createdAt: {
+      type: 'date',
+      default: Date.now
+    },
+    updatedAt: {
+      type: 'date',
+      default: Date.now
     }
   }
 })
