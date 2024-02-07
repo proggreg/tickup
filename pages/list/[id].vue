@@ -27,8 +27,6 @@ if (currentList.value) {
   <v-row class="fill-height">
     <v-col>
       <TodoNew :list-id="params.id" />
-      <!-- <TodoNew :list-id="params.id" /> -->
-      <!-- <ListView v-if="todos && currentList" :list-name="currentList.name" :todos="todos" /> -->
       <ListTable :list_id="params.id" />
     </v-col>
   </v-row>
