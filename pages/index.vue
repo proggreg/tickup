@@ -1,14 +1,13 @@
 <script setup lang="ts">
 const {status} = useAuth()
-const listsStore = useListsStore()
-listsStore.getTodos()
-useHead({ title: 'TickUp:Home' })
-
 const loggedIn = computed(() => status.value === 'authenticated')
 console.log(loggedIn.value)
 if (!loggedIn.value) {
   navigateTo('/login')
 }
+const listsStore = useListsStore()
+useHead({ title: 'TickUp:Home' })
+listsStore.getTodos()
 
 definePageMeta({
   layout: 'default',
