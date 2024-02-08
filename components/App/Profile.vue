@@ -4,19 +4,21 @@ const { data } = useAuth()
 <template>
   <v-menu>
     <template #activator="{ props }">
-      <v-btn v-bind="props">
+      <!-- TODO remove shadow and make button fit image -->
+
+      <v-btn
+        v-bind="props"
+        width="50"
+        height="50"
+        variant="text"
+      >
         <v-img
           :src="data?.user?.image"
           width="50"
-          style="margin-right: 15px;"
+          style=" border-radius: 50%;"
         />
       </v-btn>
-      <v-img
-        :src="data?.user?.image"
-        width="50"
-        style="margin-right: 15px;"
-      />
-      <v-label>{{ data?.user?.name }}</v-label>
+      <v-label>{{ data?.user?.username ? data?.user?.username : data.user._doc.username }}</v-label>
     </template>
     <v-list>
       <v-list-item>

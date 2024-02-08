@@ -53,6 +53,21 @@ export default defineNuxtConfig({
   },
   vuetify: {
     vuetifyOptions: {
+      defaults: {
+          VSheet: {
+            elevation: 10,
+            width: 300,
+            class: 'pa-4',
+            rounded: 'xl'
+          },
+          VBtn: {
+            rounded: 'xl'
+          },
+          VTextField: {
+            rounded: 'xl',
+            variant: 'solo-inverted'
+          }
+      },
       theme: {
         themes: {
           myCustomDarkTheme,

@@ -3,6 +3,10 @@ import { defineMongooseModel } from '#nuxt/mongoose'
 export const TodoSchema = defineMongooseModel({
   name: 'Todo',
   schema: {
+    userId: {
+      type: 'string',
+      required: true
+    },
     name: {
       type: 'string',
       required: true
