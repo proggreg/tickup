@@ -7,7 +7,10 @@ if (!loggedIn.value) {
 }
 const listsStore = useListsStore()
 useHead({ title: 'TickUp:Home' })
-listsStore.getTodos()
+if (loggedIn.value) {
+  listsStore.getTodos()  
+}
+
 
 definePageMeta({
   layout: 'default',
