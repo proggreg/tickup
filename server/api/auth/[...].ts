@@ -5,7 +5,7 @@ import {UserSchema} from "../../models/users.schema";import { MongoDBAdapter } f
 import clientPromise from "./lib/mongodb"
 // console.log('secret', useRuntimeConfig().auth.secret)
 export default NuxtAuthHandler({
-  // secret: useRuntimeConfig().auth.secret,
+  secret: useRuntimeConfig().auth.secret,
 
   pages: {
     signIn: "/login",
