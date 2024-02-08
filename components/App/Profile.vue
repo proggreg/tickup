@@ -5,7 +5,7 @@ const { data } = useAuth()
   <v-menu>
     <template #activator="{ props }">
       <!-- TODO remove shadow and make button fit image -->
-
+      {{ data }}
       <v-btn
         v-bind="props"
         width="50"
@@ -18,7 +18,7 @@ const { data } = useAuth()
           style=" border-radius: 50%;"
         />
       </v-btn>
-      <v-label>{{ data?.user?.username ? data?.user?.username : data.user._doc.username }}</v-label>
+      <!-- <v-label>{{ data?.user?.username ? data?.user?.username : data.user._doc.username }}</v-label> -->
     </template>
     <v-list>
       <v-list-item>
