@@ -26,7 +26,7 @@ function closeDrawer () {
     class="d-flex justify-space-between"
     style="justify-content: space-between; border-top: none; border-left: none; border-right: none;"
   >
-    <template #prepend>
+    <template v-if="loggedIn" #prepend>
       <v-btn
         v-if="smAndDown"
         size="small"
