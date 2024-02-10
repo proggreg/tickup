@@ -20,14 +20,14 @@ export default NuxtAuthHandler({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: { username: string; password: string }) {
-        console.log('authorizing', credentials)
+        // console.log('authorizing', credentials)
 
         try {
 
           const user = await UserSchema.findOne({ username: credentials.username })
           if (!user) {
             try {
-              console.log('found user', user)
+              console.log('no found user')
               return user
             } catch (error) {
               console.log(error)
@@ -60,7 +60,7 @@ export default NuxtAuthHandler({
       if (user) {
         token = {
           ...token,
-          ...user._doc,
+          ...user,
         };
       }
 
@@ -68,7 +68,7 @@ export default NuxtAuthHandler({
     },
 
     async session({ session, token }) {
-      console.log('session', session, token)
+      // console.log('session', session, token)
 
       session.user = {
         ...token,
@@ -84,6 +84,7 @@ export default NuxtAuthHandler({
       console.log('signIn email', email)
       console.log('signIn profile', profile)
       if (user) {
+        console.log('login user')
         return true
       }
       return false
