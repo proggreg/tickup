@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  const { data } = useAuth()
+  const { data, status } = useAuth()
+
+  const loggedIn = computed(() => status.value === 'authenticated')
   const name = computed(() => {
     if (data?.user?.name) {
       return data.user.name
@@ -10,7 +12,7 @@
 
 </script>
 <template>
-  <v-menu>
+  <v-menu v-if="loggedIn">
     <template #activator="{ props }">
       <!-- TODO remove shadow and make button fit image -->
       <v-btn v-bind="props">
