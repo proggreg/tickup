@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const {status} = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
-console.log(loggedIn.value)
+
 if (!loggedIn.value) {
   navigateTo('/login')
 }

@@ -26,8 +26,8 @@ export default NuxtAuthHandler({
 
           const user = await UserSchema.findOne({ username: credentials.username })
           if (!user) {
-            console.log('no user found creating user', user)
             try {
+              console.log('found user', user)
               return user
             } catch (error) {
               console.log(error)
@@ -35,7 +35,6 @@ export default NuxtAuthHandler({
 
           }
 
-          // console.log('user', user) 
           return user
         } catch (error) {
           console.error(error)

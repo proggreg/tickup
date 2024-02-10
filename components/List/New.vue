@@ -12,8 +12,13 @@ const props = defineProps<{ open: boolean }>()
 const emit = defineEmits(['close'])
 
 async function createNewList() {
-  console.log('create list', data.value.user._id)
-  newList.userId = data.value.user._id
+
+  newList.userId = data?.value?.user?._id
+
+  if (!newList.userId) {
+    newList.userId = data?.value?.user?.sub
+  }
+  
   const list = await listsStore.addList(newList)
 
   if (list) {

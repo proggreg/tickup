@@ -29,11 +29,12 @@ export const useListsStore = defineStore('lists', {
 
         this.lists.push(newList)
         this.currentList = newList
-        const list = await $fetch<List>('/api/list/create', {
+        const list = await $fetch<List>('/api/list', {
           method: 'POST',
           body: newList
         })
 
+        debugger
         this.lists[this.lists.length - 1]._id = list._id
 
         return newList
@@ -112,7 +113,6 @@ export const useListsStore = defineStore('lists', {
     },
     async getTodos() {
       const { data } = await useFetch<Todo[]>('/api/today')
-      console.log('get today todos', data)
 
       if (data.value) {
         this.todos = data.value

@@ -3,8 +3,6 @@ const { signIn } = useAuth()
 const username = ref('')
 const password = ref('')
 async function registerUser() {
-    console.log('register user')
-
     const { data } = await useFetch('/api/auth/user', {
         method: 'POST',
         body: {
@@ -12,12 +10,9 @@ async function registerUser() {
             password: password.value
         }
     })
-    console.log('user', data)
     if (data.value) {
         signIn('credentials', { username, password })
     }
-    console.log(data.value)
-
 }
 </script>
 <template>

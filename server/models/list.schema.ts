@@ -5,7 +5,7 @@ export const ListSchema = defineMongooseModel({
   schema: {
     userId: {
       type: 'string',
-      required: true
+      required: false
     },
     name: {
       type: 'string',

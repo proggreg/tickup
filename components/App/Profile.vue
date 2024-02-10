@@ -1,24 +1,25 @@
 <script setup lang="ts">
-const { data } = useAuth()
+  const { data } = useAuth()
+  const name = computed(() => {
+    if (data?.user?.name) {
+      return data.user.name
+    } else {
+      return data?.value?.user?.username
+    }
+  })
+
 </script>
 <template>
   <v-menu>
     <template #activator="{ props }">
       <!-- TODO remove shadow and make button fit image -->
-      {{ data }}
-      <v-btn
-        v-bind="props"
-        width="50"
-        height="50"
-        variant="text"
-      >
-        <v-img
-          :src="data?.user?.image"
-          width="50"
-          style=" border-radius: 50%;"
-        />
-      </v-btn>
-      <!-- <v-label>{{ data?.user?.username ? data?.user?.username : data.user._doc.username }}</v-label> -->
+      <v-btn v-bind="props">
+      <v-avatar v-if="data?.user?.image" :image="data?.user?.image" />
+      <v-avatar v-else icon="mdi-account" />
+      <div class="ml-2">
+        {{ name }} 
+      </div>
+    </v-btn>
     </template>
     <v-list>
       <v-list-item>
