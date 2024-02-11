@@ -3,6 +3,7 @@ const { data, status } = useAuth()
 
 const loggedIn = computed(() => status.value === 'authenticated')
 const name = computed(() => {
+  debugger
   console.log(data.value.user)
   if (!data.value.user) {
     return 'no user'
