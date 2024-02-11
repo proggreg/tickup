@@ -9,7 +9,7 @@ const newTodo = ref<Todo>({
   desc: '',
   listId: props.listId ? props.listId : '',
   _id: undefined,
-  userId: data.value?.user.id
+  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub
 })
 const emit = defineEmits(['newTodo'])
 
