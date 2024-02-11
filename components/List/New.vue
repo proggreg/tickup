@@ -12,13 +12,12 @@ const props = defineProps<{ open: boolean }>()
 const emit = defineEmits(['close'])
 
 async function createNewList() {
-
   newList.userId = data?.value?.user?._id
 
   if (!newList.userId) {
     newList.userId = data?.value?.user?.sub
   }
-  
+
   const list = await listsStore.addList(newList)
 
   if (list) {
@@ -46,7 +45,7 @@ async function createNewList() {
       <v-text-field
         v-model="newList.name"
         placeholder="New List"
-        @keyup.enter="newList"
+        @keyup.enter="createNewList"
       />
     </v-container>
     <template #buttons>
