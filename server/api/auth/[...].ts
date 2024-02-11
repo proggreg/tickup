@@ -4,7 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { UserSchema } from "../../models/users.schema";
 import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import clientPromise from "./lib/mongodb"
-
+import bcrypt from 'bcrypt'
 export default NuxtAuthHandler({
   secret: useRuntimeConfig().auth.secret,
 
@@ -35,7 +35,13 @@ export default NuxtAuthHandler({
 
           }
 
-          return user
+          if (user) {
+            if (bcrypt.compareSync(credentials.password, user.password)) {
+              return user
+            }
+          }
+
+          return false
         } catch (error) {
           console.error(error)
         }

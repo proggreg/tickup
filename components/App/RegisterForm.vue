@@ -75,7 +75,16 @@ const passwordRules = [
             >
                 Register
             </v-btn>
-
+            <v-col
+                cols="12"
+                style="font-size: 0.8rem"
+            >
+                <span>Already a user? </span>
+                <NuxtLink
+                    color="secondary"
+                    to="/login"
+                >Login</NuxtLink>
+            </v-col>
         </v-form>
     </v-sheet>
 </template>

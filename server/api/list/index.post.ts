@@ -1,13 +1,11 @@
-import { getToken, getServerSession } from '#auth'
+import { getToken } from '#auth'
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   try {
-    console.log('create list', body)
-    const token = await getToken({ event })
-    console.log('token.sub', token.sub)
+    const { sub } = await getToken({ event })
 
     if (!body.userId) {
-      body.userId = token.sub
+      body.userId = sub
     }
     return await new ListSchema(body).save()
   } catch (error) {

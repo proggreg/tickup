@@ -24,9 +24,6 @@ export const useListsStore = defineStore('lists', {
   actions: {
     async addList(newList: List) {
       if (newList) {
-        console.log(newList)
-
-
         this.lists.push(newList)
         this.currentList = newList
         const list = await $fetch<List>('/api/list', {
@@ -34,7 +31,6 @@ export const useListsStore = defineStore('lists', {
           body: newList
         })
 
-        debugger
         this.lists[this.lists.length - 1]._id = list._id
 
         return newList
