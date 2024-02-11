@@ -46,7 +46,7 @@ function closeDrawer() {
       </v-btn>
       <AppProfile v-else />
     </template>
-    <AppSearch />
+    <!-- <AppSearch /> -->
 
     <template #append>
       <v-btn
