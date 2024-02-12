@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const theme = ref('myCustomLightTheme')
-const { status } = useAuth()
 </script>
 <template>
   <main>
