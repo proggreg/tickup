@@ -9,7 +9,7 @@ const loggedIn = computed(() => status.value === 'authenticated')
 
 
 function closeDrawer() {
-  listsStore.getTodos()
+
   if (smAndDown.value) {
     open.value = false
   }

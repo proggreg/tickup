@@ -20,7 +20,7 @@ export default NuxtAuthHandler({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: { username: string; password: string }) {
-        // console.log('authorizing', credentials)
+        console.log('authorizing', credentials)
 
         try {
 
@@ -62,19 +62,20 @@ export default NuxtAuthHandler({
 
   callbacks: {
     async jwt({ token, user, account }) {
-      // console.log('jwt', token, user, account)
-      if (user) {
-        token = {
-          ...token,
-          ...user,
-        };
-      }
+      console.log('jwt account', account)
+      console.log('jwt user', user)
+      console.log('jwt token', token)
+
 
       return token;
     },
 
     async session({ session, token }) {
-      // console.log('session', session, token)
+
+      if (!session.user.name) {
+        const user = await UserSchema.findById(token.sub)
+        session.user.name = user.username
+      }
 
       session.user = {
         ...token,
@@ -83,12 +84,8 @@ export default NuxtAuthHandler({
 
       return session;
     },
-    async signIn({ account, user, credentials, email, profile }) {
-      console.log('signIn account', account)
-      console.log('signIn user', user)
-      console.log('signIn credentials', credentials)
-      console.log('signIn email', email)
-      console.log('signIn profile', profile)
+    async signIn({ user }) {
+
       if (user) {
         console.log('login user')
         return true
