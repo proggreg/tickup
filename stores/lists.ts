@@ -104,8 +104,8 @@ export const useListsStore = defineStore('lists', {
       if (!this.currentTodo || !this.currentList) { return }
       this.currentList.todos[index].name = name
     },
-    async getLists() {
-      const { data } = await useFetch<List[]>('/api/lists')
+    async getLists(id: string) {
+      const { data } = await useFetch<List[]>('/api/lists', { query: { id } })
 
       if (data.value) {
         this.setLists(data.value)

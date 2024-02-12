@@ -2,15 +2,11 @@ import { getToken, getServerSession } from '#auth'
 export default defineEventHandler(async (event) => {
   try {
     console.log('get lists')
-    const token = await getToken({event})
-    console.log('token', token) 
-    const session = await getServerSession(event)
-    
-    console.log('session', session)
-    const id =  token.sub
-    console.log('user id', id)
+    const query = getQuery(event)
+    console.log('query id', query.id)
 
-    return await ListSchema.find({ userId: id })
+
+    return await ListSchema.find({ userId: query.id })
   } catch (error) {
     return error
   }
