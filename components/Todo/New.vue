@@ -29,7 +29,7 @@ async function addTodo() {
     no-gutters
   >
 
-    <v-col cols="12">{{ data }}</v-col>
+
     <v-col cols="12">
       <v-text-field
         v-if="listsStore.currentList"
