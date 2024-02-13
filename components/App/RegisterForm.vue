@@ -18,13 +18,11 @@ async function registerUser() {
 
 const userNameRules = [
     (value: boolean | string) => {
-        console.log('username', value)
         if (value) return true
         return 'Oops! Username required to register. 😊'
     },
     async (value: boolean | string) => {
         const data = await $fetch('/api/auth/user', { query: { username: value } })
-        console.log('validate username ', data)
         if (data !== 'taken') {
             return true
         }
@@ -39,9 +37,9 @@ const passwordRules = [
         return 'Oops! password required to register. 😊'
     },
     (value: string) => {
-        if (value.length > 8) return true
+        if (value.length >= 8) return true
 
-        return 'Oops! password must be at least 3 characters. 😊'
+        return 'Oops! password must be at least 8 characters. 😊'
     },
 ]
 </script>

@@ -6,7 +6,6 @@ if (!loggedIn.value) {
   navigateTo('/login')
 }
 const listsStore = useListsStore()
-console.log('here', data.value.user)
 listsStore.getTodaysTodos(data.value.user.sub)
 useHead({ title: 'TickUp:Home' })
 const tab = ref('todo')
