@@ -1,17 +1,37 @@
 <script setup lang="ts">
+const { data, status } = useAuth()
+const loggedIn = computed(() => status.value === 'authenticated')
+
+if (!loggedIn.value) {
+  navigateTo('/login')
+}
 const listsStore = useListsStore()
-listsStore.getTodaysTodos()
+listsStore.getTodaysTodos(data.value.user.sub)
 useHead({ title: 'TickUp:Home' })
 const tab = ref('todo')
+if (loggedIn.value) {
+  listsStore.getTodos()
+}
+
+
+definePageMeta({
+  layout: 'default',
+  auth: {
+    unauthenticatedOnly: false,
+    navigateUnauthenticatedTo: '/login',
+
+  },
+})
 const newTodo = ref<Todo>({
   name: '',
   status: 'Open',
-  dueDate: new Date().toISOString()
+  dueDate: new Date().toISOString(),
+  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub
 })
 
-async function addTodayTodo () {
+async function addTodayTodo() {
   await listsStore.addTodo(newTodo.value)
-  await listsStore.getTodaysTodos()
+  await listsStore.getTodaysTodos(data.value?.user.sub)
   newTodo.value.name = ''
 }
 
@@ -22,6 +42,8 @@ const todaysTodos = computed(() => {
 const todaysClosedTodos = computed(() => {
   return listsStore.todaysTodos.filter((todo) => todo.status === 'Closed')
 })
+
+
 
 </script>
 

@@ -8,13 +8,14 @@ export default defineEventHandler(async (event) => {
       const end = new Date()
       end.setHours(23, 59, 59, 999)
       return await TodoSchema.find({
+        userId: query.id,
         dueDate: {
           $gte: start,
           $lt: end
         }
       })
     }
-    return await TodoSchema.find({ })
+    return await TodoSchema.find({ userId: query.id })
   } catch (error) {
     return []
   }

@@ -19,7 +19,8 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-mongoose',
     '@nuxtjs/eslint-module',
-    'nuxt-bugsnag'
+    'nuxt-bugsnag',
+    '@sidebase/nuxt-auth'
   ],
 
   experimental: {
@@ -52,6 +53,21 @@ export default defineNuxtConfig({
   },
   vuetify: {
     vuetifyOptions: {
+      defaults: {
+        VSheet: {
+          elevation: 10,
+          width: 300,
+          class: 'pa-4',
+          rounded: 'xl'
+        },
+        VBtn: {
+          rounded: 'xl'
+        },
+        VTextField: {
+          rounded: 'xl',
+          variant: 'solo-inverted'
+        }
+      },
       theme: {
         themes: {
           myCustomDarkTheme,
@@ -72,5 +88,29 @@ export default defineNuxtConfig({
   },
   devtools: {
     enabled: true
+  },
+  runtimeConfig: {
+    auth: {
+      secret: process.env.NUXT_NEXTAUTH_SECRET,
+    },
+    github: {
+      clientId: process.env.NUXT_GITHUB_CLIENT_ID,
+      clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET
+    }
+  },
+  auth: {
+    provider: {
+      type: "authjs",
+    },
+    secret: process.env.NUXT_NEXTAUTH_SECRET,
+    origin: process.env.VERCEL_URL || "http://localhost:3000",
+    globalAppMiddleware: true
+  },
+  mongoose: {
+    devtools: true,
+    options: {
+      appName: 'Tickup',
+
+    }
   }
 })

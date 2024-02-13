@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useDebounceFn } from '@vueuse/core';
 const query = ref<string>('')
-const results = ref([{name: ''}])
+const results = ref([{ name: '' }])
 const open = ref(false)
 const input = ref(null)
 const todoDialogOpen = ref(false)
@@ -14,13 +14,13 @@ if (process.client) {
       open.value = !open.value
       return false
     }
-    
+
   })
 }
 
 function search() {
   console.log('searching...', query.value)
-  $fetch('/api/search/todo', {query: {q: query.value}})
+  $fetch('/api/search/todo', { query: { q: query.value } })
     .then((res) => {
       console.log(res)
       results.value = res
@@ -58,6 +58,7 @@ function formattedTime(d: string) {
 
 
 </script>
+
 <template>
   <v-dialog
     open-on-click
@@ -81,10 +82,8 @@ function formattedTime(d: string) {
       </v-text-field>
     </template>
 
-    <template #default="{isActive}">
-      <v-card
-        v-show="isActive"
-      >
+    <template #default="{ isActive }">
+      <v-card v-show="isActive">
         <v-layout class="justify-center py-8">
           <v-text-field
             ref="input"
@@ -104,7 +103,7 @@ function formattedTime(d: string) {
           </v-text-field>
         </v-layout>
 
-        <v-list >
+        <v-list>
           <v-list-item
             v-for="(result, index) in results"
             :key="index"
@@ -116,13 +115,13 @@ function formattedTime(d: string) {
             <v-list-item-subtitle>
               {{ result.status }}
             </v-list-item-subtitle>
-           
+
             <div
               v-if="result.updatedAt"
               class="text-overline"
             >
               Updated at: {{ formattedDate(result.updatedAt) }} {{ formattedTime(result.updatedAt) }}
-            </div> 
+            </div>
           </v-list-item>
         </v-list>
         <AppDialog
