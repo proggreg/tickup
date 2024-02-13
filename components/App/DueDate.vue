@@ -17,15 +17,37 @@ function updateDueDate(newDate: Date) {
 
 </script>
 <template>
-  <v-menu :close-on-content-click="false" :model-value="open">
+  <v-menu
+    :close-on-content-click="false"
+    :model-value="open"
+  >
     <template #activator="{ props }">
-      <v-text-field v-if="dueDateProps.showDetail" v-bind="props" style="min-width: 160px" placeholder="date"
-        class="text-h6" :value="formattedDate" append-icon="mdi-calendar" hide-details @click="open = !open" />
-      <v-btn v-else v-bind="props" icon="mdi-calendar" variant="text" @click="open = !open" />
+      <v-text-field
+        v-if="dueDateProps.showDetail"
+        v-bind="props"
+        style="min-width: 160px"
+        placeholder="date"
+        class="text-h6"
+        :value="formattedDate"
+        append-icon="mdi-calendar"
+        hide-details
+        @click="open = !open"
+      />
+      <v-btn
+        v-else
+        v-bind="props"
+        icon="mdi-calendar"
+        variant="text"
+        @click="open = !open"
+      />
     </template>
     <v-list>
-      <v-date-picker rounded="lg" @update:model-value="(val: Date) => updateDueDate(val)" @click:save="open = !open"
-        @click:cancel="open = !open" />
+      <v-date-picker
+        rounded="lg"
+        @update:model-value="(val: Date) => updateDueDate(val)"
+        @click:save="open = !open"
+        @click:cancel="open = !open"
+      />
     </v-list>
   </v-menu>
 </template>

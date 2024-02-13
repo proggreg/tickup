@@ -8,12 +8,12 @@ if (initStatus) {
   currentStatus = reactive({ name: initStatus.name, color: initStatus.color })
 }
 
-function selectStatus (status: Status, newIndex: number) {
+function selectStatus(status: Status, newIndex: number) {
   index.value = newIndex
   currentStatus.name = status.name
   currentStatus.color = status.color
 }
-function nextStatus () {
+function nextStatus() {
   if (index.value < statuses.length - 1) {
     index.value++
 
@@ -29,8 +29,12 @@ watch(currentStatus, () => {
 </script>
 <template>
   <v-menu>
-    <template #activator="{props}">
-      <v-btn v-bind="props" :color="currentStatus.color" variant="tonal">
+    <template #activator="{ props }">
+      <v-btn
+        v-bind="props"
+        :color="currentStatus.color"
+        variant="tonal"
+      >
         {{ currentStatus.name }}
         <template #append>
           <v-icon @click.stop="nextStatus">

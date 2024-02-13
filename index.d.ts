@@ -1,12 +1,13 @@
-export {Todo, Status, List}
+export { Todo, Status, List }
 declare global {
   interface Todo {
+    userId: string | undefined;
     name: string;
-    _id?: string;
+    _id: string | undefined;
     dueDate?: Date,
-    list_id?: string;
+    listId?: string;
     status: string;
-    desc: string;
+    desc?: string;
   }
 
   interface Status {
@@ -15,6 +16,7 @@ declare global {
   }
 
   interface List {
+    userId?: string;
     name: string;
     todos: Todo[];
     _id?: string;

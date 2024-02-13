@@ -3,6 +3,10 @@ import { defineMongooseModel } from '#nuxt/mongoose'
 export const TodoSchema = defineMongooseModel({
   name: 'Todo',
   schema: {
+    userId: {
+      type: 'string',
+      required: true
+    },
     name: {
       type: 'string',
       required: true
@@ -18,6 +22,14 @@ export const TodoSchema = defineMongooseModel({
     },
     desc: {
       type: 'string'
+    },
+    createdAt: {
+      type: 'date',
+      default: Date.now
+    },
+    updatedAt: {
+      type: 'date',
+      default: Date.now
     }
   }
 })

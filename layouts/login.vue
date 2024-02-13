@@ -1,16 +1,17 @@
 <script setup lang="ts">
+const theme = ref('myCustomLightTheme')
 </script>
 <template>
   <main>
-    <v-theme-provider with-background>
+    <v-theme-provider
+      :theme="theme"
+      with-background
+    >
       <v-app>
         <v-layout>
           <app-nav />
           <v-main>
-            <v-container
-              fluid
-              class="fill-height"
-            >
+            <v-container class="fill-height flex justify-center">
               <NuxtPage />
             </v-container>
           </v-main>

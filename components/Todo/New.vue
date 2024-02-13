@@ -1,19 +1,21 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
-const props = defineProps<{listId?: string}>()
+const props = defineProps<{ listId?: string }>()
+const { data } = useAuth()
 const newTodo = ref<Todo>({
   name: '',
   dueDate: undefined,
   status: 'Open',
-  desc: ''
+  desc: '',
+  listId: props.listId ? props.listId : '',
+  _id: undefined,
+  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub
 })
 const emit = defineEmits(['newTodo'])
 
-async function addTodo () { 
-  newTodo.value.list_id = props.listId
-  console.log('add to do', newTodo.value)
+async function addTodo() {
   await listsStore.addTodo(newTodo.value)
-  
+
   emit('newTodo', newTodo)
 
   newTodo.value.name = ''
@@ -26,6 +28,8 @@ async function addTodo () {
     v-if="listsStore.currentList"
     no-gutters
   >
+
+
     <v-col cols="12">
       <v-text-field
         v-if="listsStore.currentList"
