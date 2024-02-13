@@ -7,7 +7,7 @@ if (!loggedIn.value) {
 }
 const listsStore = useListsStore()
 console.log('here', data.value.user)
-listsStore.getTodaysTodos(data.value.user.id)
+listsStore.getTodaysTodos(data.value.user.sub)
 useHead({ title: 'TickUp:Home' })
 const tab = ref('todo')
 if (loggedIn.value) {
@@ -32,7 +32,7 @@ const newTodo = ref<Todo>({
 
 async function addTodayTodo() {
   await listsStore.addTodo(newTodo.value)
-  await listsStore.getTodaysTodos()
+  await listsStore.getTodaysTodos(data.value?.user.sub)
   newTodo.value.name = ''
 }
 
