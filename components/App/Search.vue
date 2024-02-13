@@ -6,6 +6,7 @@ const open = ref(false)
 const input = ref(null)
 const todoDialogOpen = ref(false)
 const store = useListsStore()
+const { data } = useAuth()
 
 if (process.client) {
   document.addEventListener('keydown', (e) => {
@@ -20,7 +21,7 @@ if (process.client) {
 
 function search() {
   console.log('searching...', query.value)
-  $fetch('/api/search/todo', { query: { q: query.value } })
+  $fetch('/api/search/todo', { query: { q: query.value, id: data.value?.user.sub } })
     .then((res) => {
       console.log(res)
       results.value = res
