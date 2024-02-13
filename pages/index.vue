@@ -48,7 +48,7 @@ const todaysClosedTodos = computed(() => {
 </script>
 
 <template>
-  <v-row>
+  <v-row class="fill-height">
     <v-col>
       <v-card class="pa-4">
         <h2>Today's Todo's</h2>

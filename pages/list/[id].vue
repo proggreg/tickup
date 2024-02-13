@@ -24,7 +24,7 @@ if (currentList.value) {
 
 </script>
 <template>
-  <v-row>
+  <v-row class="fill-height">
     <v-col>
       <TodoNew :list-id="params.id" />
       <ListTable :list_id="params.id" />
