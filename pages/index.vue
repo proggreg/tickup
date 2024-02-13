@@ -48,12 +48,10 @@ const todaysClosedTodos = computed(() => {
 </script>
 
 <template>
-  <v-row class="fill-height">
+  <v-row>
     <v-col>
-      <v-card class="pa-4 fill-height">
-        <h2 class="pb-4">
-          Today's Todo's
-        </h2>
+      <v-card class="pa-4">
+        <h2>Today's Todo's</h2>
         <div>
           <v-text-field
             v-model="newTodo.name"
@@ -104,7 +102,7 @@ const todaysClosedTodos = computed(() => {
             </v-list>
             <div
               v-else
-              class="pa-4 fill-height d-flex justify-center align-center text-caption"
+              class="pa-4"
             >
               Nothing todo today 🎉
             </div>
@@ -137,10 +135,8 @@ const todaysClosedTodos = computed(() => {
       </v-card>
     </v-col>
     <v-col>
-      <v-card class="pa-4 fill-height">
-        <h2 class="pb-4">
-          Reminders
-        </h2>
+      <v-card class="pa-4">
+        <h2>reminders</h2>
       </v-card>
     </v-col>
   </v-row>
