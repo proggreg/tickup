@@ -64,7 +64,7 @@ function closeDrawer() {
   <v-navigation-drawer
     v-if="loggedIn"
     v-model="open"
-    class="pa-2 fill-height"
+    class="pa-2"
     :permanent="!smAndDown"
   >
     <v-list>
@@ -99,5 +99,12 @@ function closeDrawer() {
     </v-list>
     <v-divider />
     <AppNavItems />
+
+    <template #append>
+      <div v-if="smAndDown" class="pa-2">
+        <AppProfile />
+      </div>
+    </template>
+
   </v-navigation-drawer>
 </template>
