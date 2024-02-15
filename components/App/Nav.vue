@@ -40,7 +40,7 @@ function closeDrawer() {
           class="text-h4"
           size="x-large"
         >
-          mdi-format-list-bulleted
+          mdi-menu
         </v-icon>
       </v-btn>
       <AppProfile v-else />
@@ -49,7 +49,7 @@ function closeDrawer() {
 
     <template #append>
       <v-btn
-        v-if="loggedIn"
+        v-if="loggedIn && !smAndDown"
         size="small"
         style="padding: 0;"
         elevation="0"
