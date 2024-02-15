@@ -7,6 +7,7 @@ const input = ref(null)
 const todoDialogOpen = ref(false)
 const store = useListsStore()
 const { data } = useAuth()
+const { xs } = useDisplay()
 
 if (process.client) {
   document.addEventListener('keydown', (e) => {
@@ -20,7 +21,6 @@ if (process.client) {
 }
 
 function search() {
-  console.log('searching...', query.value)
   $fetch('/api/search/todo', { query: { q: query.value, id: data.value?.user.sub } })
     .then((res) => {
       console.log(res)
@@ -70,17 +70,16 @@ function formattedTime(d: string) {
       <v-text-field
         v-bind="props"
         hide-details
-        density="compact"
-        rounded="lg"
-        variant="solo-filled"
         placeholder="search"
         style="max-width: 300px"
+        class="mx-4"
         @click="setTextFieldFocus"
       >
         <template #append-inner>
           <span style="font-size: 0.70rem; width: 40px;">ctrl + k</span>
         </template>
       </v-text-field>
+      
     </template>
 
     <template #default="{ isActive }">
@@ -90,9 +89,6 @@ function formattedTime(d: string) {
             ref="input"
             v-model="query"
             hide-details
-            density="compact"
-            rounded="lg"
-            variant="solo-filled"
             placeholder="search"
             style="max-width: 300px"
             :focused="true"
