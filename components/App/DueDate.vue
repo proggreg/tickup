@@ -1,7 +1,5 @@
 <script setup lang="ts">
-// const date = useDate()
 const emit = defineEmits(['setDate'])
-const open = ref(false)
 const dueDateProps = defineProps<{ todoDueDate?: Date | string, todo: Todo, showDetail?: boolean }>()
 const { xs } = useDisplay()
 const formattedDate = computed(() => {
@@ -14,7 +12,6 @@ function updateDueDate(newDate: Date | null) {
   const newTodo = Object.assign({}, dueDateProps.todo, { dueDate: newDate })
   emit('setDate', newDate, newTodo)
 }
-
 
 </script>
 <template>
@@ -50,15 +47,13 @@ function updateDueDate(newDate: Date | null) {
       <v-icon
         @click="isActive.value = false"
         style="position: absolute; right: 0; margin: 15px"
-      >mdi-close</v-icon>
-
+      >
+        mdi-close
+      </v-icon>
       <v-date-picker
         width="100%"
         @update:model-value="(val: Date) => updateDueDate(val)"
-      >
-
-      </v-date-picker>
-
+      />
     </template>
 
   </v-dialog>
