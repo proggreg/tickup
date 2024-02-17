@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const theme = ref('myCustomLightTheme')
 const theme = useTheme()
 onMounted(() => {
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -10,10 +9,7 @@ onMounted(() => {
 </script>
 <template>
   <main>
-    <v-theme-provider
-      :theme="theme"
-      with-background
-    >
+    <v-theme-provider with-background>
       <v-app>
         <v-layout>
           <app-nav />
