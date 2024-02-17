@@ -1,15 +1,17 @@
 <script setup lang="ts">
 const { params } = useRoute()
 const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`)
-const { data: todos } = await useFetch<Todo[]>(`/api/todo/${params.id}`)
+const { data: todos } = await useFetch<Todo[]>(`/api/list/todos`, {query: {id: params.id}})
 const store = useListsStore()
 
 if (currentList.value.name) {
   store.setListName(currentList.value.name)
 }
-
+console.log('todos', todos.value)
 if (todos) {
   store.setListTodos(todos)
+} else {
+  console.log('no todos')
 }
 
 if (!currentList) {

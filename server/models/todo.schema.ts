@@ -11,7 +11,7 @@ export const TodoSchema = defineMongooseModel({
       type: 'string',
       required: true
     },
-    list_id: {
+    listId: {
       type: 'string'
     },
     dueDate: {
