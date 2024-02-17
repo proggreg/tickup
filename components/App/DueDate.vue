@@ -19,6 +19,7 @@ function updateDueDate(newDate: Date | null) {
     location="top"
     :fullscreen="xs"
     class="ma-2"
+    max-width="500"
   >
     <template #activator="{ props }">
       <v-text-field
