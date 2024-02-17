@@ -1,5 +1,12 @@
 <script setup lang="ts">
 const theme = ref('myCustomLightTheme')
+const theme = useTheme()
+onMounted(() => {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    theme.global.name.value = 'dark'
+  }
+})
+
 </script>
 <template>
   <main>

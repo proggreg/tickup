@@ -6,7 +6,7 @@ const { data, status } = useAuth()
 
 console.log(status.value)
 if (status.value === 'authenticated') {
-  listsStore.getLists(data.value?.user.sub)
+    listsStore.getLists(data.value?.user.sub)
 }
 
 
@@ -14,10 +14,10 @@ if (status.value === 'authenticated') {
 
 </script>
 <template>
-  <div>
-    <NuxtLoadingIndicator />
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </div>
+    <div>
+        <NuxtLoadingIndicator />
+        <NuxtLayout>
+            <NuxtPage />
+        </NuxtLayout>
+    </div>
 </template>
