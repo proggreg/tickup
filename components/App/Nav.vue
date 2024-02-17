@@ -40,7 +40,7 @@ function closeDrawer() {
           class="text-h4"
           size="x-large"
         >
-          mdi-format-list-bulleted
+          mdi-menu
         </v-icon>
       </v-btn>
       <AppProfile v-else />
@@ -49,7 +49,7 @@ function closeDrawer() {
 
     <template #append>
       <v-btn
-        v-if="loggedIn"
+        v-if="loggedIn && !smAndDown"
         size="small"
         style="padding: 0;"
         elevation="0"
@@ -64,7 +64,7 @@ function closeDrawer() {
   <v-navigation-drawer
     v-if="loggedIn"
     v-model="open"
-    class="pa-2 fill-height"
+    class="pa-2"
     :permanent="!smAndDown"
   >
     <v-list>
@@ -99,5 +99,12 @@ function closeDrawer() {
     </v-list>
     <v-divider />
     <AppNavItems />
+
+    <template #append>
+      <div v-if="smAndDown" class="pa-2">
+        <AppProfile />
+      </div>
+    </template>
+
   </v-navigation-drawer>
 </template>

@@ -3,8 +3,6 @@ const { data, status } = useAuth()
 
 const loggedIn = computed(() => status.value === 'authenticated')
 const name = computed(() => {
-
-  console.log(data.value.user)
   if (!data.value.user) {
     return 'no user'
   } else if (data?.value.user?.name) {
@@ -18,10 +16,11 @@ const name = computed(() => {
 <template>
   <v-menu v-if="loggedIn">
     <template #activator="{ props }">
-      <v-btn v-bind="props">
+      <v-btn block v-bind="props">
         <v-avatar
           v-if="data?.user?.image"
           :image="data?.user?.image"
+          size="small"
         />
         <v-avatar
           v-else

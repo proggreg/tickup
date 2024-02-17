@@ -28,8 +28,6 @@ async function addTodo() {
     v-if="listsStore.currentList"
     no-gutters
   >
-
-
     <v-col cols="12">
       <v-text-field
         v-if="listsStore.currentList"

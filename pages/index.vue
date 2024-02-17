@@ -51,13 +51,18 @@ const todaysClosedTodos = computed(() => {
   <v-row class="fill-height">
     <v-col>
       <v-card class="pa-4">
-        <h2>Today's Todo's</h2>
+        <h2 class="py-4">
+          Today's Todo's
+        </h2>
         <div>
           <v-text-field
             v-model="newTodo.name"
+            placeholder="Add a new todo..."
+            hide-details
+            density="compact"
             @keyup.enter="addTodayTodo"
           >
-            <template #append>
+            <template #append-inner>
               <v-btn
                 icon
                 elevation="0"
@@ -68,7 +73,7 @@ const todaysClosedTodos = computed(() => {
             </template>
           </v-text-field>
         </div>
-        <v-tabs v-model="tab">
+        <v-tabs v-model="tab" align-tabs="center">
           <v-tab>
             todo
           </v-tab>
@@ -76,7 +81,7 @@ const todaysClosedTodos = computed(() => {
             done
           </v-tab>
         </v-tabs>
-        <v-window v-model="tab">
+        <v-window v-model="tab" class="d-flex justify-center align-center" style="min-height: 150px;">
           <v-window-item value="todo">
             <v-list v-if="todaysTodos.length">
               <v-list-item
@@ -102,7 +107,7 @@ const todaysClosedTodos = computed(() => {
             </v-list>
             <div
               v-else
-              class="pa-4"
+              class="fill-height m-auto text-center d-flex align-center justify-center"
             >
               Nothing todo today 🎉
             </div>
@@ -134,10 +139,10 @@ const todaysClosedTodos = computed(() => {
         </v-window>
       </v-card>
     </v-col>
-    <v-col>
+    <!-- <v-col>
       <v-card class="pa-4">
         <h2>reminders</h2>
       </v-card>
-    </v-col>
+    </v-col> -->
   </v-row>
 </template>
