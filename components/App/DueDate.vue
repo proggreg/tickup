@@ -1,53 +1,67 @@
 <script setup lang="ts">
-// const date = useDate()
 const emit = defineEmits(['setDate'])
-const open = ref(false)
 const dueDateProps = defineProps<{ todoDueDate?: Date | string, todo: Todo, showDetail?: boolean }>()
-
+const { xs } = useDisplay()
 const formattedDate = computed(() => {
   if (dueDateProps.todoDueDate) {
     return new Date(dueDateProps.todoDueDate).toLocaleDateString('en-GB')
   }
 })
 
-function updateDueDate(newDate: Date) {
+function updateDueDate(newDate: Date | null) {
   const newTodo = Object.assign({}, dueDateProps.todo, { dueDate: newDate })
   emit('setDate', newDate, newTodo)
 }
 
 </script>
 <template>
-  <v-menu
-    :close-on-content-click="false"
-    :model-value="open"
+  <v-dialog
+    location="top"
+    :fullscreen="xs"
+    class="ma-2"
+    max-width="500"
   >
     <template #activator="{ props }">
       <v-text-field
         v-if="dueDateProps.showDetail"
+        style="min-width: 200px"
         v-bind="props"
-        style="min-width: 160px"
         placeholder="date"
         class="text-h6"
         :value="formattedDate"
         append-icon="mdi-calendar"
         hide-details
-        @click="open = !open"
-      />
+        autocomplete="off"
+      >
+        <template #append-inner>
+          <v-icon @click.stop="updateDueDate(null)">mdi-close</v-icon>
+        </template>
+      </v-text-field>
       <v-btn
         v-else
         v-bind="props"
         icon="mdi-calendar"
         variant="text"
-        @click="open = !open"
       />
     </template>
-    <v-list>
+    <template v-slot:default="{ isActive }">
+      <v-icon
+        @click="isActive.value = false"
+        style="position: absolute; right: 0; margin: 15px"
+      >
+        mdi-close
+      </v-icon>
       <v-date-picker
-        rounded="lg"
+        width="100%"
         @update:model-value="(val: Date) => updateDueDate(val)"
-        @click:save="open = !open"
-        @click:cancel="open = !open"
       />
-    </v-list>
-  </v-menu>
+    </template>
+
+  </v-dialog>
 </template>
+
+<style>
+.v-picker__body {
+  max-width: 100%;
+}
+</style>

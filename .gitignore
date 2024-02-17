@@ -105,3 +105,4 @@ test-results/example-localhost-chromium/trace.zip
 sw.*
 
 .lighthouseci
+.env*.local
