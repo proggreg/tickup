@@ -33,7 +33,7 @@ async function addTodo() {
         v-if="listsStore.currentList"
         v-model="newTodo.name"
         :placeholder="'Add todo to ' + listsStore.currentList.name"
-        class="add-todo-field"
+        class="my-4"
         @keyup.enter="addTodo"
         bg-color="secondary"
       >
