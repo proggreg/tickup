@@ -10,12 +10,18 @@ const groupedTodos = computed(() => {
   })
 })
 
-function change(e, status) {
+async function change(e: any, status: any) {
   if (e.added) {
     if (e.added.element.status !== status.name) {
       e.added.element.status = status.name
-      store.updateTodo(e.added.element)
+      await store.updateTodo(e.added.element)
     }
+  } else if (e.moved) {
+    const orderedItems = status.todos.map((item: Todo, index: number) => ({
+      ...item,
+      order: index
+    }));
+    await $fetch(`/api/list/todos`, { method: 'PUT', body: { orderedItems } })
   }
 }
 
@@ -27,8 +33,6 @@ function getComponentData(statusName: string) {
     class: 'fill-height'
   };
 }
-
-
 
 </script>
 <template>
@@ -47,18 +51,23 @@ function getComponentData(statusName: string) {
         <div class="ma-2 fill-height">
           <draggable
             :list="status.todos"
-            item-key="name"
+            ghost-class="ghost"
+            item-key="_id"
             @start="dragging = true"
             @end="dragging = false"
             group="status"
             @change="(e) => change(e, status)"
             :componentData="getComponentData(status.name)"
+            @sort="(s) => console.log('sort', s)"
           >
             <template #item="{ element }">
               <v-card class="ma-2">
                 <v-card-title>
                   {{ element.name }}
                 </v-card-title>
+                <v-card-item>
+                  {{ element.desc }}
+                </v-card-item>
               </v-card>
             </template>
           </draggable>
@@ -68,3 +77,9 @@ function getComponentData(statusName: string) {
     </v-col>
   </v-row>
 </template>
+
+<style>
+.ghost {
+  opacity: 0.5;
+}
+</style>
