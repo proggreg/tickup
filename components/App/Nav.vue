@@ -101,7 +101,20 @@ function closeDrawer() {
     <AppNavItems />
 
     <template #append>
-      <div v-if="smAndDown" class="pa-2">
+      <div
+        v-if="smAndDown"
+        class="pa-2 d-flex flex-column ga-2"
+      >
+        <v-btn
+          v-if="loggedIn"
+          size="small"
+          style="padding: 0;"
+          variant="elevated"
+          @click="signOut()"
+          block
+        >
+          Sign Out
+        </v-btn>
         <AppProfile />
       </div>
     </template>
