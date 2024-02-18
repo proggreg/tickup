@@ -45,7 +45,7 @@ async function addTodo() {
 
           <v-btn
             :disabled="!newTodo.name"
-            rounded="lg"
+            size="small"
             variant="text"
             icon="mdi-plus"
             @click="addTodo"

@@ -64,16 +64,20 @@ const todaysClosedTodos = computed(() => {
           >
             <template #append-inner>
               <v-btn
-                icon
+                :disabled="!newTodo.name"
+                size="small"
+                variant="text"
                 elevation="0"
+                icon="mdi-plus"
                 @click="addTodayTodo"
-              >
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
+              />
             </template>
           </v-text-field>
         </div>
-        <v-tabs v-model="tab" align-tabs="center">
+        <v-tabs
+          v-model="tab"
+          align-tabs="center"
+        >
           <v-tab>
             todo
           </v-tab>
@@ -81,12 +85,20 @@ const todaysClosedTodos = computed(() => {
             done
           </v-tab>
         </v-tabs>
-        <v-window v-model="tab" class="d-flex justify-center align-center" style="min-height: 150px;">
-          <v-window-item value="todo">
+        <v-window
+          v-model="tab"
+          style="min-height: 150px;"
+          class="fill-height"
+        >
+          <v-window-item
+            value="todo"
+            class="fill-height"
+          >
             <v-list v-if="todaysTodos.length">
               <v-list-item
                 v-for="todo in todaysTodos"
                 :key="todo._id"
+                class="fill-height"
               >
                 <template #prepend>
                   <ListStatus :todo="todo" />
@@ -105,12 +117,13 @@ const todaysClosedTodos = computed(() => {
                 </template>
               </v-list-item>
             </v-list>
-            <div
+            <v-card
               v-else
-              class="fill-height m-auto text-center d-flex align-center justify-center"
+              height="200"
+              class="d-flex align-center justify-center ma-2"
             >
               Nothing todo today 🎉
-            </div>
+            </v-card>
           </v-window-item>
           <v-window-item value="done">
             <v-list v-if="todaysClosedTodos.length">
