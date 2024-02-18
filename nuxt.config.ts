@@ -1,16 +1,3 @@
-const myCustomLightTheme = {
-  dark: false,
-  colors: {
-    primary: '#0000FF'
-  }
-}
-const myCustomDarkTheme = {
-  dark: true,
-  colors: {
-    primary: '#FF0000'
-  }
-}
-
 export default defineNuxtConfig({
   modules: [
     'vuetify-nuxt-module',
@@ -67,12 +54,10 @@ export default defineNuxtConfig({
           rounded: 'xl',
           variant: 'solo-inverted',
           density: 'compact'
-        }
-      },
-      theme: {
-        themes: {
-          myCustomDarkTheme,
-          myCustomLightTheme
+        },
+        VToolbar: {
+          flat: true,
+          rounded: 'xl'
         }
       }
     }

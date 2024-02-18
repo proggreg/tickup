@@ -32,8 +32,6 @@ async function addTodo() {
       <v-text-field
         v-if="listsStore.currentList"
         v-model="newTodo.name"
-        variant="solo-filled"
-        rounded="lg"
         :placeholder="'Add todo to ' + listsStore.currentList.name"
         class="add-todo-field"
         @keyup.enter="addTodo"
