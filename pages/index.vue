@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const { data, status } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
-
 if (!loggedIn.value) {
   navigateTo('/login')
 }
@@ -29,6 +28,8 @@ const newTodo = ref<Todo>({
   _id: undefined
 })
 
+const dialog = ref(false)
+
 async function addTodayTodo() {
   await listsStore.addTodo(newTodo.value)
   await listsStore.getTodaysTodos(data.value?.user.sub)
@@ -42,6 +43,11 @@ const todaysTodos = computed(() => {
 const todaysClosedTodos = computed(() => {
   return listsStore.todaysTodos.filter((todo) => todo.status === 'Closed')
 })
+
+function selectTodo(todo: Todo) {
+  listsStore.setCurrentTodo(todo)
+  dialog.value = true
+}
 
 </script>
 
@@ -93,10 +99,18 @@ const todaysClosedTodos = computed(() => {
             class="fill-height"
           >
             <v-list v-if="todaysTodos.length">
+              <AppDialog
+                :open="dialog"
+                @close="dialog = false"
+              >
+                <TodoDetail />
+              </AppDialog>
+
               <v-list-item
                 v-for="todo in todaysTodos"
                 :key="todo._id"
                 class="fill-height"
+                @click="selectTodo(todo)"
               >
                 <template #prepend>
                   <ListStatus :todo="todo" />
@@ -114,6 +128,7 @@ const todaysClosedTodos = computed(() => {
                   </v-btn>
                 </template>
               </v-list-item>
+
             </v-list>
             <v-card
               v-else
