@@ -41,7 +41,11 @@ const todaysTodos = computed(() => {
 })
 
 const todaysClosedTodos = computed(() => {
-  return listsStore.todaysTodos.filter((todo) => todo.status === 'Closed')
+  const closedTodos = listsStore.todaysTodos.filter((todo) => todo.status === 'Closed')
+  if (!closedTodos.length) {
+    tab.value = 'todo'
+  }
+  return closedTodos
 })
 
 function selectTodo(todo: Todo) {
@@ -120,12 +124,10 @@ function selectTodo(todo: Todo) {
                 </v-list-item-title>
                 <template #append>
                   <v-btn
-                    icon
+                    icon="mdi-delete"
                     elevation="0"
                     @click="listsStore.deleteTodo(todo._id)"
-                  >
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
+                  />
                 </template>
               </v-list-item>
 
