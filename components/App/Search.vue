@@ -69,7 +69,6 @@ function formattedTime(d: string) {
     <template #activator="{ props }">
       <v-text-field
         v-bind="props"
-        hide-details
         placeholder="search"
         style="max-width: 300px"
         class="mx-4"
@@ -79,7 +78,7 @@ function formattedTime(d: string) {
           <span style="font-size: 0.70rem; width: 40px;">ctrl + k</span>
         </template>
       </v-text-field>
-      
+
     </template>
 
     <template #default="{ isActive }">
