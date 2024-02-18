@@ -13,7 +13,6 @@ if (loggedIn.value) {
   listsStore.getTodos()
 }
 
-
 definePageMeta({
   layout: 'default',
   auth: {
@@ -25,8 +24,9 @@ definePageMeta({
 const newTodo = ref<Todo>({
   name: '',
   status: 'Open',
-  dueDate: new Date().toISOString(),
-  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub
+  dueDate: new Date(),
+  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub,
+  _id: undefined
 })
 
 async function addTodayTodo() {
@@ -42,8 +42,6 @@ const todaysTodos = computed(() => {
 const todaysClosedTodos = computed(() => {
   return listsStore.todaysTodos.filter((todo) => todo.status === 'Closed')
 })
-
-
 
 </script>
 
@@ -81,7 +79,7 @@ const todaysClosedTodos = computed(() => {
           <v-tab>
             todo
           </v-tab>
-          <v-tab>
+          <v-tab v-if="todaysClosedTodos.length">
             done
           </v-tab>
         </v-tabs>
