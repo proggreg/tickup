@@ -67,6 +67,7 @@ function selectTodo(todo: Todo) {
             v-model="newTodo.name"
             placeholder="Add a new todo..."
             hide-details
+            bg-color="secondary"
             density="compact"
             @keyup.enter="addTodayTodo"
           >

@@ -35,6 +35,7 @@ async function addTodo() {
         :placeholder="'Add todo to ' + listsStore.currentList.name"
         class="add-todo-field"
         @keyup.enter="addTodo"
+        bg-color="secondary"
       >
         <template #append-inner>
           <AppDueDate

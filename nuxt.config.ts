@@ -53,11 +53,22 @@ export default defineNuxtConfig({
         VTextField: {
           rounded: 'xl',
           variant: 'solo-inverted',
-          density: 'compact'
-        },
-        VToolbar: {
-          flat: true,
-          rounded: 'xl'
+          density: 'compact',
+          hideDetails: true
+        }
+      },
+      theme: {
+        themes: {
+          light: {
+            colors: {
+              secondary: '#000000'
+            }
+          },
+          dark: {
+            colors: {
+              secondary: '#FFFFFF'
+            }
+          }
         }
       }
     }
