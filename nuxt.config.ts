@@ -96,7 +96,6 @@ export default defineNuxtConfig({
     devtools: true,
     options: {
       appName: 'Tickup',
-
     }
   }
 })
