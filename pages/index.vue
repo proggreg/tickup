@@ -91,7 +91,7 @@ const newTodoRules = [
             done
           </v-tab>
         </v-tabs>
-        <v-window v-model="tab" class="d-flex justify-center align-center" style="min-height: 150px;">
+        <v-window v-model="tab" class="" style="min-height: 150px;">
           <v-window-item value="todo">
             <v-list v-if="todaysTodos.length">
               <v-list-item
