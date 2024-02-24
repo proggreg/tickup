@@ -1,16 +1,3 @@
-const myCustomLightTheme = {
-  dark: false,
-  colors: {
-    primary: '#0000FF'
-  }
-}
-const myCustomDarkTheme = {
-  dark: true,
-  colors: {
-    primary: '#FF0000'
-  }
-}
-
 export default defineNuxtConfig({
   modules: [
     'vuetify-nuxt-module',
@@ -71,8 +58,16 @@ export default defineNuxtConfig({
       },
       theme: {
         themes: {
-          myCustomDarkTheme,
-          myCustomLightTheme
+          light: {
+            colors: {
+              secondary: '#FFFFFF'
+            }
+          },
+          dark: {
+            colors: {
+              secondary: '#000000'
+            }
+          }
         }
       }
     }
