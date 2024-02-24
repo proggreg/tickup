@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { data, status } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
-
+const newTodoInput = ref()
 if (!loggedIn.value) {
   navigateTo('/login')
 }
@@ -30,9 +30,14 @@ const newTodo = ref<Todo>({
 })
 
 async function addTodayTodo() {
-  await listsStore.addTodo(newTodo.value)
-  await listsStore.getTodaysTodos(data.value?.user.sub)
-  newTodo.value.name = ''
+  const invalid = await newTodoInput.value.validate()
+  console.log('valid', invalid.length)
+  if (invalid.length === 0) {
+    await listsStore.addTodo(newTodo.value)
+    await listsStore.getTodaysTodos(data.value?.user.sub)
+    newTodo.value.name = ''
+  }
+  
 }
 
 const todaysTodos = computed(() => {
@@ -42,6 +47,10 @@ const todaysTodos = computed(() => {
 const todaysClosedTodos = computed(() => {
   return listsStore.todaysTodos.filter((todo) => todo.status === 'Closed')
 })
+
+const newTodoRules = [
+  (v: string) => !!v || 'Todo is required',
+]
 
 
 
@@ -56,20 +65,21 @@ const todaysClosedTodos = computed(() => {
         </h2>
         <div>
           <v-text-field
+            ref="newTodoInput"
             v-model="newTodo.name"
             placeholder="Add a new todo..."
-            hide-details
             density="compact"
+            :rules="newTodoRules"
+            validate-on="submit lazy"
             @keyup.enter="addTodayTodo"
           >
             <template #append-inner>
-              <v-btn
-                icon
-                elevation="0"
+              <v-icon
+                size="small"
                 @click="addTodayTodo"
               >
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
+              mdi-plus
+              </v-icon>
             </template>
           </v-text-field>
         </div>
@@ -98,6 +108,8 @@ const todaysClosedTodos = computed(() => {
                   <v-btn
                     icon
                     elevation="0"
+                    variant="text"
+                    size="small"
                     @click="listsStore.deleteTodo(todo._id)"
                   >
                     <v-icon>mdi-delete</v-icon>
