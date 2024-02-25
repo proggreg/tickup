@@ -11,7 +11,6 @@ const userNameRules = [
     return 'Oops! Username required to login. 😊'
   },
   () => {
-
     return true
   }
 ]
@@ -24,7 +23,6 @@ const passwordRules = [
 
 onMounted(() => {
   if (window.location.href.includes('error=CredentialsSignin')) {
-    console.log('couldn\'nt login', loginForm.value)
     correctCredentials.value = true
   }
 })
@@ -32,13 +30,8 @@ onMounted(() => {
 const loginUser = async () => {
   const { valid } = await loginForm.value.validate()
 
-  console.log(loginForm.value)
-
   if (valid) {
-    const response = await signIn('credentials', { username: username.value, password: password.value })
-
-    console.log(response)
-
+    await signIn('credentials', { username: username.value, password: password.value })
   }
 
 }
