@@ -80,7 +80,7 @@ function formattedTime(d: string) {
           <span style="font-size: 0.70rem; width: 40px;">ctrl + k</span>
         </template>
       </v-text-field>
-      
+
     </template>
 
     <template #default="{ isActive }">

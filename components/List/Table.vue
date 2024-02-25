@@ -8,17 +8,23 @@ const newTodoVariant = ref<'text' | 'outlined'>("text");
 const openNewTodo = ref('');
 const newTodoTitle = ref("");
 
-const headers = [
+const { xs } = useDisplay()
+
+const headers = reactive([
   { title: "Title", key: "name", sortable: true },
-  { title: "Description", key: "desc", sortable: true },
-  { title: "Date", key: "dueDate", sortable: true },
-  { title: "", key: "actions", sortable: false },
-  {
-    title: "Status", key: "status", sortable: true, sort: (a: string, b: string) => {
-      return statuses.findIndex(status => status.name === a) - statuses.findIndex(status => status.name === b)
-    }
-  },
-];
+
+])
+
+const desktopHeaders = [{ title: "Description", key: "desc", sortable: true },
+{ title: "Date", key: "dueDate", sortable: true },
+{ title: "", key: "actions", sortable: false },
+{
+  title: "Status", key: "status", sortable: true, sort: (a: string, b: string) => {
+    return statuses.findIndex(status => status.name === a) - statuses.findIndex(status => status.name === b)
+  }
+}]
+
+const opened = ref([])
 
 const group = ref([
   {
@@ -27,6 +33,8 @@ const group = ref([
     title: "Status"
   },
 ]);
+
+let expanded = reactive(['Open'])
 
 function showModal(todo: any) {
   store.setCurrentTodo(todo.raw);
@@ -86,6 +94,24 @@ async function createTodo(status: string) {
   }
 }
 
+onMounted(() => {
+  if (!xs.value) {
+    console.log('is mobile', xs)
+    debugger
+    headers.concat(desktopHeaders)
+  }
+})
+
+
+function myToggleGroup(toggleGroup, groupItem) {
+  toggleGroup(groupItem)
+  if (expanded.includes(groupItem.value)) {
+    expanded = expanded.filter((item) => item !== groupItem.value)
+  } else {
+    expanded.push(groupItem.value);
+  }
+}
+
 </script>
 
 <template>
@@ -96,8 +122,10 @@ async function createTodo(status: string) {
     multi-sort
     hover
     show-expand
+    :expanded="expanded"
     item-value="_id"
     items-per-page="-1"
+    :opened="opened"
   >
     <template #top>
       <v-toolbar flat>
@@ -119,7 +147,7 @@ async function createTodo(status: string) {
               size="small"
               variant="text"
               :icon="isGroupOpen(groupItem) ? '$expand' : '$next'"
-              @click="toggleGroup(groupItem)"
+              @click="myToggleGroup(toggleGroup, groupItem)"
             />
             <VBtn
               size="x-small"
@@ -139,10 +167,11 @@ async function createTodo(status: string) {
               v-for="column in columns"
               :key="column.key"
             >
-              <v-hover v-if="column.key !== 'data-table-group' &&
+              <v-hover
+v-if="column.key !== 'data-table-group' &&
                 column.key !== 'data-table-expand' &&
-                column.key !== 'actions'
-                ">
+                column.key !== 'actions'"
+>
                 <template #default="{ isHovering, props }">
                   <th
                     :style="isHovering ? 'cursor: pointer' : ''"
@@ -198,13 +227,13 @@ async function createTodo(status: string) {
               :key="column.key"
             >
               <template v-if="column.key !== 'data-table-group'">
-                <td v-if="column.key === 'name' || column.key === 'desc'">
+                <td v-if="column.key === 'name' || (column.key === 'desc' && !xs)">
                   {{ item.columns[column.key] }}
                 </td>
-                <td v-else-if="column.key === 'dueDate'">
+                <td v-else-if="column.key === 'dueDate' && !xs">
                   {{ formatDate(item.columns[column.key]) }}
                 </td>
-                <td v-else-if="column.key === 'actions'">
+                <td v-else-if="column.key === 'actions' && !xs">
                   <v-btn
                     icon="mdi-delete"
                     variant="text"
@@ -258,8 +287,6 @@ async function createTodo(status: string) {
 </template>
 <style scoped>
 .table-header {
-  /* display: flex; */
-
   padding: 0 !important;
 }
 </style>

@@ -83,7 +83,14 @@ export const useListsStore = defineStore('lists', {
         method: 'PUT',
         body: todo
       })
-      this.setCurrentTodo(updatedTodo)
+
+      const index = this.currentList.todos.findIndex(t => t._id === updatedTodo._id);
+      // if (index !== -1) {
+      //   console.log('update todo here')
+      //   this.currentList.todos[index] = updatedTodo;
+      // }
+      // this.setCurrentTodo(updatedTodo)
+      return updatedTodo
     },
     async getListTodos(listId: string) {
       const { data } = await useFetch<Todo[]>(`/api/list/todo/${listId}`)
@@ -119,12 +126,12 @@ export const useListsStore = defineStore('lists', {
       }
     },
     async getTodo(id: string) {
-
       const { data } = await useFetch<Todo>(`/api/todo/${id}`)
-      console.log('getTodo', data.value)
+
       if (data.value) {
         this.currentTodo = data.value
       }
+
       return data
     },
     async getTodos() {

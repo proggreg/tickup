@@ -32,11 +32,10 @@ async function addTodo() {
       <v-text-field
         v-if="listsStore.currentList"
         v-model="newTodo.name"
-        variant="solo-filled"
-        rounded="lg"
         :placeholder="'Add todo to ' + listsStore.currentList.name"
-        class="add-todo-field"
+        class="my-4"
         @keyup.enter="addTodo"
+        bg-color="secondary"
       >
         <template #append-inner>
           <AppDueDate
@@ -47,7 +46,7 @@ async function addTodo() {
 
           <v-btn
             :disabled="!newTodo.name"
-            rounded="lg"
+            size="small"
             variant="text"
             icon="mdi-plus"
             @click="addTodo"

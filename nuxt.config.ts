@@ -53,7 +53,8 @@ export default defineNuxtConfig({
         VTextField: {
           rounded: 'xl',
           variant: 'solo-inverted',
-          density: 'compact'
+          density: 'compact',
+          hideDetails: true
         }
       },
       theme: {
@@ -106,7 +107,6 @@ export default defineNuxtConfig({
     devtools: true,
     options: {
       appName: 'Tickup',
-
     }
   }
 })

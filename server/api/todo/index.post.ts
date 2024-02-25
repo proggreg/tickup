@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   try {
     return await new TodoSchema(body).save()
   } catch (e) {
-    console.log('error', e)
+    console.error('error', e)
     return e
   }
 })

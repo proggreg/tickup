@@ -13,7 +13,6 @@ if (loggedIn.value) {
   listsStore.getTodos()
 }
 
-
 definePageMeta({
   layout: 'default',
   auth: {
@@ -25,9 +24,12 @@ definePageMeta({
 const newTodo = ref<Todo>({
   name: '',
   status: 'Open',
-  dueDate: new Date().toISOString(),
-  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub
+  dueDate: new Date(),
+  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub,
+  _id: undefined
 })
+
+const dialog = ref(false)
 
 async function addTodayTodo() {
   const invalid = await newTodoInput.value.validate()
@@ -84,20 +86,32 @@ const newTodoRules = [
             </template>
           </v-text-field>
         </div>
-        <v-tabs v-model="tab" align-tabs="center">
+        <v-tabs
+          v-model="tab"
+          align-tabs="center"
+        >
           <v-tab>
             todo
           </v-tab>
-          <v-tab>
+          <v-tab v-if="todaysClosedTodos.length">
             done
           </v-tab>
         </v-tabs>
         <v-window v-model="tab" class="" style="min-height: 150px;">
           <v-window-item value="todo">
             <v-list v-if="todaysTodos.length">
+              <AppDialog
+                :open="dialog"
+                @close="dialog = false"
+              >
+                <TodoDetail />
+              </AppDialog>
+
               <v-list-item
                 v-for="todo in todaysTodos"
                 :key="todo._id"
+                class="fill-height"
+                @click="selectTodo(todo)"
               >
                 <template #prepend>
                   <ListStatus :todo="todo" />
@@ -107,23 +121,23 @@ const newTodoRules = [
                 </v-list-item-title>
                 <template #append>
                   <v-btn
-                    icon
+                    icon="mdi-delete"
                     elevation="0"
                     variant="text"
                     size="small"
                     @click="listsStore.deleteTodo(todo._id)"
-                  >
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
+                  />
                 </template>
               </v-list-item>
+
             </v-list>
-            <div
+            <v-card
               v-else
-              class="fill-height m-auto text-center d-flex align-center justify-center"
+              height="200"
+              class="d-flex align-center justify-center ma-2"
             >
               Nothing todo today 🎉
-            </div>
+            </v-card>
           </v-window-item>
           <v-window-item value="done">
             <v-list v-if="todaysClosedTodos.length">
