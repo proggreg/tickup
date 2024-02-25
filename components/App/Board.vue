@@ -25,7 +25,6 @@ async function change(e: any, status: any) {
   }
 }
 
-
 function getComponentData(statusName: string) {
   return {
     wrap: true,
@@ -53,11 +52,11 @@ function getComponentData(statusName: string) {
             :list="status.todos"
             ghost-class="ghost"
             item-key="_id"
+            group="status"
+            :component-data="getComponentData(status.name)"
             @start="dragging = true"
             @end="dragging = false"
-            group="status"
             @change="(e) => change(e, status)"
-            :componentData="getComponentData(status.name)"
             @sort="(s) => console.log('sort', s)"
           >
             <template #item="{ element }">
@@ -72,14 +71,13 @@ function getComponentData(statusName: string) {
             </template>
           </draggable>
         </div>
-
       </v-card>
     </v-col>
   </v-row>
 </template>
 
 <style>
-.ghost {
-  opacity: 0.5;
-}
+  .ghost {
+    opacity: 0.5;
+  }
 </style>
