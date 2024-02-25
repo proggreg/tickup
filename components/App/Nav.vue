@@ -71,9 +71,8 @@ function closeDrawer() {
       <v-spacer />
       <v-btn
         elevation="0"
-        rounded="lg"
         append-icon="mdi-home"
-        width="100%"
+        block
         to="/"
         @click="closeDrawer"
       >
@@ -84,7 +83,6 @@ function closeDrawer() {
         <template #append>
           <v-btn
             elevation="0"
-            rounded="lg"
             icon="mdi-plus"
             @click="dialog = true"
           />
@@ -110,8 +108,8 @@ function closeDrawer() {
           size="small"
           style="padding: 0;"
           variant="elevated"
-          @click="signOut()"
           block
+          @click="signOut()"
         >
           Sign Out
         </v-btn>

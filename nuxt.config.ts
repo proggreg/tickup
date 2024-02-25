@@ -54,6 +54,9 @@ export default defineNuxtConfig({
           rounded: 'xl',
           variant: 'solo-inverted',
           density: 'compact'
+        },
+        VListItem: {
+          rounded: 'xl',
         }
       },
       theme: {
