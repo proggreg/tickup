@@ -53,8 +53,7 @@ export default defineNuxtConfig({
         VTextField: {
           rounded: 'xl',
           variant: 'solo-inverted',
-          density: 'compact',
-          hideDetails: true
+          density: 'compact'
         }
       },
       theme: {
