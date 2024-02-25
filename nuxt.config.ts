@@ -63,7 +63,11 @@ export default defineNuxtConfig({
         },
         VMenu: {
           rounded: 'xl',
+        },
+        VCard: {
+          rounded: 'xl',
         }
+
       },
       theme: {
         themes: {
