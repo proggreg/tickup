@@ -96,8 +96,6 @@ async function createTodo(status: string) {
 
 onMounted(() => {
   if (!xs.value) {
-    console.log('is mobile', xs)
-    debugger
     headers.concat(desktopHeaders)
   }
 })
