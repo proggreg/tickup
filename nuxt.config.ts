@@ -57,6 +57,12 @@ export default defineNuxtConfig({
         },
         VListItem: {
           rounded: 'xl',
+        },
+        VList: {
+          rounded: 'xl',
+        },
+        VMenu: {
+          rounded: 'xl',
         }
       },
       theme: {

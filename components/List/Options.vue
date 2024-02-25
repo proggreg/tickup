@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const store = useListsStore()
 
-const optionProps = defineProps<{ listId: string}>()
+const optionProps = defineProps<{ listId: string, size?: string}>()
 async function deleteList () {
   store.deleteList(optionProps.listId)
   await navigateTo('/')
