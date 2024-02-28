@@ -20,7 +20,7 @@ const name = computed(() => {
         <v-avatar
           v-if="data?.user?.image"
           :image="data?.user?.image"
-          size="small"
+          size="x-small"
         />
         <v-avatar
           v-else

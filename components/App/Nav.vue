@@ -108,6 +108,7 @@ function closeDrawer() {
           size="small"
           style="padding: 0;"
           variant="elevated"
+          height="36"
           block
           @click="signOut()"
         >

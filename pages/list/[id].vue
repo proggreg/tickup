@@ -30,9 +30,10 @@ if (currentList.value) {
 </script>
 <template>
   <v-row class="fill-height">
-    <v-col>
+  
       <TodoNew :list-id="params.id" />
-      <div v-if="!xs">
+  
+      <v-col v-if="!xs" cols="12">
         <v-tabs v-model="currentTab">
           <v-tab
             v-for="tab in tabs"
@@ -43,7 +44,7 @@ if (currentList.value) {
         </v-tabs>
         <v-window
           v-model="currentTab"
-          class="fill-height pa-2"
+          class=" pa-2"
         >
           <v-window-item value="list">
             <ListTable :list_id="params.id" />
@@ -55,8 +56,8 @@ if (currentList.value) {
             <AppBoard />
           </v-window-item>
         </v-window>
-      </div>
+      </v-col>
       <ListTable v-else />
-    </v-col>
+
   </v-row>
 </template>
