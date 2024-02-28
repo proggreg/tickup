@@ -11,7 +11,6 @@ const userNameRules = [
     return 'Oops! Username required to login. 😊'
   },
   () => {
-
     return true
   }
 ]
@@ -24,7 +23,6 @@ const passwordRules = [
 
 onMounted(() => {
   if (window.location.href.includes('error=CredentialsSignin')) {
-    console.log('couldn\'nt login', loginForm.value)
     correctCredentials.value = true
   }
 })
@@ -32,13 +30,8 @@ onMounted(() => {
 const loginUser = async () => {
   const { valid } = await loginForm.value.validate()
 
-  console.log(loginForm.value)
-
   if (valid) {
-    const response = await signIn('credentials', { username: username.value, password: password.value })
-
-    console.log(response)
-
+    await signIn('credentials', { username: username.value, password: password.value })
   }
 
 }
@@ -57,6 +50,7 @@ const loginUser = async () => {
         required
         class="error"
       />
+    
       <v-text-field
         v-model="password"
         label="Password"
@@ -64,41 +58,33 @@ const loginUser = async () => {
         type="password"
         required
       />
-      <v-row>
-        <v-col cols="12">
           <v-btn
+          class="mb-4"
             color="primary"
             block
             type="submit"
           >
             Login
           </v-btn>
-        </v-col>
-
-        <v-col cols="12">
           <v-btn
             color="primary"
             append-icon="mdi-github"
+            class="mb-4"
             block
             @click="signIn(`github`)"
           >
             Github Sign In
           </v-btn>
-        </v-col>
-        <v-col
-          cols="12"
-          style="font-size: 0.8rem"
-        >
           <span>Don't have an account </span>
           <NuxtLink
             color="secondary"
             to="/register"
           >Register</NuxtLink>
-        </v-col>
-      </v-row>
       <v-snackbar
-        color="danger"
         v-model="correctCredentials"
-      >Incorrect Credentials</v-snackbar>
+        color="danger"
+      >
+        Incorrect Credentials
+      </v-snackbar>
     </v-form>
 </v-sheet></template>

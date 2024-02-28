@@ -1,7 +1,10 @@
 <script setup lang="ts">
 const theme = useTheme()
 onMounted(() => {
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  const dark = localStorage.getItem('dark')
+  if (dark) {
+    theme.global.name.value = dark
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     theme.global.name.value = 'dark'
   }
 })

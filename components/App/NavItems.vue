@@ -23,7 +23,6 @@ async function selectList (list: List) {
       v-else
       :key="i"
       color="accent"
-      rounded="lg"
       fluid
       :value="i"
       placeholder="My List"

@@ -1,5 +1,4 @@
 import { defineMongooseModel } from '#nuxt/mongoose'
-
 export const TodoSchema = defineMongooseModel({
   name: 'Todo',
   schema: {
@@ -15,7 +14,7 @@ export const TodoSchema = defineMongooseModel({
       type: 'string'
     },
     dueDate: {
-      type: 'date'
+      type: Date
     },
     status: {
       type: 'string'
@@ -23,12 +22,15 @@ export const TodoSchema = defineMongooseModel({
     desc: {
       type: 'string'
     },
+    order: {
+      type: Number
+    },
     createdAt: {
-      type: 'date',
+      type: Date,
       default: Date.now
     },
     updatedAt: {
-      type: 'date',
+      type: Date,
       default: Date.now
     }
   }

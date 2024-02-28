@@ -42,6 +42,7 @@ function updateDueDate(newDate: Date | null) {
         v-bind="props"
         icon="mdi-calendar"
         variant="text"
+        size="small"
       />
     </template>
     <template v-slot:default="{ isActive }">

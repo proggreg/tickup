@@ -1,16 +1,3 @@
-const myCustomLightTheme = {
-  dark: false,
-  colors: {
-    primary: '#0000FF'
-  }
-}
-const myCustomDarkTheme = {
-  dark: true,
-  colors: {
-    primary: '#FF0000'
-  }
-}
-
 export default defineNuxtConfig({
   modules: [
     'vuetify-nuxt-module',
@@ -67,12 +54,33 @@ export default defineNuxtConfig({
           rounded: 'xl',
           variant: 'solo-inverted',
           density: 'compact'
+        },
+        VListItem: {
+          rounded: 'xl',
+        },
+        VList: {
+          rounded: 'xl',
+        },
+        VMenu: {
+          rounded: 'xl',
+        },
+        VCard: {
+          rounded: 'xl',
         }
+
       },
       theme: {
         themes: {
-          myCustomDarkTheme,
-          myCustomLightTheme
+          light: {
+            colors: {
+              secondary: '#FFFFFF'
+            }
+          },
+          dark: {
+            colors: {
+              secondary: '#000000'
+            }
+          }
         }
       }
     }
@@ -111,7 +119,6 @@ export default defineNuxtConfig({
     devtools: true,
     options: {
       appName: 'Tickup',
-
     }
   }
 })

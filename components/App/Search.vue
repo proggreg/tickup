@@ -70,6 +70,7 @@ function formattedTime(d: string) {
       <v-text-field
         v-bind="props"
         hide-details
+        bg-color="secondary"
         placeholder="search"
         style="max-width: 300px"
         class="mx-4"
@@ -79,7 +80,7 @@ function formattedTime(d: string) {
           <span style="font-size: 0.70rem; width: 40px;">ctrl + k</span>
         </template>
       </v-text-field>
-      
+
     </template>
 
     <template #default="{ isActive }">
@@ -88,6 +89,7 @@ function formattedTime(d: string) {
           <v-text-field
             ref="input"
             v-model="query"
+            bg-color="secondary"
             hide-details
             placeholder="search"
             style="max-width: 300px"

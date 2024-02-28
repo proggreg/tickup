@@ -71,9 +71,8 @@ function closeDrawer() {
       <v-spacer />
       <v-btn
         elevation="0"
-        rounded="lg"
         append-icon="mdi-home"
-        width="100%"
+        block
         to="/"
         @click="closeDrawer"
       >
@@ -84,7 +83,6 @@ function closeDrawer() {
         <template #append>
           <v-btn
             elevation="0"
-            rounded="lg"
             icon="mdi-plus"
             @click="dialog = true"
           />
@@ -101,7 +99,21 @@ function closeDrawer() {
     <AppNavItems />
 
     <template #append>
-      <div v-if="smAndDown" class="pa-2">
+      <div
+        v-if="smAndDown"
+        class="pa-2 d-flex flex-column ga-2"
+      >
+        <v-btn
+          v-if="loggedIn"
+          size="small"
+          style="padding: 0;"
+          variant="elevated"
+          height="36"
+          block
+          @click="signOut()"
+        >
+          Sign Out
+        </v-btn>
         <AppProfile />
       </div>
     </template>

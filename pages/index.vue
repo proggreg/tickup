@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { data, status } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
-
+const newTodoInput = ref()
 if (!loggedIn.value) {
   navigateTo('/login')
 }
@@ -12,7 +12,6 @@ const tab = ref('todo')
 if (loggedIn.value) {
   listsStore.getTodos()
 }
-
 
 definePageMeta({
   layout: 'default',
@@ -25,14 +24,22 @@ definePageMeta({
 const newTodo = ref<Todo>({
   name: '',
   status: 'Open',
-  dueDate: new Date().toISOString(),
-  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub
+  dueDate: new Date(),
+  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub,
+  _id: undefined
 })
 
+const dialog = ref(false)
+
 async function addTodayTodo() {
-  await listsStore.addTodo(newTodo.value)
-  await listsStore.getTodaysTodos(data.value?.user.sub)
-  newTodo.value.name = ''
+  const invalid = await newTodoInput.value.validate()
+  console.log('valid', invalid.length)
+  if (invalid.length === 0) {
+    await listsStore.addTodo(newTodo.value)
+    await listsStore.getTodaysTodos(data.value?.user.sub)
+    newTodo.value.name = ''
+  }
+  
 }
 
 const todaysTodos = computed(() => {
@@ -42,6 +49,10 @@ const todaysTodos = computed(() => {
 const todaysClosedTodos = computed(() => {
   return listsStore.todaysTodos.filter((todo) => todo.status === 'Closed')
 })
+
+const newTodoRules = [
+  (v: string) => !!v || 'Todo is required',
+]
 
 
 
@@ -56,37 +67,51 @@ const todaysClosedTodos = computed(() => {
         </h2>
         <div>
           <v-text-field
+            ref="newTodoInput"
             v-model="newTodo.name"
             placeholder="Add a new todo..."
-            hide-details
             density="compact"
+            bg-color="secondary"
+            :rules="newTodoRules"
+            validate-on="submit lazy"
             @keyup.enter="addTodayTodo"
           >
             <template #append-inner>
-              <v-btn
-                icon
-                elevation="0"
+              <v-icon
+                size="small"
                 @click="addTodayTodo"
               >
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
+              mdi-plus
+              </v-icon>
             </template>
           </v-text-field>
         </div>
-        <v-tabs v-model="tab" align-tabs="center">
+        <v-tabs
+          v-model="tab"
+          align-tabs="center"
+        >
           <v-tab>
             todo
           </v-tab>
-          <v-tab>
+          <v-tab v-if="todaysClosedTodos.length">
             done
           </v-tab>
         </v-tabs>
-        <v-window v-model="tab" class="d-flex justify-center align-center" style="min-height: 150px;">
+        <v-window v-model="tab" class="" style="min-height: 150px;">
           <v-window-item value="todo">
             <v-list v-if="todaysTodos.length">
+              <AppDialog
+                :open="dialog"
+                @close="dialog = false"
+              >
+                <TodoDetail />
+              </AppDialog>
+
               <v-list-item
                 v-for="todo in todaysTodos"
                 :key="todo._id"
+                class="fill-height"
+                @click="selectTodo(todo)"
               >
                 <template #prepend>
                   <ListStatus :todo="todo" />
@@ -96,21 +121,23 @@ const todaysClosedTodos = computed(() => {
                 </v-list-item-title>
                 <template #append>
                   <v-btn
-                    icon
+                    icon="mdi-delete"
                     elevation="0"
+                    variant="text"
+                    size="small"
                     @click="listsStore.deleteTodo(todo._id)"
-                  >
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
+                  />
                 </template>
               </v-list-item>
+
             </v-list>
-            <div
+            <v-card
               v-else
-              class="fill-height m-auto text-center d-flex align-center justify-center"
+              height="200"
+              class="d-flex align-center justify-center ma-2"
             >
               Nothing todo today 🎉
-            </div>
+            </v-card>
           </v-window-item>
           <v-window-item value="done">
             <v-list v-if="todaysClosedTodos.length">

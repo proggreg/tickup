@@ -69,11 +69,12 @@ const passwordRules = [
                 block
                 type="submit"
                 color="primary"
+                class="mb-4"
                 @click="registerUser"
             >
                 Register
             </v-btn>
-            <v-col
+            <div
                 cols="12"
                 style="font-size: 0.8rem"
             >
@@ -82,7 +83,7 @@ const passwordRules = [
                     color="secondary"
                     to="/login"
                 >Login</NuxtLink>
-            </v-col>
+            </div>
         </v-form>
     </v-sheet>
 </template>
