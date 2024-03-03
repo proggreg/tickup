@@ -105,6 +105,9 @@ export default defineNuxtConfig({
     github: {
       clientId: process.env.NUXT_GITHUB_CLIENT_ID,
       clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET
+    },
+    public: {
+      hotjarId: process.env.HOTJAR_ID
     }
   },
   auth: {
@@ -113,7 +116,7 @@ export default defineNuxtConfig({
     },
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     origin: process.env.NUXT_ENV_VERCEL_URL || "http://localhost:3000",
-    globalAppMiddleware: true
+    globalAppMiddleware: process.env.NODE_ENV === "production",
   },
   mongoose: {
     devtools: true,
