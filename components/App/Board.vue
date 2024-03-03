@@ -1,4 +1,7 @@
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 const statuses = useSettingsStore().statuses
 const store = useListsStore()
 const dragging = ref(false)
@@ -34,14 +37,16 @@ function getComponentData(statusName: string) {
 }
 
 </script>
+
 <template>
-  <v-row class="fill-height">
+  <v-row style="height: 90%">
     <v-col
       v-for="status in groupedTodos"
       :key="status.name"
+      class="d-flex flex-column mb-6 justify-start"
     >
       <v-card
-        class="fill-height"
+        class="flex-grow-1 mb-6"
         color="secondary"
       >
         <v-card-title>
@@ -77,7 +82,7 @@ function getComponentData(statusName: string) {
 </template>
 
 <style>
-  .ghost {
-    opacity: 0.5;
-  }
+.ghost {
+  opacity: 0.5;
+}
 </style>
