@@ -6,7 +6,7 @@ const { data, status } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
 const newTodoInput = ref()
 if (!loggedIn.value) {
-  // navigateTo('/login')
+  navigateTo('/login')
 }
 const listsStore = useListsStore()
 
@@ -25,9 +25,7 @@ definePageMeta({
   },
 })
 let userId;
-console.log('here', data.value)
 if (data.value && data.value?.user) {
-  console.log('user', data.value?.user)
   userId = data.value?.user.id ? data.value?.user.id : data.value?.user.sub
 } else {
   userId = ''
