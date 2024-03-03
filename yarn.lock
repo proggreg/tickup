@@ -10854,6 +10854,11 @@ vue-eslint-parser@^9.4.2:
     lodash "^4.17.21"
     semver "^7.3.6"
 
+vue-hotjar-next@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/vue-hotjar-next/-/vue-hotjar-next-2.0.1.tgz#037094ff504106017100ba84ed91b689833ddd35"
+  integrity sha512-yJfhNWwZTYKde2oENX5pTH+PbeTTkirNVinsGovoihnz8Fvpu/dTserIQmeijr1Lhc7WC8ncSPniY/Tcwa1jKA==
+
 vue-router@^4.2.5:
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.2.5.tgz#b9e3e08f1bd9ea363fdd173032620bc50cf0e98a"
