@@ -1,15 +1,19 @@
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 const { data, status } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
 if (!loggedIn.value) {
-  navigateTo('/login')
+  // navigateTo('/login')
 }
 const listsStore = useListsStore()
-listsStore.getTodaysTodos(data.value.user.sub)
+
 useHead({ title: 'TickUp:Home' })
 const tab = ref('todo')
 if (loggedIn.value) {
   listsStore.getTodos()
+  listsStore.getTodaysTodos(data.value.user.sub)
 }
 
 definePageMeta({
@@ -17,14 +21,21 @@ definePageMeta({
   auth: {
     unauthenticatedOnly: false,
     navigateUnauthenticatedTo: '/login',
-
   },
 })
+let userId;
+console.log('here', data.value)
+if (data.value && data.value?.user) {
+  console.log('user', data.value?.user)
+  userId = data.value?.user.id ? data.value?.user.id : data.value?.user.sub
+} else {
+  userId = ''
+}
 const newTodo = ref<Todo>({
   name: '',
   status: 'Open',
   dueDate: new Date(),
-  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub,
+  userId: userId,
   _id: undefined
 })
 
@@ -32,7 +43,7 @@ const dialog = ref(false)
 
 async function addTodayTodo() {
   await listsStore.addTodo(newTodo.value)
-  await listsStore.getTodaysTodos(data.value?.user.sub)
+  await listsStore.getTodaysTodos(userId)
   newTodo.value.name = ''
 }
 
@@ -117,12 +128,14 @@ function selectTodo(todo: Todo) {
                 class="fill-height"
                 @click="selectTodo(todo)"
               >
+
                 <template #prepend>
                   <ListStatus :todo="todo" />
                 </template>
                 <v-list-item-title class="ml-4">
                   {{ todo.name }}
                 </v-list-item-title>
+
                 <template #append>
                   <v-btn
                     icon="mdi-delete"
@@ -147,12 +160,14 @@ function selectTodo(todo: Todo) {
                 v-for="todo in todaysClosedTodos"
                 :key="todo._id"
               >
+
                 <template #prepend>
                   <ListStatus :todo="todo" />
                 </template>
                 <v-list-item-title class="ml-4">
                   {{ todo.name }}
                 </v-list-item-title>
+
                 <template #append>
                   <v-btn
                     icon
@@ -168,7 +183,8 @@ function selectTodo(todo: Todo) {
         </v-window>
       </v-card>
     </v-col>
-    <!-- <v-col>
+    <!-- TODO add reminders feature -->
+    <!-- <v-col >
       <v-card class="pa-4">
         <h2>reminders</h2>
       </v-card>
