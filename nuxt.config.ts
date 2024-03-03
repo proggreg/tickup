@@ -100,6 +100,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     auth: {
+      origin: process.env.NUXT_ENV_VERCEL_URL || "http://localhost:3000",
       secret: process.env.NUXT_NEXTAUTH_SECRET,
     },
     github: {
