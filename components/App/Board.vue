@@ -2,10 +2,17 @@
 const statuses = useSettingsStore().statuses
 const store = useListsStore()
 const dragging = ref(false)
+const {data} = useAuth()
+const route = useRoute()
+const newTodo = ref({
+  name: '',
+  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub,
+  listId: route.params.id,
+})
 
 const groupedTodos = computed(() => {
   return statuses.map((status) => {
-    status.todos = store.currentList.todos.filter((todo) => todo.status === status.name)
+    status.todos = store.currentList.todos.filter((todo) => todo.status === status.name).sort((a, b) => a.name - b.name)
     return status
   })
 })
@@ -28,26 +35,39 @@ async function change(e: any, status: any) {
 function getComponentData(statusName: string) {
   return {
     wrap: true,
-    name: statusName,
-    class: 'fill-height'
+    name: statusName
   };
+}
+
+
+function addTodo() {
+  store.addTodo(newTodo.value)
+  newTodo.value.name = ''
+}
+
+function handleBlur() {
+  if (newTodo.value.name === '') {
+    newTodo.value.status = ''
+  } else {
+    addTodo()
+  }
 }
 
 </script>
 <template>
-  <v-row class="fill-height">
+  <v-row>
     <v-col
       v-for="status in groupedTodos"
       :key="status.name"
     >
       <v-card
-        class="fill-height"
+        class="ma-2"
         color="secondary"
       >
         <v-card-title>
           {{ status.name }}
         </v-card-title>
-        <div class="ma-2 fill-height">
+        <div>
           <draggable
             :list="status.todos"
             ghost-class="ghost"
@@ -57,20 +77,43 @@ function getComponentData(statusName: string) {
             @start="dragging = true"
             @end="dragging = false"
             @change="(e) => change(e, status)"
-            @sort="(s) => console.log('sort', s)"
           >
             <template #item="{ element }">
               <v-card class="ma-2">
-                <v-card-title>
+                <v-card-title v-if="element._id">
                   {{ element.name }}
                 </v-card-title>
-                <v-card-item>
-                  {{ element.desc }}
+                <v-card-item v-else>
+                  <v-text-field
+                    v-model="element.name"
+                    placeholder="Add todo"
+                    @keyup.enter="addTodo(element)"
+                    />
                 </v-card-item>
               </v-card>
             </template>
           </draggable>
         </div>
+
+        <v-card v-if="newTodo.status === status.name" class="ma-2 px-4">
+          <v-text-field
+            v-model="newTodo.name"
+            placeholder="Add todo"
+            variant="plain"
+            :focused="true"
+            @blur="handleBlur"
+            @keyup.enter="addTodo(newTodo)"
+          />
+        </v-card>
+        <v-card-actions>
+       
+          <v-btn
+            color="primary"
+            @click="newTodo.status = status.name"
+          >
+            Add
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-col>
   </v-row>

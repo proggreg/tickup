@@ -19,7 +19,6 @@ onMounted(() => {
           <v-main>
             <v-container
               fluid
-              class="fill-height"
             >
               <NuxtPage />
             </v-container>

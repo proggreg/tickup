@@ -24,18 +24,14 @@ async function addTodo() {
 
 </script>
 <template>
-  <v-row
-    v-if="listsStore.currentList"
-    no-gutters
-  >
-    <v-col cols="12">
       <v-text-field
         v-if="listsStore.currentList"
         v-model="newTodo.name"
         :placeholder="'Add todo to ' + listsStore.currentList.name"
         class="my-4"
-        @keyup.enter="addTodo"
+        hide-details
         bg-color="secondary"
+        @keyup.enter="addTodo"
       >
         <template #append-inner>
           <AppDueDate
@@ -53,7 +49,5 @@ async function addTodo() {
           />
         </template>
       </v-text-field>
-      <slot />
-    </v-col>
-  </v-row>
+  
 </template>

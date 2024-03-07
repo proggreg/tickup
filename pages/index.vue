@@ -1,4 +1,7 @@
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 const { data, status } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
 const newTodoInput = ref()
@@ -6,11 +9,12 @@ if (!loggedIn.value) {
   navigateTo('/login')
 }
 const listsStore = useListsStore()
-listsStore.getTodaysTodos(data.value.user.sub)
+
 useHead({ title: 'TickUp:Home' })
 const tab = ref('todo')
 if (loggedIn.value) {
   listsStore.getTodos()
+  listsStore.getTodaysTodos(data.value.user.sub)
 }
 
 definePageMeta({
@@ -18,14 +22,19 @@ definePageMeta({
   auth: {
     unauthenticatedOnly: false,
     navigateUnauthenticatedTo: '/login',
-
   },
 })
+let userId;
+if (data.value && data.value?.user) {
+  userId = data.value?.user.id ? data.value?.user.id : data.value?.user.sub
+} else {
+  userId = ''
+}
 const newTodo = ref<Todo>({
   name: '',
   status: 'Open',
   dueDate: new Date(),
-  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub,
+  userId: userId,
   _id: undefined
 })
 
@@ -39,7 +48,7 @@ async function addTodayTodo() {
     await listsStore.getTodaysTodos(data.value?.user.sub)
     newTodo.value.name = ''
   }
-  
+
 }
 
 const todaysTodos = computed(() => {
@@ -81,7 +90,7 @@ const newTodoRules = [
                 size="small"
                 @click="addTodayTodo"
               >
-              mdi-plus
+                mdi-plus
               </v-icon>
             </template>
           </v-text-field>
@@ -97,7 +106,11 @@ const newTodoRules = [
             done
           </v-tab>
         </v-tabs>
-        <v-window v-model="tab" class="" style="min-height: 150px;">
+        <v-window
+          v-model="tab"
+          class=""
+          style="min-height: 150px;"
+        >
           <v-window-item value="todo">
             <v-list v-if="todaysTodos.length">
               <AppDialog
@@ -113,12 +126,14 @@ const newTodoRules = [
                 class="fill-height"
                 @click="selectTodo(todo)"
               >
+
                 <template #prepend>
                   <ListStatus :todo="todo" />
                 </template>
                 <v-list-item-title class="ml-4">
                   {{ todo.name }}
                 </v-list-item-title>
+
                 <template #append>
                   <v-btn
                     icon="mdi-delete"
@@ -145,12 +160,14 @@ const newTodoRules = [
                 v-for="todo in todaysClosedTodos"
                 :key="todo._id"
               >
+
                 <template #prepend>
                   <ListStatus :todo="todo" />
                 </template>
                 <v-list-item-title class="ml-4">
                   {{ todo.name }}
                 </v-list-item-title>
+
                 <template #append>
                   <v-btn
                     icon
@@ -166,7 +183,8 @@ const newTodoRules = [
         </v-window>
       </v-card>
     </v-col>
-    <!-- <v-col>
+    <!-- TODO add reminders feature -->
+    <!-- <v-col >
       <v-card class="pa-4">
         <h2>reminders</h2>
       </v-card>

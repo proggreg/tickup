@@ -141,13 +141,13 @@ function myToggleGroup(toggleGroup, groupItem) {
       >
         <tr v-if="groupItem.key === 'status'">
           <th :colspan="columns.length">
-            <VBtn
+            <v-btn
               size="small"
               variant="text"
               :icon="isGroupOpen(groupItem) ? '$expand' : '$next'"
               @click="myToggleGroup(toggleGroup, groupItem)"
             />
-            <VBtn
+            <v-btn
               size="x-small"
               :color="getStatusColor(groupItem.value)"
               variant="tonal"
