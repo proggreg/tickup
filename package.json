@@ -51,6 +51,7 @@
     "nuxt-mongoose": "^1.0.2",
     "nuxt-time": "^0.1.1",
     "pinia": "^2.1.7",
+    "vue-hotjar-next": "^2.0.1",
     "vuedraggable": "^4.1.0"
   }
 }
