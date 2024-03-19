@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const theme = useTheme()
 const colorMode = useColorMode()
 function toggleDarkMode() {
   colorMode.preference = colorMode.preference === 'light' ? 'dark' : 'light'
@@ -8,7 +7,7 @@ function toggleDarkMode() {
 <template>
   <v-btn
     variant="text"
-    :icon="theme.global.current.value.dark ? 'mdi-weather-night' : 'mdi-weather-sunny'"
+    :icon="colorMode.preference === 'light' ? 'mdi-weather-night' : 'mdi-weather-sunny'"
     @click="toggleDarkMode"
   />
 </template>
