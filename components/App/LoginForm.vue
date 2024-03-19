@@ -40,6 +40,7 @@ const loginUser = async () => {
   <v-sheet>
     <v-form
       ref="loginForm"
+      validate-on="submit input"
       @submit.prevent="loginUser"
     >
       <v-text-field

@@ -50,11 +50,12 @@ const passwordRules = [
         class="pa-4"
         rounded="xl"
     >
-        <v-form @submit.prevent>
+        <v-form validate-on="submit input" @submit.prevent>
             <v-text-field
                 v-model="username"
                 label="Username"
                 type="text"
+                
                 :rules="userNameRules"
                 width="300"
             />
@@ -63,6 +64,7 @@ const passwordRules = [
                 label="Password"
                 type="password"
                 :rules="passwordRules"
+                color="primary"
             />
 
             <v-btn
