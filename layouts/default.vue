@@ -1,18 +1,9 @@
 <script setup lang="ts">
-const theme = useTheme()
-onMounted(() => {
-  const dark = localStorage.getItem('dark')
-  if (dark) {
-    theme.global.name.value = dark
-  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    theme.global.name.value = 'dark'
-  }
-})
-
+const colorMode = useColorMode()
 </script>
 <template>
-  <main>
-    <v-theme-provider with-background>
+  <ColorScheme>
+    <v-theme-provider with-background :theme="colorMode.preference">
       <v-app>
         <v-layout>
           <app-nav />
@@ -26,5 +17,5 @@ onMounted(() => {
         </v-layout>
       </v-app>
     </v-theme-provider>
-  </main>
+  </ColorScheme>
 </template>
