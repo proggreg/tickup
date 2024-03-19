@@ -1,10 +1,8 @@
 <script setup lang="ts">
 const theme = useTheme()
-
+const colorMode = useColorMode()
 function toggleDarkMode() {
-  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
-  localStorage.setItem('dark', theme.global.name.value)
-
+  colorMode.preference = colorMode.preference === 'light' ? 'dark' : 'light'
 }
 </script>
 <template>

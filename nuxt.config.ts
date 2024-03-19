@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     'nuxt-mongoose',
     '@nuxtjs/eslint-module',
     'nuxt-bugsnag',
-    '@sidebase/nuxt-auth'
+    '@sidebase/nuxt-auth',
+    '@nuxtjs/color-mode'
   ],
 
   experimental: {
