@@ -1,4 +1,7 @@
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 const { params } = useRoute()
 const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`)
 const { data: todos } = await useFetch<Todo[]>(`/api/list/todos`, { query: { id: params.id } })
@@ -27,26 +30,40 @@ if (currentList.value) {
 
 </script>
 <template>
-  <v-col v-if="!xs" cols="12" class="fill-height">
-    <v-tabs v-model="currentTab">
-      <v-tab
-        v-for="tab in tabs"
-        :key="tab"
-        :text="tab"
-        :value="tab"
-      />
-    </v-tabs>
-    <v-window
-      v-model="currentTab"
+  <v-row>
+    <v-col cols="12">
+      <TodoNew :list-id="params.id" />
+    </v-col>
+
+    <v-col
+      v-if="!xs"
+      cols="12"
+      class="fill-height"
     >
-      <v-window-item value="list">
-        <ListTable v-if="todos" :list_id="params.id" />
-      </v-window-item>
-      <v-window-item
-        value="board"
-      >
-        <AppBoard v-if="todos" :todos="todos" />
-      </v-window-item>
-    </v-window>
-  </v-col>
+      <v-tabs v-model="currentTab">
+        <v-tab
+          v-for="tab in tabs"
+          :key="tab"
+          :text="tab"
+          :value="tab"
+        />
+      </v-tabs>
+      <v-window v-model="currentTab">
+        <v-window-item value="list">
+          <ListTable
+            v-if="todos"
+            :list_id="params.id"
+          />
+        </v-window-item>
+        <v-window-item value="board">
+          <AppBoard
+            v-if="todos"
+            :todos="todos"
+          />
+        </v-window-item>
+      </v-window>
+    </v-col>
+    <ListTable v-else />
+
+  </v-row>
 </template>
