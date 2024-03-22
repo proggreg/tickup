@@ -59,7 +59,7 @@ if (currentList.value) {
           </v-window-item>
         </v-window>
       </v-col>
-      <!-- <ListTable v-else /> -->
+      <ListTable v-else />
 
   </v-row>
 </template>
