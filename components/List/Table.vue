@@ -1,13 +1,13 @@
 <script setup lang="ts">
+const { data } = useAuth()
 const store = useListsStore();
 const { statuses } = useSettingsStore();
 const props = defineProps<{ listId?: string }>();
 const newTodo = ref(null)
-const dialog = ref(false);
+
 const newTodoVariant = ref<'text' | 'outlined'>("text");
 const openNewTodo = ref('');
 const newTodoTitle = ref("");
-
 const { xs } = useDisplay()
 
 const headers = reactive([
@@ -36,10 +36,7 @@ const group = ref([
 
 let expanded = reactive(['Open'])
 
-function showModal(todo: any) {
-  store.setCurrentTodo(todo.raw);
-  dialog.value = true;
-}
+
 
 function isSorted(sortBy, column) {
   return sortBy.some(item => item.key === column.key);
@@ -54,18 +51,7 @@ function isSortedIndex(sortBy, column) {
   return false
 }
 
-function formatDate(date: Date) {
-  if (!date) {
-    return "";
-  }
-  return new Date(date).toLocaleDateString("en-GB");
-}
 
-function deleteItem(todo: Todo) {
-  if (todo.value) {
-    store.deleteTodo(todo.value);
-  }
-}
 
 function getStatusColor(todoStatus: string) {
   const status = statuses.filter((status) => status.name === todoStatus);
@@ -82,6 +68,7 @@ async function createTodo(status: string) {
       status,
       desc: "",
       listId: props.listId,
+      userId: data?.value?.user?.sub
     };
     await store.addTodo(newTodo);
     newTodoTitle.value = ''
@@ -89,7 +76,7 @@ async function createTodo(status: string) {
   } else {
     openNewTodo.value = ''
   }
-  if (newTodo.value) {
+  if (newTodo.value.length > 0) {
     newTodo.value[0].focus()
   }
 }
@@ -160,10 +147,10 @@ function myToggleGroup(toggleGroup, groupItem) {
               :key="column.key"
             >
               <v-hover
-v-if="column.key !== 'data-table-group' &&
+                v-if="column.key !== 'data-table-group' &&
                 column.key !== 'data-table-expand' &&
                 column.key !== 'actions'"
->
+              >
                 <template #default="{ isHovering, props }">
                   <th
                     :style="isHovering ? 'cursor: pointer' : ''"
@@ -206,44 +193,8 @@ v-if="column.key !== 'data-table-group' &&
             </template>
             <th colspan="1" />
           </tr>
-          <tr
-            v-for="item in groupItem.items"
-            :key="item.key"
-            @click="showModal(item)"
-          >
-            <td>
-              <ListStatus :todo="item.raw" />
-            </td>
-            <template
-              v-for="column in columns"
-              :key="column.key"
-            >
-              <template v-if="column.key !== 'data-table-group'">
-                <td v-if="column.key === 'name' || (column.key === 'desc' && !xs)">
-                  {{ item.columns[column.key] }}
-                </td>
-                <td v-else-if="column.key === 'dueDate' && !xs">
-                  {{ formatDate(item.columns[column.key]) }}
-                </td>
-                <td v-else-if="column.key === 'actions' && !xs">
-                  <v-btn
-                    icon="mdi-delete"
-                    variant="text"
-                    rounded="lg"
-                    elevation="0"
-                    small
-                    @click.stop="deleteItem(item)"
-                  />
-                </td>
-              </template>
-            </template>
-          </tr>
-          <AppDialog
-            :open="dialog"
-            @close="dialog = false"
-          >
-            <TodoDetail />
-          </AppDialog>
+          <ListTableItem :columns="columns" :group-item="groupItem" />
+       
 
           <tr v-if="openNewTodo === '' || openNewTodo !== groupItem.value">
             <td colspan="5">
