@@ -3,6 +3,17 @@ const store = useListsStore();
 const { statuses } = useSettingsStore();
 const { listId } = defineProps<{ listId?: string }>();
 const { xs } = useDisplay()
+let expanded = reactive(['Open'])
+const opened = ref([])
+
+function myToggleGroup(toggleGroup, groupItem) {
+  toggleGroup(groupItem)
+  if (expanded.includes(groupItem.value)) {
+    expanded = expanded.filter((item) => item !== groupItem.value)
+  } else {
+    expanded.push(groupItem.value);
+  }
+}
 
 const headers = reactive([
   { title: "Title", key: "name", sortable: true },
@@ -17,8 +28,6 @@ const desktopHeaders = [{ title: "Description", key: "desc", sortable: true },
   }
 }]
 
-const opened = ref([])
-
 const group = ref([
   {
     key: "status",
@@ -26,9 +35,6 @@ const group = ref([
     title: "Status"
   },
 ]);
-
-let expanded = reactive(['Open'])
-
 
 
 function isSorted(sortBy, column) {
@@ -44,31 +50,11 @@ function isSortedIndex(sortBy, column) {
   return false
 }
 
-
-
-function getStatusColor(todoStatus: string) {
-  const status = statuses.filter((status) => status.name === todoStatus);
-  if (status.length > 0) {
-    return status[0].color;
-  }
-}
-
-
 onMounted(() => {
   if (!xs.value) {
     headers.concat(desktopHeaders)
   }
 })
-
-
-function myToggleGroup(toggleGroup, groupItem) {
-  toggleGroup(groupItem)
-  if (expanded.includes(groupItem.value)) {
-    expanded = expanded.filter((item) => item !== groupItem.value)
-  } else {
-    expanded.push(groupItem.value);
-  }
-}
 
 </script>
 
@@ -93,23 +79,13 @@ function myToggleGroup(toggleGroup, groupItem) {
         v-for="groupItem in groupedItems"
         :key="groupItem.key"
       >
-        <tr v-if="groupItem.key === 'status'">
-          <th :colspan="columns.length">
-            <v-btn
-              size="small"
-              variant="text"
-              :icon="isGroupOpen(groupItem) ? '$expand' : '$next'"
-              @click="myToggleGroup(toggleGroup, groupItem)"
-            />
-            <v-btn
-              size="x-small"
-              :color="getStatusColor(groupItem.value)"
-              variant="tonal"
-              :text="groupItem.value"
-              @click="toggleGroup(groupItem)"
-            />
-          </th>
-        </tr>
+       <ListTableGroupHeader
+        :columns="columns" 
+        :group-item="groupItem" 
+        :is-group-open="isGroupOpen" 
+        :toggle-group="toggleGroup"
+        :my-toggle-group="myToggleGroup"
+        />
         <template v-if="isGroupOpen(groupItem)">
           <tr>
             <th colspan="1">
