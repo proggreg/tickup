@@ -4,6 +4,7 @@ const store = useListsStore()
 const dragging = ref(false)
 const {data} = useAuth()
 const route = useRoute()
+const { todos } = defineProps<{ todos: Todo[] }>()
 const newTodo = ref({
   name: '',
   userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub,
@@ -11,8 +12,9 @@ const newTodo = ref({
 })
 
 const groupedTodos = computed(() => {
+
   return statuses.map((status) => {
-    status.todos = store.currentList.todos.filter((todo) => todo.status === status.name).sort((a, b) => a.name - b.name)
+    status.todos = todos.filter((todo) => todo.status === status.name).sort((a, b) => a.name - b.name)
     return status
   })
 })

@@ -7,7 +7,10 @@ const tabs = ref<string[]>(['list', 'board'])
 const currentTab = ref<string>('board')
 const { xs } = useDisplay()
 
-if (currentList.value.name) {
+console.log('currentList', currentList.value)
+
+
+if (currentList.value) {
   store.setListName(currentList.value.name)
 }
 console.log('todos', todos.value)
@@ -47,16 +50,16 @@ if (currentList.value) {
           v-model="currentTab"
         >
           <v-window-item value="list">
-            <ListTable :list_id="params.id" />
+            <ListTable v-if="todos" :list_id="params.id" />
           </v-window-item>
           <v-window-item
             value="board"
           >
-            <AppBoard />
+            <AppBoard v-if="todos" :todos="todos" />
           </v-window-item>
         </v-window>
       </v-col>
-      <ListTable v-else />
+      <!-- <ListTable v-else /> -->
 
   </v-row>
 </template>
