@@ -1,21 +1,23 @@
-<script
-  setup
-  lang="ts"
->
+<script setup lang="ts">
 const { data, status } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
-const newTodoInput = ref()
+
+
 if (!loggedIn.value) {
   navigateTo('/login')
 }
+
+const newTodoInput = ref()
+const tab = ref('todo')
 const listsStore = useListsStore()
 
 useHead({ title: 'TickUp:Home' })
-const tab = ref('todo')
-if (loggedIn.value) {
-  listsStore.getTodos()
+
+listsStore.getTodos()
+if (data.value?.user) {
   listsStore.getTodaysTodos(data.value.user.sub)
 }
+
 
 definePageMeta({
   layout: 'default',
