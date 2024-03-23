@@ -71,6 +71,7 @@ onMounted(() => {
         :toggle-group="toggleGroup"
         :my-toggle-group="myToggleGroup"
         :sort-by="sortBy"
+        :toggle-sort="toggleSort"
         />
       
       </template>

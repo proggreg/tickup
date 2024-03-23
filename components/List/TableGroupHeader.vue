@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const { groupItem, isGroupOpen, columns, toggleGroup, myToggleGroup, sortBy } = defineProps(
-  ['groupItem', 'isGroupOpen', 'columns', 'toggleGroup', 'myToggleGroup', 'sortBy'])
+const { groupItem, isGroupOpen, columns, toggleGroup, myToggleGroup, sortBy, toggleSort } = defineProps(
+  ['groupItem', 'isGroupOpen', 'columns', 'toggleGroup', 'myToggleGroup', 'sortBy', 'toggleSort'])
 const { statuses } = useSettingsStore();
 
 function getStatusColor(todoStatus: string) {
