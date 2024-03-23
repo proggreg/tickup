@@ -84,7 +84,7 @@ export const useListsStore = defineStore('lists', {
         body: todo
       })
 
-      const index = this.currentList.todos.findIndex(t => t._id === updatedTodo._id);
+      // const index = this.currentList.todos.findIndex(t => t._id === updatedTodo._id);
       // if (index !== -1) {
       //   console.log('update todo here')
       //   this.currentList.todos[index] = updatedTodo;
@@ -151,8 +151,8 @@ export const useListsStore = defineStore('lists', {
     sortByDate(newDirection: string) {
       this.currentList.todos
         .sort((a, b) => {
-          const dateA = a.dueDate ? new Date(a.dueDate) : null
-          const dateB = b.dueDate ? new Date(b.dueDate) : null
+          const dateA = a.dueDate ? new Date(a.dueDate).getTime() : null
+          const dateB = b.dueDate ? new Date(b.dueDate).getTime() : null
 
           if (!dateA && !dateB) {
             return 0

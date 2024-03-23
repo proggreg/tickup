@@ -7,7 +7,6 @@ const input = ref(null)
 const todoDialogOpen = ref(false)
 const store = useListsStore()
 const { data } = useAuth()
-const { xs } = useDisplay()
 
 if (process.client) {
   document.addEventListener('keydown', (e) => {
