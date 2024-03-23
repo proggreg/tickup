@@ -1,4 +1,7 @@
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 import { useDebounceFn } from '@vueuse/core';
 const query = ref<string>('')
 const results = ref([])
@@ -40,7 +43,7 @@ function setTextFieldFocus() {
       // @ts-ignore
       input.value.focus()
     }
-    
+
   }, 100)
 }
 async function openTodoDialog(result: Todo) {
@@ -89,41 +92,44 @@ function formattedTime(d: string) {
       <v-card v-show="isActive">
         <v-card-item class=" pa-4">
           <v-text-field
-              ref="input"
-              v-model="query"
-              hide-details
-              placeholder="search"
-              :focused="true"
-              class="ma-4"
-              @keyup="debouncedSearch"
+            ref="input"
+            v-model="query"
+            hide-details
+            placeholder="search"
+            :focused="true"
+            class="ma-4"
+            @keyup="debouncedSearch"
           />
         </v-card-item>
 
-       
-          <v-divider />
-          <v-virtual-scroll
-      :items="items"
-      height="300"
-      item-height="50"
-    >
-      <template #default="{ item }">
-        <v-list-item>
-          <template #prepend>
-            <ListStatus :todo="item" />
 
-          </template>
+        <v-divider />
+        <v-virtual-scroll
+          :items="items"
+          height="300"
+          item-height="50"
+        >
+          <template #default="{ item }">
+            <v-list-item>
+              <template #prepend>
+                <ListStatus :todo="item" />
 
-          <v-list-item-title class="font-weight-bold pa-4">
+              </template>
+
+              <v-list-item-title class="font-weight-bold pa-4">
                 {{ item.name }}
-          </v-list-item-title>
+              </v-list-item-title>
 
-          <template #append>
-            <v-btn icon="mdi-open-in-new" variant="text" />
+              <template #append>
+                <v-btn
+                  icon="mdi-open-in-new"
+                  variant="text"
+                />
+              </template>
+            </v-list-item>
           </template>
-        </v-list-item>
-      </template>
-    </v-virtual-scroll>
-            <!-- <v-list-item
+        </v-virtual-scroll>
+        <!-- <v-list-item
               v-for="(result, index) in results"
               :key="index"
               @click="openTodoDialog(result)"
