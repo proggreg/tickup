@@ -9,7 +9,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lhci:mobile": "lhci autorun",
-    "lhci:desktop": "lhci autorun --collect.settings.preset=desktop"
+    "lhci:desktop": "lhci autorun --collect.settings.preset=desktop",
+    "changelog": "npx changelogen@latest"
   },
   "devDependencies": {
     "@lhci/cli": "^0.12.0",
