@@ -2,6 +2,7 @@
 const { groupItem, columns } = defineProps(['groupItem', 'columns'])
 const store = useListsStore()
 const dialog = ref(false)
+const { xs } = useDisplay()
 
 function showModal(todo: any) {
   store.setCurrentTodo(todo.raw);

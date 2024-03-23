@@ -34,7 +34,9 @@ function updateDueDate(newDate: Date | null) {
         autocomplete="off"
       >
         <template #append-inner>
-          <v-icon @click.stop="updateDueDate(null)">mdi-close</v-icon>
+          <v-icon @click.stop="updateDueDate(null)">
+            mdi-close
+          </v-icon>
         </template>
       </v-text-field>
       <v-btn
@@ -45,10 +47,10 @@ function updateDueDate(newDate: Date | null) {
         size="small"
       />
     </template>
-    <template v-slot:default="{ isActive }">
+    <template #default="{ isActive }">
       <v-icon
-        @click="isActive.value = false"
         style="position: absolute; right: 0; margin: 15px"
+        @click="isActive.value = false"
       >
         mdi-close
       </v-icon>

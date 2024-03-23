@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const store = useListsStore();
 const { statuses } = useSettingsStore();
-const { xs } = useDisplay()
 let expanded = reactive(['Open'])
 const opened = ref([])
 const { todos } = defineProps<{ todos: Todo[] }>()
@@ -26,15 +25,7 @@ const headers = reactive([
   }
 ])
 
-const desktopHeaders = [
-  { title: "Description", key: "desc", sortable: true },
-  { title: "Date", key: "dueDate", sortable: true },
-  { title: "", key: "actions", sortable: false },
-  { title: "Status", key: "status", sortable: true, sort: (a: string, b: string) => {
-      return statuses.findIndex(status => status.name === a) - statuses.findIndex(status => status.name === b)
-    }
-  }
-]
+
 
 const group = ref([
   {
