@@ -47,6 +47,7 @@ function isSortedIndex(sortBy, column) {
             <th colspan="1">
               Status
             </th>
+
             <template
               v-for="column in columns"
               :key="column.key"
@@ -96,7 +97,7 @@ function isSortedIndex(sortBy, column) {
                 </template>
               </v-hover>
             </template>
-            <th colspan="1" />
+            <!-- <th colspan="1" /> -->
           </tr>
           <ListTableItem :columns="columns" :group-item="groupItem" />
           <ListTableNewItem :group-item="groupItem" :list-id="listId" />

@@ -4,6 +4,7 @@ const { statuses } = useSettingsStore();
 const { xs } = useDisplay()
 let expanded = reactive(['Open'])
 const opened = ref([])
+const { todos } = defineProps<{ todos: Todo[] }>()
 
 function myToggleGroup(toggleGroup, groupItem) {
   toggleGroup(groupItem)
@@ -35,8 +36,10 @@ const group = ref([
   },
 ]);
 
+
 onMounted(() => {
   if (!xs.value) {
+    console.log('add desktop headers')
     headers.concat(desktopHeaders)
   }
 })
@@ -46,7 +49,7 @@ onMounted(() => {
 <template>
   <v-data-table
     :headers="headers"
-    :items="store.currentList.todos"
+    :items="todos"
     :group-by="group"
     multi-sort
     hover
@@ -60,6 +63,7 @@ onMounted(() => {
     <template #headers="{ }" />
 
     <template #body="{ columns, groupedItems, toggleGroup, isGroupOpen, sortBy, toggleSort }">
+
       <template
         v-for="groupItem in groupedItems"
         :key="groupItem.key"
