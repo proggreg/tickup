@@ -77,7 +77,7 @@ function formattedTime(d: string) {
         v-bind="props"
         hide-details
         placeholder="search"
-        style="max-width: 300px"
+        style="max-width: 1000px"
         class="mx-4"
         @click="setTextFieldFocus"
       >

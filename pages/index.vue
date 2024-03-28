@@ -78,11 +78,12 @@ function selectTodo(todo) {
 
 <template>
   <v-row class="fill-height">
-    <v-col>
-  
-        <h2 class="py-4">
+    <v-col cols="12">
+        <h2>
           Today's Todo's
         </h2>
+      </v-col>
+      <v-col cols="12">
         <div>
           <v-text-field
             ref="newTodoInput"
