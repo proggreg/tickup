@@ -84,7 +84,7 @@ export const useListsStore = defineStore('lists', {
         body: todo
       })
 
-      const index = this.currentList.todos.findIndex(t => t._id === updatedTodo._id);
+      // const index = this.currentList.todos.findIndex(t => t._id === updatedTodo._id);
       // if (index !== -1) {
       //   console.log('update todo here')
       //   this.currentList.todos[index] = updatedTodo;
