@@ -79,7 +79,7 @@ function selectTodo(todo) {
 <template>
   <v-row class="fill-height">
     <v-col>
-      <v-card class="pa-4">
+  
         <h2 class="py-4">
           Today's Todo's
         </h2>
@@ -189,7 +189,7 @@ function selectTodo(todo) {
             </v-list>
           </v-window-item>
         </v-window>
-      </v-card>
+
     </v-col>
     <!-- TODO add reminders feature -->
     <!-- <v-col >
