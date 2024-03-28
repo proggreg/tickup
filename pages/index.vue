@@ -89,7 +89,6 @@ function selectTodo(todo) {
             v-model="newTodo.name"
             placeholder="Add a new todo..."
             density="compact"
-            bg-color="secondary"
             :rules="newTodoRules"
             validate-on="submit lazy"
             @keyup.enter="addTodayTodo"
