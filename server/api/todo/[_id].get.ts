@@ -3,9 +3,7 @@ export default defineEventHandler(async (event) => {
     if (!event.context.params || !event.context.params._id) {
       throw new Error('no id')
     }
-    const todo = await TodoSchema.findById(event.context.params._id)
-    console.log('got todo', todo)
-    return todo
+    return await TodoSchema.findById(event.context.params._id)
   } catch (e) {
     return e
   }

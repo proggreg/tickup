@@ -2,7 +2,6 @@
 const listsStore = useListsStore()
 
 function updateDueDate(newDate: Date) {
-  console.log('updateDueDate', newDate)
   listsStore.currentTodo.dueDate = newDate
   listsStore.updateTodo(listsStore.currentTodo)
 }

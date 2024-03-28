@@ -25,7 +25,6 @@ function search() {
   // @ts-ignore
   $fetch('/api/search/todo', { query: { q: query.value, id: data?.value?.user?.sub } })
     .then((res) => {
-      console.log(res)
       items.value = res
     })
     .catch((err) => {
@@ -45,9 +44,7 @@ function setTextFieldFocus() {
   }, 100)
 }
 async function openTodoDialog(result: Todo) {
-  console.log('getting todo...', result._id)
   const data = await store.getTodo(result._id)
-  console.log(data)
   todoDialogOpen.value = true
 }
 

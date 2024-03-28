@@ -52,13 +52,11 @@ export const useListsStore = defineStore('lists', {
     },
     async deleteTodo(todoId: string) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const todo = await $fetch(`/api/todo/${todoId}`, {
+      await $fetch(`/api/todo/${todoId}`, {
         method: 'DELETE'
       })
-      // TODO do i need todo?
-
+    
       this.getTodos()
-
       this.todaysTodos = this.todaysTodos.filter(todo => todo._id !== todoId)
 
       if (!this.currentList) { return }
@@ -83,13 +81,6 @@ export const useListsStore = defineStore('lists', {
         method: 'PUT',
         body: todo
       })
-
-      // const index = this.currentList.todos.findIndex(t => t._id === updatedTodo._id);
-      // if (index !== -1) {
-      //   console.log('update todo here')
-      //   this.currentList.todos[index] = updatedTodo;
-      // }
-      // this.setCurrentTodo(updatedTodo)
       return updatedTodo
     },
     async getListTodos(listId: string) {
@@ -144,7 +135,6 @@ export const useListsStore = defineStore('lists', {
     async getTodaysTodos(id: string) {
       const { data } = await useFetch<Todo[]>('/api/todos', { query: { today: true, id } })
       if (data.value) {
-        console.log('todays todos', data.value)
         this.todaysTodos = data.value
       }
     },
