@@ -14,6 +14,8 @@ const listsStore = useListsStore()
 useHead({ title: 'TickUp:Home' })
 
 listsStore.getTodos()
+
+
 if (data.value?.user) {
   listsStore.getTodaysTodos(data.value.user.sub)
 }
@@ -65,7 +67,10 @@ const newTodoRules = [
   (v: string) => !!v || 'Todo is required',
 ]
 
-
+function selectTodo(todo) {
+  dialog.value = true
+  listsStore.setCurrentTodo(todo)
+}
 
 </script>
 
