@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { AnyArray } from 'mongoose';
-
 const emit = defineEmits(['setDate'])
 const dueDateProps = defineProps<{ todoDueDate?: Date | string, todo: Todo, showDetail?: boolean }>()
 const { xs } = useDisplay()
