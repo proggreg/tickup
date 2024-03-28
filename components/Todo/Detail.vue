@@ -2,7 +2,6 @@
 const listsStore = useListsStore()
 
 function updateDueDate(newDate: Date) {
-  console.log('updateDueDate', newDate)
   listsStore.currentTodo.dueDate = newDate
   listsStore.updateTodo(listsStore.currentTodo)
 }
@@ -21,7 +20,7 @@ const desc = ref(listsStore.currentTodo.desc)
 </script>
 
 <template>
-  <v-card>
+  <v-card elevation="0">
     <template #prepend>
       <TodoStatus />
     </template>

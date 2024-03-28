@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { useDebounceFn } from '@vueuse/core';
 const query = ref<string>('')
-const results = ref([{ name: '' }])
+const results = ref([])
 const open = ref(false)
 const input = ref(null)
 const todoDialogOpen = ref(false)
 const store = useListsStore()
 const { data } = useAuth()
-const { xs } = useDisplay()
+
+const items = ref([])
 
 if (process.client) {
   document.addEventListener('keydown', (e) => {
@@ -21,10 +22,10 @@ if (process.client) {
 }
 
 function search() {
-  $fetch('/api/search/todo', { query: { q: query.value, id: data.value?.user.sub } })
+  // @ts-ignore
+  $fetch('/api/search/todo', { query: { q: query.value, id: data?.value?.user?.sub } })
     .then((res) => {
-      console.log(res)
-      results.value = res
+      items.value = res
     })
     .catch((err) => {
       results.value = err
@@ -35,13 +36,15 @@ const debouncedSearch = useDebounceFn(search, 500)
 
 function setTextFieldFocus() {
   setTimeout(() => {
-    input.value.focus()
+    if (input.value) {
+      // @ts-ignore
+      input.value.focus()
+    }
+    
   }, 100)
 }
 async function openTodoDialog(result: Todo) {
-  console.log('getting todo...', result._id)
   const data = await store.getTodo(result._id)
-  console.log(data)
   todoDialogOpen.value = true
 }
 
@@ -70,9 +73,8 @@ function formattedTime(d: string) {
       <v-text-field
         v-bind="props"
         hide-details
-        bg-color="secondary"
         placeholder="search"
-        style="max-width: 300px"
+        style="max-width: 1000px"
         class="mx-4"
         @click="setTextFieldFocus"
       >
@@ -85,44 +87,61 @@ function formattedTime(d: string) {
 
     <template #default="{ isActive }">
       <v-card v-show="isActive">
-        <v-layout class="justify-center py-8">
+        <v-card-item class=" pa-4">
           <v-text-field
-            ref="input"
-            v-model="query"
-            bg-color="secondary"
-            hide-details
-            placeholder="search"
-            style="max-width: 300px"
-            :focused="true"
-            @keyup="debouncedSearch"
-          >
-            <template #append-inner>
-              <span style="font-size: 0.70rem; width: 40px;">ctrl + k</span>
-            </template>
-          </v-text-field>
-        </v-layout>
+              ref="input"
+              v-model="query"
+              hide-details
+              placeholder="search"
+              :focused="true"
+              class="ma-4"
+              @keyup="debouncedSearch"
+          />
+        </v-card-item>
 
-        <v-list>
-          <v-list-item
-            v-for="(result, index) in results"
-            :key="index"
-            @click="openTodoDialog(result)"
-          >
-            <v-list-item-title class="font-weight-bold">
-              {{ result.name }}
-            </v-list-item-title>
-            <v-list-item-subtitle>
-              {{ result.status }}
-            </v-list-item-subtitle>
+       
+          <v-divider />
+          <v-virtual-scroll
+      :items="items"
+      height="300"
+      item-height="50"
+    >
+      <template #default="{ item }">
+        <v-list-item>
+          <template #prepend>
+            <ListStatus :todo="item" />
 
-            <div
-              v-if="result.updatedAt"
-              class="text-overline"
+          </template>
+
+          <v-list-item-title class="font-weight-bold pa-4">
+                {{ item.name }}
+          </v-list-item-title>
+
+          <template #append>
+            <v-btn icon="mdi-open-in-new" variant="text" />
+          </template>
+        </v-list-item>
+      </template>
+    </v-virtual-scroll>
+            <!-- <v-list-item
+              v-for="(result, index) in results"
+              :key="index"
+              @click="openTodoDialog(result)"
             >
-              Updated at: {{ formattedDate(result.updatedAt) }} {{ formattedTime(result.updatedAt) }}
-            </div>
-          </v-list-item>
-        </v-list>
+              <v-list-item-title class="font-weight-bold">
+                {{ result.name }}
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                {{ result.status }}
+              </v-list-item-subtitle>
+
+              <div
+                v-if="result.updatedAt"
+                class="text-overline"
+              >
+                Updated at: {{ formattedDate(result.updatedAt) }} {{ formattedTime(result.updatedAt) }}
+              </div>
+            </v-list-item> -->
         <AppDialog
           :open="todoDialogOpen"
           @close="todoDialogOpen = false"

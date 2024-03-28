@@ -7,17 +7,12 @@ const tabs = ref<string[]>(['list', 'board'])
 const currentTab = ref<string>('board')
 const { xs } = useDisplay()
 
-console.log('currentList', currentList.value)
-
-
 if (currentList.value) {
   store.setListName(currentList.value.name)
 }
-console.log('todos', todos.value)
+
 if (todos) {
   store.setListTodos(todos)
-} else {
-  console.log('no todos')
 }
 
 if (!currentList) {
@@ -33,6 +28,9 @@ if (currentList.value) {
 </script>
 <template>
   <v-row>
+    <v-col cols="12">
+      <h2>{{ currentList.name }}</h2>
+    </v-col> 
     <v-col cols="12">
       <TodoNew :list-id="params.id" />
     </v-col> 

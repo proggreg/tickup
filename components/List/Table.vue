@@ -125,12 +125,6 @@ function myToggleGroup(toggleGroup, groupItem) {
     items-per-page="-1"
     :opened="opened"
   >
-    <template #top>
-      <v-toolbar flat>
-        <v-toolbar-title :text="store.currentList.name" />
-        <v-spacer />
-      </v-toolbar>
-    </template>
 
     <template #headers="{ }" />
 

@@ -14,6 +14,8 @@ const listsStore = useListsStore()
 useHead({ title: 'TickUp:Home' })
 
 listsStore.getTodos()
+
+
 if (data.value?.user) {
   listsStore.getTodaysTodos(data.value.user.sub)
 }
@@ -29,6 +31,8 @@ definePageMeta({
 let userId;
 if (data.value && data.value?.user) {
   userId = data.value?.user.id ? data.value?.user.id : data.value?.user.sub
+
+  
 } else {
   userId = ''
 }
@@ -65,24 +69,27 @@ const newTodoRules = [
   (v: string) => !!v || 'Todo is required',
 ]
 
-
+function selectTodo(todo) {
+  dialog.value = true
+  listsStore.setCurrentTodo(todo)
+}
 
 </script>
 
 <template>
   <v-row class="fill-height">
-    <v-col>
-      <v-card class="pa-4">
-        <h2 class="py-4">
+    <v-col cols="12">
+        <h2>
           Today's Todo's
         </h2>
+      </v-col>
+      <v-col cols="12">
         <div>
           <v-text-field
             ref="newTodoInput"
             v-model="newTodo.name"
             placeholder="Add a new todo..."
             density="compact"
-            bg-color="secondary"
             :rules="newTodoRules"
             validate-on="submit lazy"
             @keyup.enter="addTodayTodo"
@@ -183,7 +190,7 @@ const newTodoRules = [
             </v-list>
           </v-window-item>
         </v-window>
-      </v-card>
+
     </v-col>
     <!-- TODO add reminders feature -->
     <!-- <v-col >

@@ -1,8 +1,7 @@
 export default defineEventHandler(async (event) => {
-
     try {
         const body = await readBody(event)
-        console.log('orderedItems', body)
+
         const updates = body.orderedItems.map(item => {
             return {
                 updateOne: {
