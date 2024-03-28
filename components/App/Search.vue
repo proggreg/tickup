@@ -20,7 +20,8 @@ if (process.client) {
 }
 
 function search() {
-  $fetch('/api/search/todo', { query: { q: query.value, id: data.value?.user.sub } })
+  // @ts-ignore
+  $fetch('/api/search/todo', { query: { q: query.value, id: data?.value?.user?.sub } })
     .then((res) => {
       console.log(res)
       results.value = res
@@ -34,7 +35,11 @@ const debouncedSearch = useDebounceFn(search, 500)
 
 function setTextFieldFocus() {
   setTimeout(() => {
-    input.value.focus()
+    if (input.value) {
+      // @ts-ignore
+      input.value.focus()
+    }
+    
   }, 100)
 }
 async function openTodoDialog(result: Todo) {
