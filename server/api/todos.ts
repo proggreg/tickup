@@ -3,6 +3,7 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event)
 
     if (query.today) {
+      console.log('getting todays todos')
       const start = new Date()
       start.setHours(0, 0, 0, 0)
       const end = new Date()

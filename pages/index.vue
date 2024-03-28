@@ -31,6 +31,8 @@ definePageMeta({
 let userId;
 if (data.value && data.value?.user) {
   userId = data.value?.user.id ? data.value?.user.id : data.value?.user.sub
+
+  
 } else {
   userId = ''
 }
