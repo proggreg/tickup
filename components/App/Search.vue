@@ -1,7 +1,4 @@
-<script
-  setup
-  lang="ts"
->
+<script setup lang="ts">
 import { useDebounceFn } from '@vueuse/core';
 const query = ref<string>('')
 const results = ref([])
@@ -67,20 +64,10 @@ function formattedTime(d: string) {
 </script>
 
 <template>
-  <v-dialog
-    open-on-click
-    :model-value="open"
-    width="500"
-  >
+  <v-dialog open-on-click :model-value="open" width="500">
     <template #activator="{ props }">
-      <v-text-field
-        v-bind="props"
-        hide-details
-        placeholder="search"
-        style="max-width: 1000px"
-        class="mx-4"
-        @click="setTextFieldFocus"
-      >
+      <v-text-field v-bind="props" hide-details placeholder="search" style="max-width: 1000px" class="mx-4"
+        @click="setTextFieldFocus">
         <template #append-inner>
           <span style="font-size: 0.70rem; width: 40px;">ctrl + k</span>
         </template>
@@ -91,24 +78,13 @@ function formattedTime(d: string) {
     <template #default="{ isActive }">
       <v-card v-show="isActive">
         <v-card-item class=" pa-4">
-          <v-text-field
-            ref="input"
-            v-model="query"
-            hide-details
-            placeholder="search"
-            :focused="true"
-            class="ma-4"
-            @keyup="debouncedSearch"
-          />
+          <v-text-field ref="input" v-model="query" hide-details placeholder="search" :focused="true" class="ma-4"
+            @keyup="debouncedSearch" />
         </v-card-item>
 
 
         <v-divider />
-        <v-virtual-scroll
-          :items="items"
-          height="300"
-          item-height="50"
-        >
+        <v-virtual-scroll :items="items" height="300" item-height="50">
           <template #default="{ item }">
             <v-list-item>
               <template #prepend>
@@ -121,10 +97,7 @@ function formattedTime(d: string) {
               </v-list-item-title>
 
               <template #append>
-                <v-btn
-                  icon="mdi-open-in-new"
-                  variant="text"
-                />
+                <v-btn :to="`/todo/${item._id}`" icon="mdi-open-in-new" variant="text" />
               </template>
             </v-list-item>
           </template>
@@ -148,10 +121,7 @@ function formattedTime(d: string) {
                 Updated at: {{ formattedDate(result.updatedAt) }} {{ formattedTime(result.updatedAt) }}
               </div>
             </v-list-item> -->
-        <AppDialog
-          :open="todoDialogOpen"
-          @close="todoDialogOpen = false"
-        >
+        <AppDialog :open="todoDialogOpen" @close="todoDialogOpen = false">
           <TodoDetail />
         </AppDialog>
       </v-card>

@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     payloadExtraction: false,
     typedPages: false
   },
+  pages: true,
 
   nitro: {
     esbuild: {

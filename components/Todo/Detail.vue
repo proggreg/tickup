@@ -20,7 +20,7 @@ const desc = ref(listsStore.currentTodo.desc)
 </script>
 
 <template>
-  <v-card elevation="0">
+  <v-card width="100%" elevation="0">
     <template #prepend>
       <TodoStatus />
     </template>
