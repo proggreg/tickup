@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const colorMode = useColorMode()
+  const colorMode = useColorMode()
+  const listStore = useListsStore()
 </script>
 <template>
   <ColorScheme>
@@ -11,7 +12,17 @@ const colorMode = useColorMode()
             <v-container
               fluid
             >
-              <NuxtPage />
+            <v-row class="fill-height">
+              <v-col cols="12">
+                <h2>{{ listStore.currentList.name }}</h2>
+              </v-col>
+              <v-col cols="12">
+              <TodoNew />
+            </v-col> 
+              <v-col cols="12">
+                <NuxtPage />
+              </v-col>
+            </v-row>
             </v-container>
           </v-main>
         </v-layout>

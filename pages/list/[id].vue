@@ -27,37 +27,26 @@ if (currentList.value) {
 
 </script>
 <template>
-  <v-row>
-    <v-col cols="12">
-      <h2>{{ currentList.name }}</h2>
-    </v-col> 
-    <v-col cols="12">
-      <TodoNew :list-id="params.id" />
-    </v-col> 
- 
-    <v-col v-if="!xs" cols="12" class="fill-height">
-        <v-tabs v-model="currentTab">
-          <v-tab
-            v-for="tab in tabs"
-            :key="tab"
-            :text="tab"
-            :value="tab"
-          />
-        </v-tabs>
-        <v-window
-          v-model="currentTab"
-        >
-          <v-window-item value="list">
-            <ListTable v-if="todos" :list_id="params.id" />
-          </v-window-item>
-          <v-window-item
-            value="board"
-          >
-            <AppBoard v-if="todos" :todos="todos" />
-          </v-window-item>
-        </v-window>
-      </v-col>
-      <!-- <ListTable v-else /> -->
-
-  </v-row>
+  <v-col v-if="!xs" cols="12" class="fill-height">
+    <v-tabs v-model="currentTab">
+      <v-tab
+        v-for="tab in tabs"
+        :key="tab"
+        :text="tab"
+        :value="tab"
+      />
+    </v-tabs>
+    <v-window
+      v-model="currentTab"
+    >
+      <v-window-item value="list">
+        <ListTable v-if="todos" :list_id="params.id" />
+      </v-window-item>
+      <v-window-item
+        value="board"
+      >
+        <AppBoard v-if="todos" :todos="todos" />
+      </v-window-item>
+    </v-window>
+  </v-col>
 </template>

@@ -1,25 +1,17 @@
 <script setup lang="ts">
 const { data, status } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
-
+const listsStore = useListsStore()
+const tab = ref('todo')
+const dialog = ref(false)
 
 if (!loggedIn.value) {
   navigateTo('/login')
 }
 
-const newTodoInput = ref()
-const tab = ref('todo')
-const listsStore = useListsStore()
+listsStore.currentList.name = "Today's Todo's"
 
 useHead({ title: 'TickUp:Home' })
-
-listsStore.getTodos()
-
-
-if (data.value?.user) {
-  listsStore.getTodaysTodos(data.value.user.sub)
-}
-
 
 definePageMeta({
   layout: 'default',
@@ -28,33 +20,9 @@ definePageMeta({
     navigateUnauthenticatedTo: '/login',
   },
 })
-let userId;
+let userId = "";
 if (data.value && data.value?.user) {
   userId = data.value?.user.id ? data.value?.user.id : data.value?.user.sub
-
-  
-} else {
-  userId = ''
-}
-const newTodo = ref<Todo>({
-  name: '',
-  status: 'Open',
-  dueDate: new Date(),
-  userId: userId,
-  _id: undefined
-})
-
-const dialog = ref(false)
-
-async function addTodayTodo() {
-  const invalid = await newTodoInput.value.validate()
-  console.log('valid', invalid.length)
-  if (invalid.length === 0) {
-    await listsStore.addTodo(newTodo.value)
-    await listsStore.getTodaysTodos(data.value?.user.sub)
-    newTodo.value.name = ''
-  }
-
 }
 
 const todaysTodos = computed(() => {
@@ -65,11 +33,7 @@ const todaysClosedTodos = computed(() => {
   return listsStore.todaysTodos.filter((todo) => todo.status === 'Closed')
 })
 
-const newTodoRules = [
-  (v: string) => !!v || 'Todo is required',
-]
-
-function selectTodo(todo) {
+function selectTodo(todo: Todo) {
   dialog.value = true
   listsStore.setCurrentTodo(todo)
 }
@@ -78,32 +42,7 @@ function selectTodo(todo) {
 
 <template>
   <v-row class="fill-height">
-    <v-col cols="12">
-        <h2>
-          Today's Todo's
-        </h2>
-      </v-col>
       <v-col cols="12">
-        <div>
-          <v-text-field
-            ref="newTodoInput"
-            v-model="newTodo.name"
-            placeholder="Add a new todo..."
-            density="compact"
-            :rules="newTodoRules"
-            validate-on="submit lazy"
-            @keyup.enter="addTodayTodo"
-          >
-            <template #append-inner>
-              <v-icon
-                size="small"
-                @click="addTodayTodo"
-              >
-                mdi-plus
-              </v-icon>
-            </template>
-          </v-text-field>
-        </div>
         <v-tabs
           v-model="tab"
           align-tabs="center"
@@ -149,7 +88,7 @@ function selectTodo(todo) {
                     elevation="0"
                     variant="text"
                     size="small"
-                    @click="listsStore.deleteTodo(todo._id)"
+                    @click.stop="listsStore.deleteTodo(todo._id)"
                   />
                 </template>
               </v-list-item>
