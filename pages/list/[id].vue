@@ -29,7 +29,9 @@ if (currentList.value) {
 <template>
   <v-row>
     <v-col cols="12">
-      <h2>{{ currentList.name }}</h2>
+      <h2 v-if="currentList">
+      {{ currentList.name }}
+      </h2>
     </v-col> 
     <v-col cols="12">
       <TodoNew :list-id="params.id" />
