@@ -1,8 +1,4 @@
-<script
-  setup
-  lang="ts"
->
-const { data, status } = useAuth()
+<script setup lang="ts">
 const loggedIn = computed(() => status.value === 'authenticated')
 const listsStore = useListsStore()
 const tab = ref('todo')
