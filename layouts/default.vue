@@ -17,11 +17,9 @@
                 <h2>{{ listStore.currentList.name }}</h2>
               </v-col>
               <v-col cols="12">
-              <TodoNew />
-            </v-col> 
-              <v-col cols="12">
-                <NuxtPage />
-              </v-col>
+                <TodoNew />
+              </v-col> 
+              <NuxtPage />
             </v-row>
             </v-container>
           </v-main>

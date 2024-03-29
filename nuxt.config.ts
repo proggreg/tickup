@@ -53,7 +53,7 @@ export default defineNuxtConfig({
         },
         VTextField: {
           rounded: 'xl',
-          variant: 'solo-inverted',
+          variant: 'outlined',
           density: 'compact'
         },
         VListItem: {

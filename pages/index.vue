@@ -39,9 +39,7 @@ function selectTodo(todo: Todo) {
 }
 
 </script>
-
 <template>
-  <v-row class="fill-height">
       <v-col cols="12">
         <v-tabs
           v-model="tab"
@@ -129,7 +127,6 @@ function selectTodo(todo: Todo) {
             </v-list>
           </v-window-item>
         </v-window>
-
     </v-col>
     <!-- TODO add reminders feature -->
     <!-- <v-col >
@@ -137,5 +134,4 @@ function selectTodo(todo: Todo) {
         <h2>reminders</h2>
       </v-card>
     </v-col> -->
-  </v-row>
 </template>
