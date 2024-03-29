@@ -59,13 +59,9 @@ function handleBlur() {
 <template>
   <v-row>
     <v-col
-      v-for="status in groupedTodos"
-      :key="status.name"
-    >
-      <v-card
-        class="ma-2"
-        color="secondary"
-      >
+      v-for="status in groupedTodos" :key="status.name"
+    >   
+      <v-card class="ma-2" variant="tonal">
         <v-card-title>
           {{ status.name }}
         </v-card-title>
