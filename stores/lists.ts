@@ -114,6 +114,7 @@ export const useListsStore = defineStore('lists', {
 
       if (data.value) {
         this.currentList = data.value
+        return this.currentList
       }
     },
     async getTodo(id: string) {

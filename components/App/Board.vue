@@ -59,13 +59,9 @@ function handleBlur() {
 <template>
   <v-row>
     <v-col
-      v-for="status in groupedTodos"
-      :key="status.name"
-    >
-      <v-card
-        class="ma-2"
-        color="secondary"
-      >
+      v-for="status in groupedTodos" :key="status.name"
+    >   
+      <v-card class="ma-2" variant="tonal">
         <v-card-title>
           {{ status.name }}
         </v-card-title>
@@ -89,6 +85,7 @@ function handleBlur() {
                   <v-text-field
                     v-model="element.name"
                     placeholder="Add todo"
+                    hide-details
                     @keyup.enter="addTodo(element)"
                     />
                 </v-card-item>
@@ -98,14 +95,17 @@ function handleBlur() {
         </div>
 
         <v-card v-if="newTodo.status === status.name" class="ma-2 px-4">
-          <v-text-field
-            v-model="newTodo.name"
-            placeholder="Add todo"
-            variant="plain"
-            :focused="true"
-            @blur="handleBlur"
-            @keyup.enter="addTodo(newTodo)"
-          />
+          <v-card-title>
+            <v-text-field
+              v-model="newTodo.name"
+              placeholder="Add todo"
+              variant="plain"
+              :focused="true"
+              hide-details
+              class="pa-0"
+              @keyup.enter="addTodo(newTodo)"
+            />
+          </v-card-title>
         </v-card>
         <v-card-actions>
        
