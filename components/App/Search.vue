@@ -118,7 +118,7 @@ function formattedTime(d: string) {
           </v-list-item-title>
 
           <template #append>
-            <v-btn icon="mdi-open-in-new" variant="text" />
+            <v-btn :to="`/todo/${item._id}`" icon="mdi-open-in-new" variant="text" />
           </template>
         </v-list-item>
       </template>

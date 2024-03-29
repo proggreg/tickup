@@ -4,7 +4,7 @@ const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`)
 const { data: todos } = await useFetch<Todo[]>(`/api/list/todos`, { query: { id: params.id } })
 const store = useListsStore()
 const tabs = ref<string[]>(['list', 'board'])
-const currentTab = ref<string>('board')
+const currentTab = ref<string>('list')
 const { xs } = useDisplay()
 
 if (currentList.value) {
@@ -49,4 +49,7 @@ if (currentList.value) {
       </v-window-item>
     </v-window>
   </v-col>
+  <v-coL v-else>
+    <ListTable v-if="todos" :list_id="params.id" />
+  </v-coL>
 </template>

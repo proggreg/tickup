@@ -38,7 +38,7 @@ let expanded = reactive(['Open'])
 
 function showModal(todo: any) {
   store.setCurrentTodo(todo.raw);
-  dialog.value = true;
+  navigateTo(`/todo/${todo.raw._id}`);
 }
 
 function isSorted(sortBy, column) {
@@ -160,10 +160,10 @@ function myToggleGroup(toggleGroup, groupItem) {
               :key="column.key"
             >
               <v-hover
-v-if="column.key !== 'data-table-group' &&
+                v-if="column.key !== 'data-table-group' &&
                 column.key !== 'data-table-expand' &&
                 column.key !== 'actions'"
->
+              >
                 <template #default="{ isHovering, props }">
                   <th
                     :style="isHovering ? 'cursor: pointer' : ''"
