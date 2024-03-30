@@ -34,10 +34,6 @@ function selectTodo(todo: Todo) {
   navigateTo(`/todo/${todo._id}`)
 }
 
-onBeforeRouteUpdate(() => {
-  console.log('before update homepage')
-})
-
 
 </script>
 <template>
