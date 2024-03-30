@@ -14,7 +14,9 @@
             >
             <v-row class="fill-height">
               <v-col cols="12">
-                <h2>{{ listStore.currentTodo.name }}</h2>
+                <NuxtLink :to="`/list/${listStore.currentList._id}`">
+                  <h2>{{ listStore.currentList.name }}</h2>
+                </NuxtLink>
               </v-col>
               <NuxtPage />
             </v-row>
