@@ -1,4 +1,7 @@
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 const { params } = useRoute()
 const listStore = useListsStore()
 definePageMeta({
@@ -8,9 +11,7 @@ const todo = ref({})
 
 onMounted(() => {
   $fetch(`/api/todo/${params.id}`).then((data) => {
-    todo.value = data
     listStore.setCurrentTodo(data)
-    console.log('todo', todo.value)
     $fetch(`/api/list/${todo.value.listId}`).then((data) => {
       console.log('list', data)
       listStore.setCurrentList(data)
@@ -20,11 +21,9 @@ onMounted(() => {
 
 })
 
-
-
-
 </script>
 <template>
- 
+  <v-col>
     <TodoDetail />
+  </v-col>
 </template>
