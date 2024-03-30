@@ -8,6 +8,7 @@ module.exports = {
     'vue/valid-v-slot': 'off',
     'vue/max-attributes-per-line': 'off',
     'vue/html-indent': 'off',
-    'vue/multiline-html-element-content-newline': 'off'
+    'vue/multiline-html-element-content-newline': 'off',
+    'vue/first-attribute-linebreak': 'off',
   }
 }
