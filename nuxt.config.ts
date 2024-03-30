@@ -57,6 +57,10 @@ export default defineNuxtConfig({
           variant: 'outlined',
           density: 'compact'
         },
+        VTextarea: {
+          rounded: 'xl',
+          variant: 'outlined',
+        },
         VListItem: {
           rounded: 'xl',
         },
