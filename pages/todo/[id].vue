@@ -1,7 +1,4 @@
-<script
-  setup
-  lang="ts"
->
+<script setup lang="ts">
 const { params } = useRoute()
 const listStore = useListsStore()
 definePageMeta({
@@ -24,7 +21,14 @@ onMounted(() => {
 
 </script>
 <template>
-  <v-col>
-    <TodoDetail />
-  </v-col>
+  <NuxtErrorBoundary>
+    <template #error="{ error }">
+      <v-alert litype="error">
+        {{ error }}
+      </v-alert>
+    </template>
+    <v-col>
+      <TodoDetail />
+    </v-col>
+  </NuxtErrorBoundary>
 </template>

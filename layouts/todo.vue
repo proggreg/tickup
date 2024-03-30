@@ -1,16 +1,10 @@
-<script
-  setup
-  lang="ts"
->
+<script setup lang="ts">
 const colorMode = useColorMode()
 const listStore = useListsStore()
 </script>
 <template>
   <ColorScheme>
-    <v-theme-provider
-      with-background
-      :theme="colorMode.preference"
-    >
+    <v-theme-provider with-background :theme="colorMode.preference">
       <v-app>
         <v-layout>
           <app-nav />
@@ -18,10 +12,7 @@ const listStore = useListsStore()
             <v-container fluid>
               <v-row class="fill-height">
                 <v-col cols="12">
-                  <v-btn
-                    variant="text"
-                    :to="`/list/${listStore.currentList._id}`"
-                  >
+                  <v-btn v-if="listStore.currentList?._id" variant="text" :to="`/list/${listStore.currentList._id}`">
                     <template #prepend>
                       <v-icon>mdi-arrow-left</v-icon>
                     </template>

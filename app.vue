@@ -14,7 +14,7 @@ if (status.value === 'authenticated') {
 if (route.params.id) {
     const { data: currentList } = await useFetch<List>(`/api/list/${route.params.id}`)
     if (currentList.value) {
-        listsStore.setListName(currentList.value.name)    
+        listsStore.setListName(currentList.value.name)
     }
 }
 

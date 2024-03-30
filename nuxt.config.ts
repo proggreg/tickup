@@ -95,10 +95,13 @@ export default defineNuxtConfig({
     strict: true
   },
   bugsnag: {
+    baseUrl: process.env.NUXT_ENV_VERCEL_URL || 'http://localhost:3000',
+    publishRelease: true,    
     config: {
       apiKey: process.env.BUGSNAG_API_KEY,
-      enabledReleaseStages: ['staging', 'production'],
+      enabledReleaseStages: ['development','staging', 'production'],
       releaseStage: process.env.NODE_ENV,
+
     }
   },
   devtools: {

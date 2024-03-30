@@ -3,7 +3,7 @@ declare global {
   interface Todo {
     userId: string | undefined;
     name: string;
-    _id: string | undefined;
+    _id: string;
     dueDate?: Date,
     listId?: string;
     status: string;
