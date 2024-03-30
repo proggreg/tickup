@@ -4,6 +4,7 @@ interface listsState {
   currentTodo: Todo,
   todos?: Todo[]
   todaysTodos: Todo[]
+  view: "list" | "board"
 }
 
 export const useListsStore = defineStore('lists', {
@@ -11,8 +12,9 @@ export const useListsStore = defineStore('lists', {
     lists: [],
     currentList: {
       name: '',
-      todos: []
+      todos: [],
     },
+    view: 'list',
     currentTodo: {
       name: '',
       status: 'Done',
