@@ -282,4 +282,3 @@ v-if="column.key !== 'data-table-group' &&
   padding: 0 !important;
 }
 </style>
-```
