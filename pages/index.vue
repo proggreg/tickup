@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { status } = useAuth()
+const { status } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
 const listsStore = useListsStore()
 const tab = ref('todo')
@@ -9,6 +10,7 @@ if (!loggedIn.value) {
   navigateTo('/login')
 }
 
+listsStore.setCurrentListName("Today's Todo's")
 listsStore.setCurrentListName("Today's Todo's")
 
 useHead({ title: 'TickUp:Home' })
@@ -31,6 +33,7 @@ const todaysClosedTodos = computed(() => {
 
 function selectTodo(todo: Todo) {
   listsStore.setCurrentTodo(todo)
+  navigateTo(`/todo/${todo._id}`)
   navigateTo(`/todo/${todo._id}`)
 }
 
