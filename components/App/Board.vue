@@ -2,9 +2,10 @@
 const statuses = useSettingsStore().statuses
 const store = useListsStore()
 const dragging = ref(false)
-const {data} = useAuth()
+const { data } = useAuth()
 const route = useRoute()
 const { todos } = defineProps<{ todos: Todo[] }>()
+const listStore = useListsStore()
 const newTodo = ref({
   name: '',
   userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub,
@@ -55,39 +56,31 @@ function handleBlur() {
   }
 }
 
+function gotoTodo(todo: Todo) {
+  listStore.setCurrentTodo(todo)
+  navigateTo(`/todo/${todo._id}`)
+}
+
 </script>
 <template>
   <v-row>
-    <v-col
-      v-for="status in groupedTodos" :key="status.name"
-    >   
+    <v-col v-for="status in groupedTodos" :key="status.name">
       <v-card class="ma-2" variant="tonal">
         <v-card-title>
           {{ status.name }}
         </v-card-title>
         <div>
-          <draggable
-            :list="status.todos"
-            ghost-class="ghost"
-            item-key="_id"
-            group="status"
-            :component-data="getComponentData(status.name)"
-            @start="dragging = true"
-            @end="dragging = false"
-            @change="(e) => change(e, status)"
-          >
+          <draggable :list="status.todos" ghost-class="ghost" item-key="_id" group="status"
+            :component-data="getComponentData(status.name)" @start="dragging = true" @end="dragging = false"
+            @change="(e) => change(e, status)">
             <template #item="{ element }">
-              <v-card class="ma-2">
+              <v-card class="ma-2" style="cursor: pointer" @click="gotoTodo(element)">
                 <v-card-title v-if="element._id">
                   {{ element.name }}
                 </v-card-title>
                 <v-card-item v-else>
-                  <v-text-field
-                    v-model="element.name"
-                    placeholder="Add todo"
-                    hide-details
-                    @keyup.enter="addTodo(element)"
-                    />
+                  <v-text-field v-model="element.name" placeholder="Add todo" hide-details
+                    @keyup.enter="addTodo(element)" />
                 </v-card-item>
               </v-card>
             </template>
@@ -96,23 +89,13 @@ function handleBlur() {
 
         <v-card v-if="newTodo.status === status.name" class="ma-2 px-4">
           <v-card-title>
-            <v-text-field
-              v-model="newTodo.name"
-              placeholder="Add todo"
-              variant="plain"
-              :focused="true"
-              hide-details
-              class="pa-0"
-              @keyup.enter="addTodo(newTodo)"
-            />
+            <v-text-field v-model="newTodo.name" placeholder="Add todo" variant="plain" :focused="true" hide-details
+              class="pa-0" @keyup.enter="addTodo(newTodo)" />
           </v-card-title>
         </v-card>
         <v-card-actions>
-       
-          <v-btn
-            color="primary"
-            @click="newTodo.status = status.name"
-          >
+
+          <v-btn color="primary" @click="newTodo.status = status.name">
             Add
           </v-btn>
         </v-card-actions>
@@ -122,7 +105,7 @@ function handleBlur() {
 </template>
 
 <style>
-  .ghost {
-    opacity: 0.5;
-  }
+.ghost {
+  opacity: 0.5;
+}
 </style>
