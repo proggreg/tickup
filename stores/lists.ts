@@ -52,6 +52,7 @@ export const useListsStore = defineStore('lists', {
     },
     
     setListName(newName: string) {
+      if (!this.currentList) { return; }
       this.currentList.name = newName;
     },
     setListTodos(todos: Todo[]) {
@@ -80,19 +81,18 @@ export const useListsStore = defineStore('lists', {
       });
       return updatedTodo;
     },
-    async deleteTodo(todoId: string) {
-      await $fetch(`/api/todo/${todoId}`, {
-        method: 'DELETE'
-      });
+    async deleteTodo(id: string) {
+      await $fetch(`/api/todo/${id}`, { method: 'DELETE' });
 
-      this.getTodos();
-      this.todaysTodos = this.todaysTodos.filter(todo => todo._id !== todoId);
-
-      if (!this.currentList) { return; }
-      this.currentList.todos = this.currentList.todos.filter(todo => todo._id !== todoId);
+      if (this.todaysTodos.length) {
+        this.todaysTodos = this.todaysTodos.filter(todo => todo._id !== id);
+      }
     },
     setCurrentList(list: List) {
       this.currentList = list;
+    },
+    setCurrentListName(name: string) { 
+      this.currentList.name = name; 
     },
     setCurrentTodo(currentTodo: Todo) {
       this.currentTodo = currentTodo;
@@ -130,8 +130,8 @@ export const useListsStore = defineStore('lists', {
 
       return data;
     },
-    async getTodos() {
-      const { data } = await useFetch<Todo[]>('/api/todos');
+    async getTodos(userId: string) {
+      const { data } = await useFetch<Todo[]>('/api/todos', { query: { userId } });
 
       if (data.value) {
         this.todos = data.value;
@@ -139,6 +139,7 @@ export const useListsStore = defineStore('lists', {
     },
     async getTodaysTodos(id: string) {
       const { data } = await useFetch<Todo[]>('/api/todos', { query: { today: true, id } });
+      
       if (data.value) {
         this.todaysTodos = data.value;
       }

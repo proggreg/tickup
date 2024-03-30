@@ -9,7 +9,7 @@ if (!loggedIn.value) {
   navigateTo('/login')
 }
 
-listsStore.currentList.name = "Today's Todo's"
+listsStore.setCurrentListName("Today's Todo's")
 
 useHead({ title: 'TickUp:Home' })
 
@@ -34,13 +34,15 @@ function selectTodo(todo: Todo) {
   navigateTo(`/todo/${todo._id}`)
 }
 
+onBeforeRouteUpdate(() => {
+  console.log('before update homepage')
+})
+
+
 </script>
 <template>
   <v-col cols="12">
-    <v-tabs
-      v-model="tab"
-      align-tabs="center"
-    >
+    <v-tabs v-model="tab" align-tabs="center">
       <v-tab>
         todo
       </v-tab>
@@ -48,30 +50,15 @@ function selectTodo(todo: Todo) {
         done
       </v-tab>
     </v-tabs>
-    <v-window
-      v-model="tab"
-      class=""
-      style="min-height: 150px;"
-    >
+    <v-window v-model="tab" class="" style="min-height: 150px;">
       <v-window-item value="todo">
-        <v-card
-          v-if="todaysTodos.length"
-          variant="tonal"
-        >
+        <v-card v-if="todaysTodos.length" variant="tonal">
           <v-list>
-            <AppDialog
-              :open="dialog"
-              @close="dialog = false"
-            >
+            <AppDialog :open="dialog" @close="dialog = false">
               <TodoDetail />
             </AppDialog>
 
-            <v-list-item
-              v-for="todo in todaysTodos"
-              :key="todo._id"
-              class="fill-height"
-              @click="selectTodo(todo)"
-            >
+            <v-list-item v-for="todo in todaysTodos" :key="todo._id" class="fill-height" @click="selectTodo(todo)">
 
               <template #prepend>
                 <ListStatus :todo="todo" />
@@ -81,37 +68,23 @@ function selectTodo(todo: Todo) {
               </v-list-item-title>
 
               <template #append>
-                <v-btn
-                  icon="mdi-delete"
-                  elevation="0"
-                  variant="text"
-                  size="small"
-                  @click.stop="listsStore.deleteTodo(todo._id)"
-                />
+                <v-btn icon="mdi-delete" elevation="0" variant="text" size="small"
+                  @click.stop="listsStore.deleteTodo(todo._id)" />
               </template>
             </v-list-item>
 
           </v-list>
         </v-card>
-        <v-card
-          v-else
-          variant="tonal"
-        >
+        <v-card v-else variant="tonal">
           <v-card-item class="text-center">
             Nothing todo today 🎉
           </v-card-item>
         </v-card>
       </v-window-item>
-      <v-window-item
-        value="done"
-        height="100"
-      >
+      <v-window-item value="done" height="100">
         <v-card variant="tonal">
           <v-list v-if="todaysClosedTodos.length">
-            <v-list-item
-              v-for="todo in todaysClosedTodos"
-              :key="todo._id"
-            >
+            <v-list-item v-for="todo in todaysClosedTodos" :key="todo._id">
               <template #prepend>
                 <ListStatus :todo="todo" />
               </template>
@@ -120,11 +93,7 @@ function selectTodo(todo: Todo) {
               </v-list-item-title>
 
               <template #append>
-                <v-btn
-                  icon
-                  elevation="0"
-                  @click="listsStore.deleteTodo(todo._id)"
-                >
+                <v-btn icon elevation="0" @click="listsStore.deleteTodo(todo._id)">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </template>
