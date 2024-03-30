@@ -18,7 +18,7 @@ export const useListsStore = defineStore('lists', {
       status: 'Done',
       desc: '',
       userId: undefined,
-      _id: undefined
+      _id: ""
     },
     todos: [],
     todaysTodos: []
