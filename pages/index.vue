@@ -30,8 +30,8 @@ const todaysClosedTodos = computed(() => {
 })
 
 function selectTodo(todo: Todo) {
-  dialog.value = true
   listsStore.setCurrentTodo(todo)
+  navigateTo(`/todo/${todo._id}`)
 }
 
 </script>
