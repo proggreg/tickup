@@ -10,9 +10,10 @@ definePageMeta({
 const todo = ref({})
 
 onMounted(() => {
-  $fetch(`/api/todo/${params.id}`).then((data) => {
-    listStore.setCurrentTodo(data)
-    $fetch(`/api/list/${todo.value.listId}`).then((data) => {
+  $fetch(`/api/todo/${params.id}`).then((todo) => {
+    listStore.setCurrentTodo(todo)
+    console.log('todo', todo)
+    $fetch(`/api/list/${todo.listId}`).then((data) => {
       console.log('list', data)
       listStore.setCurrentList(data)
     })
