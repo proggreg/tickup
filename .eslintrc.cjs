@@ -10,7 +10,6 @@ module.exports = {
     'vue/html-indent': 'off',
     'vue/multiline-html-element-content-newline': 'off',
     'vue/require-prop-types': 'off',
-    'vue/first-attribute-linebreak': 'off',,
     'vue/first-attribute-linebreak': 'off',
   }
 }
