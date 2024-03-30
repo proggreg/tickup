@@ -11,7 +11,13 @@ onMounted(() => {
     todo.value = data
     listStore.setCurrentTodo(data)
     console.log('todo', todo.value)
+    $fetch(`/api/list/${todo.value.listId}`).then((data) => {
+      console.log('list', data)
+      listStore.setCurrentList(data)
+    })
   })
+
+
 })
 
 
@@ -19,5 +25,6 @@ onMounted(() => {
 
 </script>
 <template>
+ 
     <TodoDetail />
 </template>
