@@ -3,14 +3,13 @@ const { params } = useRoute()
 const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`)
 const { data: todos } = await useFetch<Todo[]>(`/api/list/todos`, { query: { id: params.id } })
 const store = useListsStore()
-const tabs = ref<string[]>(['list', 'board'])
-const currentTab = ref<string>('list')
+const tabs = ref<View[]>(['list', 'board'])
+const currentTab = ref<View>(store.view || 'list')
 const { xs } = useDisplay()
 
 if (currentList.value) {
   store.setListName(currentList.value.name)
 }
-
 
 if (todos) {
   store.setListTodos(todos)
@@ -25,6 +24,11 @@ if (currentList.value) {
     title: 'TickUp:' + currentList.value.name
   })
 }
+
+watch(currentTab, (newTab, oldTab) => {
+  console.log(newTab, oldTab)
+  store.setView(newTab)
+})
 
 </script>
 <template>

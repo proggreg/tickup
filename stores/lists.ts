@@ -4,7 +4,7 @@ interface listsState {
   currentTodo: Todo,
   todos?: Todo[]
   todaysTodos: Todo[]
-  view: "list" | "board"
+  view: View
 }
 
 export const useListsStore = defineStore('lists', {
@@ -17,7 +17,7 @@ export const useListsStore = defineStore('lists', {
     view: 'list',
     currentTodo: {
       name: '',
-      status: 'Done',
+      status: 'Open',
       desc: '',
       userId: undefined,
       _id: ""
@@ -52,7 +52,6 @@ export const useListsStore = defineStore('lists', {
         this.lists = this.lists.filter(list => list._id !== data._id);
       }
     },
-    
     setListName(newName: string) {
       if (!this.currentList) { return; }
       this.currentList.name = newName;
@@ -95,6 +94,9 @@ export const useListsStore = defineStore('lists', {
     },
     setCurrentListName(name: string) { 
       this.currentList.name = name; 
+    },
+    setView(view: "list" | "board") {
+      this.view = view;
     },
     setCurrentTodo(currentTodo: Todo) {
       this.currentTodo = currentTodo;

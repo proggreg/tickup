@@ -21,4 +21,6 @@ declare global {
     todos: Todo[];
     _id?: string;
   }
+
+  type View = "list" | "board";
 }
