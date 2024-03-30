@@ -42,7 +42,7 @@ if (currentList.value) {
       </v-window-item>
     </v-window>
   </v-col>
-  <v-coL v-else>
+  <v-col v-else>
     <ListTable v-if="todos" :list_id="params.id" />
-  </v-coL>
+  </v-col>
 </template>
