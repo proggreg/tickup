@@ -9,6 +9,6 @@ module.exports = {
     'vue/max-attributes-per-line': 'off',
     'vue/html-indent': 'off',
     'vue/multiline-html-element-content-newline': 'off',
-    'vue/require-prop-types': 'off',
+    'vue/first-attribute-linebreak': 'off',
   }
 }
