@@ -49,7 +49,7 @@
     "cypress": "^13.7.1",
     "mongodb": "^6.3.0",
     "mongoose": "^7.5.0",
-    "next-auth": "4.21.1",
+    "next-auth": "^4.24.7",
     "nuxt-bugsnag": "^7.2.3",
     "nuxt-mongoose": "^1.0.2",
     "nuxt-time": "^0.1.1",
