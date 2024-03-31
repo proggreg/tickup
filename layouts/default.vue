@@ -17,15 +17,16 @@ const listStore = useListsStore()
                       {{ error }}
                     </v-alert>
                   </template>
-                    <v-col cols="12">
-                      <h2 v-if="listStore.currentList && listStore.currentList.name" id="list-title">
-                        {{ listStore.currentList.name }}
-                      </h2>
-                    </v-col>
-                <v-col cols="12">
-                  <TodoNew />
-                </v-col>
-                <NuxtPage />
+                  <v-col cols="12">
+                    <h2 v-if="listStore.currentList && listStore.currentList.name" id="list-title">
+                      {{ listStore.currentList.name }}
+                    </h2>
+                    <ListOptions v-if="listStore.currentList._id" :list-id="listStore.currentList._id" />
+                  </v-col>
+                  <v-col cols="12">
+                    <TodoNew />
+                  </v-col>
+                  <NuxtPage />
                 </NuxtErrorBoundary>
               </v-row>
             </v-container>

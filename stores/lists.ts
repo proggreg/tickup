@@ -40,6 +40,17 @@ export const useListsStore = defineStore('lists', {
         return newList;
       }
     },
+    async updateList(list: List) {
+      if (list && list._id) {
+        const updatedList = await $fetch<List>(`/api/list/${list._id}`, {
+          method: 'PUT',
+          body: list
+        });
+
+        this.lists = this.lists.map(l => l._id === updatedList._id ? updatedList : l);
+        return updatedList;
+      }
+    },
     setLists(lists: Array<List>) {
       this.lists = lists;
     },
