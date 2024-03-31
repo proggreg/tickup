@@ -13,7 +13,7 @@ jobs:
             node-version: 20.12.0
       - name: install and build
         run: |
-          npm i
+          pnpm install
           npm dev
       - name: Cypress run
         uses: cypress-io/github-action@v6
