@@ -38,53 +38,22 @@ const loginUser = async () => {
 </script>
 <template>
   <v-sheet>
-    <v-form
-      ref="loginForm"
-      @submit.prevent="loginUser"
-    >
-      <v-text-field
-        v-model="username"
-        label="Username"
-        type="text"
-        :rules="userNameRules"
-        required
-        class="error"
-      />
-    
-      <v-text-field
-        v-model="password"
-        label="Password"
-        :rules="passwordRules"
-        type="password"
-        required
-      />
-          <v-btn
-          class="mb-4"
-            color="primary"
-            block
-            type="submit"
-          >
-            Login
-          </v-btn>
-          <v-btn
-            color="primary"
-            append-icon="mdi-github"
-            class="mb-4"
-            block
-            @click="signIn(`github`)"
-          >
-            Github Sign In
-          </v-btn>
-          <span>Don't have an account </span>
-          <NuxtLink
-            color="secondary"
-            to="/register"
-          >Register</NuxtLink>
-      <v-snackbar
-        v-model="correctCredentials"
-        color="danger"
-      >
+    <v-form ref="loginForm" @submit.prevent="loginUser">
+      <v-text-field v-model="username" label="Username" type="text" :rules="userNameRules" required class="error"
+        data-cy="username" />
+
+      <v-text-field v-model="password" label="Password" :rules="passwordRules" type="password" required
+        data-cy="password" />
+      <v-btn class="mb-4" color="primary" block type="submit" data-cy="login-btn">
+        Login
+      </v-btn>
+      <v-btn color="primary" append-icon="mdi-github" class="mb-4" block @click="signIn(`github`)">
+        Github Sign In
+      </v-btn>
+      <span>Don't have an account </span>
+      <NuxtLink color="secondary" to="/register">Register</NuxtLink>
+      <v-snackbar v-model="correctCredentials" color="danger">
         Incorrect Credentials
       </v-snackbar>
     </v-form>
-</v-sheet></template>
+  </v-sheet></template>

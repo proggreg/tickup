@@ -32,27 +32,17 @@ async function createNewList() {
 </script>
 
 <template>
-  <AppDialog
-    :open="props.open"
-    @close="emit('close')"
-  >
+  <AppDialog :open="props.open" @close="emit('close')">
     <template #open>
       <div class="d-flex justify-space-between">
         Lists
       </div>
     </template>
     <v-container>
-      <v-text-field
-        v-model="newList.name"
-        placeholder="New List"
-        @keyup.enter="createNewList"
-      />
+      <v-text-field v-model="newList.name" placeholder="New List" @keyup.enter="createNewList" id="list-name" />
     </v-container>
     <template #buttons>
-      <v-btn
-        color="primary"
-        @click="createNewList"
-      >
+      <v-btn color="primary" @click="createNewList" id="create-list">
         Save
       </v-btn>
     </template>
