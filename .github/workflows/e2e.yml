@@ -18,6 +18,6 @@ jobs:
       - name: install and build
         run: |
           pnpm install
-          npm dev
+          pnpm dev
       - name: Cypress run
         uses: cypress-io/github-action@v6
