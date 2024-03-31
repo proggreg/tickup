@@ -6,8 +6,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      # Install npm dependencies, cache them correctly
-      # and run all Cypress tests
+        env: 
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
       - uses: pnpm/action-setup@v3
         with:
           version: 8
