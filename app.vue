@@ -25,6 +25,7 @@ if (route.params.id) {
 <template>
     <div>
         <NuxtLayout>
+   
             <NuxtPage />
         </NuxtLayout>
     </div>

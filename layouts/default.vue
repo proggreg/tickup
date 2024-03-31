@@ -11,23 +11,22 @@ const listStore = useListsStore()
           <v-main>
             <v-container fluid>
               <v-row class="fill-height">
-                <!-- <NuxtErrorBoundary>
+                <NuxtErrorBoundary>
                   <template #error="{ error }">
+                    <v-alert type="error">
+                      {{ error }}
+                    </v-alert>
+                  </template>
                     <v-col cols="12">
-                      <h2 v-if="listStore.currentList && listStore.currentList.name">
+                      <h2 v-if="listStore.currentList && listStore.currentList.name" id="list-title">
                         {{ listStore.currentList.name }}
                       </h2>
-                    </v-col> -->
+                    </v-col>
                 <v-col cols="12">
                   <TodoNew />
                 </v-col>
-
-                <!-- <v-alert type="error">
-                      {{ error }}
-                    </v-alert>
-                  </template> -->
                 <NuxtPage />
-                <!-- </NuxtErrorBoundary> -->
+                </NuxtErrorBoundary>
               </v-row>
             </v-container>
           </v-main>
