@@ -10,7 +10,7 @@ jobs:
       # and run all Cypress tests
       - name: install and build
         run: |
-          yarn install
-          yarn dev
+          npm install
+          npm ci
       - name: Cypress run
         uses: cypress-io/github-action@v6
