@@ -130,13 +130,9 @@ export default defineNuxtConfig({
   },
   mongoose: {
     devtools: true,
+    uri: process.env.MONGODB_URI,
     options: {
       appName: 'Tickup',
     }
-  },
-
-  setup({config}, nuxt) {
-    nuxt.options.build.transpile.push(resolve('./runtime/nuxt/mongoose'))
-    
   }
 })
