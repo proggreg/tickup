@@ -42,7 +42,7 @@ dependencies:
     specifier: ^7.2.3
     version: 7.2.3(rollup@2.79.1)
   nuxt-mongoose:
-    specifier: ^1.0.2
+    specifier: ^1.0.5
     version: 1.0.5(@nuxt/devtools@1.1.5)(@vue/compiler-core@3.4.21)(nuxt@3.11.1)(postcss@8.4.38)(rollup@2.79.1)(vite@5.2.7)(vue@3.4.21)(webpack@5.91.0)
   nuxt-time:
     specifier: ^0.1.1
