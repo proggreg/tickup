@@ -2,7 +2,7 @@ describe('List CRUD', () => {
 
   const randomNumber = Math.floor(Math.random() * 1000)
   const listName = 'testlist' + randomNumber
-
+  const newTitle = 'newTitle' + randomNumber
   it('should create a list', () => {
     cy.visit('/')
     cy.get('[data-cy="username"]').type('greg2')
@@ -35,7 +35,7 @@ describe('List CRUD', () => {
   });
 
   it('should edit a list title from nav', () => {
-    const newTitle = 'newTitle' + randomNumber
+    
     cy.visit('/')
     cy.get('[data-cy="username"]').type('greg2')
     cy.get('[data-cy="password"]').type('test')
@@ -55,14 +55,19 @@ describe('List CRUD', () => {
     // TODO asset response body has new title
   });
 
-  // it('should delete a list', () => {
-  //   // TODO - delete a list
+  it('should delete a list', () => {
+    // TODO - delete a list
 
-  //       cy.visit('/')
-  //   cy.get('[data-cy="username"]').type('greg2')
-  //   cy.get('[data-cy="password"]').type('test')
-  //   cy.get('[data-cy="login-btn"]').click()
-  // });
+    cy.visit('/')
+    cy.get('[data-cy="username"]').type('greg2')
+    cy.get('[data-cy="password"]').type('test')
+    cy.get('[data-cy="login-btn"]').click()
+    cy.wait(2000)
+    cy.get(`[data-cp="option-btn-${newTitle}"]`).click()
+    cy.get('[data-cp="option-menu-Delete"]').click()
+
+    cy.get(`[data-cp="option-btn-${newTitle}"]`).should('not.exist')
+  });
 
   
 })
