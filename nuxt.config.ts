@@ -120,6 +120,7 @@ export default defineNuxtConfig({
     }
   },
   auth: {
+    isEnabled: false,
     provider: {
       type: "authjs",
     },
