@@ -21,3 +21,8 @@ jobs:
           pnpm dev
       - name: Cypress run
         uses: cypress-io/github-action@v6
+        with:
+          start: pnpm dev
+          wait-on: "http://localhost:3000"
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
