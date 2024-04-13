@@ -3,6 +3,7 @@ const store = useListsStore()
 
 const optionProps = defineProps<{ listId: string, size?: string, list: List}>()
 async function deleteList () {
+  throw new Error('Not implemented')
   store.deleteList(optionProps.listId)
   await navigateTo('/')
 }
