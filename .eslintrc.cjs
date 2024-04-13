@@ -11,5 +11,8 @@ module.exports = {
     'vue/multiline-html-element-content-newline': 'off',
     'vue/require-prop-types': 'off',
     'vue/first-attribute-linebreak': 'off',
-  }
+  },
+  "plugins": [
+    "cypress"
+  ]
 }

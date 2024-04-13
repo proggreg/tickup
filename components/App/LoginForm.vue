@@ -49,6 +49,7 @@ const loginUser = async () => {
         :rules="userNameRules"
         required
         class="error"
+        data-cy="username"
       />
     
       <v-text-field
@@ -57,12 +58,14 @@ const loginUser = async () => {
         :rules="passwordRules"
         type="password"
         required
+        data-cy="password"
       />
           <v-btn
           class="mb-4"
             color="primary"
             block
             type="submit"
+            data-cy="login-button"
           >
             Login
           </v-btn>

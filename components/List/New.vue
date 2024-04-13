@@ -45,6 +45,7 @@ async function createNewList() {
       <v-text-field
         v-model="newList.name"
         placeholder="New List"
+        data-cy="new-list-input"
         @keyup.enter="createNewList"
       />
     </v-container>
@@ -52,6 +53,7 @@ async function createNewList() {
       <v-btn
         color="primary"
         @click="createNewList"
+        data-cy="create-list-button"
       >
         Save
       </v-btn>

@@ -27,6 +27,7 @@ async function selectList (list: List) {
       :value="i"
       placeholder="My List"
       @click="selectList(list)"
+      :data-cy="'list-item-' + list.name"
     >
       <v-list-item-title>{{ list.name }}</v-list-item-title>
 
@@ -34,6 +35,7 @@ async function selectList (list: List) {
         <ListOptions
           v-if="list._id"
           :list-id="list._id"
+          :list="list"
         />
       </template>
     </v-list-item>

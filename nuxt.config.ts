@@ -133,5 +133,9 @@ export default defineNuxtConfig({
     options: {
       appName: 'Tickup',
     }
+  },
+  eslint: {
+    
+
   }
 })

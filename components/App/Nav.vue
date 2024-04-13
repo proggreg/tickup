@@ -54,6 +54,7 @@ function closeDrawer() {
         style="padding: 0;"
         elevation="0"
         @click="signOut()"
+        data-cy="sign-out-button"
       >
         Sign Out
       </v-btn>
@@ -84,6 +85,7 @@ function closeDrawer() {
           <v-btn
             elevation="0"
             icon="mdi-plus"
+            data-cy="new-list-button"
             @click="dialog = true"
           />
         </template>
@@ -111,6 +113,7 @@ function closeDrawer() {
           height="36"
           block
           @click="signOut()"
+          data-cy="sign-out-button"
         >
           Sign Out
         </v-btn>

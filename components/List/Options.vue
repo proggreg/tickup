@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const store = useListsStore()
 
-const optionProps = defineProps<{ listId: string, size?: string}>()
+const optionProps = defineProps<{ listId: string, size?: string, list: List}>()
 async function deleteList () {
   store.deleteList(optionProps.listId)
   await navigateTo('/')
@@ -14,7 +14,7 @@ const options = reactive([{
 <template>
   <v-menu>
     <template #activator="{props}">
-      <v-icon v-bind="props">
+      <v-icon :data-cy="'list-options-' + list.name" v-bind="props">
         mdi-dots-horizontal
       </v-icon>
     </template>
@@ -23,6 +23,7 @@ const options = reactive([{
         v-for="(option, index) in options"
         :key="index"
         :value="option.name"
+        :data-cy="'list-option-' + option.name"
         @click="option.handler"
       >
         <v-list-item-title class="text-body1" style="font-size: 0.8rem;">
