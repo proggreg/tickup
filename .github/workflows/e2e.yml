@@ -3,7 +3,7 @@ name: E2E Tests
 on:
     push:
         branches:
-            - main
+            - feature/cypress-for-e2e-testing-CU-86by448q6
 
 jobs:
     build:
