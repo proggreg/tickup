@@ -21,7 +21,7 @@ function deleteItem(todo: Todo) {
 }
 </script>
 <template>
-  <tr v-for="item in groupItem.items" :key="item.key" @click="showModal(item)" style="cursor: pointer">
+  <tr v-for="item in groupItem.items" :key="item.key" style="cursor: pointer" @click="showModal(item)">
     <td>
       <ListStatus :todo="item.raw" />
     </td>

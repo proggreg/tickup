@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
-const listStore = useListsStore()
+// const listStore = useListsStore()
 </script>
 <template>
   <ColorScheme>

@@ -35,9 +35,11 @@ onMounted(() => {
   <tr v-if="groupItem.key === 'status'">
     <th :colspan="headerColumns.length">
       <v-btn size="small" variant="text" :icon="isGroupOpen(groupItem) ? '$expand' : '$next'"
-        @click="myToggleGroup(toggleGroup, groupItem)" />
+        @click="myToggleGroup(toggleGroup, groupItem)"
+/>
       <v-btn size="x-small" :color="getStatusColor(groupItem.value)" variant="tonal" :text="groupItem.value"
-        @click="toggleGroup(groupItem)" />
+        @click="toggleGroup(groupItem)"
+/>
     </th>
   </tr>
   <template v-if="isGroupOpen(groupItem)">
@@ -50,11 +52,13 @@ onMounted(() => {
         <v-hover v-if="column.key !== 'data-table-group' &&
     column.key !== 'data-table-expand' &&
     column.key !== 'actions'
-    ">
+    "
+>
 
           <template #default="{ isHovering, props }">
             <th :style="isHovering ? 'cursor: pointer' : ''" v-bind="props" colspan="1" class="table-header"
-              @click="toggleSort(column)">
+              @click="toggleSort(column)"
+>
               <div style="display: flex;">
                 {{ column.title }} {{ column.key }} {{ xs }}
                 <div style="width: 42px">

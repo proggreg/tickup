@@ -5,7 +5,7 @@ const results = ref([])
 const open = ref(false)
 const input = ref(null)
 const todoDialogOpen = ref(false)
-const store = useListsStore()
+// const store = useListsStore()
 const { data } = useAuth()
 
 const items = ref([])
@@ -43,22 +43,22 @@ function setTextFieldFocus() {
 
   }, 100)
 }
-async function openTodoDialog(result: Todo) {
-  const data = await store.getTodo(result._id)
-  todoDialogOpen.value = true
-}
+// async function openTodoDialog(result: Todo) {
+//   const data = await store.getTodo(result._id)
+//   todoDialogOpen.value = true
+// }
 
-function formattedDate(date: string) {
-  if (date) {
-    return new Date(date).toLocaleDateString('en-GB')
-  }
-}
-function formattedTime(d: string) {
-  if (d) {
-    const date = new Date(d)
-    return date.getHours() + ':' + date.getMinutes()
-  }
-}
+// function formattedDate(date: string) {
+//   if (date) {
+//     return new Date(date).toLocaleDateString('en-GB')
+//   }
+// }
+// function formattedTime(d: string) {
+//   if (d) {
+//     const date = new Date(d)
+//     return date.getHours() + ':' + date.getMinutes()
+//   }
+// }
 
 
 </script>
@@ -67,7 +67,8 @@ function formattedTime(d: string) {
   <v-dialog open-on-click :model-value="open" width="500">
     <template #activator="{ props }">
       <v-text-field v-bind="props" hide-details placeholder="search" style="max-width: 1000px" class="mx-4"
-        @click="setTextFieldFocus">
+        @click="setTextFieldFocus"
+>
         <template #append-inner>
           <span style="font-size: 0.70rem; width: 40px;">ctrl + k</span>
         </template>
@@ -79,7 +80,8 @@ function formattedTime(d: string) {
       <v-card v-show="isActive">
         <v-card-item class=" pa-4">
           <v-text-field ref="input" v-model="query" hide-details placeholder="search" :focused="true" class="ma-4"
-            @keyup="debouncedSearch" />
+            @keyup="debouncedSearch"
+/>
         </v-card-item>
 
 

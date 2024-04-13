@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
-const router = useRouter()
 
 function updateDueDate(newDate: Date) {
   listsStore.currentTodo.dueDate = newDate
@@ -38,10 +37,11 @@ async function deleteTodo() {
     </template>
     <template #append>
       <AppDueDate :todo-due-date="listsStore.currentTodo.dueDate" :todo="listsStore.currentTodo" :show-detail="true"
-        @set-date="updateDueDate" />
+        @set-date="updateDueDate"
+/>
     </template>
     <v-card-title>
-      <v-text-field v-model="listsStore.currentTodo.name" @blur="updateName" label="Title" hide-details />
+      <v-text-field v-model="listsStore.currentTodo.name" label="Title" hide-details @blur="updateName" />
     </v-card-title>
     <v-card-item>
       <v-textarea v-model="desc" class="mt-2" label="Description" @blur="updateDesc" />
@@ -52,14 +52,18 @@ async function deleteTodo() {
         <template #activator="{ props: activatorProps }">
           <v-btn v-bind="activatorProps" color="red" icon="mdi-trash-can" />
         </template>
-        <template v-slot:default="{ isActive }">
+        <template #default="{ isActive }">
           <v-card>
             <v-card-text>
               Are you sure you want to delete this todo?
             </v-card-text>
             <v-card-actions>
-              <v-btn color="red" @click="deleteTodo">Yes</v-btn>
-              <v-btn @click="isActive.value = false">No</v-btn>
+              <v-btn color="red" @click="deleteTodo">
+Yes
+</v-btn>
+              <v-btn @click="isActive.value = false">
+No
+</v-btn>
             </v-card-actions>
           </v-card>
         </template>
