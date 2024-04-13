@@ -33,7 +33,7 @@ export default defineNuxtConfig({
     dirs: ['./stores'],
     presets: [{
       from: 'vuetify',
-      imports: ['useDisplay', 'useDate']
+      imports: ['useDisplay']
     }]
   },
 
@@ -120,7 +120,7 @@ export default defineNuxtConfig({
     }
   },
   auth: {
-    isEnabled: false,
+    isEnabled: true,
     provider: {
       type: "authjs",
     },
