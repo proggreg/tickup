@@ -8,7 +8,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    env: 
+      BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
+      HOTJAR_ID: ${{ secrets.HOTJAR_ID }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      NUXT_NEXTAUTH_SECRET: ${{ secrets.NUXT_NEXTAUTH_SECRET }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
