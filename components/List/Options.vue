@@ -1,11 +1,12 @@
 <script setup lang="ts">
 const store = useListsStore()
+const open = ref(false)
 
 const optionProps = defineProps<{ listId: string, size?: string, list: List}>()
 async function deleteList () {
-  throw new Error('Not implemented')
-  store.deleteList(optionProps.listId)
-  await navigateTo('/')
+  // throw new Error('Not implemented')
+  await store.deleteList(optionProps.listId)
+  open.value = true
 }
 const options = reactive([{
   name: 'Delete',
@@ -33,4 +34,7 @@ const options = reactive([{
       </v-list-item>
     </v-list>
   </v-menu>
+  <v-snackbar v-model="open" data-cy="snackbar">
+    List Deleted
+  </v-snackbar>
 </template>

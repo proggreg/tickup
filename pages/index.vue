@@ -61,7 +61,7 @@ function selectTodo(todo: Todo) {
               <template #prepend>
                 <ListStatus :todo="todo" />
               </template>
-              <v-list-item-title class="ml-4">
+              <v-list-item-title class="ml-4" :data-cy="'todo-name-' + todo.name">
                 {{ todo.name }}
               </v-list-item-title>
 

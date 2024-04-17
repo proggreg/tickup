@@ -37,6 +37,7 @@ async function addTodo() {
         :placeholder="'Add todo to ' + listsStore.currentList.name"
         class="my-4"
         hide-details
+        data-cy="new-todo-input"
         @keyup.enter="addTodo"
       >
         <template #append-inner>

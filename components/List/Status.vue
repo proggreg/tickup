@@ -23,6 +23,7 @@ const updateStatus = (status: string) => {
         v-bind="props"
         size="x-small"
         rounded="xl"
+        data-cy="status-button"
         :style="{
           backgroundColor: getStatusColor(statusProps.todo.status)
         }"
@@ -45,7 +46,7 @@ const updateStatus = (status: string) => {
             }"
           />
         </template>
-        <v-list-item-title class="text-body-2">
+        <v-list-item-title class="text-body-2" :data-cy="status.name">
           {{ status.name }}
         </v-list-item-title>
       </v-list-item>

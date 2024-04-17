@@ -106,3 +106,5 @@ sw.*
 
 .lighthouseci
 .env*.local
+
+cypress/screenshots

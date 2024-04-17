@@ -11,7 +11,21 @@
 //
 //
 // -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
+Cypress.Commands.add("login", (username, password) => {
+  cy.visit('/login')
+  cy.get('[data-cy="username"]').type(username)
+    cy.get('[data-cy="password"]').type(password)
+    cy.get('[data-cy="login-button"]').click()
+
+  // we should be redirected to /dashboard
+  cy.url().should('include', '/')
+
+  // our auth cookie should be present
+  // cy.getCookie('next-auth.session-token').should('exist')
+
+  // UI should reflect user being logged in
+  cy.get('[data-cy="sign-out-button"]').should('be.visible')
+})
 //
 //
 // -- This is a child command --
