@@ -53,8 +53,8 @@ function closeDrawer() {
         size="small"
         style="padding: 0;"
         elevation="0"
-        @click="signOut()"
         data-cy="sign-out-button"
+        @click="signOut()"
       >
         Sign Out
       </v-btn>
@@ -112,8 +112,8 @@ function closeDrawer() {
           variant="elevated"
           height="36"
           block
-          @click="signOut()"
           data-cy="sign-out-button"
+          @click="signOut()"
         >
           Sign Out
         </v-btn>

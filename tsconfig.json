@@ -1,5 +1,5 @@
 {
   // https://v3.nuxtjs.org/concepts/typescript
   "extends": "./.nuxt/tsconfig.json",
-  "exclude": ["cypress", "node_modules", ".nuxt", "dist", "coverage", "test", "tests", "spec", "specs", "e2e", "playground", "examples", "docs", "storybook", "jest.config.js", "nuxt.config.js", "tailwind.config.js", "babel.config.js", "postcss.config.js", "webpack.config.js", "jest.setup.js", "jest.setup.ts", "jest.setup.tsx", "jest.setup.js"] 
+  "exclude": ["cypress", "node_modules", "dist", "coverage", "test", "tests", "spec", "specs", "e2e", "playground", "examples", "docs", "storybook", "jest.config.js", "nuxt.config.js", "tailwind.config.js", "babel.config.js", "postcss.config.js", "webpack.config.js", "jest.setup.js", "jest.setup.ts", "jest.setup.tsx", "jest.setup.js"] 
 }

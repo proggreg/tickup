@@ -1,7 +1,8 @@
 export default defineEventHandler(async (event) => {
   try {
+    const query = getQuery(event)
 
-    return await ListSchema.deleteMany({ userId: '661aeb56ab9710f0c71a159f' })
+    return await ListSchema.find({ userId: query.id })
   } catch (error) {
     return error
   }

@@ -68,11 +68,14 @@ export const useListsStore = defineStore('lists', {
     },
     
     async addTodo(newTodo: Todo) {
+      console.log(this)
+      // this.lists.push({name: 'hello'})
+      this.currentList.todos.push(newTodo);
       const todo = await $fetch<Todo>('/api/todo', {
         method: 'POST',
         body: newTodo
       });
-      this.currentList.todos.push(todo);
+      
       return todo;
     },
     async updateTodo(todo: Todo) {

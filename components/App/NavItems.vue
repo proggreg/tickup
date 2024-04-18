@@ -26,8 +26,8 @@ async function selectList (list: List) {
       fluid
       :value="i"
       placeholder="My List"
-      @click="selectList(list)"
       :data-cy="'list-item-' + list.name"
+      @click="selectList(list)"
     >
       <v-list-item-title>{{ list.name }}</v-list-item-title>
 

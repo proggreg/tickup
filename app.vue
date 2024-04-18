@@ -11,6 +11,7 @@ const route = useRoute()
 if (status.value === 'authenticated') {
     // @ts-ignore
     listsStore.getLists(data?.value?.user?.sub)
+    
     listsStore.getTodaysTodos(data?.value?.user?.sub)
 }
 

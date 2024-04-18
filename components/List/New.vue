@@ -52,8 +52,8 @@ async function createNewList() {
     <template #buttons>
       <v-btn
         color="primary"
-        @click="createNewList"
         data-cy="create-list-button"
+        @click="createNewList"
       >
         Save
       </v-btn>
