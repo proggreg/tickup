@@ -43,6 +43,9 @@ export default defineNuxtConfig({
   vuetify: {
     vuetifyOptions: {
       defaults: {
+        VAppBar: {
+          elevation: 0,
+        },
         VSheet: {
           elevation: 10,
           width: 300,
@@ -50,7 +53,8 @@ export default defineNuxtConfig({
           rounded: 'xl'
         },
         VBtn: {
-          rounded: 'xl'
+          rounded: 'xl',
+          elevation: 0,
         },
         VTextField: {
           rounded: 'xl',
