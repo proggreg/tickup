@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const { smAndDown } = useDisplay()
-const listsStore = useListsStore()
+const { lists } = useListsStore()
 const navOpen = useNav()
 
-async function selectList (list: List) {
+async function selectList(list: List) {
   await navigateTo(`/list/${list._id}`)
 
   if (smAndDown.value) {
@@ -15,26 +15,15 @@ async function selectList (list: List) {
 
 <template>
   <v-list>
-    <v-list-item v-if="!listsStore.lists || !listsStore.lists.length">
+    <v-list-item v-if="!lists || !lists.length">
       <v-list-item-title>No lists yet</v-list-item-title>
     </v-list-item>
-    <v-list-item
-      v-for="list in listsStore.lists"
-      v-else
-      :key="list._id"
-      color="accent"
-      fluid
-      placeholder="My List"
-      
-      @click="selectList(list)"
-    >
+    <v-list-item v-for="list in lists" v-else :key="list._id" color="accent" fluid placeholder="My List"
+      @click="selectList(list)">
       <v-list-item-title>{{ list.name }}</v-list-item-title>
 
       <template #append>
-        <ListOptions
-          v-if="list._id"
-          :list-id="list._id"
-        />
+        <ListOptions v-if="list._id" :list-id="list._id" />
       </template>
     </v-list-item>
   </v-list>
