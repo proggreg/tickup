@@ -10,6 +10,7 @@ const navOpen = useNav()
 const { smAndDown } = useDisplay()
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits(['close'])
+const input = ref(null)
 
 async function createNewList() {
   newList.userId = data?.value?.user?._id
@@ -29,6 +30,15 @@ async function createNewList() {
     await navigateTo(`/list/${list._id}`)
   }
 }
+
+watch(() => props.open, (value) => {
+  if (value) {
+    setTimeout(() => {
+      // @ts-ignore
+      input.value.focus()
+    }, 100)
+  }
+})
 </script>
 
 <template>
@@ -43,6 +53,7 @@ async function createNewList() {
     </template>
     <v-container>
       <v-text-field
+        ref="input"
         v-model="newList.name"
         placeholder="New List"
         @keyup.enter="createNewList"

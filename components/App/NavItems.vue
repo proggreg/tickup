@@ -19,13 +19,13 @@ async function selectList (list: List) {
       <v-list-item-title>No lists yet</v-list-item-title>
     </v-list-item>
     <v-list-item
-      v-for="(list, i) in listsStore.lists"
+      v-for="list in listsStore.lists"
       v-else
-      :key="i"
+      :key="list._id"
       color="accent"
       fluid
-      :value="i"
       placeholder="My List"
+      
       @click="selectList(list)"
     >
       <v-list-item-title>{{ list.name }}</v-list-item-title>

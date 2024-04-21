@@ -17,14 +17,7 @@ function closeDrawer() {
 </script>
 
 <template>
-  <v-app-bar
-    density="comfortable"
-    height="70"
-    elevation="0"
-    align-center
-    class="d-flex justify-space-between"
-    style="justify-content: space-between; border-top: none; border-left: none; border-right: none;"
-  >
+  <v-app-bar>
     <template
       v-if="loggedIn"
       #prepend
@@ -51,15 +44,6 @@ function closeDrawer() {
     <AppSearch v-if="loggedIn" />
 
     <template #append>
-      <v-btn
-        v-if="loggedIn && !smAndDown"
-        size="small"
-        style="padding: 0;"
-        elevation="0"
-        @click="signOut()"
-      >
-        Sign Out
-      </v-btn>
       <AppDarkMode />
     </template>
   </v-app-bar>
@@ -73,7 +57,7 @@ function closeDrawer() {
     <v-list>
       <v-spacer />
       <v-btn
-        elevation="0"
+        :focusable="false"
         append-icon="mdi-home"
         block
         to="/"
@@ -84,7 +68,7 @@ function closeDrawer() {
 
       <v-list-item>
         <template #append>
-          <v-btn
+          <v-icon
             elevation="0"
             icon="mdi-plus"
             @click="dialog = true"
