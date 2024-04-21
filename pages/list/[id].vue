@@ -9,6 +9,7 @@ const { xs } = useDisplay()
 
 if (currentList.value) {
   store.setListName(currentList.value.name)
+  store.currentList = currentList.value
 }
 
 if (todos) {
@@ -25,8 +26,7 @@ if (currentList.value) {
   })
 }
 
-watch(currentTab, (newTab, oldTab) => {
-  console.log(newTab, oldTab)
+watch(currentTab, (newTab) => {
   store.setView(newTab)
 })
 

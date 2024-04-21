@@ -42,6 +42,7 @@ export default defineNuxtConfig({
   },
   vuetify: {
     vuetifyOptions: {
+      labComponents: true,
       defaults: {
         VAppBar: {
           elevation: 0,

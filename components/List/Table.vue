@@ -37,18 +37,45 @@ const group = ref([
 
 <template>
   <v-data-table :headers="headers" :items="todos" :group-by="group" multi-sort hover show-expand :expanded="expanded"
-    item-value="_id" items-per-page="-1" :opened="opened"
->
+    item-value="_id" items-per-page="-1" :opened="opened">
 
-    <template #headers="{ }" />
+    <template #headers="{}" />
 
     <template #body="{ columns, groupedItems, toggleGroup, isGroupOpen, sortBy, toggleSort }">
 
-      <template v-for="groupItem in groupedItems" :key="groupItem.key">
+      <template v-if="groupedItems.length" v-for="groupItem in groupedItems" :key="groupItem.key">
         <ListTableGroupHeader :columns="columns" :group-item="groupItem" :is-group-open="isGroupOpen"
-          :toggle-group="toggleGroup" :my-toggle-group="myToggleGroup" :sort-by="sortBy" :toggle-sort="toggleSort"
-/>
+          :toggle-group="toggleGroup" :my-toggle-group="myToggleGroup" :sort-by="sortBy" :toggle-sort="toggleSort" />
 
+      </template>
+      <template v-else>
+        <div style="display: flex; flex-direction: column;">
+          <v-empty-state class="fill-height" icon="$success">
+            <template v-slot:media>
+              <v-icon color="surface-variant"></v-icon>
+            </template>
+
+            <template v-slot:headline>
+              <div class="text-h4">
+                All Done For Now!
+              </div>
+            </template>
+
+            <template v-slot:title>
+              <div class="text-h6">
+                You're all caught up.
+              </div>
+            </template>
+
+            <template v-slot:text>
+              <div class="text-medium-emphasis text-caption">
+                Great job on completing all your tasks! This might be a good time to relax or consider planning your
+                next
+                set of goals. If you think of something new, just hit the button below to add a new task.
+              </div>
+            </template>
+          </v-empty-state>
+        </div>
       </template>
     </template>
     <template #bottom />

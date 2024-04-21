@@ -1,8 +1,30 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
-const { currentList } = useListsStore()
+const { currentList, updateList } = useListsStore()
+const rename = ref(false)
+const { params } = useRoute()
+const textFieldWidth = ref('100px')
+const input = ref(null)
 
-console.log('current list', currentList)
+watch(rename, (newVal) => {
+  console.log('watch rename', newVal)
+  if (!newVal) {
+    if (!currentList._id) {
+      currentList._id = params.id
+    }
+    updateList(currentList)
+  } else {
+    if (!input.value) return
+    input.value.focus()
+    console.warn('no list id')
+  }
+})
+
+watch(currentList.name, (newName) => {
+  if (newName && newName.length > 10) {
+    textFieldWidth.value = `${newName.length * 15}px`
+  }
+})
 </script>
 <template>
   <ColorScheme>
@@ -10,18 +32,22 @@ console.log('current list', currentList)
       <v-app>
         <v-layout>
           <app-nav />
-          <v-main>
+          <v-main class="d-flex align-stretch justify-center">
             <v-container fluid>
 
               <NuxtErrorBoundary>
-                <v-row class="fill-height">
+                <v-row>
                   <v-col>
-                    <div class="d-flex align-center ga-2">
-                      <h2 v-if="currentList.name">
-                        {{ currentList.name }}
-                      </h2>
-                      <ListOptions />
-                    </div>
+                    <!-- TODO I would like to make this not full width but the size of name -->
+                    <v-responsive class="mx-auto">
+                      <v-text-field ref="input" full-width hide-details placeholder="My List" variant="plain"
+                        :readonly="!rename" v-model="currentList.name" @keyup.enter="rename = false"
+                        @blur="rename = false" autofocus>
+                        <template #append>
+                          <ListOptions size="x-small" @rename="rename = true" />
+                        </template>
+                      </v-text-field>
+                    </v-responsive>
                   </v-col>
 
                 </v-row>
@@ -29,6 +55,8 @@ console.log('current list', currentList)
                   <v-col cols="12">
                     <TodoNew />
                   </v-col>
+                </v-row>
+                <v-row>
                   <template #error="{ error }">
                     <v-alert type="error">
                       {{ error }}
@@ -44,3 +72,9 @@ console.log('current list', currentList)
     </v-theme-provider>
   </ColorScheme>
 </template>
+
+<style scoped>
+::v-deep .v-text-field {
+  font-size: 1.5rem;
+}
+</style>
