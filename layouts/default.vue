@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
-// const listStore = useListsStore()
+const { currentList } = useListsStore()
+
+console.log('current list', currentList)
 </script>
 <template>
   <ColorScheme>
@@ -10,25 +12,31 @@ const colorMode = useColorMode()
           <app-nav />
           <v-main>
             <v-container fluid>
-              <v-row class="fill-height">
-                <!-- <NuxtErrorBoundary>
-                  <template #error="{ error }">
-                    <v-col cols="12">
-                      <h2 v-if="listStore.currentList && listStore.currentList.name">
-                        {{ listStore.currentList.name }}
-                      </h2>
-                    </v-col> -->
-                <v-col cols="12">
-                  <TodoNew />
-                </v-col>
 
-                <!-- <v-alert type="error">
+              <NuxtErrorBoundary>
+                <v-row class="fill-height">
+                  <v-col>
+                    <div class="d-flex align-center ga-2">
+                      <h2 v-if="currentList.name">
+                        {{ currentList.name }}
+                      </h2>
+                      <ListOptions />
+                    </div>
+                  </v-col>
+
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <TodoNew />
+                  </v-col>
+                  <template #error="{ error }">
+                    <v-alert type="error">
                       {{ error }}
                     </v-alert>
-                  </template> -->
-                <NuxtPage />
-                <!-- </NuxtErrorBoundary> -->
-              </v-row>
+                  </template>
+                  <NuxtPage />
+                </v-row>
+              </NuxtErrorBoundary>
             </v-container>
           </v-main>
         </v-layout>
