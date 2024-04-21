@@ -68,16 +68,14 @@ function selectTodo(todo: Todo) {
               <template #append>
                 <v-btn icon="mdi-delete" elevation="0" variant="text" size="small"
                   @click.stop="listsStore.deleteTodo(todo._id)"
-/>
+                />
               </template>
             </v-list-item>
 
           </v-list>
         </v-card>
         <v-card v-else variant="tonal">
-          <v-card-item class="text-center">
-            Nothing todo today 🎉
-          </v-card-item>
+          <AppEmptyState />
         </v-card>
       </v-window-item>
       <v-window-item value="done" height="100">

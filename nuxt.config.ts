@@ -60,7 +60,8 @@ export default defineNuxtConfig({
         VTextField: {
           rounded: 'xl',
           variant: 'outlined',
-          density: 'compact'
+          density: 'compact',
+          hideDetails: 'auto',
         },
         VTextarea: {
           rounded: 'xl',

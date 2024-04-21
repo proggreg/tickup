@@ -38,7 +38,7 @@ async function deleteTodo() {
     <template #append>
       <AppDueDate :todo-due-date="listsStore.currentTodo.dueDate" :todo="listsStore.currentTodo" :show-detail="true"
         @set-date="updateDueDate"
-/>
+      />
     </template>
     <v-card-title>
       <v-text-field v-model="listsStore.currentTodo.name" label="Title" hide-details @blur="updateName" />
@@ -58,12 +58,13 @@ async function deleteTodo() {
               Are you sure you want to delete this todo?
             </v-card-text>
             <v-card-actions>
+              <v-spacer />
               <v-btn color="red" @click="deleteTodo">
-Yes
-</v-btn>
+               Yes
+              </v-btn>
               <v-btn @click="isActive.value = false">
-No
-</v-btn>
+               No
+              </v-btn>
             </v-card-actions>
           </v-card>
         </template>

@@ -3,11 +3,9 @@ const colorMode = useColorMode()
 const { currentList, updateList } = useListsStore()
 const rename = ref(false)
 const { params } = useRoute()
-const textFieldWidth = ref('100px')
 const input = ref(null)
 
 watch(rename, (newVal) => {
-  console.log('watch rename', newVal)
   if (!newVal) {
     if (!currentList._id) {
       currentList._id = params.id
@@ -16,15 +14,9 @@ watch(rename, (newVal) => {
   } else {
     if (!input.value) return
     input.value.focus()
-    console.warn('no list id')
   }
 })
 
-watch(currentList.name, (newName) => {
-  if (newName && newName.length > 10) {
-    textFieldWidth.value = `${newName.length * 15}px`
-  }
-})
 </script>
 <template>
   <ColorScheme>
@@ -40,9 +32,10 @@ watch(currentList.name, (newName) => {
                   <v-col>
                     <!-- TODO I would like to make this not full width but the size of name -->
                     <v-responsive class="mx-auto">
-                      <v-text-field ref="input" full-width hide-details placeholder="My List" variant="plain"
-                        :readonly="!rename" v-model="currentList.name" @keyup.enter="rename = false"
-                        @blur="rename = false" autofocus>
+                      <v-text-field ref="input" v-model="currentList.name" full-width hide-details placeholder="My List"
+                        variant="plain" :readonly="!rename" autofocus
+                        @keyup.enter="rename = false" @blur="rename = false"
+>
                         <template #append>
                           <ListOptions size="x-small" @rename="rename = true" />
                         </template>
