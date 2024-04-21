@@ -45,6 +45,9 @@ function closeDrawer() {
       </v-btn>
       <AppProfile v-else />
     </template>
+    <template v-if="!loggedIn" #prepend>
+      <v-img src="/android-chrome-512x512.png" width="50" style="border-radius: 50%" />
+    </template>
     <AppSearch v-if="loggedIn" />
 
     <template #append>

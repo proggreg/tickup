@@ -38,6 +38,9 @@ const loginUser = async () => {
 </script>
 <template>
   <v-sheet>
+    <h1 class="text-center py-4">
+      TickUp
+    </h1>
     <v-form
       ref="loginForm"
       @submit.prevent="loginUser"
