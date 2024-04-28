@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const theme = useTheme()
 const colorMode = useColorMode()
 function toggleDarkMode() {
   colorMode.preference = colorMode.preference === 'light' ? 'dark' : 'light'
