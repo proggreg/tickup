@@ -10,7 +10,6 @@ const navOpen = useNav()
 const { smAndDown } = useDisplay()
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits(['close'])
-const input = ref(null)
 
 async function createNewList() {
   newList.userId = data?.value?.user?._id
@@ -31,14 +30,7 @@ async function createNewList() {
   }
 }
 
-watch(() => props.open, (value) => {
-  if (value) {
-    setTimeout(() => {
-      // @ts-expect-error
-      input.value.focus()
-    }, 100)
-  }
-})
+
 </script>
 
 <template>
@@ -49,7 +41,7 @@ watch(() => props.open, (value) => {
       </div>
     </template>
     <v-container justify-center>
-      <v-text-field ref="input" v-model="newList.name" placeholder="New List" @keyup.enter="createNewList" />
+      <v-text-field v-model="newList.name" autofocus placeholder="New List" @keyup.enter="createNewList" />
     </v-container>
     <template #buttons>
       <v-btn color="primary" variant="tonal" @click="createNewList">
