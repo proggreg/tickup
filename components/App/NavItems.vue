@@ -37,10 +37,3 @@ function renameList(list: List) {
     </v-list-item>
   </v-list>
 </template>
-<style scoped>
-.nuxt-link {
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-}
-</style>
