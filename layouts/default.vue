@@ -7,7 +7,7 @@ const input = ref(null)
 
 watch(rename, (newVal) => {
   if (!newVal) {
-    if (!currentList._id) {
+    if (!store.currentList._id) {
       store.currentList._id = params.id
     }
     store.updateList(store.currentList)
@@ -26,14 +26,15 @@ watch(rename, (newVal) => {
           <app-nav />
           <v-main class="d-flex align-stretch justify-center">
             <v-container fluid>
+
               <NuxtErrorBoundary>
                 <v-row>
                   <v-col>
                     <!-- TODO I would like to make this not full width but the size of name -->
                     <v-responsive class="mx-auto">
                       <v-text-field ref="input" v-model="store.currentList.name" full-width hide-details
-                        placeholder="My List" variant="plain" autofocus @keyup.enter="rename = false"
-                        @blur="rename = false">
+                        placeholder="My List" variant="plain" :readonly="!rename" autofocus
+                        @keyup.enter="rename = false" @blur="rename = false">
                         <template #append>
                           <ListOptions size="x-small" @rename="rename = true" />
                         </template>
