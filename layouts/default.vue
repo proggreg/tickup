@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
-const { currentList, updateList } = useListsStore()
+const store = useListsStore()
 const rename = ref(false)
 const { params } = useRoute()
 const input = ref(null)
@@ -8,9 +8,9 @@ const input = ref(null)
 watch(rename, (newVal) => {
   if (!newVal) {
     if (!currentList._id) {
-      currentList._id = params.id
+      store.currentList._id = params.id
     }
-    updateList(currentList)
+    store.updateList(store.currentList)
   } else {
     if (!input.value) return
     input.value.focus()
@@ -26,14 +26,13 @@ watch(rename, (newVal) => {
           <app-nav />
           <v-main class="d-flex align-stretch justify-center">
             <v-container fluid>
-
               <NuxtErrorBoundary>
                 <v-row>
                   <v-col>
                     <!-- TODO I would like to make this not full width but the size of name -->
                     <v-responsive class="mx-auto">
-                      <v-text-field ref="input" v-model="currentList.name" full-width hide-details placeholder="My List"
-                        variant="plain" :readonly="!rename" autofocus @keyup.enter="rename = false"
+                      <v-text-field ref="input" v-model="store.currentList.name" full-width hide-details
+                        placeholder="My List" variant="plain" autofocus @keyup.enter="rename = false"
                         @blur="rename = false">
                         <template #append>
                           <ListOptions size="x-small" @rename="rename = true" />
