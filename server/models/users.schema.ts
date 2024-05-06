@@ -11,5 +11,13 @@ export const UserSchema = defineMongooseModel({
       type: 'string',
       required: true
     },
+    settings: {
+      type: {
+        statuses: {
+          type: ['string'],
+          default: ['todo', 'in-progress', 'done']
+        }
+      },
+    },
   }
 })

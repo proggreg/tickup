@@ -10,7 +10,12 @@ const colorMode = useColorMode()
           <app-nav />
           <v-main>
             <v-container class="fill-height flex justify-center">
-              <NuxtPage />
+              <v-sheet>
+                <h1 class="text-center py-4">
+                  TickUp
+                  </h1>
+                <NuxtPage />
+            </v-sheet>
             </v-container>
           </v-main>
         </v-layout>
