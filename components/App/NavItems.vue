@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 const { smAndDown } = useDisplay()
 const { lists, updateList } = useListsStore()
 const navOpen = useNav()
@@ -19,7 +20,7 @@ function renameList(list: List) {
 
 </script>
 <template>
-  <v-list-item v-for="list in lists" :key="list._id" link @click.passive="selectList(list)">
+  <v-list-item v-for="list in lists" :key="list._id" class="my-2" link @click.passive="selectList(list)">
     <v-text-field v-if="editListName === list._id" v-model="list.name" variant="plain" @keyup.enter="renameList(list)"
       @blur="renameList(list)" />
     <v-list-item-title v-else>
@@ -27,7 +28,7 @@ function renameList(list: List) {
     </v-list-item-title>
 
     <template #append>
-      <ListOptions v-if="list._id" size="small" :list-id="list._id" @rename="editListName = list._id" />
+      <ListOptions v-if="list._id" :list-id="list._id" @rename="editListName = list._id" />
     </template>
   </v-list-item>
 </template>

@@ -3,17 +3,12 @@ const colorMode = useColorMode()
 const store = useListsStore()
 const rename = ref(false)
 const { params } = useRoute()
-const input = ref(null)
-
 watch(rename, (newVal) => {
   if (!newVal) {
     if (!store.currentList._id) {
       store.currentList._id = params.id
     }
     store.updateList(store.currentList)
-  } else {
-    if (!input.value) return
-    input.value.focus()
   }
 })
 
@@ -31,8 +26,8 @@ watch(rename, (newVal) => {
                 <v-row>
                   <v-col>
                     <!-- TODO I would like to make this not full width but the size of name -->
-                    <v-responsive class="mx-auto">
-                      <v-text-field ref="input" v-model="store.currentList.name" full-width hide-details
+                    <v-responsive inline min-width="200" class="mx-auto align-center">
+                      <v-text-field :size="store.currentList.name.length" v-model="store.currentList.name"
                         placeholder="My List" variant="plain" :readonly="!rename" autofocus
                         @keyup.enter="rename = false" @blur="rename = false">
                         <template #append>

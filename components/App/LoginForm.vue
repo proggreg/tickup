@@ -44,7 +44,7 @@ const loginUser = async () => {
       <v-text-field
         v-model="username"
         label="Username"
-        type="text"
+        :hide-details="false"
         :rules="userNameRules"
         required
         class="error"
@@ -53,6 +53,7 @@ const loginUser = async () => {
       <v-text-field
         v-model="password"
         label="Password"
+        :hide-details="false"
         :rules="passwordRules"
         type="password"
         required

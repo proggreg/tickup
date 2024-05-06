@@ -36,15 +36,22 @@ function closeDrawer() {
   <v-navigation-drawer v-if="loggedIn" v-model="open" class="pa-2" :permanent="!smAndDown" width="400">
     <v-list>
       <v-spacer />
-      <v-list-item nav link append-icon="mdi-home">
-        Home
+      <v-list-item >
+        <template #prepend>
+          Home
+        </template>
+        <template #append>
+          <v-btn icon="mdi-home" to="/">
+          </v-btn>
+        </template>
       </v-list-item>
-      <v-list-item link>
+      <v-list-item >
         <template #prepend>
           <ListNew :open="dialog" @close="dialog = false" />
         </template>
         <template #append>
-          <v-icon elevation="0" icon="mdi-plus" @click="dialog = true" />
+          <v-btn icon="mdi-plus" @click="dialog = true">
+          </v-btn>
         </template>
       </v-list-item>
     </v-list>

@@ -2,10 +2,10 @@
 const store = useListsStore()
 const { params } = useRoute()
 const emit = defineEmits(['rename'])
-
 const { size } = defineProps<{
-  size: string
+  size?: string
 }>()
+
 async function deleteList() {
   if (!params.id) return
   store.deleteList(params.id[0])
@@ -27,9 +27,7 @@ const options = reactive([{
 <template>
   <v-menu>
     <template #activator="{ props }">
-      <v-icon v-bind="props" :size="size">
-        mdi-dots-horizontal
-      </v-icon>
+      <v-btn v-bind="props" icon="mdi-dots-horizontal" variant="text"/>
     </template>
     <v-list class="px-2">
       <v-list-item v-for="(option, index) in options" :key="index" :value="option.name" @click="option.handler">

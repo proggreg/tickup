@@ -22,7 +22,7 @@ if (!currentList) {
 
 if (currentList.value) {
   useHead({
-    title: 'TickUp:' + currentList.value.name
+    title: `TickUp:${currentList.value.name}`
   })
 }
 
