@@ -6,7 +6,7 @@ const openNewTodo = ref('');
 const newTodoTitle = ref("");
 const store = useListsStore()
 const { groupItem } = defineProps(['groupItem'])
-const {params} = useRouter()
+const { params } = useRouter()
 
 async function createTodo(status: string) {
   if (newTodoTitle.value) {
@@ -30,30 +30,18 @@ async function createTodo(status: string) {
 }
 </script>
 <template>
-   <tr v-if="openNewTodo === '' || openNewTodo !== groupItem.value">
-            <td colspan="5">
-              <v-btn
-                :variant="newTodoVariant"
-                size="x-small"
-                elevation="0"
-                @click="openNewTodo = groupItem.value"
-                @mouseover="newTodoVariant = 'outlined'"
-                @mouseleave="newTodoVariant = 'text'"
-              >
-                Add Todo
-              </v-btn>
-            </td>
-          </tr>
-          <tr v-else-if="groupItem.value === openNewTodo">
-            <td colspan="5">
-              <v-text-field
-                ref="newTodo"
-                v-model="newTodoTitle"
-                variant="plain"
-                placeholder="new todo"
-                @blur="createTodo(groupItem.value)"
-                @keyup.enter="$event.target.blur()"
-              />
-            </td>
-          </tr>
+  <tr>
+    <td></td>
+    <td v-if="openNewTodo === '' || openNewTodo !== groupItem.value" colspan="5">
+      <v-btn :variant="newTodoVariant" size="x-small" elevation="0" @click="openNewTodo = groupItem.value"
+        @mouseover="newTodoVariant = 'outlined'" @mouseleave="newTodoVariant = 'text'">
+        Add Todo
+      </v-btn>
+    </td>
+
+    <td colspan="5" v-else-if="groupItem.value === openNewTodo">
+      <v-text-field ref="newTodo" v-model="newTodoTitle" variant="plain" placeholder="new todo"
+        @blur="createTodo(groupItem.value)" @keyup.enter="$event.target.blur()" />
+    </td>
+  </tr>
 </template>
