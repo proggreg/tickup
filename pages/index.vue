@@ -10,7 +10,6 @@ if (!loggedIn.value) {
 }
 
 listsStore.setCurrentListName("Today's Todo's")
-listsStore.setCurrentListName("Today's Todo's")
 
 useHead({ title: 'TickUp:Home' })
 
@@ -32,7 +31,6 @@ const todaysClosedTodos = computed(() => {
 
 function selectTodo(todo: Todo) {
   listsStore.setCurrentTodo(todo)
-  navigateTo(`/todo/${todo._id}`)
   navigateTo(`/todo/${todo._id}`)
 }
 
@@ -66,10 +64,8 @@ function selectTodo(todo: Todo) {
               </v-list-item-title>
 
               <template #append>
-                <v-btn
-icon="mdi-delete" elevation="0" variant="text" size="small"
-                  @click.stop="listsStore.deleteTodo(todo._id)"
-                />
+                <v-btn icon="mdi-delete" elevation="0" variant="text" size="small"
+                  @click.stop="listsStore.deleteTodo(todo._id)" />
               </template>
             </v-list-item>
 
