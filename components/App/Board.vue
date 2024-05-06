@@ -1,26 +1,26 @@
 <script setup lang="ts">
-const statuses = useSettingsStore().statuses
+const { statuses } = useSettingsStore()
 const store = useListsStore()
 const dragging = ref(false)
 const { data } = useAuth()
 const route = useRoute()
 const { todos } = defineProps<{ todos: Todo[] }>()
 const listStore = useListsStore()
-const newTodo = ref({
+const newTodo = ref<{newTodo: Todo}>({
   name: '',
-  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub,
+  userId: data.value?.user?.id || data.value?.user?.sub,
   listId: route.params.id,
+  _id: ''
 })
 
 const groupedTodos = computed(() => {
-
   return statuses.map((status) => {
     status.todos = todos.filter((todo) => todo.status === status.name).sort((a, b) => a.name - b.name)
     return status
   })
 })
 
-async function change(e: any, status: any) {
+async function change(e: any, status: Status) {
   if (e.added) {
     if (e.added.element.status !== status.name) {
       e.added.element.status = status.name
@@ -45,6 +45,8 @@ function getComponentData(statusName: string) {
 
 function addTodo() {
   store.addTodo(newTodo.value)
+
+
   newTodo.value.name = ''
 }
 
@@ -72,8 +74,7 @@ function gotoTodo(todo: Todo) {
         <div>
           <draggable :list="status.todos" ghost-class="ghost" item-key="_id" group="status"
             :component-data="getComponentData(status.name)" @start="dragging = true" @end="dragging = false"
-            @change="(e) => change(e, status)"
->
+            @change="(e: InputEvent) => change(e, status)">
             <template #item="{ element }">
               <v-card class="ma-2" style="cursor: pointer" @click="gotoTodo(element)">
                 <v-card-title v-if="element._id">

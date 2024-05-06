@@ -5,7 +5,6 @@ export default defineNuxtConfig({
     '@nuxt/devtools',
     '@vueuse/nuxt',
     'nuxt-mongoose',
-    '@nuxtjs/eslint-module',
     'nuxt-bugsnag',
     '@sidebase/nuxt-auth',
     '@nuxtjs/color-mode'

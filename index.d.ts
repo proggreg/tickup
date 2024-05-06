@@ -13,6 +13,7 @@ declare global {
   interface Status {
     name: string;
     color: string;
+    todos: Todo[];
   }
 
   interface List {
@@ -23,4 +24,11 @@ declare global {
   }
 
   type View = "list" | "board";
+
+  interface User {
+    _id: string;
+    email: string;
+    name: string;
+    lists: List[];
+  }
 }
