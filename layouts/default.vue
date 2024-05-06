@@ -25,7 +25,6 @@ watch(rename, (newVal) => {
               <NuxtErrorBoundary>
                 <v-row>
                   <v-col>
-                    <!-- TODO I would like to make this not full width but the size of name -->
                     <v-responsive inline min-width="200" class="mx-auto align-center">
                       <v-text-field :size="store.currentList.name.length" v-model="store.currentList.name"
                         placeholder="My List" variant="plain" :readonly="!rename" autofocus
