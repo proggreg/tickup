@@ -40,9 +40,9 @@ watch(currentList.name, (newName) => {
                   <v-col>
                     <!-- TODO I would like to make this not full width but the size of name -->
                     <v-responsive class="mx-auto">
-                      <v-text-field ref="input" full-width hide-details placeholder="My List" variant="plain"
-                        :readonly="!rename" v-model="currentList.name" @keyup.enter="rename = false"
-                        @blur="rename = false" autofocus>
+                      <v-text-field ref="input" v-model="currentList.name" full-width hide-details placeholder="My List"
+                        variant="plain" :readonly="!rename" autofocus @keyup.enter="rename = false"
+                        @blur="rename = false">
                         <template #append>
                           <ListOptions size="x-small" @rename="rename = true" />
                         </template>

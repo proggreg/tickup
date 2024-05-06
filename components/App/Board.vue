@@ -70,7 +70,8 @@ function gotoTodo(todo: Todo) {
           {{ status.name }}
         </v-card-title>
         <div>
-          <draggable :list="status.todos" ghost-class="ghost" item-key="_id" group="status"
+          <draggable
+:list="status.todos" ghost-class="ghost" item-key="_id" group="status"
             :component-data="getComponentData(status.name)" @start="dragging = true" @end="dragging = false"
             @change="(e) => change(e, status)"
 >
@@ -80,7 +81,8 @@ function gotoTodo(todo: Todo) {
                   {{ element.name }}
                 </v-card-title>
                 <v-card-item v-else>
-                  <v-text-field v-model="element.name" placeholder="Add todo" hide-details
+                  <v-text-field
+v-model="element.name" placeholder="Add todo" hide-details
                     @keyup.enter="addTodo(element)"
 />
                 </v-card-item>
@@ -91,7 +93,8 @@ function gotoTodo(todo: Todo) {
 
         <v-card v-if="newTodo.status === status.name" class="ma-2 px-4">
           <v-card-title>
-            <v-text-field v-model="newTodo.name" placeholder="Add todo" variant="plain" :focused="true" hide-details
+            <v-text-field
+v-model="newTodo.name" placeholder="Add todo" variant="plain" :focused="true" hide-details
               class="pa-0" @keyup.enter="addTodo(newTodo)"
 />
           </v-card-title>

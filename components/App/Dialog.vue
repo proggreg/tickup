@@ -9,7 +9,8 @@ const emit = defineEmits(['close'])
 </script>
 
 <template>
-  <v-dialog max-width="500" :model-value="open" :fullscreen="smAndDown" transition="dialog-bottom-transition"
+  <v-dialog
+max-width="500" :model-value="open" :fullscreen="smAndDown" transition="dialog-bottom-transition"
     location="top" @update:model-value="emit('close')">
     <template #activator>
       <slot name="open" />

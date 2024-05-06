@@ -18,7 +18,8 @@ async function selectList(list: List) {
     <v-list-item v-if="!lists || !lists.length">
       <v-list-item-title>No lists yet</v-list-item-title>
     </v-list-item>
-    <v-list-item v-for="list in lists" v-else :key="list._id" color="accent" fluid placeholder="My List"
+    <v-list-item
+v-for="list in lists" v-else :key="list._id" color="accent" fluid placeholder="My List"
       @click="selectList(list)">
       <v-list-item-title>{{ list.name }}</v-list-item-title>
 

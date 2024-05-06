@@ -10,7 +10,7 @@ const { data } = useAuth()
 
 const items = ref([])
 
-if (process.client) {
+if (import.meta.client) {
   document.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 'k') {
       e.preventDefault()
@@ -22,7 +22,7 @@ if (process.client) {
 }
 
 function search() {
-  // @ts-ignore
+  // @ts-expect-error
   $fetch('/api/search/todo', { query: { q: query.value, id: data?.value?.user?.sub } })
     .then((res) => {
       items.value = res
@@ -37,7 +37,7 @@ const debouncedSearch = useDebounceFn(search, 500)
 function setTextFieldFocus() {
   setTimeout(() => {
     if (input.value) {
-      // @ts-ignore
+      // @ts-expect-error
       input.value.focus()
     }
 
@@ -66,7 +66,8 @@ function setTextFieldFocus() {
 <template>
   <v-dialog open-on-click :model-value="open" width="500">
     <template #activator="{ props }">
-      <v-text-field v-bind="props" hide-details placeholder="search" style="max-width: 1000px" class="mx-4"
+      <v-text-field
+v-bind="props" hide-details placeholder="search" style="max-width: 1000px" class="mx-4"
         @click="setTextFieldFocus"
 >
         <template #append-inner>
@@ -79,7 +80,8 @@ function setTextFieldFocus() {
     <template #default="{ isActive }">
       <v-card v-show="isActive">
         <v-card-item class=" pa-4">
-          <v-text-field ref="input" v-model="query" hide-details placeholder="search" :focused="true" class="ma-4"
+          <v-text-field
+ref="input" v-model="query" hide-details placeholder="search" :focused="true" class="ma-4"
             @keyup="debouncedSearch"
 />
         </v-card-item>

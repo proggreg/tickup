@@ -35,7 +35,8 @@ const name = computed(() => {
       <v-list-item class="text-body-2 py-0 ma-2" append-icon="mdi-cog-outline">
         Settings
       </v-list-item>
-      <v-list-item class="text-body-2 py-0 ma-2" append-icon="mdi-logout"
+      <v-list-item
+class="text-body-2 py-0 ma-2" append-icon="mdi-logout"
       @click="signOut()"
 >
           Sign Out

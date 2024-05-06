@@ -66,7 +66,8 @@ function selectTodo(todo: Todo) {
               </v-list-item-title>
 
               <template #append>
-                <v-btn icon="mdi-delete" elevation="0" variant="text" size="small"
+                <v-btn
+icon="mdi-delete" elevation="0" variant="text" size="small"
                   @click.stop="listsStore.deleteTodo(todo._id)"
 />
               </template>

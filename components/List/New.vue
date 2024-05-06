@@ -34,7 +34,7 @@ async function createNewList() {
 watch(() => props.open, (value) => {
   if (value) {
     setTimeout(() => {
-      // @ts-ignore
+      // @ts-expect-error
       input.value.focus()
     }, 100)
   }
@@ -42,7 +42,7 @@ watch(() => props.open, (value) => {
 </script>
 
 <template>
-  <AppDialog :open="props.open" @close="emit('close')" title="Create List">
+  <AppDialog :open="props.open" title="Create List" @close="emit('close')">
     <template #open>
       <div class="d-flex justify-space-between">
         Lists

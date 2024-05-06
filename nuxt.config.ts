@@ -5,10 +5,10 @@ export default defineNuxtConfig({
     '@nuxt/devtools',
     '@vueuse/nuxt',
     'nuxt-mongoose',
-    '@nuxtjs/eslint-module',
     'nuxt-bugsnag',
     '@sidebase/nuxt-auth',
-    '@nuxtjs/color-mode'
+    '@nuxtjs/color-mode',
+     '@nuxt/eslint'
   ],
 
   experimental: {
@@ -111,6 +111,11 @@ export default defineNuxtConfig({
   },
   devtools: {
     enabled: true
+  },
+   eslint: {
+    config: {
+      stylistic: true 
+    }
   },
   runtimeConfig: {
     auth: {

@@ -36,7 +36,8 @@ async function deleteTodo() {
       <TodoStatus />
     </template>
     <template #append>
-      <AppDueDate :todo-due-date="listsStore.currentTodo.dueDate" :todo="listsStore.currentTodo" :show-detail="true"
+      <AppDueDate
+:todo-due-date="listsStore.currentTodo.dueDate" :todo="listsStore.currentTodo" :show-detail="true"
         @set-date="updateDueDate"
 />
     </template>
