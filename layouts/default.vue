@@ -3,11 +3,9 @@ const colorMode = useColorMode()
 const { currentList, updateList } = useListsStore()
 const rename = ref(false)
 const { params } = useRoute()
-const textFieldWidth = ref('100px')
 const input = ref(null)
 
 watch(rename, (newVal) => {
-  console.log('watch rename', newVal)
   if (!newVal) {
     if (!currentList._id) {
       currentList._id = params.id
@@ -16,15 +14,9 @@ watch(rename, (newVal) => {
   } else {
     if (!input.value) return
     input.value.focus()
-    console.warn('no list id')
   }
 })
 
-watch(currentList.name, (newName) => {
-  if (newName && newName.length > 10) {
-    textFieldWidth.value = `${newName.length * 15}px`
-  }
-})
 </script>
 <template>
   <ColorScheme>

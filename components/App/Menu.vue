@@ -32,7 +32,9 @@ const name = computed(() => {
       </v-btn>
     </template>
     <v-list>
-      <v-list-item class="text-body-2 py-0 ma-2" append-icon="mdi-cog-outline">
+      <v-list-item class="text-body-2 py-0 ma-2" append-icon="mdi-cog-outline"
+        @click="navigateTo('/settings')"
+      >
         Settings
       </v-list-item>
       <v-list-item

@@ -100,6 +100,8 @@ export const useListsStore = defineStore('lists', {
     async deleteTodo(id: string) {
       await $fetch(`/api/todo/${id}`, { method: 'DELETE' });
 
+      this.currentList.todos = this.currentList.todos.filter(todo => todo._id !== id);
+
       if (this.todaysTodos.length) {
         this.todaysTodos = this.todaysTodos.filter(todo => todo._id !== id);
       }

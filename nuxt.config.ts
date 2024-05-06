@@ -60,7 +60,8 @@ export default defineNuxtConfig({
         VTextField: {
           rounded: 'xl',
           variant: 'outlined',
-          density: 'compact'
+          density: 'compact',
+          hideDetails: 'auto',
         },
         VTextarea: {
           rounded: 'xl',
@@ -140,8 +141,11 @@ export default defineNuxtConfig({
   },
   mongoose: {
     devtools: true,
+    uri: process.env.MONGODB_URI,
+    
     options: {
       appName: 'Tickup',
+      
     }
   }
 })

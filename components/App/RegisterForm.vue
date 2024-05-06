@@ -3,6 +3,7 @@ const { signIn } = useAuth()
 const username = ref('')
 const password = ref('')
 async function registerUser() {
+    
     const { data } = await useFetch('/api/auth/user', {
         method: 'POST',
         body: {
@@ -10,8 +11,9 @@ async function registerUser() {
             password: password.value
         }
     })
+    console.log('data', data.value)
 
-    if (data.value) {
+    if (data.value?.username && data.value?.password) {
         signIn('credentials', { username: username.value, password: password.value })
     }
 }
@@ -44,46 +46,41 @@ const passwordRules = [
 ]
 </script>
 <template>
-    <v-sheet
-        width="300"
-        color="background"
-        class="pa-4"
-        rounded="xl"
-    >
-        <v-form @submit.prevent>
-            <v-text-field
-                v-model="username"
-                label="Username"
-                type="text"
-                :rules="userNameRules"
-                width="300"
-            />
-            <v-text-field
-                v-model="password"
-                label="Password"
-                type="password"
-                :rules="passwordRules"
-            />
+    <v-form validate-on="submit" @submit.prevent>
+        <v-text-field
+            v-model="username"
+            label="Username"
+            type="text"
+            :rules="userNameRules"
+            width="300"
+            :hide-details="false"
+        />
+        <v-text-field
+            v-model="password"
+            label="Password"
+            type="password"
+            :rules="passwordRules"
+            :hide-details="false"
+        />
 
-            <v-btn
-                block
-                type="submit"
-                color="primary"
-                class="mb-4"
-                @click="registerUser"
-            >
-                Register
-            </v-btn>
-            <div
-                cols="12"
-                style="font-size: 0.8rem"
-            >
-                <span>Already a user? </span>
-                <NuxtLink
-                    color="secondary"
-                    to="/login"
-                >Login</NuxtLink>
-            </div>
-        </v-form>
-    </v-sheet>
+        <v-btn
+            block
+            type="submit"
+            color="primary"
+            class="mb-4"
+            @click="registerUser"
+        >
+            Register
+        </v-btn>
+        <div
+            cols="12"
+            style="font-size: 0.8rem"
+        >
+            <span>Already a user? </span>
+            <NuxtLink
+                color="secondary"
+                to="/login"
+            >Login</NuxtLink>
+        </div>
+    </v-form>
 </template>

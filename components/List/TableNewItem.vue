@@ -5,16 +5,17 @@ const newTodo = ref(null)
 const openNewTodo = ref('');
 const newTodoTitle = ref("");
 const store = useListsStore()
-const { groupItem, listId } = defineProps(['groupItem', 'listId'])
+const { groupItem } = defineProps(['groupItem'])
+const {params} = useRouter()
 
 async function createTodo(status: string) {
   if (newTodoTitle.value) {
     const newTodo: Todo = {
       name: newTodoTitle.value,
-      _id: undefined,
+      _id: "",
       status,
       desc: "",
-      listId: listId,
+      listId: params.id,
       userId: data?.value?.user?.sub
     };
     await store.addTodo(newTodo);

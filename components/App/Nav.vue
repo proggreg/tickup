@@ -36,7 +36,7 @@ function closeDrawer() {
           mdi-menu
         </v-icon>
       </v-btn>
-      <AppProfile v-else />
+      <AppMenu v-else />
     </template>
     <template v-if="!loggedIn" #prepend>
       <v-img src="/android-chrome-512x512.png" width="50" style="border-radius: 50%" />
@@ -101,7 +101,7 @@ function closeDrawer() {
         >
           Sign Out
         </v-btn>
-        <AppProfile />
+        <AppMenu />
       </div>
     </template>
 

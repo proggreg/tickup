@@ -26,6 +26,7 @@ function deleteItem(todo: Todo) {
       <ListStatus :todo="item.raw" />
     </td>
     <template v-for="column in columns" :key="column.key">
+      
       <template v-if="column.key !== 'data-table-group'">
         <td v-if="column.key === 'name' || (column.key === 'desc' && !xs)">
           {{ item.columns[column.key] }}

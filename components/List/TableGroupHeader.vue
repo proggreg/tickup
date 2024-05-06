@@ -1,11 +1,10 @@
 <script setup lang="ts">
-const { groupItem, isGroupOpen, columns, toggleGroup, myToggleGroup, sortBy, toggleSort } = defineProps(
-  ['groupItem', 'isGroupOpen', 'columns', 'toggleGroup', 'myToggleGroup', 'sortBy', 'toggleSort'])
+const { groupItem, isGroupOpen, columns, toggleGroup, myToggleGroup, sortBy, toggleSort, expanded } = defineProps(
+  ['groupItem', 'isGroupOpen', 'columns', 'toggleGroup', 'myToggleGroup', 'sortBy', 'toggleSort', 'expanded'])
 const { statuses } = useSettingsStore();
-
+const { xs } = useDisplay();
 const headerColumns = ref(columns);
 
-const { xs } = useDisplay();
 function getStatusColor(todoStatus: string) {
   const status = statuses.filter((status) => status.name === todoStatus);
   if (status.length > 0) {
@@ -13,12 +12,12 @@ function getStatusColor(todoStatus: string) {
   }
 }
 
-function isSorted(sortBy, column) {
-  return sortBy.some(item => item.key === column.key);
+function isSorted(sortBy: any, column: any) {
+  return sortBy.some((item: any) => item.key === column.key);
 }
 
-function isSortedIndex(sortBy, column) {
-  let index = sortBy.findIndex(item => item.key === column.key);
+function isSortedIndex(sortBy: any, column: any) {
+  let index = sortBy.findIndex((item: any) => item.key === column.key);
   index++
   if (index > 0) {
     return index
@@ -27,21 +26,20 @@ function isSortedIndex(sortBy, column) {
 }
 
 onMounted(() => {
-  headerColumns.value = columns.filter((column) => column.key === 'dueDate')
+  // TODO weird bug where closed will render twice
+  // if (expanded.includes(groupItem.value) && !isGroupOpen(groupItem)) {
+  //   toggleGroup(groupItem)
+  // }
 })
 
 </script>
 <template>
   <tr v-if="groupItem.key === 'status'">
     <th :colspan="headerColumns.length">
-      <v-btn
-size="small" variant="text" :icon="isGroupOpen(groupItem) ? '$expand' : '$next'"
-        @click="myToggleGroup(toggleGroup, groupItem)"
-/>
-      <v-btn
-size="x-small" :color="getStatusColor(groupItem.value)" variant="tonal" :text="groupItem.value"
-        @click="toggleGroup(groupItem)"
-/>
+      <v-btn size="small" class="mr-4" style="font-size: 1.2rem" variant="plain"
+        :icon="isGroupOpen(groupItem) ? '$expand' : '$next'" @click="toggleGroup(groupItem)" />
+      <v-btn size="x-small" :color="getStatusColor(groupItem.value)" variant="tonal" :text="groupItem.value"
+        @click="toggleGroup(groupItem)" />
     </th>
   </tr>
   <template v-if="isGroupOpen(groupItem)">
@@ -51,20 +49,15 @@ size="x-small" :color="getStatusColor(groupItem.value)" variant="tonal" :text="g
       </th>
 
       <template v-for="column in headerColumns" :key="column.key">
-        <v-hover
-v-if="column.key !== 'data-table-group' &&
-    column.key !== 'data-table-expand' &&
-    column.key !== 'actions'
-    "
->
+        <v-hover v-if="column.key !== 'data-table-group' &&
+          column.key !== 'data-table-expand' &&
+          column.key !== 'status'">
 
           <template #default="{ isHovering, props }">
-            <th
-:style="isHovering ? 'cursor: pointer' : ''" v-bind="props" colspan="1" class="table-header"
-              @click="toggleSort(column)"
->
+            <th :style="isHovering ? 'cursor: pointer' : ''" v-bind="props" colspan="1" class="table-header"
+              @click="toggleSort(column)">
               <div style="display: flex;">
-                {{ column.title }} {{ column.key }} {{ xs }}
+                {{ column.title }}
                 <div style="width: 42px">
                   <v-icon v-if="isHovering && !isSorted(sortBy, column)">
                     mdi-arrow-up
@@ -81,7 +74,7 @@ v-if="column.key !== 'data-table-group' &&
 
                   <div v-if="isSortedIndex(sortBy, column)" class="v-data-table-header__sort-badge">
                     {{
-    isSortedIndex(sortBy, column) }}
+                      isSortedIndex(sortBy, column) }}
                   </div>
                 </div>
               </div>
@@ -91,6 +84,6 @@ v-if="column.key !== 'data-table-group' &&
       </template>
     </tr>
     <ListTableItem :columns="columns" :group-item="groupItem" />
-    <ListTableNewItem :group-item="groupItem" :list-id="listId" />
+    <ListTableNewItem :group-item="groupItem" />
   </template>
 </template>
