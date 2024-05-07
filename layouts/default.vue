@@ -16,7 +16,7 @@ watch(rename, (newVal) => {
   }
   else {
     if (input.value) {
-      // input.value.focus()
+      input.value.focus()
     }
   }
 })
