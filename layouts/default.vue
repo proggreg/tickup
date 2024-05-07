@@ -60,7 +60,6 @@ watch(listName, (newName) => {
                   </v-alert>
                 </template>
                 <NuxtPage />
-                </v-row>
               </NuxtErrorBoundary>
             </v-container>
           </v-main>
