@@ -13,9 +13,8 @@ const newTodo = ref({
 })
 
 const groupedTodos = computed(() => {
-
   return statuses.map((status) => {
-    status.todos = todos.filter((todo) => todo.status === status.name).sort((a, b) => a.name - b.name)
+    status.todos = todos.filter(todo => todo.status === status.name).sort((a, b) => a.name - b.name)
     return status
   })
 })
@@ -26,11 +25,12 @@ async function change(e: any, status: any) {
       e.added.element.status = status.name
       await store.updateTodo(e.added.element)
     }
-  } else if (e.moved) {
+  }
+  else if (e.moved) {
     const orderedItems = status.todos.map((item: Todo, index: number) => ({
       ...item,
-      order: index
-    }));
+      order: index,
+    }))
     await $fetch(`/api/list/todos`, { method: 'PUT', body: { orderedItems } })
   }
 }
@@ -38,10 +38,9 @@ async function change(e: any, status: any) {
 function getComponentData(statusName: string) {
   return {
     wrap: true,
-    name: statusName
-  };
+    name: statusName,
+  }
 }
-
 
 function addTodo() {
   store.addTodo(newTodo.value)
@@ -60,8 +59,8 @@ function gotoTodo(todo: Todo) {
   listStore.setCurrentTodo(todo)
   navigateTo(`/todo/${todo._id}`)
 }
-
 </script>
+
 <template>
   <v-row>
     <v-col v-for="status in groupedTodos" :key="status.name">
@@ -70,21 +69,17 @@ function gotoTodo(todo: Todo) {
           {{ status.name }}
         </v-card-title>
         <div>
-          <draggable
-:list="status.todos" ghost-class="ghost" item-key="_id" group="status"
+          <draggable :list="status.todos" ghost-class="ghost" item-key="_id" group="status"
             :component-data="getComponentData(status.name)" @start="dragging = true" @end="dragging = false"
-            @change="(e) => change(e, status)"
->
+            @change="(e) => change(e, status)">
             <template #item="{ element }">
               <v-card class="ma-2" style="cursor: pointer" @click="gotoTodo(element)">
-                <v-card-title v-if="element._id">
+                <v-card-title v-if="element._id" class="text-body-1">
                   {{ element.name }}
                 </v-card-title>
                 <v-card-item v-else>
-                  <v-text-field
-v-model="element.name" placeholder="Add todo" hide-details
-                    @keyup.enter="addTodo(element)"
-/>
+                  <v-text-field v-model="element.name" placeholder="Add todo" hide-details
+                    @keyup.enter="addTodo(element)" />
                 </v-card-item>
               </v-card>
             </template>
@@ -93,14 +88,11 @@ v-model="element.name" placeholder="Add todo" hide-details
 
         <v-card v-if="newTodo.status === status.name" class="ma-2 px-4">
           <v-card-title>
-            <v-text-field
-v-model="newTodo.name" placeholder="Add todo" variant="plain" :focused="true" hide-details
-              class="pa-0" @keyup.enter="addTodo(newTodo)"
-/>
+            <v-text-field v-model="newTodo.name" placeholder="Add todo" variant="plain" :focused="true" hide-details
+              class="pa-0" @keyup.enter="addTodo(newTodo)" />
           </v-card-title>
         </v-card>
         <v-card-actions>
-
           <v-btn color="primary" @click="newTodo.status = status.name">
             Add
           </v-btn>
