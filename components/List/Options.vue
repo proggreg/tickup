@@ -17,17 +17,17 @@ function renameList() {
 }
 const options = reactive([{
   name: 'Rename',
-  handler: renameList
+  handler: renameList,
 }, {
   name: 'Delete',
-  handler: deleteList
+  handler: deleteList,
 }])
-
 </script>
+
 <template>
   <v-menu>
     <template #activator="{ props }">
-      <v-btn v-bind="props" icon="mdi-dots-horizontal" variant="text"/>
+      <v-btn v-bind="props" icon="mdi-dots-horizontal" variant="text" :size="size" />
     </template>
     <v-list class="px-2">
       <v-list-item v-for="(option, index) in options" :key="index" :value="option.name" @click="option.handler">
