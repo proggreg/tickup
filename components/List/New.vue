@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { data } = useAuth()
-const newList = reactive<List>({
+const newList = ref<List>({
   name: '',
   todos: [],
   _id: undefined
@@ -12,16 +12,16 @@ const props = defineProps<{ open: boolean }>()
 const emit = defineEmits(['close'])
 
 async function createNewList() {
-  newList.userId = data?.value?.user?._id
+  newList.value.userId = data?.value?.user?._id ? data?.value?.user?._id : data?.value?.user?.sub
 
-  if (!newList.userId) {
-    newList.userId = data?.value?.user?.sub
-  }
-
-  const list = await listsStore.addList(newList)
+  const list = await listsStore.addList(newList.value)
 
   if (list) {
-    newList.name = ''
+    newList.value = {
+                      name: '',
+                      todos: [],
+                      _id: undefined
+                    }
     emit('close')
     if (smAndDown.value) {
       navOpen.value = false
