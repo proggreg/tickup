@@ -18,15 +18,15 @@ async function addTodo() {
   if (!route.params.id) {
     newTodo.value.dueDate = new Date()
   }
-
-  await listsStore.addTodo(newTodo.value)
-
-  if (!route.params.id) {
+  if (newTodo.value && newTodo.value.name) {
+    await listsStore.addTodo(newTodo.value)
+    if (!route.params.id) {
     await listsStore.getTodaysTodos(data.value?.user.id ? data.value?.user.id : data.value?.user.sub)
   }
   newTodo.value.name = ''
   newTodo.value.dueDate = undefined
   emit('addTodo')
+  }
 }
 
 </script>
