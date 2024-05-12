@@ -15,6 +15,7 @@ async function createNewList() {
   newList.value.userId = data?.value?.user?._id ? data?.value?.user?._id : data?.value?.user?.sub
 
   const list = await listsStore.addList(newList.value)
+  
 
   if (list) {
     newList.value = {
@@ -44,7 +45,7 @@ async function createNewList() {
       <v-text-field v-model="newList.name" autofocus placeholder="New List" @keyup.enter="createNewList" />
     </v-container>
     <template #buttons>
-      <v-btn color="primary" variant="tonal" @click="createNewList">
+      <v-btn :disabled="!newList.name.length" color="primary" variant="tonal" @click="createNewList">
         Save
       </v-btn>
     </template>

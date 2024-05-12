@@ -22,7 +22,7 @@ watch(rename, (newVal) => {
 })
 
 watch(listName, (newName) => {
-  if (store.lists.length && store.currentList._id && store.currentList.name.length > 0) {
+  if (store.lists.length && router.params.id && store.currentList.name.length > 0) {
     const list = store.lists.find(list => list._id === store.currentList._id);
     if (list) {
       list.name = newName;
@@ -45,8 +45,8 @@ watch(listName, (newName) => {
                     <v-text-field ref="input" v-model="store.currentList.name" :size="store.currentList.name.length"
                       placeholder="My List" variant="plain" density="compact" :readonly="!rename" :focused="rename"
                       center-afix class="align-center" @keyup.enter="rename = false" @blur="rename = false">
-                      <template #append>
-                        <ListOptions size="x-small" @rename="rename = true" />
+                      <template #append v-if="router.params.id">
+                        <ListOptions :list-id="router.params.id" size="x-small" @rename="rename = true" />
                       </template>
                     </v-text-field>
                   </v-col>

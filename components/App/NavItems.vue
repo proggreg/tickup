@@ -20,7 +20,7 @@ function renameList(list: List) {
 
 </script>
 <template>
-  <v-list-item v-for="list in store.lists" :key="list._id" class="my-2" link @click.passive="selectList(list)">
+  <v-list-item  v-for="list in store.lists" :key="list._id" class="my-2" link @click.passive="selectList(list)">
     <v-text-field v-if="editListName === list._id" v-model="list.name" variant="plain" @keyup.enter="renameList(list)"
       @blur="renameList(list)" />
     <v-list-item-title v-else>

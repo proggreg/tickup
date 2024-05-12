@@ -1,17 +1,19 @@
 <script setup lang="ts">
 const store = useListsStore()
-const { params } = useRoute()
 const emit = defineEmits(['rename'])
-const { size } = defineProps<{
-  size?: string
+const { size, listId } = defineProps<{
+  size?: {
+    type: string,
+    default: 'x-small'
+  }
+  listId: string
 }>()
 
 async function deleteList() {
-  if (params.id) {
-    await store.deleteList(params.id.toString())
+  if (listId) {
+    await store.deleteList(listId)
     await navigateTo('/')
   }
-  
 }
 
 function renameList() {
@@ -32,7 +34,7 @@ const options = reactive([{
 <template>
   <v-menu>
     <template #activator="{ props }">
-      <v-btn v-bind="props" icon="mdi-dots-horizontal" variant="text" :size="size" />
+      <v-btn v-bind="props" icon="mdi-dots-horizontal" variant="text" size="x-small" />
     </template>
     <v-list class="px-2">
       <v-list-item v-for="(option, index) in options" 
