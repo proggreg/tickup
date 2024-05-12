@@ -4,9 +4,7 @@ const query = ref<string>('')
 const results = ref([])
 const open = ref(false)
 const todoDialogOpen = ref(false)
-// const store = useListsStore()
 const { data } = useAuth()
-
 const items = ref([])
 
 if (import.meta.client) {
@@ -21,7 +19,6 @@ if (import.meta.client) {
 }
 
 function search() {
-  // @ts-expect-error
   $fetch('/api/search/todo', { query: { q: query.value, id: data?.value?.user?.sub } })
     .then((res) => {
       items.value = res
@@ -32,11 +29,9 @@ function search() {
 }
 const debouncedSearch = useDebounceFn(search, 500)
 
-
 onMounted(() => {
   search()
 })
-
 
 </script>
 
@@ -44,8 +39,7 @@ onMounted(() => {
   <v-dialog open-on-click :model-value="open" width="500">
     <template #activator="{ props }">
       <v-text-field 
-        v-bind="props" hide-details placeholder="search" style="max-width: 1000px" class="mx-4"
-        @click="setTextFieldFocus">
+        v-bind="props" hide-details placeholder="search" style="max-width: 1000px" class="mx-4">
         <template #append-inner>
           <span style="font-size: 0.70rem; width: 40px;">ctrl + k</span>
         </template>
@@ -64,7 +58,7 @@ onMounted(() => {
         <v-divider />
         <v-virtual-scroll :items="items" height="300" item-height="50">
           <template #default="{ item }">
-            <v-list-item>
+            <v-list-item link :to="`/todo/${item._id}`" @click="open = false">
               <template #prepend>
                 <ListStatus :todo="item" />
 
