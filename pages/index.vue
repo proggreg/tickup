@@ -5,12 +5,6 @@ const listsStore = useListsStore()
 const tab = ref('todo')
 const dialog = ref(false)
 
-if (!loggedIn.value) {
-  navigateTo('/login')
-}
-
-listsStore.setCurrentListName("Today's Todo's")
-
 useHead({ title: 'TickUp:Home' })
 
 definePageMeta({
@@ -20,6 +14,12 @@ definePageMeta({
     navigateUnauthenticatedTo: '/login',
   },
 })
+
+if (!loggedIn.value) {
+  navigateTo('/login')
+}
+
+listsStore.setCurrentListName("Today's Todo's")
 
 const todaysTodos = computed(() => {
   return listsStore.todaysTodos.filter((todo) => todo.status !== 'Closed')
@@ -33,11 +33,9 @@ function selectTodo(todo: Todo) {
   listsStore.setCurrentTodo(todo)
   navigateTo(`/todo/${todo._id}`)
 }
-
-
 </script>
 <template>
-  <v-col cols="12">
+  <v-col cols="12" class="fill-height">
     <v-tabs v-model="tab" align-tabs="center">
       <v-tab>
         todo
@@ -46,15 +44,16 @@ function selectTodo(todo: Todo) {
         done
       </v-tab>
     </v-tabs>
-    <v-window v-model="tab" class="" style="min-height: 150px;">
-      <v-window-item value="todo">
-        <v-card v-if="todaysTodos.length" variant="tonal">
-          <v-list>
+    <v-window v-model="tab" class="fill-height">
+      <v-window-item value="todo" class="fill-height">
+        <v-card v-if="todaysTodos.length" variant="flat" >
+          <v-list class="pa-4">
             <AppDialog :open="dialog" @close="dialog = false">
               <TodoDetail />
             </AppDialog>
 
-            <v-list-item v-for="todo in todaysTodos" :key="todo._id" class="fill-height" @click="selectTodo(todo)">
+            <v-list-item v-for="todo in todaysTodos" :key="todo._id" 
+            class="fill-height my-2" @click="selectTodo(todo)" variant="tonal">
 
               <template #prepend>
                 <ListStatus :todo="todo" />
@@ -64,8 +63,7 @@ function selectTodo(todo: Todo) {
               </v-list-item-title>
 
               <template #append>
-                <v-btn icon="mdi-delete" elevation="0" variant="text" size="small"
-                  @click.stop="listsStore.deleteTodo(todo._id)" />
+                <AppDeleteButton :todo="todo" />
               </template>
             </v-list-item>
 
@@ -77,7 +75,7 @@ function selectTodo(todo: Todo) {
       </v-window-item>
       <v-window-item value="done" height="100">
         <v-card variant="tonal">
-          <v-list v-if="todaysClosedTodos.length">
+          <v-list v-if="todaysClosedTodos.length" class="pa-4">
             <v-list-item v-for="todo in todaysClosedTodos" :key="todo._id">
               <template #prepend>
                 <ListStatus :todo="todo" />
