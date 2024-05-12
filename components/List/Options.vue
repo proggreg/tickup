@@ -7,9 +7,11 @@ const { size } = defineProps<{
 }>()
 
 async function deleteList() {
-  if (!params.id) return
-  store.deleteList(params.id[0])
-  await navigateTo('/')
+  if (params.id) {
+    await store.deleteList(params.id.toString())
+    await navigateTo('/')
+  }
+  
 }
 
 function renameList() {
