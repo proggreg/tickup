@@ -22,8 +22,11 @@ watch(rename, (newVal) => {
 })
 
 watch(listName, (newName) => {
-  if (store.currentList.name.length > 0) {
-    store.lists.find(list => list._id === store.currentList._id).name = newName
+  if (store.lists.length && store.currentList._id && store.currentList.name.length > 0) {
+    const list = store.lists.find(list => list._id === store.currentList._id);
+    if (list) {
+      list.name = newName;
+    }
   }
 })
 </script>
