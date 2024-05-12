@@ -35,7 +35,7 @@ function deleteItem(todo: Todo) {
           {{ formatDate(item.columns[column.key]) }}
         </td>
         <td v-else-if="column.key === 'actions' && !xs">
-          <v-btn class="text-red" icon="mdi-delete" variant="text" rounded="lg" elevation="0" small @click.stop="deleteItem(item)" />
+          <AppDeleteButton :todo="item.raw" />
         </td>
       </template>
     </template>

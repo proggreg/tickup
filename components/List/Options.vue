@@ -1,11 +1,7 @@
 <script setup lang="ts">
 const store = useListsStore()
 const emit = defineEmits(['rename'])
-const { size, listId } = defineProps<{
-  size?: {
-    type: string,
-    default: 'x-small'
-  }
+const { listId } = defineProps<{
   listId: string
 }>()
 

@@ -78,13 +78,7 @@ function deleteTodo (todo: Todo) {
           />
 
           <v-list-item-action end>
-            <v-btn
-              variant="text"
-              size="x-small"
-              rounded="lg"
-              icon="mdi-delete"
-              @click.stop="deleteTodo(todo)"
-            />
+            <!-- <AppDeleteButton /> -->
           </v-list-item-action>
         </template>
       </v-list-item>
