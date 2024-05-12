@@ -27,9 +27,9 @@ function isSortedIndex(sortBy: any, column: any) {
 
 onMounted(() => {
   // TODO weird bug where closed will render twice
-  // if (expanded.includes(groupItem.value) && !isGroupOpen(groupItem)) {
-  //   toggleGroup(groupItem)
-  // }
+  if (expanded.includes(groupItem.value) && !isGroupOpen(groupItem)) {
+    toggleGroup(groupItem)
+  }
 })
 
 </script>
