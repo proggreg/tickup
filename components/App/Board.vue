@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const statuses = useSettingsStore().statuses
+const { statuses} = useSettingsStore()
 const store = useListsStore()
 const dragging = ref(false)
 const { data } = useAuth()
@@ -10,6 +10,7 @@ const newTodo = ref({
   name: '',
   userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub,
   listId: route.params.id,
+  status: '',
 })
 
 const groupedTodos = computed(() => {
@@ -31,7 +32,7 @@ async function change(e: any, status: any) {
       ...item,
       order: index,
     }))
-    await $fetch(`/api/list/todos`, { method: 'PUT', body: { orderedItems } })
+    await $fetch("/api/list/todos", { method: 'PUT', body: { orderedItems } })
   }
 }
 
@@ -47,13 +48,13 @@ function addTodo() {
   newTodo.value.name = ''
 }
 
-// function handleBlur() {
-//   if (newTodo.value.name === '') {
-//     newTodo.value.status = ''
-//   } else {
-//     addTodo()
-//   }
-// }
+function handleBlur() {
+  if (newTodo.value.name === '') {
+    newTodo.value.status = ''
+  } else {
+    addTodo()
+  }
+}
 
 function gotoTodo(todo: Todo) {
   listStore.setCurrentTodo(todo)
@@ -64,7 +65,7 @@ function gotoTodo(todo: Todo) {
 <template>
   <v-row>
     <v-col v-for="status in groupedTodos" :key="status.name">
-      <v-card class="ma-2" variant="tonal">
+      <v-card class="my-2 px-4 yx-2" variant="tonal">
         <v-card-title>
           {{ status.name }}
         </v-card-title>
@@ -79,19 +80,16 @@ function gotoTodo(todo: Todo) {
                 </v-card-title>
                 <v-card-item v-else>
                   <v-text-field v-model="element.name" placeholder="Add todo" hide-details
-                    @keyup.enter="addTodo(element)" />
+                    @keyup.enter="addTodo" />
                 </v-card-item>
               </v-card>
             </template>
           </draggable>
         </div>
-
-        <v-card v-if="newTodo.status === status.name" class="ma-2 px-4">
-          <v-card-title>
-            <v-text-field v-model="newTodo.name" placeholder="Add todo" variant="plain" :focused="true" hide-details
-              class="pa-0" @keyup.enter="addTodo(newTodo)" />
-          </v-card-title>
-        </v-card>
+            <v-card v-if="newTodo.status === status.name" class="ma-2 ">
+            <v-text-field v-model="newTodo.name" placeholder="Add todo" 
+                           autofocus @keyup.enter="addTodo" @blur="handleBlur" />          
+              </v-card>
         <v-card-actions>
           <v-btn color="primary" @click="newTodo.status = status.name">
             Add
