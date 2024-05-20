@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const { params } = useRoute()
 const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`)
-const { data: todos } = await useFetch<Todo[]>(`/api/list/todos`, { query: { id: params.id } })
+const { data: todos } = await useFetch<Todo[]>("/api/list/todos", { query: { id: params.id } })
 const store = useListsStore()
-const tabs = ref<View[]>(['list', 'board'])
-const currentTab = ref<View>(store.view || 'list')
+const tabs = ref<View[]>(['board', 'list'])
+const currentTab = ref<View>('board')
 const { xs } = useDisplay()
 
 if (currentList.value) {
@@ -37,11 +37,11 @@ watch(currentTab, (newTab) => {
       <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
     </v-tabs>
     <v-window v-model="currentTab">
-      <v-window-item value="list">
-        <ListTable v-if="todos" :list_id="params.id" :todos="todos" />
-      </v-window-item>
       <v-window-item value="board">
         <AppBoard v-if="todos" :todos="todos" />
+      </v-window-item>
+      <v-window-item value="list">
+        <ListTable v-if="todos" :list_id="params.id" :todos="todos" />
       </v-window-item>
     </v-window>
   </v-col>
