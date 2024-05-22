@@ -1,0 +1,28 @@
+name: Release with Changelog
+
+on:
+  push:
+    tags: [ v*.*.* ]  # Triggers on pushing tags starting with "v"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3  # Checkout code
+
+      - uses: TriPSs/conventional-changelog-action@v1  # Generate changelog
+        with:
+          from: 0  # Define starting point (optional, defaults to previous tag)
+          token: ${{ secrets.GITHUB_TOKEN }}  # Access token for GitHub API
+
+      - name: Get changelog  # Capture changelog output
+        run: cat CHANGELOG.md
+
+      - uses: actions/create-release@v1  # Create release on GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}  # Release name same as tag
+          body: ${{ steps.get_changelog.outputs.changelog }}  # Use captured changelog
