@@ -46,6 +46,6 @@ watch(currentTab, (newTab) => {
     </v-window>
   </v-col>
   <v-col v-else>
-    <ListTable v-if="todos" :list_id="params.id" />
+    <ListTable v-if="todos" :todos="todos" :list_id="params.id" />
   </v-col>
 </template>
