@@ -2,7 +2,7 @@
 const store = useListsStore()
 const emit = defineEmits(['rename'])
 const { listId } = defineProps<{
-  listId: string
+  listId: string,
 }>()
 
 async function deleteList() {
@@ -30,14 +30,14 @@ const options = reactive([{
 <template>
   <v-menu>
     <template #activator="{ props }">
-      <v-btn v-bind="props" icon="mdi-dots-horizontal" variant="text" size="x-small" />
+      <v-btn v-bind="props" icon="mdi-dots-horizontal" variant="text" />
     </template>
     <v-list class="px-2">
       <v-list-item v-for="(option, index) in options" 
       :key="index" :value="option.name"
       :append-icon="option.icon" 
       :class="option.destructive ? 'text-red' : ''"
-      @click="option.handler">
+      @click.passive="option.handler">
         <v-list-item-title class="text-body-2">
           {{ option.name }}
         </v-list-item-title>

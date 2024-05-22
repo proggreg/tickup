@@ -43,10 +43,10 @@ watch(listName, (newName) => {
                 <v-row>
                   <v-col cols="auto">
                     <v-text-field ref="input" v-model="store.currentList.name" :size="store.currentList.name.length"
-                      placeholder="My List" variant="plain" density="compact" :readonly="!rename" :focused="rename"
-                      center-afix class="align-center" @keyup.enter="rename = false" @blur="rename = false">
+                      placeholder="My List" variant="plain"  :focused="rename"
+                       class="align-center font-weight-bold list-title" @keyup.enter="rename = false" @blur="rename = false">
                       <template #append v-if="router.params.id">
-                        <ListOptions :list-id="router.params.id" size="x-small" @rename="rename = true" />
+                        <ListOptions :list-id="router.params.id" @rename="rename = true" />
                       </template>
                     </v-text-field>
                   </v-col>
@@ -71,3 +71,8 @@ watch(listName, (newName) => {
     </v-theme-provider>
   </ColorScheme>
 </template>
+<style>
+.list-title input {
+  /* font-size: 1.5rem; */
+}
+</style>

@@ -33,10 +33,10 @@ function closeDrawer() {
     </template>
   </v-app-bar>
 
-  <v-navigation-drawer v-if="loggedIn" v-model="open" class="pa-2" :permanent="!smAndDown" width="400">
-    <v-list>
+  <v-navigation-drawer v-if="loggedIn" v-model="open" class="pa-2 font-weight-bold" :permanent="!smAndDown" width="400">
+    <v-list nav>
       <v-spacer />
-      <v-list-item >
+      <v-list-item  >
         <template #prepend>
           Home
         </template>
