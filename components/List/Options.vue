@@ -1,31 +1,44 @@
 <script setup lang="ts">
 const store = useListsStore()
+const emit = defineEmits(['rename'])
+const { listId } = defineProps<{
+  listId: string,
+}>()
 
-const optionProps = defineProps<{ listId: string, size?: string}>()
-async function deleteList () {
-  store.deleteList(optionProps.listId)
-  await navigateTo('/')
+async function deleteList() {
+  if (listId) {
+    await store.deleteList(listId)
+    await navigateTo('/')
+  }
+}
+
+function renameList() {
+  emit('rename')
 }
 const options = reactive([{
+  name: 'Rename',
+  handler: renameList,
+  icon: 'mdi-pencil',
+}, {
   name: 'Delete',
-  handler: deleteList
+  handler: deleteList,
+  icon: 'mdi-delete',
+  destructive: true,
 }])
 </script>
+
 <template>
   <v-menu>
-    <template #activator="{props}">
-      <v-icon v-bind="props">
-        mdi-dots-horizontal
-      </v-icon>
+    <template #activator="{ props }">
+      <v-btn v-bind="props" icon="mdi-dots-horizontal" variant="text" />
     </template>
     <v-list class="px-2">
-      <v-list-item
-        v-for="(option, index) in options"
-        :key="index"
-        :value="option.name"
-        @click="option.handler"
-      >
-        <v-list-item-title class="text-body1" style="font-size: 0.8rem;">
+      <v-list-item v-for="(option, index) in options" 
+      :key="index" :value="option.name"
+      :append-icon="option.icon" 
+      :class="option.destructive ? 'text-red' : ''"
+      @click.passive="option.handler">
+        <v-list-item-title class="text-body-2">
           {{ option.name }}
         </v-list-item-title>
       </v-list-item>

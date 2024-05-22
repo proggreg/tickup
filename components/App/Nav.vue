@@ -3,12 +3,9 @@ const open = useNav()
 const dialog = ref(false)
 const { smAndDown } = useDisplay()
 const { signOut, status } = useAuth()
-
 const loggedIn = computed(() => status.value === 'authenticated')
 
-
 function closeDrawer() {
-
   if (smAndDown.value) {
     open.value = false
   }
@@ -17,81 +14,44 @@ function closeDrawer() {
 </script>
 
 <template>
-  <v-app-bar
-    density="comfortable"
-    height="70"
-    elevation="0"
-    align-center
-    class="d-flex justify-space-between"
-    style="justify-content: space-between; border-top: none; border-left: none; border-right: none;"
-  >
-    <template
-      v-if="loggedIn"
-      #prepend
-    >
-      <v-btn
-        v-if="smAndDown"
-        size="small"
-        style="padding: 0;"
-        elevation="0"
-        @click="open = !open"
-      >
-        <v-icon
-          class="text-h4"
-          size="x-large"
-        >
+  <v-app-bar>
+    <template v-if="loggedIn" #prepend>
+      <v-btn v-if="smAndDown" size="small" style="padding: 0;" elevation="0" @click="open = !open">
+        <v-icon class="text-h4" size="x-large">
           mdi-menu
         </v-icon>
       </v-btn>
-      <AppProfile v-else />
+      <AppMenu v-else />
+    </template>
+    <template v-if="!loggedIn" #prepend>
+      <v-img src="/android-chrome-512x512.png" width="50" style="border-radius: 50%" />
     </template>
     <AppSearch v-if="loggedIn" />
 
     <template #append>
-      <v-btn
-        v-if="loggedIn && !smAndDown"
-        size="small"
-        style="padding: 0;"
-        elevation="0"
-        @click="signOut()"
-      >
-        Sign Out
-      </v-btn>
       <AppDarkMode />
     </template>
   </v-app-bar>
 
-  <v-navigation-drawer
-    v-if="loggedIn"
-    v-model="open"
-    class="pa-2"
-    :permanent="!smAndDown"
-  >
-    <v-list>
+  <v-navigation-drawer v-if="loggedIn" v-model="open" class="pa-2 font-weight-bold" :permanent="!smAndDown" width="400">
+    <v-list nav>
       <v-spacer />
-      <v-btn
-        elevation="0"
-        append-icon="mdi-home"
-        block
-        to="/"
-        @click="closeDrawer"
-      >
-        Home
-      </v-btn>
-
-      <v-list-item>
-        <template #append>
-          <v-btn
-            elevation="0"
-            icon="mdi-plus"
-            @click="dialog = true"
-          />
-        </template>
+      <v-list-item  >
         <template #prepend>
-          <ListNew
-            :open="dialog"
-            @close="dialog = false"
-          />
+          Home
+        </template>
+        <template #append>
+          <v-btn icon="mdi-home" to="/">
+          </v-btn>
+        </template>
+      </v-list-item>
+      <v-list-item >
+        <template #prepend>
+          <ListNew :open="dialog" @close="dialog = false" />
+        </template>
+        <template #append>
+          <v-btn icon="mdi-plus" @click="dialog = true">
+          </v-btn>
         </template>
       </v-list-item>
     </v-list>
@@ -99,22 +59,11 @@ function closeDrawer() {
     <AppNavItems />
 
     <template #append>
-      <div
-        v-if="smAndDown"
-        class="pa-2 d-flex flex-column ga-2"
-      >
-        <v-btn
-          v-if="loggedIn"
-          size="small"
-          style="padding: 0;"
-          variant="elevated"
-          height="36"
-          block
-          @click="signOut()"
-        >
+      <div v-if="smAndDown" class="pa-2 d-flex flex-column ga-2">
+        <v-btn v-if="loggedIn" size="small" style="padding: 0;" variant="elevated" height="36" block @click="signOut()">
           Sign Out
         </v-btn>
-        <AppProfile />
+        <AppMenu />
       </div>
     </template>
 
