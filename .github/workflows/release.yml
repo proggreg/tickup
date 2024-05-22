@@ -1,17 +1,16 @@
-name: Release with Changelog
-
+name: Publish Release
 on:
   push:
-    tags: [ v*.*.* ]  # Triggers on pushing tags starting with "v"
-
+    tags:
+      - 'v*'
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3  # Checkout code
-
-      - uses: gr2m/release-with-changelog@v1  # Use the release-with-changelog action
-        with:
-          tag_name: ${{ github.ref }}  # Set tag name from pushed ref
-          file_content_type: markdown  # Release body format (optional)
+    - uses: actions/checkout@v3
+    - name: Create a Release
+      uses: elgohr/Github-Release-Action@v5
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        title: MyReleaseMessage
