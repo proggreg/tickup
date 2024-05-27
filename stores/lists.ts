@@ -43,7 +43,6 @@ export const useListsStore = defineStore("lists", {
 		async updateList(list: List) {
 			console.time("updateList");
 
-
 			const updatedList = await $fetch<List>(`/api/list/${list._id}`, {
 				method: "PUT",
 				body: list,
@@ -111,10 +110,14 @@ export const useListsStore = defineStore("lists", {
 			}
 		},
 		setCurrentList(list: List) {
-			this.currentList = list;
+			if (list) {
+				this.currentList = list;
+			}
 		},
 		setCurrentListName(name: string) {
-			this.currentList.name = name;
+			if (name) {
+				this.currentList.name = name;
+			}
 		},
 		setView(view: "list" | "board") {
 			this.view = view;

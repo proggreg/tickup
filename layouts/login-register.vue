@@ -13,9 +13,9 @@ const colorMode = useColorMode()
               <v-sheet>
                 <h1 class="text-center py-4">
                   TickUp
-                  </h1>
+                </h1>
                 <NuxtPage />
-            </v-sheet>
+              </v-sheet>
             </v-container>
           </v-main>
         </v-layout>

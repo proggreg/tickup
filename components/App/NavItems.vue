@@ -29,7 +29,7 @@ function rename(list: List) {
 <template>
   <v-hover v-for="list in store.lists">
     <template v-slot:default="{ isHovering, props }">
-      <v-list-item v-bind="props" :variant="isHovering ? 'tonal': ''" 
+      <v-list-item v-bind="props" :variant="isHovering ? 'tonal': 'text'" 
                   :key="list._id" class="my-2 font-weight-bold"
                   style="cursor: pointer;" 
                   @click.passive="() => navigate(list)" >

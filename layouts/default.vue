@@ -1,17 +1,12 @@
-<<<<<<< HEAD
-<script
-  setup
-  lang="ts"
->
-
-=======
 <script setup lang="ts">
 const colorMode = useColorMode()
 const store = useListsStore()
 const rename = ref(false)
 const router = useRoute()
 const input = ref(null)
-const listName = computed(() => store.currentList.name)
+const listName = computed(() => {
+  return store?.currentList?.name || 'Today'
+})
 
 watch(rename, (newVal) => {
   if (!newVal) {
@@ -27,7 +22,7 @@ watch(rename, (newVal) => {
     }
   }
 })
->>>>>>> 6a042026354a14d4bfe2c31d01be093847b80d13
+
 
 watch(listName, (newName) => {
   if (store.lists.length && router.params.id && store.currentList.name.length > 0) {
@@ -36,6 +31,10 @@ watch(listName, (newName) => {
       list.name = newName;
     }
   }
+})
+
+onBeforeMount(() => {
+  console.log('before mount')
 })
 </script>
 
@@ -48,23 +47,21 @@ watch(listName, (newName) => {
           <v-main class="d-flex align-stretch justify-center">
             <v-container fluid>
               <NuxtErrorBoundary>
-                <v-row>
-                  <v-col cols="auto">
+                <v-row v-if="store.currentList">
+                  <v-col cols="12">
                     <v-text-field ref="input" v-model="store.currentList.name" :size="store.currentList.name.length"
-                      placeholder="My List" variant="plain"  :focused="rename"
-                       class="align-center font-weight-bold list-title" @keyup.enter="rename = false" @blur="rename = false">
+                      placeholder="My List" variant="plain" :focused="rename"
+                      class="align-center font-weight-bold list-title" @keyup.enter="rename = false"
+                      @blur="rename = false">
                       <template #append v-if="router.params.id">
                         <ListOptions :list-id="router.params.id" @rename="rename = true" />
                       </template>
                     </v-text-field>
                   </v-col>
-                </v-row>
-                <v-row>
                   <v-col cols="12">
                     <TodoNew />
                   </v-col>
                 </v-row>
-
                 <template #error="{ error }">
                   <v-alert type="error">
                     {{ error }}
