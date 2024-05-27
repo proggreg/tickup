@@ -147,7 +147,7 @@ export default defineNuxtConfig({
     },
   },
   pwa: {
-    strategies: 'generateSW',
+    strategies: 'injectManifest',
     registerType: 'autoUpdate',
     manifest: {
       name: 'Tick:up',
