@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useDebounceFn } from '@vueuse/core';
+import { useDebounceFn } from '@vueuse/core'
+const { mdAndUp } = useDisplay()
 const query = ref<string>('')
 const results = ref([])
 const open = ref(false)
@@ -14,7 +15,6 @@ if (import.meta.client) {
       open.value = !open.value
       return false
     }
-
   })
 }
 
@@ -32,28 +32,23 @@ const debouncedSearch = useDebounceFn(search, 500)
 onMounted(() => {
   search()
 })
-
 </script>
 
 <template>
   <v-dialog open-on-click :model-value="open" width="500">
     <template #activator="{ props }">
-      <v-text-field 
-        v-bind="props" hide-details placeholder="search" style="max-width: 1000px" class="mx-4">
+      <v-text-field v-bind="props" hide-details placeholder="search" style="max-width: 1000px" class="mx-4">
         <template #append-inner>
-          <span style="font-size: 0.70rem; width: 40px;">ctrl + k</span>
+          <span v-if="mdAndUp" style="font-size: 0.70rem; width: 40px;">ctrl + k</span>
         </template>
       </v-text-field>
-
     </template>
 
     <template #default="{ isActive }">
       <v-card v-show="isActive">
         <v-card-item class=" pa-4">
-          <v-text-field v-model="query" placeholder="search" autofocus class="ma-4"
-            @keyup="debouncedSearch"/>
+          <v-text-field v-model="query" placeholder="search" autofocus class="ma-4" @keyup="debouncedSearch" />
         </v-card-item>
-
 
         <v-divider />
         <v-virtual-scroll :items="items" height="300" item-height="50">
@@ -61,7 +56,6 @@ onMounted(() => {
             <v-list-item link :to="`/todo/${item._id}`" @click="open = false">
               <template #prepend>
                 <ListStatus :todo="item" />
-
               </template>
 
               <v-list-item-title class="font-weight-bold pa-4">
