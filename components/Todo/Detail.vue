@@ -2,7 +2,6 @@
 const listsStore = useListsStore()
 
 function updateDueDate(newDate: Date) {
-  console.log('updateDueDate', newDate)
   listsStore.currentTodo.dueDate = newDate
   listsStore.updateTodo(listsStore.currentTodo)
 }
@@ -21,42 +20,27 @@ const desc = ref(listsStore.currentTodo.desc)
 </script>
 
 <template>
-  <v-card>
+  <v-card width="100%" elevation="0" class="pa-2">
     <template #prepend>
       <TodoStatus />
     </template>
     <template #append>
-      <AppDueDate
-        :todo-due-date="listsStore.currentTodo.dueDate"
-        :todo="listsStore.currentTodo"
-        :show-detail="true"
-        @set-date="updateDueDate"
+      <AppDueDate :todo-due-date="listsStore.currentTodo.dueDate" 
+                  :todo="listsStore.currentTodo" :show-detail="true"
+                  @set-date="updateDueDate"
       />
     </template>
     <v-card-title>
-      <v-text-field
-        v-model="listsStore.currentTodo.name"
-        @blur="updateName"
-      />
+      <v-text-field v-model="listsStore.currentTodo.name" label="Title" hide-details @blur="updateName" />
     </v-card-title>
     <v-card-item>
-      <v-textarea
-        v-model="desc"
-        label="description"
-        variant="solo-inverted"
-        @blur="updateDesc"
-      />
+      <v-textarea v-model="desc" class="mt-2" label="Description" @blur="updateDesc" />
     </v-card-item>
 
     <v-card-actions>
+      <AppDeleteButton :todo="listsStore.currentTodo" />
       <v-spacer />
-      <!-- <v-file-input
-        label="File input"
-        variant="solo-inverted"
-        density="compact"
-        hide-details
-        TODO File Attachments
-      /> -->
+      <v-file-input label="File input" variant="solo-inverted" density="compact" hide-details disabled />
     </v-card-actions>
   </v-card>
 </template>

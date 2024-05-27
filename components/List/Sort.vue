@@ -8,6 +8,7 @@ const sortOptions = ref([
 ])
 const sortDirection = ref('ascending')
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 watch([selectedSort, sortDirection], ([newOption, newDirection]) => {
   store.sortByDate(newDirection)
 })

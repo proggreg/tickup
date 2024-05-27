@@ -21,6 +21,7 @@ const updateStatus = (status: string) => {
     <template #activator="{props}">
       <v-btn
         v-bind="props"
+        min-width="20px"
         size="x-small"
         rounded="xl"
         :style="{
@@ -39,6 +40,7 @@ const updateStatus = (status: string) => {
           <v-btn
             size="x-small"
             rounded="xl"
+            min-width="20px"
             :style="{
               backgroundColor: status.color,
               marginRight: '8px'

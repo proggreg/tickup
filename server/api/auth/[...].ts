@@ -55,15 +55,17 @@ export default NuxtAuthHandler({
   },
 
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token }) {
       return token;
     },
 
     async session({ session, token }) {
 
-      if (!session.user.name) {
+      if (session.user && !session.user.name) {
         const user = await UserSchema.findById(token.sub)
-        session.user.name = user.username
+        if (user) {
+          session.user.name = user.username  
+        }
       }
 
       session.user = {

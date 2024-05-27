@@ -37,15 +37,15 @@ const loginUser = async () => {
 }
 </script>
 <template>
-  <v-sheet>
     <v-form
       ref="loginForm"
+      validate-on="submit input"
       @submit.prevent="loginUser"
     >
       <v-text-field
         v-model="username"
         label="Username"
-        type="text"
+        :hide-details="false"
         :rules="userNameRules"
         required
         class="error"
@@ -54,6 +54,7 @@ const loginUser = async () => {
       <v-text-field
         v-model="password"
         label="Password"
+        :hide-details="false"
         :rules="passwordRules"
         type="password"
         required
@@ -87,4 +88,5 @@ const loginUser = async () => {
         Incorrect Credentials
       </v-snackbar>
     </v-form>
-</v-sheet></template>
+
+</template>

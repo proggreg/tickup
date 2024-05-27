@@ -34,6 +34,7 @@ watch(currentStatus, () => {
         v-bind="props"
         :color="currentStatus.color"
         variant="tonal"
+        min-width="20px"
       >
         {{ currentStatus.name }}
         <template #append>

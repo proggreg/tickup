@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   try {
     const query = getQuery(event)
-
+    
     if (query.today) {
       const start = new Date()
       start.setHours(0, 0, 0, 0)

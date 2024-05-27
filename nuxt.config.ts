@@ -5,15 +5,17 @@ export default defineNuxtConfig({
     '@nuxt/devtools',
     '@vueuse/nuxt',
     'nuxt-mongoose',
-    '@nuxtjs/eslint-module',
     'nuxt-bugsnag',
-    '@sidebase/nuxt-auth'
+    '@sidebase/nuxt-auth',
+    '@nuxtjs/color-mode',
+     '@nuxt/eslint'
   ],
 
   experimental: {
     payloadExtraction: false,
     typedPages: false
   },
+  pages: true,
 
   nitro: {
     esbuild: {
@@ -40,7 +42,11 @@ export default defineNuxtConfig({
   },
   vuetify: {
     vuetifyOptions: {
+      labComponents: true,
       defaults: {
+        VAppBar: {
+          elevation: 0,
+        },
         VSheet: {
           elevation: 10,
           width: 300,
@@ -48,12 +54,18 @@ export default defineNuxtConfig({
           rounded: 'xl'
         },
         VBtn: {
-          rounded: 'xl'
+          rounded: 'xl',
+          elevation: 0,
         },
         VTextField: {
           rounded: 'xl',
-          variant: 'solo-inverted',
-          density: 'compact'
+          variant: 'outlined',
+          density: 'compact',
+          hideDetails: 'auto',
+        },
+        VTextarea: {
+          rounded: 'xl',
+          variant: 'outlined',
         },
         VListItem: {
           rounded: 'xl',
@@ -89,14 +101,22 @@ export default defineNuxtConfig({
     strict: true
   },
   bugsnag: {
+    baseUrl: process.env.NUXT_ENV_VERCEL_URL || 'http://localhost:3000',
+    publishRelease: true,    
     config: {
       apiKey: process.env.BUGSNAG_API_KEY,
-      enabledReleaseStages: ['staging', 'production'],
+      enabledReleaseStages: ['development','staging', 'production'],
       releaseStage: process.env.NODE_ENV,
+
     }
   },
   devtools: {
     enabled: true
+  },
+   eslint: {
+    config: {
+      stylistic: true 
+    }
   },
   runtimeConfig: {
     auth: {
@@ -115,14 +135,17 @@ export default defineNuxtConfig({
       type: "authjs",
     },
     secret: process.env.NUXT_NEXTAUTH_SECRET,
-    origin: process.env.NUXT_ENV_VERCEL_URL || "http://localhost:3000",
+    origin: process.env.VERCEL_URL || "http://localhost:3000",
     globalAppMiddleware: true,
     
   },
   mongoose: {
     devtools: true,
+    uri: process.env.MONGODB_URI,
+    
     options: {
       appName: 'Tickup',
+      
     }
   }
 })
