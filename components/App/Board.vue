@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { statuses} = useSettingsStore()
+const { statuses } = useSettingsStore()
 const store = useListsStore()
 const dragging = ref(false)
 const { data } = useAuth()
@@ -79,17 +79,16 @@ function gotoTodo(todo: Todo) {
                   {{ element.name }}
                 </v-card-title>
                 <v-card-item v-else>
-                  <v-text-field v-model="element.name" placeholder="Add todo" hide-details
-                    @keyup.enter="addTodo" />
+                  <v-text-field v-model="element.name" placeholder="Add todo" hide-details @keyup.enter="addTodo" />
                 </v-card-item>
               </v-card>
             </template>
           </draggable>
         </div>
-            <v-card v-if="newTodo.status === status.name" class="ma-2 ">
-            <v-text-field v-model="newTodo.name" placeholder="Add todo" 
-                           autofocus @keyup.enter="addTodo" @blur="handleBlur" />          
-              </v-card>
+        <v-card v-if="newTodo.status === status.name" class="ma-2 ">
+          <v-text-field v-model="newTodo.name" placeholder="Add todo" autofocus @keyup.enter="addTodo"
+            @blur="handleBlur" />
+        </v-card>
         <v-card-actions>
           <v-btn color="primary" @click="newTodo.status = status.name">
             Add
