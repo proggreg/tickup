@@ -1,10 +1,8 @@
-<script
-    setup
-    lang="ts"
->
+<script setup lang="ts">
 import { useListsStore } from '@/stores/lists'
 const listsStore = useListsStore()
 const { data, status } = useAuth()
+const { $pwa } = useNuxtApp()
 
 const route = useRoute()
 
@@ -21,10 +19,22 @@ if (route.params.id) {
     }
 }
 
+
+onMounted(() => {
+  console.log('$pwa', $pwa)
+  if (!$pwa.isInstalled) {
+    // debugger
+    $pwa.install()
+  } 
+  if ($pwa.offlineReady) {
+    console.log('App ready to work offline')
+  }
+})
 </script>
 <template>
     <div>
         <NuxtLayout>
+            <NuxtPwaManifest />
             <NuxtPage />
         </NuxtLayout>
     </div>
