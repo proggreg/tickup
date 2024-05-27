@@ -152,9 +152,9 @@ export default defineNuxtConfig({
     filename: undefined,
     registerType: 'autoUpdate',
     manifest: {
-      name: 'Nuxt Vite PWA',
-      short_name: 'NuxtVitePWA',
-      theme_color: '#ffffff',
+      name: 'Tickup',
+      short_name: 'Tickup',
+      theme_color: '#000000',
       icons: [
         {
           src: 'pwa-192x192.png',
