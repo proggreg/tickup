@@ -33,27 +33,29 @@ function selectTodo(todo: Todo) {
   listsStore.setCurrentTodo(todo)
   navigateTo(`/todo/${todo._id}`)
 }
+
 </script>
 <template>
+  <v-row>
   <v-col cols="12" class="fill-height">
-    <v-tabs v-model="tab" align-tabs="center">
+    <v-tabs v-model="tab"align-tabs="center">
       <v-tab>
         todo
       </v-tab>
-      <v-tab v-if="todaysClosedTodos.length">
+      <v-tab>
         done
       </v-tab>
     </v-tabs>
     <v-window v-model="tab" class="fill-height">
       <v-window-item value="todo" class="fill-height">
-        <v-card v-if="todaysTodos.length" variant="flat" >
+        <v-card v-if="todaysTodos && todaysTodos.length" variant="flat" >
           <v-list class="pa-4">
             <AppDialog :open="dialog" @close="dialog = false">
               <TodoDetail />
             </AppDialog>
 
             <v-list-item v-for="todo in todaysTodos" :key="todo._id" 
-            class="fill-height my-2" @click="selectTodo(todo)" variant="tonal">
+            class="fill-height my-2" @click="selectTodo(todo)" >
 
               <template #prepend>
                 <ListStatus :todo="todo" />
@@ -95,6 +97,7 @@ function selectTodo(todo: Todo) {
       </v-window-item>
     </v-window>
   </v-col>
+</v-row>
   <!-- TODO add reminders feature -->
   <!-- <v-col >
       <v-card class="pa-4">

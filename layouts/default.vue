@@ -4,7 +4,9 @@ const store = useListsStore()
 const rename = ref(false)
 const router = useRoute()
 const input = ref(null)
-const listName = computed(() => store.currentList.name)
+const listName = computed(() => {
+  return store?.currentList?.name || 'Today'
+})
 
 watch(rename, (newVal) => {
   if (!newVal) {
@@ -29,6 +31,10 @@ watch(listName, (newName) => {
     }
   }
 })
+
+onBeforeMount(() => {
+  console.log('before mount')
+})
 </script>
 
 <template>
@@ -39,9 +45,9 @@ watch(listName, (newName) => {
           <app-nav />
           <v-main class="d-flex align-stretch justify-center">
             <v-container fluid>
-              <NuxtErrorBoundary>
-                <v-row>
-                  <v-col cols="auto">
+              <!-- <NuxtErrorBoundary> -->
+                <v-row v-if="store.currentList">
+                  <v-col cols="12">
                     <v-text-field ref="input" v-model="store.currentList.name" :size="store.currentList.name.length"
                       placeholder="My List" variant="plain"  :focused="rename"
                        class="align-center font-weight-bold list-title" @keyup.enter="rename = false" @blur="rename = false">
@@ -50,20 +56,17 @@ watch(listName, (newName) => {
                       </template>
                     </v-text-field>
                   </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12">
+                  <v-col cols="12"> 
                     <TodoNew />
                   </v-col>
                 </v-row>
-
-                <template #error="{ error }">
+                <!-- <template #error="{ error }">
                   <v-alert type="error">
                     {{ error }}
                   </v-alert>
-                </template>
+                </template> -->
                 <NuxtPage />
-              </NuxtErrorBoundary>
+              <!-- </NuxtErrorBoundary> -->
             </v-container>
           </v-main>
         </v-layout>

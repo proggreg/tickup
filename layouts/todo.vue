@@ -12,11 +12,16 @@ const listStore = useListsStore()
             <v-container fluid>
               <v-row class="fill-height">
                 <v-col cols="12">
-                  <v-btn v-if="listStore.currentList?._id" variant="text" :to="`/list/${listStore.currentList._id}`">
+                  <v-btn v-if="listStore?.currentList?._id" variant="text" :to="`/list/${listStore.currentList._id}`">
                     <template #prepend>
                       <v-icon>mdi-arrow-left</v-icon>
                     </template>
                     {{ listStore.currentList.name }}
+                  </v-btn>
+                  <v-btn v-else variant="text" :to="`/`">
+                    <template #prepend>
+                      <v-icon>mdi-arrow-left</v-icon>
+                    </template>
                   </v-btn>
                 </v-col>
                 <NuxtPage />
