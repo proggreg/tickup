@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     'nuxt-bugsnag',
     '@sidebase/nuxt-auth',
     '@nuxtjs/color-mode',
-    '@nuxt/eslint'
+    '@nuxt/eslint',
   ],
 
   experimental: {
@@ -132,10 +132,11 @@ export default defineNuxtConfig({
     },
   },
   auth: {
+    enabled: true,
     provider: {
       type: 'authjs',
     },
-    baseURL: 'https://' + process.env.NUXT_ENV_VERCEL_URL + '/api/auth' || 'http://localhost:3000/api/auth',
+    baseURL: process.env.NUXT_ENV_VERCEL_URL ? 'https://' + process.env.NUXT_ENV_VERCEL_URL + '/api/auth' : 'http://localhost:3000/api/auth',
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: true,
   },

@@ -1,35 +1,39 @@
-import { NuxtAuthHandler } from "#auth";
 import GithubProvider from 'next-auth/providers/github'
-import CredentialsProvider from "next-auth/providers/credentials"
-import { UserSchema } from "../../models/users.schema";
-import { MongoDBAdapter } from "@auth/mongodb-adapter"
-import clientPromise from "./lib/mongodb"
+import CredentialsProvider from 'next-auth/providers/credentials'
+import { MongoDBAdapter } from '@auth/mongodb-adapter'
 import bcrypt from 'bcrypt'
+import { UserSchema } from '../../models/users.schema'
+import clientPromise from './lib/mongodb'
+import { NuxtAuthHandler } from '#auth'
+
 export default NuxtAuthHandler({
   secret: useRuntimeConfig().auth.secret,
 
   pages: {
-    signIn: "/login",
+    signIn: '/login',
   },
   providers: [
     // @ts-expect-error
     CredentialsProvider.default({
-      name: "credentials",
+      name: 'credentials',
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "Aaron" },
-        password: { label: "Password", type: "password" },
+        username: { label: 'Username', type: 'text', placeholder: 'Aaron' },
+        password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials: { username: string; password: string }) {
+      async authorize(credentials: { username: string, password: string }) {
         try {
+          console.log('authorize', credentials)
           const user = await UserSchema.findOne({ username: credentials.username })
-
+          console.log('user', user)
           if (!user) {
             try {
-              return user
-            } catch (error) {
+              return false
+            }
+            catch (error) {
               console.error(error)
             }
           }
+          
 
           if (user) {
             if (bcrypt.compareSync(credentials.password, user.password)) {
@@ -38,7 +42,8 @@ export default NuxtAuthHandler({
           }
 
           return false
-        } catch (error) {
+        }
+        catch (error) {
           console.error(error)
         }
       },
@@ -47,41 +52,43 @@ export default NuxtAuthHandler({
     // @ts-expect-error
     GithubProvider.default({
       clientId: useRuntimeConfig().github.clientId,
-      clientSecret: useRuntimeConfig().github.clientSecret
-    })
+      clientSecret: useRuntimeConfig().github.clientSecret,
+    }),
   ],
   session: {
-    strategy: "jwt"
+    strategy: 'jwt',
   },
 
   callbacks: {
     async jwt({ token }) {
-      return token;
+      return token
     },
 
     async session({ session, token }) {
-
       if (session.user && !session.user.name) {
+        console.log('session', session)
         const user = await UserSchema.findById(token.sub)
         if (user) {
-          session.user.name = user.username  
+          console.log('user', user)
+          session.user.name = user.username
         }
       }
 
       session.user = {
         ...token,
         ...session.user,
-      };
+      }
 
-      return session;
+      return session
     },
     async signIn({ user }) {
+      console.log('signIn', user)
       if (user) {
         return true
       }
       return false
-    }
+    },
   },
   // @ts-expect-error
-  adapter: MongoDBAdapter(clientPromise)
-});
+  adapter: MongoDBAdapter(clientPromise),
+})
