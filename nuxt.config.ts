@@ -135,8 +135,8 @@ export default defineNuxtConfig({
     provider: {
       type: 'authjs',
     },
+    baseURL: 'https://' + process.env.NUXT_ENV_VERCEL_URL + '/api/auth' || 'http://localhost:3000/api/auth',
     secret: process.env.NUXT_NEXTAUTH_SECRET,
-    origin: 'https://' + process.env.NUXT_ENV_VERCEL_URL || 'http://localhost:3000',
     globalAppMiddleware: true,
   },
   mongoose: {
