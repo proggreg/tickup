@@ -30,8 +30,8 @@ onMounted(() => {
 
 <template>
   <div>
+    <VitePwaManifest />
     <NuxtLayout>
-      <NuxtPwaManifest />
       <NuxtPage />
     </NuxtLayout>
   </div>
