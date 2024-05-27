@@ -46,26 +46,27 @@ onBeforeMount(() => {
           <v-main class="d-flex align-stretch justify-center">
             <v-container fluid>
               <!-- <NuxtErrorBoundary> -->
-                <v-row v-if="store.currentList">
-                  <v-col cols="12">
-                    <v-text-field ref="input" v-model="store.currentList.name" :size="store.currentList.name.length"
-                      placeholder="My List" variant="plain"  :focused="rename"
-                       class="align-center font-weight-bold list-title" @keyup.enter="rename = false" @blur="rename = false">
-                      <template #append v-if="router.params.id">
-                        <ListOptions :list-id="router.params.id" @rename="rename = true" />
-                      </template>
-                    </v-text-field>
-                  </v-col>
-                  <v-col cols="12"> 
-                    <TodoNew />
-                  </v-col>
-                </v-row>
-                <!-- <template #error="{ error }">
+              <v-row v-if="store.currentList">
+                <v-col cols="12">
+                  <v-text-field ref="input" v-model="store.currentList.name" :size="store.currentList.name.length"
+                    placeholder="My List" variant="plain" :focused="rename"
+                    class="align-center font-weight-bold list-title" @keyup.enter="rename = false"
+                    @blur="rename = false">
+                    <template #append v-if="router.params.id">
+                      <ListOptions :list-id="router.params.id" @rename="rename = true" />
+                    </template>
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <TodoNew />
+                </v-col>
+              </v-row>
+              <!-- <template #error="{ error }">
                   <v-alert type="error">
                     {{ error }}
                   </v-alert>
                 </template> -->
-                <NuxtPage />
+              <NuxtPage />
               <!-- </NuxtErrorBoundary> -->
             </v-container>
           </v-main>
