@@ -27,6 +27,7 @@ onMounted(() => {
   }
 })
 </script>
+
 <template>
   <div>
     <NuxtPwaManifest />

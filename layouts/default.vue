@@ -40,6 +40,7 @@ onBeforeMount(() => {
 <template>
   <ColorScheme>
     <v-theme-provider with-background :theme="colorMode.preference">
+      <NuxtPwaManifest />
       <v-app>
         <v-layout>
           <app-nav />
