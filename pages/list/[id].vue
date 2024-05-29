@@ -31,6 +31,7 @@ watch(currentTab, (newTab) => {
 })
 
 </script>
+
 <template>
   <v-col v-if="!xs" cols="12" class="fill-height">
     <v-tabs v-model="currentTab">

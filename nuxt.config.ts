@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
   modules: [
+    '@vite-pwa/nuxt',
     'vuetify-nuxt-module',
     '@pinia/nuxt',
     '@nuxt/devtools',
@@ -8,37 +9,39 @@ export default defineNuxtConfig({
     'nuxt-bugsnag',
     '@sidebase/nuxt-auth',
     '@nuxtjs/color-mode',
-     '@nuxt/eslint'
+    '@nuxt/eslint',
   ],
 
   experimental: {
     payloadExtraction: false,
-    typedPages: false
+    typedPages: false,
   },
   pages: true,
 
   nitro: {
     esbuild: {
       options: {
-        target: 'esnext'
-      }
+        target: 'esnext',
+      },
     },
     prerender: {
-      routes: []
-    }
+      routes: [],
+    },
   },
 
   imports: {
     autoImport: true,
     dirs: ['./stores'],
-    presets: [{
-      from: 'vuetify',
-      imports: ['useDisplay', 'useDate']
-    }]
+    presets: [
+      {
+        from: 'vuetify',
+        imports: ['useDisplay', 'useDate'],
+      },
+    ],
   },
 
   pinia: {
-    storesDirs: ['./stores/**']
+    storesDirs: ['./stores/**'],
   },
   vuetify: {
     vuetifyOptions: {
@@ -51,7 +54,7 @@ export default defineNuxtConfig({
           elevation: 10,
           width: 300,
           class: 'pa-4',
-          rounded: 'xl'
+          rounded: 'xl',
         },
         VBtn: {
           rounded: 'xl',
@@ -78,45 +81,43 @@ export default defineNuxtConfig({
         },
         VCard: {
           rounded: 'xl',
-        }
-
+        },
       },
       theme: {
         themes: {
           light: {
             colors: {
-              secondary: '#FFFFFF'
-            }
+              secondary: '#FFFFFF',
+            },
           },
           dark: {
             colors: {
-              secondary: '#000000'
-            }
-          }
-        }
-      }
-    }
+              secondary: '#000000',
+            },
+          },
+        },
+      },
+    },
   },
   typescript: {
-    strict: true
+    strict: true,
   },
   bugsnag: {
     baseUrl: process.env.NUXT_ENV_VERCEL_URL || 'http://localhost:3000',
-    publishRelease: true,    
+    publishRelease: true,
     config: {
       apiKey: process.env.BUGSNAG_API_KEY,
-      enabledReleaseStages: ['development','staging', 'production'],
+      enabledReleaseStages: ['development', 'staging', 'production'],
       releaseStage: process.env.NODE_ENV,
-
-    }
+    },
   },
   devtools: {
-    enabled: true
+    enabled: true,
   },
-   eslint: {
+  eslint: {
     config: {
-      stylistic: true 
-    }
+      stylistic: true,
+    },
   },
   runtimeConfig: {
     auth: {
@@ -124,28 +125,74 @@ export default defineNuxtConfig({
     },
     github: {
       clientId: process.env.NUXT_GITHUB_CLIENT_ID,
-      clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET
+      clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET,
     },
     public: {
-      hotjarId: process.env.HOTJAR_ID
-    }
+      hotjarId: process.env.HOTJAR_ID,
+    },
   },
   auth: {
+    enabled: true,
     provider: {
-      type: "authjs",
+      type: 'authjs',
     },
+    baseURL: process.env.NUXT_ENV_VERCEL_URL ? 'https://' + process.env.NUXT_ENV_VERCEL_URL + '/api/auth' : 'http://localhost:3000/api/auth',
     secret: process.env.NUXT_NEXTAUTH_SECRET,
-    origin: process.env.VERCEL_URL || "http://localhost:3000",
     globalAppMiddleware: true,
-    
   },
   mongoose: {
     devtools: true,
     uri: process.env.MONGODB_URI,
-    
     options: {
       appName: 'Tickup',
-      
-    }
-  }
+    },
+  },
+  pwa: {
+    strategies: 'generateSW',
+    srcDir: undefined,
+    filename: undefined,
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Tickup',
+      short_name: 'Tickup',
+      theme_color: '#000000',
+      icons: [
+        {
+          src: 'pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any maskable',
+        },
+      ],
+    },
+    workbox: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+    },
+    injectManifest: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+    },
+    client: {
+      installPrompt: true,
+      // you don't need to include this: only for testing purposes
+      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
+      periodicSyncForUpdates: 20,
+    },
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+      navigateFallback: '/',
+      navigateFallbackAllowlist: [/^\/$/],
+      type: 'module',
+    },
+  },
 })

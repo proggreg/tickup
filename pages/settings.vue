@@ -1,83 +1,101 @@
 <script setup lang="ts">
-const {statuses} = useSettingsStore()
+definePageMeta({
+  layout: 'settings',
+})
+const store = useSettingsStore()
+await useAsyncData(() => store.getUserSettings().then(() => true))
 const { data } = useAuth()
 
-console.log('userid', data.value?.user?.sub)
+console.log('here', store)
+// const { data: settings } = await useFetch('/api/settings', {
+//   query: { userId: data.value?.user?.sub },
+// })
 
-const {data: settings } = await useFetch('/api/settings', {
-  query: { userId: data.value?.user?.sub }
-})
+// console.log('here', settings)
 
-console.log('user settings', settings.value)
-definePageMeta({
-    layout: 'settings'
-})
-const editColour = ref('')
-const statusSettings = ref([])
+const dirty = ref(false)
 
-function updateStatusColor(colour: string) {
-  editColour.value = ''
-}
-
-function toggleEditColour(status: string) {
-  if (editColour.value === status) {
-    editColour.value = ''
-    return
-
+// let userStatuses = reactive(store.statuses)
+function getRandomHexColor() {
+  const letters = '0123456789ABCDEF'
+  let color = '#'
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)]
   }
-  editColour.value = status
+  return color
 }
 
+function addStatus() {
+  // const top = userStatuses[userStatuses.length - 1]
+  // if (top.name === '') return
+  const randomColor = getRandomHexColor()
 
-function addStatus(newName: string) {
-  statuses.value.push({name: newName, color: '#000000'})
+  store.statuses.push({ name: '', color: randomColor, isNew: true })
 }
 
-onMounted(() => {
-  console.log('statusSettings', statusSettings.value)
+onMounted(async () => {
+
+  // let  = await getUsersStatuses()
+  console.log('store', store)
+
+  // console.log('userStatuses', userStatuses)
 })
+
+watch(store.statuses, (newStatuses, oldStatuses) => {
+  // if (!dirty.value) {
+  //   dirty.value = JSON.stringify(store.statuses) === JSON.stringify(newStatuses)
+  // }
+  console.log('newStatuses ', newStatuses)
+  console.log('oldStatuses ', oldStatuses)
+})
+
+async function save() {
+  console.log('save')
+
+  // const response = await $fetch('/api/settings', {
+  //   method: 'PUT',
+  //   body: { userId: data.value?.user?.sub, statuses: userStatuses },
+  // })
+  // console.log('response', response)
+}
+
+function cancel() {
+  console.log('cancel')
+}
 </script>
+
 <template>
-  <v-row class="fill-height">
-    <v-col cols="12">
-      <v-card class="fill-height">
-        <v-card-title>
-          <v-row>
-            <v-col cols="10">
-              <h2>Settings</h2>
-              <v-list>
-              <v-list-item v-for="status in statuses" ref="statusSettings" :key="status.name">
-                {{ status.name }}
-              
-              <v-btn min-width="20" 
-                    :style="'width: 20px; height: 30px;border-radius: 50%; background-color:' + status.color" 
-                    @click="toggleEditColour(status.name)"
-              />
-              <div v-if="status.name === editColour">
-                  <v-color-picker v-model="status.color" 
-                    class="ma-4" show-swatches 
-                  />
-                  <v-list-item-action start>
-                    <v-btn @click="editColour = ''">
-                      Cancel
-                    </v-btn>
-                  <v-btn color="primary" @click="updateStatusColor">
-                    Save
-                  </v-btn>
-                </v-list-item-action>
-              </div>
-            </v-list-item>
-              <v-list-item>
-                <v-btn @click="addStatus">
-                  Add Status
-                </v-btn>
-              </v-list-item>
-              </v-list>
-            </v-col>
-          </v-row>
-        </v-card-title>
-        <v-card-text />
-      </v-card>
+  <v-row>
+    <v-col cols="10">
+      <h2>Settings</h2>
+      <v-list variant="tonal">
+        <v-list-item v-for="status in store.statuses" :key="status.name" class="my-2" width="200"
+          :bg-color="status.color" variant="tonal">
+          <v-text-field v-if="status.isNew" v-model="status.name" autofocus />
+          <v-list-item-title v-else>
+            {{ status.name }}
+          </v-list-item-title>
+          <template #append>
+            <v-menu :close-on-content-click="false">
+              <template #activator="{ props }">
+                <v-btn v-bind="props" min-width="20" size="small" :color="status.color" />
+              </template>
+              <v-color-picker v-model="status.color" class="ma-4" show-swatches />
+            </v-menu>
+          </template>
+        </v-list-item>
+        <v-list-item width="200">
+          <v-btn @click="addStatus">
+            Add Status
+          </v-btn>
+        </v-list-item>
+      </v-list>
+      <v-btn color="secondary" :disabled="!dirty" @click="cancel">
+        Cancel
+      </v-btn>
+      <v-btn color="primary" :disabled="!dirty" @click="save">
+        Save
+      </v-btn>
     </v-col>
   </v-row>
 </template>
