@@ -63,10 +63,10 @@ function gotoTodo(todo: Todo) {
 </script>
 
 <template>
-  <v-row>
+  <v-row class="py-4">
     <v-col v-for="status in groupedTodos" :key="status.name">
-      <v-card class="my-2 px-4 yx-2" variant="tonal">
-        <v-card-title>
+      <v-card class="my-2 pa-4 yx-2" variant="tonal" :color="status.color">
+        <v-card-title class="font-weight-bold">
           {{ status.name }}
         </v-card-title>
         <div>
@@ -74,7 +74,7 @@ function gotoTodo(todo: Todo) {
             :component-data="getComponentData(status.name)" @start="dragging = true" @end="dragging = false"
             @change="(e) => change(e, status)">
             <template #item="{ element }">
-              <v-card class="ma-2" style="cursor: pointer" @click="gotoTodo(element)">
+              <v-card :color="status.color" class="ma-2" style="cursor: pointer" @click="gotoTodo(element)">
                 <v-card-title v-if="element._id" class="text-body-1">
                   {{ element.name }}
                 </v-card-title>
@@ -85,12 +85,12 @@ function gotoTodo(todo: Todo) {
             </template>
           </draggable>
         </div>
-        <v-card v-if="newTodo.status === status.name" class="ma-2 ">
+        <v-card v-if="newTodo.status === status.name" class="ma-2 " :color="status.color">
           <v-text-field v-model="newTodo.name" placeholder="Add todo" autofocus @keyup.enter="addTodo"
             @blur="handleBlur" />
         </v-card>
         <v-card-actions>
-          <v-btn color="primary" @click="newTodo.status = status.name">
+          <v-btn class="px-4" append-icon="mdi-plus" variant="tonal" @click="newTodo.status = status.name">
             Add
           </v-btn>
         </v-card-actions>

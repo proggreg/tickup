@@ -3,8 +3,8 @@ import { useListsStore } from '@/stores/lists'
 const listsStore = useListsStore()
 const { data, status } = useAuth()
 const { $pwa } = useNuxtApp()
-
 const route = useRoute()
+
 
 if (status.value === 'authenticated') {
   // @ts-expect-error

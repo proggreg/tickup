@@ -67,7 +67,9 @@ onBeforeMount(() => {
                     {{ error }}
                   </v-alert>
                 </template>
-                <NuxtPage />
+                <v-row>
+                  <NuxtPage />
+                </v-row>
               </NuxtErrorBoundary>
             </v-container>
           </v-main>
