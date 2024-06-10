@@ -51,13 +51,18 @@ onMounted(() => {
       <template v-for="column in headerColumns" :key="column.key">
         <v-hover v-if="column.key !== 'data-table-group' &&
           column.key !== 'data-table-expand' &&
-          column.key !== 'status'">
-
+          column.key !== 'status' && 
+          column.key !== 'desc' && 
+          column.key !== 'dueDate' &&
+          column.key !== 'actions'
+          "
+          >
+        
           <template #default="{ isHovering, props }">
             <th :style="isHovering ? 'cursor: pointer' : ''" v-bind="props" colspan="1" class="table-header"
               @click="toggleSort(column)">
               <div style="display: flex;">
-                {{ column.title }}
+                {{ column.title }} {{ column.key }}
                 <div style="width: 42px">
                   <v-icon v-if="isHovering && !isSorted(sortBy, column)">
                     mdi-arrow-up

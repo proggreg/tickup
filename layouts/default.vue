@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 const colorMode = useColorMode()
 const store = useListsStore()
 const rename = ref(false)
@@ -33,9 +33,6 @@ watch(listName, (newName) => {
   }
 })
 
-onBeforeMount(() => {
-  console.log('before mount')
-})
 </script>
 
 <template>
@@ -43,7 +40,8 @@ onBeforeMount(() => {
     <v-theme-provider with-background :theme="colorMode.preference">
       <v-app>
         <v-layout>
-          <app-nav />
+          <AppNav />
+          <AppMobileNav />
           <v-main class="d-flex align-stretch justify-center">
             <v-container fluid>
               <NuxtErrorBoundary>
@@ -67,9 +65,7 @@ onBeforeMount(() => {
                     {{ error }}
                   </v-alert>
                 </template>
-                <v-row>
-                  <NuxtPage />
-                </v-row>
+                <NuxtPage />
               </NuxtErrorBoundary>
             </v-container>
           </v-main>
@@ -78,8 +74,4 @@ onBeforeMount(() => {
     </v-theme-provider>
   </ColorScheme>
 </template>
-<style>
-.list-title input {
-  /* font-size: 1.5rem; */
-}
-</style>
+<style></style>

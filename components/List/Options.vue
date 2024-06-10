@@ -2,7 +2,7 @@
 const store = useListsStore()
 const emit = defineEmits(['rename'])
 const { listId } = defineProps<{
-  listId: string,
+  listId?: string,
 }>()
 
 async function deleteList() {

@@ -46,7 +46,7 @@ watch(currentTab, (newTab) => {
       </v-window-item>
     </v-window>
   </v-col>
-  <v-col v-else>
+  <div class="py-2" v-else>
     <ListTable v-if="todos" :todos="todos" :list_id="params.id" />
-  </v-col>
+  </div>
 </template>

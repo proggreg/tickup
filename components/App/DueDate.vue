@@ -24,13 +24,12 @@ function updateDueDate(newDate: Date | unknown) {
     <template #activator="{ props }">
       <v-text-field
         v-if="dueDateProps.showDetail"
-        style="min-width: 200px"
         v-bind="props"
         placeholder="date"
         class="text-h6"
+        width="100"
         :value="formattedDate"
-        append-icon="mdi-calendar"
-        hide-details
+        append-inner-icon="mdi-calendar"
         autocomplete="off"
       >
         <template #append-inner>

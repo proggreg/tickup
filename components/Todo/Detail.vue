@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
-
+const { statuses } = useSettingsStore() 
 function updateDueDate(newDate: Date) {
   listsStore.currentTodo.dueDate = newDate
   listsStore.updateTodo(listsStore.currentTodo)
@@ -20,16 +20,16 @@ const desc = ref(listsStore.currentTodo.desc)
 </script>
 
 <template>
-  <v-card width="100%" elevation="0" class="pa-2">
-    <template #prepend>
-      <TodoStatus />
-    </template>
-    <template #append>
-      <AppDueDate :todo-due-date="listsStore.currentTodo.dueDate" 
-                  :todo="listsStore.currentTodo" :show-detail="true"
-                  @set-date="updateDueDate"
-      />
-    </template>
+  <v-card width="100%" elevation="0" :color="listsStore.currentTodo.color" class="pa-2">
+    <v-card-item>
+    <div class="d-flex ga-4">
+    <TodoStatus />
+        <AppDueDate :todo-due-date="listsStore.currentTodo.dueDate" 
+                    :todo="listsStore.currentTodo" :show-detail="true"
+                    @set-date="updateDueDate"
+        />
+    </div>
+  </v-card-item>
     <v-card-title>
       <v-text-field v-model="listsStore.currentTodo.name" label="Title" hide-details @blur="updateName" />
     </v-card-title>
