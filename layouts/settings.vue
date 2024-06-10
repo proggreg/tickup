@@ -2,6 +2,7 @@
 const colorMode = useColorMode()
 
 </script>
+
 <template>
   <ColorScheme>
     <v-theme-provider with-background :theme="colorMode.preference">
@@ -9,7 +10,7 @@ const colorMode = useColorMode()
         <v-layout>
           <app-nav />
           <v-main>
-            <v-container class="fill-height flex justify-center align-start">
+            <v-container fluid class="fill-height flex justify-center align-start">
               <NuxtPage />
             </v-container>
           </v-main>

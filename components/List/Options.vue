@@ -30,14 +30,11 @@ const options = reactive([{
 <template>
   <v-menu>
     <template #activator="{ props }">
-      <v-btn v-bind="props" icon="mdi-dots-horizontal" variant="text" />
+      <v-btn class="pa-0" v-bind="props" icon="mdi-dots-horizontal" variant="text" size="small" />
     </template>
     <v-list class="px-2">
-      <v-list-item v-for="(option, index) in options" 
-      :key="index" :value="option.name"
-      :append-icon="option.icon" 
-      :class="option.destructive ? 'text-red' : ''"
-      @click.passive="option.handler">
+      <v-list-item v-for="(option, index) in options" :key="index" :value="option.name" :append-icon="option.icon"
+        :class="option.destructive ? 'text-red' : ''" @click.passive="option.handler">
         <v-list-item-title class="text-body-2">
           {{ option.name }}
         </v-list-item-title>

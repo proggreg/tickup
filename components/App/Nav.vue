@@ -10,11 +10,10 @@ function closeDrawer() {
     open.value = false
   }
 }
-
 </script>
 
 <template>
-  <v-app-bar>
+  <v-app-bar class="" extension-height="0">
     <template v-if="loggedIn" #prepend>
       <v-btn v-if="smAndDown" size="small" style="padding: 0;" elevation="0" @click="open = !open">
         <v-icon class="text-h4" size="x-large">
@@ -31,27 +30,28 @@ function closeDrawer() {
     <template #append>
       <AppDarkMode />
     </template>
+    <template #extension>
+      <v-divider />
+    </template>
   </v-app-bar>
 
-  <v-navigation-drawer v-if="loggedIn" v-model="open" class="pa-2 font-weight-bold" :permanent="!smAndDown" width="400">
+  <v-navigation-drawer v-if="loggedIn" v-model="open" class="pa-2 font-weight-bold" :permanent="!smAndDown">
     <v-list nav>
       <v-spacer />
-      <v-list-item  >
+      <v-list-item>
         <template #prepend>
           Home
         </template>
         <template #append>
-          <v-btn icon="mdi-home" to="/">
-          </v-btn>
+          <v-btn icon="mdi-home" to="/" />
         </template>
       </v-list-item>
-      <v-list-item >
+      <v-list-item>
         <template #prepend>
           <ListNew :open="dialog" @close="dialog = false" />
         </template>
         <template #append>
-          <v-btn icon="mdi-plus" @click="dialog = true">
-          </v-btn>
+          <v-btn icon="mdi-plus" @click="dialog = true" />
         </template>
       </v-list-item>
     </v-list>
@@ -66,6 +66,5 @@ function closeDrawer() {
         <AppMenu />
       </div>
     </template>
-
   </v-navigation-drawer>
 </template>
