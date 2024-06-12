@@ -145,9 +145,6 @@ export default defineNuxtConfig({
 	mongoose: {
 		devtools: true,
 		uri: process.env.MONGODB_URI,
-		options: {
-			appName: "Tickup",
-		},
 	},
 	pwa: {
 		strategies: "generateSW",
