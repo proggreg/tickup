@@ -27,9 +27,11 @@ const group = ref([
 </script>
 
 <template>
+
+   
   <v-data-table :headers="headers" :items="todos" 
-  rounded
-  :group-by="group" multi-sort hover show-expand item-value="_id"
+  style="border-radius: 25px; margin-top: 1rem;" 
+  height="100%" hover :group-by="group" multi-sort show-expand item-value="_id"
     items-per-page="-1" :opened="opened">
 
     <template #headers="{}" />

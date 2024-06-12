@@ -47,6 +47,9 @@ function closeDrawer() {
         </template>
       </v-list-item>
       <v-list-item>
+          <div class="d-flex justify-space-between">
+            Lists
+          </div>
         <template #prepend>
           <ListNew :open="dialog" @close="dialog = false" />
         </template>

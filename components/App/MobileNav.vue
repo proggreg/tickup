@@ -5,7 +5,7 @@ function navClick(value: string) {
 }
 </script>
 <template>
-<v-bottom-navigation v-if="smAndDown" absolute  grow>
+<v-bottom-navigation v-if="smAndDown" style="position: fixed;" >
   <v-btn to="/" value="home">
     <v-icon>mdi-home</v-icon>
     <span>Home</span>

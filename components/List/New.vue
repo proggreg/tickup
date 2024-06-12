@@ -37,9 +37,7 @@ async function createNewList() {
 <template>
   <AppDialog :open="props.open" title="Create List" @close="emit('close')">
     <template #open>
-      <div class="d-flex justify-space-between">
-        Lists
-      </div>
+   
     </template>
     <v-container justify-center>
       <v-text-field v-model="newList.name" autofocus placeholder="New List" @keyup.enter="createNewList" />
