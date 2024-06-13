@@ -63,27 +63,30 @@ function gotoTodo(todo: Todo) {
 </script>
 
 <template>
-  <v-row class="py-4">
-    <v-col v-for="status in groupedTodos" :key="status.name">
+  <v-row class="py-4" id="board">
+    <v-infinite-scroll direction="horizontal"  :items="groupedTodos":loading="false">
+      <template #loading></template>
+    <v-col v-for="status in groupedTodos" cols="3" :key="status.name">
       <v-card class="my-2 pa-4 yx-2" variant="tonal" :color="status.color">
+      
         <v-card-title class="font-weight-bold">
           {{ status.name }}
         </v-card-title>
-        <div>
-          <draggable :list="status.todos" ghost-class="ghost" item-key="_id" group="status"
-            :component-data="getComponentData(status.name)" @start="dragging = true" @end="dragging = false"
-            @change="(e) => change(e, status)">
-            <template #item="{ element }">
-              <v-card :color="status.color" class="ma-2" style="cursor: pointer" @click="gotoTodo(element)">
-                <v-card-title v-if="element._id" class="text-body-1">
-                  {{ element.name }}
-                </v-card-title>
-                <v-card-item v-else>
-                  <v-text-field v-model="element.name" placeholder="Add todo" hide-details @keyup.enter="addTodo" />
-                </v-card-item>
-              </v-card>
-            </template>
-          </draggable>
+        <div style="overflow-y: auto; max-height: 300px">
+            <draggable  :list="status.todos" ghost-class="ghost" item-key="_id" group="status"
+              :component-data="getComponentData(status.name)" @start="dragging = true" @end="dragging = false"
+              @change="(e) => change(e, status)">
+              <template #item="{ element }">
+                <v-card :color="status.color" class="ma-2" style="cursor: pointer" @click="gotoTodo(element)">
+                  <v-card-title v-if="element._id" class="text-body-1">
+                    {{ element.name }}
+                  </v-card-title>
+                  <v-card-item v-else>
+                    <v-text-field v-model="element.name" placeholder="Add todo" hide-details @keyup.enter="addTodo" />
+                  </v-card-item>
+                </v-card>
+              </template>
+            </draggable>
         </div>
         <v-card v-if="newTodo.status === status.name" class="ma-2 " :color="status.color">
           <v-text-field v-model="newTodo.name" placeholder="Add todo" autofocus @keyup.enter="addTodo"
@@ -96,6 +99,7 @@ function gotoTodo(todo: Todo) {
         </v-card-actions>
       </v-card>
     </v-col>
+  </v-infinite-scroll>
   </v-row>
 </template>
 

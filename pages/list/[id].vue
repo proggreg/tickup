@@ -33,12 +33,12 @@ watch(currentTab, (newTab) => {
 </script>
 
 <template>
-  <v-row class="">
-  <v-col v-if="!xs" cols="12" class="fill-height">
+  <v-row>
+  <v-col v-if="!xs" cols="12">
     <v-tabs v-model="currentTab">
-      <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
+      <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab"  />
     </v-tabs>
-    <v-window v-model="currentTab">
+    <v-window  :touch="false" v-model="currentTab">
       <v-window-item value="board">
         <AppBoard v-if="todos" :todos="todos" />
       </v-window-item>
@@ -47,7 +47,7 @@ watch(currentTab, (newTab) => {
       </v-window-item>
     </v-window>
   </v-col>
-  <v-col class="" v-else>
+  <v-col v-else>
     <ListTable v-if="todos" :todos="todos" :list_id="params.id" />
   </v-col>
   

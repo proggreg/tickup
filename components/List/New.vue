@@ -39,7 +39,7 @@ async function createNewList() {
     <template #open>
    
     </template>
-    <v-container justify-center>
+    <v-container justify-center style="overflow-y: hidden;">
       <v-text-field v-model="newList.name" autofocus placeholder="New List" @keyup.enter="createNewList" />
     </v-container>
     <template #buttons>
