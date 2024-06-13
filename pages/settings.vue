@@ -3,8 +3,17 @@ definePageMeta({
   layout: 'settings',
 })
 const store = useSettingsStore()
-
 const { data } = useAuth()
+const options = reactive([{
+  name: 'Rename',
+  handler: renameStatus,
+  icon: 'mdi-pencil',
+}, {
+  name: 'Delete',
+  handler: deleteStatus,
+  icon: 'mdi-delete',
+  destructive: true,
+}])
 
 function getRandomHexColor() {
   const letters = '0123456789ABCDEF'
@@ -43,13 +52,19 @@ async function save() {
   console.log('response', response)
 }
 
+function renameStatus() {
+  console.log('rename')
+}
+function deleteStatus(status: Status) {
+  store.statuses.splice(store.statuses.indexOf(status), 1)
+  save()
+}
+
 function cancel() {
   console.log('cancel')
 }
 
-function deleteStatus() {
-  console.log('delete')
-}
+
 </script>
 
 <template>
@@ -60,19 +75,36 @@ function deleteStatus() {
       <v-list variant="tonal">
         <v-list-item v-for="status in store.statuses" :key="status.name" class="my-2" width="200"
           :base-color="status.color">
-          <v-text-field v-if="status.Edit"  v-model="status.name" autofocus />
-          <v-list-item-title v-else>
-            {{ status.name }}
-          </v-list-item-title>
-          <template #append>
-            <ListOptions @rename="status.Edit = true" @delete="deleteStatus" />
-            
+          <template #prepend>
             <v-menu :close-on-content-click="false">
               <template #activator="{ props }">
                 <v-btn v-bind="props" min-width="20" size="small" :color="status.color" />
               </template>
               <v-color-picker v-model="status.color" class="ma-4" show-swatches />
             </v-menu>
+            </template>
+          <v-text-field class="mx-2" v-if="status.Edit"  v-model="status.name" autofocus />
+          <v-list-item-title class="mx-2" v-else>
+            {{ status.name }}
+          </v-list-item-title>
+          <template #append>
+           
+            <v-menu>
+            <template #activator="{ props }">
+              <v-btn class="pa-0" v-bind="props" icon="mdi-dots-horizontal" variant="text" size="small" />
+            </template>
+            <v-list class="px-2">
+              <v-list-item v-for="(option, index) in options" :key="index" :value="option.name" :append-icon="option.icon"
+                :class="option.destructive ? 'text-red' : ''" @click.passive="option.handler(status)">
+                <v-list-item-title class="text-body-2">
+                  {{ option.name }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+           
+            
+            
           </template>
         </v-list-item>
         <v-list-item width="200" variant="plain">
