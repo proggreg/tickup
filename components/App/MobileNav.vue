@@ -13,14 +13,17 @@ function navClick(value: string) {
 
   <v-btn to="/lists" value="lists">
     <v-icon>mdi-format-list-bulleted</v-icon>
-
     <span>Lists</span>
   </v-btn>
 
   <v-btn to="/search" value="search">
     <v-icon>mdi-magnify</v-icon>
-
     <span>Search</span>
+  </v-btn>
+
+  <v-btn to="/settings" value="settings">
+    <v-icon>mdi-cog</v-icon>
+    <span>Settings</span>
   </v-btn>
 </v-bottom-navigation>
 </template>
