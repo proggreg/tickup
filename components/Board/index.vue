@@ -64,16 +64,15 @@ function gotoTodo(todo: Todo) {
 
 <template>
   <v-row class="py-4" id="board">
-    <v-infinite-scroll direction="horizontal"  :items="groupedTodos":loading="false">
+    <v-infinite-scroll direction="horizontal" width="100%">
       <template #loading></template>
-    <v-col v-for="status in groupedTodos" cols="3" :key="status.name">
+    <v-col v-for="status in groupedTodos" cols="4" :key="status.name">
       <v-card class="my-2 pa-4 yx-2" variant="tonal" :color="status.color">
-      
         <v-card-title class="font-weight-bold">
           {{ status.name }}
         </v-card-title>
         <div style="overflow-y: auto; max-height: 300px">
-            <draggable  :list="status.todos" ghost-class="ghost" item-key="_id" group="status"
+            <draggable :list="status.todos" ghost-class="ghost" item-key="_id" group="status"
               :component-data="getComponentData(status.name)" @start="dragging = true" @end="dragging = false"
               @change="(e) => change(e, status)">
               <template #item="{ element }">

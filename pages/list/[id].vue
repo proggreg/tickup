@@ -40,7 +40,7 @@ watch(currentTab, (newTab) => {
     </v-tabs>
     <v-window  :touch="false" v-model="currentTab">
       <v-window-item value="board">
-        <AppBoard v-if="todos" :todos="todos" />
+        <Board v-if="todos" :todos="todos" />
       </v-window-item>
       <v-window-item value="list">
         <ListTable v-if="todos" :list_id="params.id" :todos="todos" />
