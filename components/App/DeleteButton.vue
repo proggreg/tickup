@@ -13,7 +13,6 @@ onMounted(() => {
   console.log('delete modal mounted')
 })
 
-
 onUpdated(() => {
   console.log('delete modal updated')
 })
@@ -21,7 +20,7 @@ onUnmounted(() => {
   console.log('delete modal unmounted')
 })
 
-watchEffect(deleteButton => {
+watchEffect((deleteButton) => {
   console.log('delete button changed', deleteButton)
 })
 
@@ -29,7 +28,7 @@ watchEffect(deleteButton => {
 async function focusDeleteButton() {
   await nextTick()
   console.log(deleteButton)
-  
+
   setTimeout(() => {
     buttonFocused.value = true
   }, 100)
@@ -41,27 +40,39 @@ async function focusDeleteButton() {
   }
 }
 </script>
+
 <template>
   <v-dialog width="250px">
-        <template #activator="{ props: activatorProps }">
-          <v-btn @click="focusDeleteButton" v-bind="activatorProps" color="red" 
-          icon="mdi-trash-can" variant="text" size="x-small" />
-        </template>
-        <template #default="{ isActive }">
-          <v-card>
-            <v-card-text>
-              Are you sure you want to delete this todo?
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn ref="deleteButton"  :focused="buttonFocused" color="red" @click="deleteTodo">
-               Yes
-              </v-btn>
-              <v-btn @click="isActive.value = false">
-               No
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </template>
-      </v-dialog>
+    <template #activator="{ props: activatorProps }">
+      <v-btn
+        v-bind="activatorProps"
+        color="red"
+        icon="mdi-trash-can"
+        variant="text"
+        size="x-small"
+        @click="focusDeleteButton"
+      />
+    </template>
+    <template #default="{ isActive }">
+      <v-card>
+        <v-card-text>
+          Are you sure you want to delete this todo?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            ref="deleteButton"
+            :focused="buttonFocused"
+            color="red"
+            @click="deleteTodo"
+          >
+            Yes
+          </v-btn>
+          <v-btn @click="isActive.value = false">
+            No
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </template>
+  </v-dialog>
 </template>

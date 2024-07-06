@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useDebounceFn } from '@vueuse/core'
+
 const { mdAndUp } = useDisplay()
 const query = ref<string>('')
 const results = ref([])
@@ -14,15 +15,21 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-dialog  width="500">
+  <v-dialog width="500">
     <template #activator="{ props }">
       <slot />
     </template>
 
     <template #default="{ isActive }">
       <v-card v-show="isActive">
-        <v-card-item class=" pa-4">
-          <v-text-field v-model="query" placeholder="search" autofocus class="ma-4" @keyup="debouncedSearch" />
+        <v-card-item class="pa-4">
+          <v-text-field
+            v-model="query"
+            placeholder="search"
+            autofocus
+            class="ma-4"
+            @keyup="debouncedSearch"
+          />
         </v-card-item>
 
         <v-divider />
@@ -62,7 +69,10 @@ onMounted(() => {
                 Updated at: {{ formattedDate(result.updatedAt) }} {{ formattedTime(result.updatedAt) }}
               </div>
             </v-list-item> -->
-        <AppDialog v-if="mdAndUp"  @close="todoDialogOpen = false">
+        <AppDialog
+          v-if="mdAndUp"
+          @close="todoDialogOpen = false"
+        >
           <TodoDetail />
         </AppDialog>
       </v-card>

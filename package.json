@@ -39,7 +39,7 @@
     "prettier": "^3.0.3",
     "typescript": "^5.0.4",
     "vitest": "^1.1.1",
-    "vuetify-nuxt-module": "^0.7.3"
+    "vuetify-nuxt-module": "^0.14.1"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^2.3.3",
