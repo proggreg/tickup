@@ -3,15 +3,9 @@ definePageMeta({
   layout: 'settings',
 })
 const store = useSettingsStore()
-await useAsyncData(() => store.getUserSettings().then(() => true))
+// await useAsyncData(() => store.getUserSettings().then(() => true))
 const { data } = useAuth()
 
-console.log('here', store)
-// const { data: settings } = await useFetch('/api/settings', {
-//   query: { userId: data.value?.user?.sub },
-// })
-
-// console.log('here', settings)
 
 const dirty = ref(false)
 
@@ -26,28 +20,11 @@ function getRandomHexColor() {
 }
 
 function addStatus() {
-  // const top = userStatuses[userStatuses.length - 1]
-  // if (top.name === '') return
   const randomColor = getRandomHexColor()
 
   store.statuses.push({ name: '', color: randomColor, isNew: true })
 }
 
-onMounted(async () => {
-
-  // let  = await getUsersStatuses()
-  console.log('store', store)
-
-  // console.log('userStatuses', userStatuses)
-})
-
-watch(store.statuses, (newStatuses, oldStatuses) => {
-  // if (!dirty.value) {
-  //   dirty.value = JSON.stringify(store.statuses) === JSON.stringify(newStatuses)
-  // }
-  console.log('newStatuses ', newStatuses)
-  console.log('oldStatuses ', oldStatuses)
-})
 
 async function save() {
   console.log('save')
