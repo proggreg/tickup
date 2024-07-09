@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useDebounceFn } from '@vueuse/core'
+
 const { mdAndUp } = useDisplay()
 const query = ref<string>('')
 const results = ref([])
@@ -8,50 +9,31 @@ const todoDialogOpen = ref(false)
 const { data } = useAuth()
 const items = ref([])
 
-if (import.meta.client) {
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.key === 'k') {
-      e.preventDefault()
-      open.value = !open.value
-      return false
-    }
-  })
-}
-
-function search() {
-  $fetch('/api/search/todo', { query: { q: query.value, id: data?.value?.user?.sub } })
-    .then((res) => {
-      items.value = res
-    })
-    .catch((err) => {
-      results.value = err
-    })
-}
-const debouncedSearch = useDebounceFn(search, 500)
-
 onMounted(() => {
-  search()
+  // search()
 })
 </script>
 
 <template>
-  <v-dialog open-on-click :model-value="open" width="500">
+  <v-dialog width="500">
     <template #activator="{ props }">
-      <v-text-field v-bind="props" hide-details placeholder="search" style="max-width: 1000px" class="mx-4">
-        <template #append-inner>
-          <span v-if="mdAndUp" style="font-size: 0.70rem; width: 40px;">ctrl + k</span>
-        </template>
-      </v-text-field>
+      <slot />
     </template>
 
     <template #default="{ isActive }">
       <v-card v-show="isActive">
-        <v-card-item class=" pa-4">
-          <v-text-field v-model="query" placeholder="search" autofocus class="ma-4" @keyup="debouncedSearch" />
+        <v-card-item class="pa-4">
+          <v-text-field
+            v-model="query"
+            placeholder="search"
+            autofocus
+            class="ma-4"
+            @keyup="debouncedSearch"
+          />
         </v-card-item>
 
         <v-divider />
-        <v-virtual-scroll :items="items" height="300" item-height="50">
+        <!-- <v-virtual-scroll :items="items" height="300" item-height="50">
           <template #default="{ item }">
             <v-list-item link :to="`/todo/${item._id}`" @click="open = false">
               <template #prepend>
@@ -67,7 +49,7 @@ onMounted(() => {
               </template>
             </v-list-item>
           </template>
-        </v-virtual-scroll>
+        </v-virtual-scroll> -->
         <!-- <v-list-item
               v-for="(result, index) in results"
               :key="index"
@@ -87,7 +69,10 @@ onMounted(() => {
                 Updated at: {{ formattedDate(result.updatedAt) }} {{ formattedTime(result.updatedAt) }}
               </div>
             </v-list-item> -->
-        <AppDialog :open="todoDialogOpen" @close="todoDialogOpen = false">
+        <AppDialog
+          v-if="mdAndUp"
+          @close="todoDialogOpen = false"
+        >
           <TodoDetail />
         </AppDialog>
       </v-card>

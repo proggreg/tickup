@@ -136,16 +136,15 @@ export default defineNuxtConfig({
     provider: {
       type: 'authjs',
     },
-    baseURL: process.env.NUXT_ENV_VERCEL_URL ? 'https://' + process.env.NUXT_ENV_VERCEL_URL + '/api/auth' : 'http://localhost:3000/api/auth',
+    baseURL: process.env.NUXT_ENV_VERCEL_URL
+      ? 'https://' + process.env.NUXT_ENV_VERCEL_URL + '/api/auth'
+      : 'http://localhost:3000/api/auth',
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: true,
   },
   mongoose: {
     devtools: true,
     uri: process.env.MONGODB_URI,
-    options: {
-      appName: 'Tickup',
-    },
   },
   pwa: {
     strategies: 'generateSW',
@@ -195,4 +194,5 @@ export default defineNuxtConfig({
       type: 'module',
     },
   },
+  vite: {},
 })

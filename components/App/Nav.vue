@@ -13,7 +13,7 @@ function closeDrawer() {
 </script>
 
 <template>
-  <v-app-bar class="" extension-height="0">
+  <v-app-bar class="" v-if="!smAndDown" extension-height="0">
     <template v-if="loggedIn" #prepend>
       <v-btn v-if="smAndDown" size="small" style="padding: 0;" elevation="0" @click="open = !open">
         <v-icon class="text-h4" size="x-large">
@@ -25,7 +25,7 @@ function closeDrawer() {
     <template v-if="!loggedIn" #prepend>
       <v-img src="/android-chrome-512x512.png" width="50" style="border-radius: 50%" />
     </template>
-    <AppSearch v-if="loggedIn" />
+    <Search v-if="loggedIn" />
 
     <template #append>
       <AppDarkMode />
@@ -47,6 +47,9 @@ function closeDrawer() {
         </template>
       </v-list-item>
       <v-list-item>
+          <div class="d-flex justify-space-between">
+            Lists
+          </div>
         <template #prepend>
           <ListNew :open="dialog" @close="dialog = false" />
         </template>

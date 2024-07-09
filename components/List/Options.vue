@@ -1,8 +1,9 @@
 <script setup lang="ts">
 const store = useListsStore()
-const emit = defineEmits(['rename'])
-const { listId } = defineProps<{
-  listId: string,
+const emit = defineEmits(['rename', 'settings'])
+const { listId, size } = defineProps<{
+  listId?: string
+  size?: string | number | undefined
 }>()
 
 async function deleteList() {
@@ -10,6 +11,10 @@ async function deleteList() {
     await store.deleteList(listId)
     await navigateTo('/')
   }
+}
+
+function handleSettings() {
+  emit('settings')
 }
 
 function renameList() {
@@ -20,6 +25,11 @@ const options = reactive([{
   handler: renameList,
   icon: 'mdi-pencil',
 }, {
+  name: 'Settings',
+  handler: handleSettings,
+  icon: 'mdi-cog',
+},
+{
   name: 'Delete',
   handler: deleteList,
   icon: 'mdi-delete',
@@ -30,11 +40,24 @@ const options = reactive([{
 <template>
   <v-menu>
     <template #activator="{ props }">
-      <v-btn class="pa-0" v-bind="props" icon="mdi-dots-horizontal" variant="text" size="small" />
+      <v-btn
+        class="pa-0"
+        v-bind="props"
+        icon="mdi-dots-horizontal"
+        variant="plain"
+        :ripple="false"
+        :size="size"
+      />
     </template>
     <v-list class="px-2">
-      <v-list-item v-for="(option, index) in options" :key="index" :value="option.name" :append-icon="option.icon"
-        :class="option.destructive ? 'text-red' : ''" @click.passive="option.handler">
+      <v-list-item
+        v-for="(option, index) in options"
+        :key="index"
+        :value="option.name"
+        :append-icon="option.icon"
+        :class="option.destructive ? 'text-red' : ''"
+        @click.passive="option.handler"
+      >
         <v-list-item-title class="text-body-2">
           {{ option.name }}
         </v-list-item-title>

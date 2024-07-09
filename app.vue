@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useListsStore } from '@/stores/lists'
 const listsStore = useListsStore()
+const settingsStore = useSettingsStore()
 const { data, status } = useAuth()
 const { $pwa } = useNuxtApp()
 const route = useRoute()
-
+await useAsyncData(() => settingsStore.getUserSettings().then(() => true))
 
 if (status.value === 'authenticated') {
   // @ts-expect-error

@@ -22,13 +22,13 @@ function deleteItem(todo: Todo) {
 </script>
 <template>
   <tr v-for="item in groupItem.items" :key="item.key" style="cursor: pointer" @click="showModal(item)">
-    <td>
+    <td colspan="1" style="width: 10px">
       <ListStatus :todo="item.raw" />
     </td>
     <template v-for="column in columns" :key="column.key">
       
       <template v-if="column.key !== 'data-table-group'">
-        <td v-if="column.key === 'name' || (column.key === 'desc' && !xs)">
+        <td colspan="5" v-if="column.key === 'name' || (column.key === 'desc' && !xs)">
           {{ item.columns[column.key] }}
         </td>
         <td v-else-if="column.key === 'dueDate' && !xs">

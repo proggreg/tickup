@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { params } = useRoute()
 const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`)
-const { data: todos } = await useFetch<Todo[]>("/api/list/todos", { query: { id: params.id } })
+const { data: todos } = await useFetch<Todo[]>('/api/list/todos', { query: { id: params.id } })
 const store = useListsStore()
 const tabs = ref<View[]>(['board', 'list'])
 const currentTab = ref<View>('board')
@@ -22,31 +22,62 @@ if (!currentList) {
 
 if (currentList.value) {
   useHead({
-    title: `TickUp:${currentList.value.name}`
+    title: `TickUp:${currentList.value.name}`,
   })
 }
 
 watch(currentTab, (newTab) => {
   store.setView(newTab)
 })
-
 </script>
 
 <template>
-  <v-col v-if="!xs" cols="12" class="fill-height">
-    <v-tabs v-model="currentTab">
-      <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
-    </v-tabs>
-    <v-window v-model="currentTab">
-      <v-window-item value="board">
-        <AppBoard v-if="todos" :todos="todos" />
+  <v-col
+    cols="12"
+    style="height: 100%;"
+  >
+    <DashBoard />
+    <!-- <v-tabs
+      v-model="currentTab"
+    >
+      <v-tab
+        v-for="tab in tabs"
+        :key="tab"
+        :text="tab"
+        :value="tab"
+      />
+    </v-tabs> -->
+    <!-- <v-window
+      v-model="currentTab"
+      :touch="false"
+      class=""
+    >
+      <v-window-item
+        value="board"
+        class=""
+      >
+        <Board
+          v-if="todos"
+          :todos="todos"
+        />
       </v-window-item>
-      <v-window-item value="list">
-        <ListTable v-if="todos" :list_id="params.id" :todos="todos" />
+      <v-window-item
+        value="list"
+        class="fill-height"
+      >
+        <ListTable
+          v-if="todos"
+          :list_id="params.id"
+          :todos="todos"
+        />
       </v-window-item>
-    </v-window>
-  </v-col>
-  <v-col v-else>
-    <ListTable v-if="todos" :todos="todos" :list_id="params.id" />
+    </v-window> -->
+    <!-- <div v-else>
+      <ListTable
+        v-if="todos"
+        :todos="todos"
+        :list_id="params.id"
+      />
+    </div> -->
   </v-col>
 </template>

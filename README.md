@@ -45,3 +45,7 @@ npm run preview
 ```
 
 Checkout the [deployment documentation](https://v3.nuxtjs.org/guide/deploy/presets) for more information.
+
+
+Drag and Drop Functionality
+This project utilizes the power of Vue Draggable for drag-and-drop functionality. This library, built on SortableJS, allows users to intuitively reorder and rearrange elements within the application.
