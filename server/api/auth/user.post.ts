@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -10,12 +10,13 @@ export default defineEventHandler(async (event) => {
   const user = await UserSchema.find({ username: body.username })
 
   if (user.length) {
+    console.log('username taken', user)
     return 'username taken'
   }
 
   const saltRounds = 6
-  const salt = bcrypt.genSaltSync(saltRounds);
-  const hash = bcrypt.hashSync(body.password, salt);
+  const salt = bcrypt.genSaltSync(saltRounds)
+  const hash = bcrypt.hashSync(body.password, salt)
   body.password = hash
 
   const newUser = await new UserSchema(body).save()
