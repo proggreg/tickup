@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     payloadExtraction: false,
     typedPages: false,
   },
+
   pages: true,
 
   nitro: {
@@ -43,6 +44,7 @@ export default defineNuxtConfig({
   pinia: {
     storesDirs: ['./stores/**'],
   },
+
   vuetify: {
     vuetifyOptions: {
       labComponents: true,
@@ -99,9 +101,11 @@ export default defineNuxtConfig({
       },
     },
   },
+
   typescript: {
     strict: true,
   },
+
   bugsnag: {
     baseUrl: process.env.NUXT_ENV_VERCEL_URL || 'http://localhost:3000',
     publishRelease: true,
@@ -111,14 +115,17 @@ export default defineNuxtConfig({
       releaseStage: process.env.NODE_ENV,
     },
   },
+
   devtools: {
     enabled: true,
   },
+
   eslint: {
     config: {
       stylistic: true,
     },
   },
+
   runtimeConfig: {
     auth: {
       secret: process.env.NUXT_NEXTAUTH_SECRET,
@@ -131,21 +138,24 @@ export default defineNuxtConfig({
       hotjarId: process.env.HOTJAR_ID,
     },
   },
+
   auth: {
     enabled: true,
     provider: {
       type: 'authjs',
     },
-    baseURL: process.env.NUXT_ENV_VERCEL_URL
-      ? 'https://' + process.env.NUXT_ENV_VERCEL_URL + '/api/auth'
+    baseURL: process.env.NODE_ENV === 'production'
+      ? 'https://tickup.gregfield.dev/api/auth'
       : 'http://localhost:3000/api/auth',
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: true,
   },
+
   mongoose: {
     devtools: true,
     uri: process.env.MONGODB_URI,
   },
+
   pwa: {
     strategies: 'generateSW',
     srcDir: undefined,
@@ -194,5 +204,7 @@ export default defineNuxtConfig({
       type: 'module',
     },
   },
+
   vite: {},
+  compatibilityDate: '2024-09-21',
 })
