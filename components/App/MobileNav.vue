@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { smAndDown } = useDisplay()
 function navClick(value: string) {
-  console.log(value)
+  console.debug(value)
 }
 </script>
 <template>

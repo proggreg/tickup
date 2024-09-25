@@ -2,7 +2,6 @@ export const useSearchStore = defineStore("search", () => {
 	const query = ref("");
 	const results = ref([]);
 	watch(query, async (newQuery) => {
-		console.log("results computed", newQuery);
 		const { data: user } = useAuth();
 		const userId = user.value?.user?.sub;
 		const data = await $fetch("/api/search/todo", {

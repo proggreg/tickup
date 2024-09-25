@@ -58,12 +58,10 @@ export const useListsStore = defineStore('lists', {
     },
     async deleteList(listId: string) {
       if (listId) {
-        console.log('deleteList', listId)
         this.lists = this.lists.filter(list => list._id !== listId)
         const data = await $fetch<List>(`/api/list/${listId}`, {
           method: 'DELETE',
         })
-        console.log('deleteList', data)
       }
     },
     setListName(newName: string) {

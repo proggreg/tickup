@@ -10,7 +10,7 @@ async function registerUser() {
       password: password.value,
     },
   })
-  console.log('data', data.value)
+  console.debug('data', data.value)
 
   if (data.value?.username && data.value?.password) {
     signIn('credentials', { username: username.value, password: password.value })

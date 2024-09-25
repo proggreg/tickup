@@ -3,7 +3,7 @@ definePageMeta({
   layout: 'settings',
 })
 const store = useSettingsStore()
-// await useAsyncData(() => store.getUserSettings().then(() => true))
+await useAsyncData(() => store.getUserSettings().then(() => true))
 const { data } = useAuth()
 const options = reactive([{
   name: 'Rename',
@@ -50,11 +50,10 @@ async function save() {
     method: 'PUT',
     body: { userId: data.value?.user?.sub, statuses: store.statuses },
   })
-  console.log('response', response)
 }
 
 function renameStatus() {
-  console.log('rename')
+  console.debug('rename')
 }
 function deleteStatus(status: Status) {
   store.statuses.splice(store.statuses.indexOf(status), 1)
@@ -62,7 +61,7 @@ function deleteStatus(status: Status) {
 }
 
 function cancel() {
-  console.log('cancel')
+  console.debug('cancel')
 }
 
 

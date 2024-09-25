@@ -22,9 +22,9 @@ if (route.params.id) {
 
 
 onMounted(() => {
-  console.log('$pwa', $pwa)
+
   if ($pwa.offlineReady) {
-    console.log('App ready to work offline')
+    console.debug('App ready to work offline')
   }
 })
 </script>

@@ -2,7 +2,7 @@ export const useSettingsStore = defineStore("settings", async () => {
 	const darkMode = ref(false);
 	const { data, getSession } = useAuth();
 	const session = await getSession();
-	const userId = session?.user?.sub;
+	const userId = data.value?.user?.sub;
 	const userStatuses = ref<Status[]>([]);
 	
 
@@ -22,9 +22,9 @@ export const useSettingsStore = defineStore("settings", async () => {
 	];
 
 	const statuses = computed(() => {
-		if (userStatuses.value.length) {
-			return userStatuses.value;
-		}
+		// if (userStatuses.value.length) {
+		// 	return userStatuses.value;
+		// }
 		return defaultStatuses;
 	});
 

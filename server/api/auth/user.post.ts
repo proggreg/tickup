@@ -10,7 +10,6 @@ export default defineEventHandler(async (event) => {
   const user = await UserSchema.find({ username: body.username })
 
   if (user.length) {
-    console.log('username taken', user)
     return 'username taken'
   }
 

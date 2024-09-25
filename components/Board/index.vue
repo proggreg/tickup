@@ -140,7 +140,7 @@ watch(dragging, (isDragging) => {
                     density="compact"
                     hide-details
                     @click.stop
-                    @mouseover="console.log('hovering')"
+                    @mouseover="console.debug('hovering')"
                   />
                 </template>
               </v-card>

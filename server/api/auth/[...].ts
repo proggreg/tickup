@@ -22,9 +22,8 @@ export default NuxtAuthHandler({
       },
       async authorize(credentials: { username: string, password: string }) {
         try {
-          console.log('authorize', credentials)
           const user = await UserSchema.findOne({ username: credentials.username })
-          console.log('user', user)
+
           if (!user) {
             try {
               return false
@@ -69,8 +68,6 @@ export default NuxtAuthHandler({
 
         const user = await UserSchema.findById(token.sub)
         if (user) {
-
-          // console.debug('user', user)
           session.user.name = user.username
         }
       }
@@ -83,7 +80,7 @@ export default NuxtAuthHandler({
       return session
     },
     async signIn({ user }) {
-      console.log('signIn', user)
+      console.debug('signIn', user)
       if (user) {
         return true
       }
