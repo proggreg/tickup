@@ -22,5 +22,10 @@ declare global {
     _id?: string;
   }
 
+  interface Settings {
+    statuses: Status[];
+  }
+
   type View = "list" | "board";
+
 }

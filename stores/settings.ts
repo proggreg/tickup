@@ -1,8 +1,10 @@
-export const useSettingsStore = defineStore("settings", () => {
+export const useSettingsStore = defineStore("settings", async () => {
 	const darkMode = ref(false);
-	const { data } = useAuth();
-	const userId = data.value?.user?.sub;
-	const userStatuses = ref([]);
+	const { data, getSession } = useAuth();
+	const session = await getSession();
+	const userId = session?.user?.sub;
+	const userStatuses = ref<Status[]>([]);
+	
 
 	const defaultStatuses = [
 		{
@@ -27,9 +29,10 @@ export const useSettingsStore = defineStore("settings", () => {
 	});
 
 	async function getUserSettings() {
-		const settings = await $fetch("/api/settings", { query: { userId } });
-		if (settings.length) {
-			userStatuses.value = settings[0].statuses;
+		// TODO add return type
+		const settings = await $fetch<Settings>("/api/settings", { query: { userId } });
+		if (settings.statuses.length) {
+			userStatuses.value = settings.statuses;
 		}
 		return true;
 	}
