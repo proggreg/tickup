@@ -136,6 +136,7 @@ export default defineNuxtConfig({
     },
     public: {
       hotjarId: process.env.HOTJAR_ID,
+      ENV: process.env.NODE_ENV,
     },
   },
 
