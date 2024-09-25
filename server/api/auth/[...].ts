@@ -66,10 +66,11 @@ export default NuxtAuthHandler({
 
     async session({ session, token }) {
       if (session.user && !session.user.name) {
-        console.log('session', session)
+
         const user = await UserSchema.findById(token.sub)
         if (user) {
-          console.log('user', user)
+
+          // console.debug('user', user)
           session.user.name = user.username
         }
       }
