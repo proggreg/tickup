@@ -53,7 +53,7 @@ const passwordRules = [
     <v-btn block type="submit" color="primary" class="mb-4" @click="registerUser">
       Register
     </v-btn>
-    <div cols="12" style="font-size: 0.8rem">
+    <div class="text-caption text-center">
       <span>Already a user? </span>
       <NuxtLink color="secondary" to="/login">Login</NuxtLink>
     </div>
