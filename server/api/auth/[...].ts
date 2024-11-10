@@ -33,7 +33,6 @@ export default NuxtAuthHandler({
               console.error(error)
             }
           }
-          
 
           if (user) {
             if (bcrypt.compareSync(credentials.password, user.password)) {
@@ -66,10 +65,8 @@ export default NuxtAuthHandler({
 
     async session({ session, token }) {
       if (session.user && !session.user.name) {
-
         const user = await UserSchema.findById(token.sub)
         if (user) {
-
           // console.debug('user', user)
           session.user.name = user.username
         }

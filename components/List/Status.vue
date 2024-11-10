@@ -1,9 +1,11 @@
 <script setup lang="ts">
-const { statuses } = useSettingsStore() 
+const settings = useSettingsStore()
 const store = useListsStore()
-const statusProps = defineProps<{todo: Todo}>()
-function getStatusColor (todoStatus: string) {
-  const status = statuses.filter(status => status.name === todoStatus)
+const statusProps = defineProps<{ todo: Todo }>()
+const statuses = computed(() => settings.statuses)
+function getStatusColor(todoStatus: string) {
+  if (!statuses.value) return
+  const status = statuses.value.filter(status => status.name === todoStatus)
   if (status.length > 0) {
     return status[0].color
   }
@@ -14,18 +16,18 @@ const updateStatus = (status: string) => {
   updatedTodo.status = status
   store.updateTodo(updatedTodo)
 }
-
 </script>
+
 <template>
   <v-menu>
-    <template #activator="{props}">
+    <template #activator="{ props }">
       <v-btn
         v-bind="props"
         min-width="20px"
         size="x-small"
         rounded="xl"
         :style="{
-          backgroundColor: getStatusColor(statusProps.todo.status)
+          backgroundColor: getStatusColor(statusProps.todo.status),
         }"
       />
     </template>
@@ -43,7 +45,7 @@ const updateStatus = (status: string) => {
             min-width="20px"
             :style="{
               backgroundColor: status.color,
-              marginRight: '8px'
+              marginRight: '8px',
             }"
           />
         </template>
@@ -54,11 +56,11 @@ const updateStatus = (status: string) => {
     </v-list>
   </v-menu>
 </template>
+
 <style scoped>
 .status-icon {
   width: 1.5em;
   height: 1.5em;
   border-radius: 50%;
 }
-
 </style>

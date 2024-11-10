@@ -2,13 +2,13 @@
 const { params } = useRoute()
 
 const { data: todos } = await useFetch<Todo[]>('/api/list/todos', { query: { id: params.id } })
+
+console.log('dashboard todos', todos)
 </script>
 
 <template>
-  <div class="">
-    <Board
-      v-if="todos"
-      :todos="todos"
-    />
-  </div>
+  <Board
+    v-if="todos"
+    :todos="todos"
+  />
 </template>

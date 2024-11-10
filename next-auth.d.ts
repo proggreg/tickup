@@ -5,8 +5,10 @@ declare module 'next-auth' {
     user: {
       name: string
       avatar: string
-      role: 'admin' | 'manager' | 'user',
+      role: 'admin' | 'manager' | 'user'
       sub: string
+      _id: string
+      id: string
     }
   }
 }

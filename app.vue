@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { useListsStore } from '@/stores/lists'
 const listsStore = useListsStore()
 const settingsStore = useSettingsStore()
 const { data, status } = useAuth()
 const { $pwa } = useNuxtApp()
 const route = useRoute()
-await useAsyncData(() => settingsStore.getUserSettings().then(() => true))
 
 if (status.value === 'authenticated') {
+  await useAsyncData(() => settingsStore.getUserSettings().then(() => true))
   // @ts-expect-error
   listsStore.getLists(data?.value?.user?.sub)
   listsStore.getTodaysTodos(data?.value?.user?.sub)
@@ -20,18 +19,19 @@ if (route.params.id) {
   }
 }
 
-
 onMounted(() => {
   console.log('$pwa', $pwa)
-  if ($pwa.offlineReady) {
-    console.log('App ready to work offline')
-  }
+
+  console.log('settings', settingsStore)
+  // if ($pwa && $pwa.offlineReady) {
+  //   console.log('App ready to work offline')
+  // }
 })
 </script>
 
 <template>
   <div>
-    <VitePwaManifest />
+    <!-- <VitePwaManifest /> -->
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

@@ -1,6 +1,5 @@
 export default defineNuxtConfig({
   modules: [
-    '@vite-pwa/nuxt',
     'vuetify-nuxt-module',
     '@pinia/nuxt',
     '@nuxt/devtools',
@@ -47,7 +46,7 @@ export default defineNuxtConfig({
 
   vuetify: {
     vuetifyOptions: {
-      labComponents: true,
+      labComponents: false,
       defaults: {
         VAppBar: {
           elevation: 0,
