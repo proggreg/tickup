@@ -4,7 +4,7 @@ const username = ref('')
 const password = ref('')
 const loginForm = ref()
 const correctCredentials = ref(false)
-
+const config = useRuntimeConfig()
 const userNameRules = [
   (value: string) => {
     if (value) return true
@@ -68,6 +68,7 @@ const loginUser = async () => {
       Login
     </v-btn>
     <v-btn
+      v-if="config.public.ENV === 'production'"
       color="primary"
       append-icon="mdi-github"
       class="mb-4"
