@@ -7,6 +7,8 @@ const tabs = ref<View[]>(['board', 'list'])
 const currentTab = ref<View>('board')
 const { xs } = useDisplay()
 
+console.log('currentList', currentList)
+
 if (currentList.value) {
   store.setListName(currentList.value.name)
   store.currentList = currentList.value
@@ -36,8 +38,8 @@ watch(currentTab, (newTab) => {
     cols="12"
     style="height: 100%;"
   >
-    <DashBoard />
-    <!-- <v-tabs
+    <!-- <DashBoard /> -->
+    <v-tabs
       v-model="currentTab"
     >
       <v-tab
@@ -46,8 +48,8 @@ watch(currentTab, (newTab) => {
         :text="tab"
         :value="tab"
       />
-    </v-tabs> -->
-    <!-- <v-window
+    </v-tabs>
+    <v-window
       v-model="currentTab"
       :touch="false"
       class=""
@@ -71,7 +73,7 @@ watch(currentTab, (newTab) => {
           :todos="todos"
         />
       </v-window-item>
-    </v-window> -->
+    </v-window>
     <!-- <div v-else>
       <ListTable
         v-if="todos"

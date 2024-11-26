@@ -1,4 +1,4 @@
-import VueHotjar from "vue-hotjar-next";
+import VueHotjar from 'vue-hotjar-next'
 
 export default defineNuxtPlugin((nuxtApp) => {
     if (import.meta.client) {
@@ -6,7 +6,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
         nuxtApp.vueApp.use(VueHotjar, {
             id: Number(runtimeConfig.public.hotjarId),
-            isProduction: runtimeConfig.public.ENV === 'production',
+            isProduction: runtimeConfig.public.VERCEL_ENV === 'production',
         });    
     }
 });

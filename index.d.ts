@@ -1,31 +1,34 @@
 export { Todo, Status, List }
 declare global {
   interface Todo {
-    userId: string | undefined;
-    name: string;
-    _id: string;
-    dueDate?: Date,
-    listId?: string;
-    status: string;
-    desc?: string;
+    userId?: string
+    name: string
+    _id?: string
+    dueDate?: Date
+    listId?: string
+    status: string
+    desc?: string
+    edit: boolean
+    selected?: boolean
   }
 
   interface Status {
-    name: string;
-    color: string;
+    name: string
+    color: string
+    todos: Todos[]
   }
 
   interface List {
-    userId?: string;
-    name: string;
-    todos: Todo[];
-    _id?: string;
+    userId?: string
+    name: string
+    todos: Todo[]
+    _id?: string
   }
 
   interface Settings {
-    statuses: Status[];
+    statuses: Status[]
   }
 
-  type View = "list" | "board";
+  type View = 'list' | 'board'
 
 }

@@ -4,27 +4,24 @@ const dialog = ref(false)
 const { smAndDown } = useDisplay()
 const { signOut, status } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
-
-function closeDrawer() {
-  if (smAndDown.value) {
-    open.value = false
-  }
-}
 </script>
 
 <template>
-  <v-app-bar class="" v-if="!smAndDown" extension-height="0">
-    <template v-if="loggedIn" #prepend>
-      <v-btn v-if="smAndDown" size="small" style="padding: 0;" elevation="0" @click="open = !open">
-        <v-icon class="text-h4" size="x-large">
-          mdi-menu
-        </v-icon>
-      </v-btn>
-      <AppMenu v-else />
+  <v-app-bar v-if="!smAndDown" class="" extension-height="0">
+    <template #prepend>
+      <template v-if="loggedIn">
+        <v-btn v-if="smAndDown" size="small" style="padding: 0;" elevation="0" @click="open = !open">
+          <v-icon class="text-h4" size="x-large">
+            mdi-menu
+          </v-icon>
+        </v-btn>
+        <AppMenu v-else />
+      </template>
+      <template v-else>
+        <v-img src="/android-chrome-512x512.png" width="50" style="border-radius: 50%" />
+      </template>
     </template>
-    <template v-if="!loggedIn" #prepend>
-      <v-img src="/android-chrome-512x512.png" width="50" style="border-radius: 50%" />
-    </template>
+
     <Search v-if="loggedIn" />
 
     <template #append>
@@ -47,9 +44,9 @@ function closeDrawer() {
         </template>
       </v-list-item>
       <v-list-item>
-          <div class="d-flex justify-space-between">
-            Lists
-          </div>
+        <div class="d-flex justify-space-between">
+          Lists
+        </div>
         <template #prepend>
           <ListNew :open="dialog" @close="dialog = false" />
         </template>

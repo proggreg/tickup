@@ -48,15 +48,14 @@ watch(listName, (newName) => {
             <v-container
               class="align-start"
               style="height: 100%;"
+              fluid
             >
-              <NuxtErrorBoundary>
-                <v-row
-                  class=""
-                  style="height: 100%;"
-                >
-                  <!-- <v-row
+              <v-row
+                style="height: 100%;"
+              >
+                <v-col
                   v-if="store.currentList"
-                  class="bg-red"
+                  cols="12"
                 >
                   <v-text-field
                     ref="input"
@@ -79,19 +78,11 @@ watch(listName, (newName) => {
                       />
                     </template>
                   </v-text-field>
-                  <v-col cols="12">
-                    <TodoNew />
-                  </v-col>
-                </v-row> -->
-                  <AppSettings />
-                  <template #error="{ error }">
-                    <v-alert type="error">
-                      {{ error }}
-                    </v-alert>
-                  </template>
-                  <NuxtPage />
-                </v-row>
-              </NuxtErrorBoundary>
+                </v-col>
+                <AppSettings />
+
+                <NuxtPage />
+              </v-row>
             </v-container>
           </v-main>
         </v-layout>
