@@ -80,7 +80,7 @@ export default NuxtAuthHandler({
       return session
     },
     async signIn({ user }) {
-      console.debug('signIn', user)
+      console.log('signIn', user)
       if (user) {
         return true
       }
