@@ -16,7 +16,8 @@ if (status.value === 'authenticated') {
   }
 } else {
   console.log('redirecting to login', event?.headers.get('host'))
-  if (config.public.VERCEL_ENV === 'production' && !event?.headers.get('host')?.includes('tickup.gregfield.dev')) {
+  if (config.public.VERCEL_ENV === 'production' && event?.headers.get('host') 
+  && !event?.headers.get('host')?.includes('tickup.gregfield.dev')) {
     console.log('redirecting to login', 'https://tickup.gregfield.dev/login')
     // navigateTo('https://tickup.gregfield.dev/login', { external: true })
   }
