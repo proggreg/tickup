@@ -9,11 +9,14 @@ const event = useRequestEvent()
 
 if (status.value === 'authenticated') {
   await useAsyncData(() => settingsStore.getUserSettings().then(() => true))
-  // @ts-expect-error
-  listsStore.getLists(data?.value?.user?.sub)
-  listsStore.getTodaysTodos(data?.value?.user?.sub)
+  const userId = data?.value?.user?.sub
+  if (userId) {
+    listsStore.getLists(userId)
+    listsStore.getTodaysTodos(userId)
+  }
 } else {
-  if (config.public.VERCEL_ENV === 'production' && !route.fullPath.includes('tickup.gregfield.dev')) {
+  console.log('redirecting to login', event?.headers.get('host'))
+  if (config.public.VERCEL_ENV === 'production' && !event?.headers.get('host')?.includes('tickup.gregfield.dev')) {
     console.log('redirecting to login', event)
     // navigateTo('https://tickup.gregfield.dev/login', { external: true })
   }
