@@ -20,14 +20,7 @@ export default defineNuxtConfig({
   pages: true,
 
   nitro: {
-    esbuild: {
-      options: {
-        target: 'esnext',
-      },
-    },
-    prerender: {
-      routes: [],
-    },
+    preset: 'vercel-edge',
   },
 
   imports: {
@@ -137,6 +130,7 @@ export default defineNuxtConfig({
     public: {
       hotjarId: process.env.HOTJAR_ID,
       ENV: process.env.NODE_ENV,
+      VERCEL_ENV: process.env.VERCEL_ENV,
     },
   },
 
