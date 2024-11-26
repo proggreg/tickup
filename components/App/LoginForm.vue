@@ -68,7 +68,7 @@ const loginUser = async () => {
       Login
     </v-btn>
     <v-btn
-      v-if="config.public.ENV === 'production'"
+      v-if="config.public.VERCEL_ENV === 'production'"
       color="primary"
       append-icon="mdi-github"
       class="mb-4"
