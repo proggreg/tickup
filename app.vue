@@ -5,6 +5,7 @@ const { data, status } = useAuth()
 const { $pwa } = useNuxtApp()
 const route = useRoute()
 const config = useRuntimeConfig()
+const event = useRequestEvent()
 
 if (status.value === 'authenticated') {
   await useAsyncData(() => settingsStore.getUserSettings().then(() => true))
@@ -13,7 +14,7 @@ if (status.value === 'authenticated') {
   listsStore.getTodaysTodos(data?.value?.user?.sub)
 } else {
   if (config.public.VERCEL_ENV === 'production' && !route.fullPath.includes('tickup.gregfield.dev')) {
-    console.log('redirecting to login', route.fullPath)
+    console.log('redirecting to login', event)
     // navigateTo('https://tickup.gregfield.dev/login', { external: true })
   }
 }
