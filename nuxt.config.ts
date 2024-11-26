@@ -20,7 +20,14 @@ export default defineNuxtConfig({
   pages: true,
 
   nitro: {
-    preset: 'vercel-edge',
+    esbuild: {
+      options: {
+        target: 'esnext',
+      },
+    },
+    prerender: {
+      routes: [],
+    },
   },
 
   imports: {
