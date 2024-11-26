@@ -145,9 +145,7 @@ export default defineNuxtConfig({
     provider: {
       type: 'authjs',
     },
-    baseURL: process.env.NODE_ENV === 'production'
-      ? 'https://tickup.gregfield.dev/api/auth'
-      : 'http://localhost:3000/api/auth',
+    baseURL: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/auth` : undefined,
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: true,
   },
