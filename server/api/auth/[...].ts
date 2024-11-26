@@ -25,18 +25,12 @@ export default NuxtAuthHandler({
           const user = await UserSchema.findOne({ username: credentials.username })
 
           if (!user) {
-            try {
-              return false
-            }
-            catch (error) {
-              console.error(error)
-            }
-          }
+            return false
+          } 
 
-          if (user) {
-            if (bcrypt.compareSync(credentials.password, user.password)) {
+          if (credentials.password && user.password && 
+              bcrypt.compareSync(credentials.password, user.password)) {
               return user
-            }
           }
 
           return false
@@ -58,6 +52,13 @@ export default NuxtAuthHandler({
   },
 
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      // if (process.env.VERCEL_ENV === 'production') {
+        return 'https://tickup.gregfield.dev'
+      // } 
+      return url
+    },
+
     async jwt({ token }) {
       return token
     },
