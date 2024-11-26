@@ -39,7 +39,7 @@ const loginUser = async () => {
 <template>
   <v-form
     ref="loginForm"
-    validate-on="submit input"
+    validate-on="input lazy"
     @submit.prevent="loginUser"
   >
     <v-text-field
