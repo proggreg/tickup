@@ -44,14 +44,8 @@ async function focusDeleteButton() {
 <template>
   <v-dialog width="250px">
     <template #activator="{ props: activatorProps }">
-      <v-btn
-        v-bind="activatorProps"
-        color="red"
-        icon="mdi-trash-can"
-        variant="text"
-        size="x-small"
-        @click="focusDeleteButton"
-      />
+      <v-btn v-bind="activatorProps" color="red" icon="mdi-trash-can" variant="text" size="x-small"
+        @click="focusDeleteButton" />
     </template>
     <template #default="{ isActive }">
       <v-card>
@@ -60,12 +54,7 @@ async function focusDeleteButton() {
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn
-            ref="deleteButton"
-            :focused="buttonFocused"
-            color="red"
-            @click="deleteTodo"
-          >
+          <v-btn ref="deleteButton" :focused="buttonFocused" color="red" @click="deleteTodo">
             Yes
           </v-btn>
           <v-btn @click="isActive.value = false">

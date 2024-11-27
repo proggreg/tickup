@@ -10,6 +10,7 @@ declare global {
     desc?: string
     edit: boolean
     selected?: boolean
+    color: string
   }
 
   interface Status {

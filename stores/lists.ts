@@ -20,6 +20,7 @@ export const useListsStore = defineStore('lists', {
       status: 'Open',
       desc: '',
       edit: false,
+      color: '#87909e',
     },
     todos: [],
     todaysTodos: [],
