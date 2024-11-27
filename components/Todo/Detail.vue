@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
 const { statuses } = useSettingsStore()
+
 function updateDueDate(newDate: Date) {
   listsStore.currentTodo.dueDate = newDate
   listsStore.updateTodo(listsStore.currentTodo)
@@ -16,58 +17,35 @@ function updateDesc() {
   listsStore.updateTodo(listsStore.currentTodo)
 }
 const desc = ref(listsStore.currentTodo.desc)
+
 </script>
 
 <template>
-  <v-card
-    width="100%"
-    elevation="0"
-    :color="listsStore.currentTodo.color"
-    class="pa-2"
-  >
+  <v-card width="100%" elevation="0" :color="listsStore.currentTodo.color" class="pa-2">
     <v-card-item>
       <v-row>
         <v-col>
           <TodoStatus />
         </v-col>
         <v-spacer />
-      <v-col cols="2"> 
-        <AppDueDate
-          :todo-due-date="listsStore.currentTodo.dueDate"
-          :todo="listsStore.currentTodo"
-          :show-detail="true"
-          @set-date="updateDueDate"
-        />
-      </v-col>
+        <v-col cols="2">
+          <AppDueDate :todo-due-date="listsStore.currentTodo.dueDate" :todo="listsStore.currentTodo" :show-detail="true"
+            @set-date="updateDueDate" />
+        </v-col>
       </v-row>
     </v-card-item>
     <v-card-title>
-      <v-text-field
-        v-model="listsStore.currentTodo.name"
-        label="Title"
-        hide-details
-        @blur="updateName"
-      />
+      <v-text-field v-model="listsStore.currentTodo.name" label="Title" hide-details @blur="updateName" />
     </v-card-title>
     <v-card-item>
-      <v-textarea
-        v-model="desc"
-        class="mt-2"
-        label="Description"
-        @blur="updateDesc"
-      />
+      <v-textarea v-model="desc" class="mt-2" label="Description" @blur="updateDesc" />
     </v-card-item>
 
     <v-card-actions>
       <AppDeleteButton :todo="listsStore.currentTodo" />
+      <AppGithubButton :todo-name="listsStore.currentTodo.name" />
       <v-spacer />
-      <v-file-input
-        label="File input"
-        variant="solo-inverted"
-        density="compact"
-        hide-details
-        disabled
-      />
+      <v-file-input label="File input" variant="solo-inverted" density="compact" hide-details disabled />
     </v-card-actions>
   </v-card>
 </template>
