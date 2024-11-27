@@ -27,7 +27,7 @@ function updateDueDate(newDate: Date | unknown) {
         v-bind="props"
         placeholder="date"
         class="text-h6"
-        width="100"
+        width="100%"
         :value="formattedDate"
         append-inner-icon="mdi-calendar"
         autocomplete="off"

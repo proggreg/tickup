@@ -26,15 +26,20 @@ const desc = ref(listsStore.currentTodo.desc)
     class="pa-2"
   >
     <v-card-item>
-      <div class="d-flex ga-4">
-        <TodoStatus />
+      <v-row>
+        <v-col>
+          <TodoStatus />
+        </v-col>
+        <v-spacer />
+      <v-col cols="2"> 
         <AppDueDate
           :todo-due-date="listsStore.currentTodo.dueDate"
           :todo="listsStore.currentTodo"
           :show-detail="true"
           @set-date="updateDueDate"
         />
-      </div>
+      </v-col>
+      </v-row>
     </v-card-item>
     <v-card-title>
       <v-text-field
