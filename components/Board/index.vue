@@ -13,6 +13,8 @@ const newTodo = ref<Todo>({
   listId: route.params.id as string,
   status: '',
   edit: true,
+  selected: false,
+  color: 'grey',
 })
 
 const groupedTodos = computed(() => {
@@ -98,86 +100,38 @@ watch(store.currentList.todos, (todos) => {
 </script>
 
 <template>
-  <v-slide-group
-    :show-arrows="true"
-    class="fill-height"
-  >
-    <v-slide-group-item
-      v-for="status in groupedTodos"
-      :key="status.name"
-      v-slot="{ toggle, selectedClass }"
-    >
-      <v-card
-        :class="['ma-2', selectedClass, '', 'flex-column']"
-        width="300"
-        variant="tonal"
-        :title="status.name"
-        :color="status.color"
-        @click="toggle"
-      >
+  <v-slide-group :show-arrows="true" class="fill-height">
+    <v-slide-group-item v-for="status in groupedTodos" :key="status.name" v-slot="{ toggle, selectedClass }">
+      <v-card :class="['ma-2', selectedClass, '', 'flex-column']" width="300" variant="tonal" :title="status.name"
+        :color="status.color" @click="toggle">
         <template #append>
           <BoardOptions :status="status" />
         </template>
-        <v-card-item
-          class="flex-fill"
-          style="overflow-y: auto; "
-        >
-          <draggable
-            v-model="status.todos"
-            item-key="_id"
-            group="status"
-            :component-data="getComponentData(status.name)"
-            auto-scroll
-            @start="dragging = true"
-            @end="dragging = false"
-            @change="(e) => updateTodo(e, status)"
-          >
+        <v-card-item class="flex-fill" style="overflow-y: auto; ">
+          <draggable v-model="status.todos" item-key="_id" group="status"
+            :component-data="getComponentData(status.name)" auto-scroll @start="dragging = true" @end="dragging = false"
+            @change="(e: any) => updateTodo(e, status)">
             <template #item="{ element }">
-              <v-card
-                class="mb-2"
-                :color="status.color"
-                style="cursor: pointer"
-                :title="element.name"
-                @click="gotoTodo(element)"
-              >
+              <v-card class="mb-2" :color="status.color" style="cursor: pointer" :title="element.name"
+                @click="gotoTodo(element)">
                 <template #append>
-                  <v-checkbox
-                    v-model="element.selected"
-                    size="small"
-                    density="compact"
-                    hide-details
-                    @click.stop
-                    @mouseover="console.debug('hovering')"
-                  />
+                  <v-checkbox v-model="element.selected" size="small" density="compact" hide-details @click.stop
+                    @mouseover="console.debug('hovering')" />
                 </template>
               </v-card>
             </template>
             <template v-if="status.addTodo" #footer>
               <v-card class="px-4 ma-2">
                 <v-card-item class="px-0">
-                  <v-text-field
-                    v-model="newTodo.name"
-                    placeholder="Add todo"
-                    hide-details
-                    class="ma-0 pa-0"
-                    autofocus
-                    variant="plain"
-                    @blur="newTodo.status = ''"
-                    @keyup.enter="addTodo(status.name)"
-                  />
+                  <v-text-field v-model="newTodo.name" placeholder="Add todo" hide-details class="ma-0 pa-0" autofocus
+                    variant="plain" @blur="newTodo.status = ''" @keyup.enter.stop="addTodo(status.name)" />
                 </v-card-item>
               </v-card>
             </template>
           </draggable>
         </v-card-item>
         <v-card-actions class="mt-auto">
-          <v-btn
-            class="px-4 mb-2"
-            block
-            append-icon="mdi-plus"
-            variant="tonal"
-            @click="toggleNewTodo(status.name)"
-          >
+          <v-btn class="px-4 mb-2" block append-icon="mdi-plus" variant="tonal" @click="toggleNewTodo(status.name)">
             Add
           </v-btn>
         </v-card-actions>

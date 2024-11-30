@@ -1,6 +1,6 @@
 import VueHotjar from 'vue-hotjar-next'
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin((nuxtApp: any) => {
     if (import.meta.client) {
         const runtimeConfig = useRuntimeConfig()
 
