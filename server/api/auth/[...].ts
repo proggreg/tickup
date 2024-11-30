@@ -53,9 +53,6 @@ export default NuxtAuthHandler({
 
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // if (process.env.VERCEL_ENV === 'production') {
-        return 'https://tickup.gregfield.dev'
-      // } 
       return url
     },
 

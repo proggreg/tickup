@@ -55,6 +55,7 @@
     "nuxt-bugsnag": "^7.2.3",
     "nuxt-mongoose": "^1.0.2",
     "nuxt-time": "^0.1.1",
+    "octokit": "^4.0.2",
     "pinia": "^2.1.7",
     "vue-hotjar-next": "^2.0.1",
     "vuedraggable": "^4.1.0"

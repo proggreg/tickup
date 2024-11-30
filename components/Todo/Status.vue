@@ -3,9 +3,9 @@ const { currentTodo, updateTodo } = useListsStore()
 const { statuses } = useSettingsStore()
 const index = ref(0)
 const initStatus = statuses.find(status => status.name === currentTodo.status)
-let currentStatus: Status = { name: 'Open', color: 'grey' }
+let currentStatus: Status = { name: 'Open', color: 'grey', todos: [] }
 if (initStatus) {
-  currentStatus = reactive({ name: initStatus.name, color: initStatus.color })
+  currentStatus = reactive({ name: initStatus.name, color: initStatus.color, todos: [] })
 }
 
 function selectStatus(status: Status, newIndex: number) {
@@ -30,13 +30,7 @@ watch(currentStatus, () => {
 <template>
   <v-menu>
     <template #activator="{ props }">
-      <v-btn
-        v-bind="props"
-        :color="currentStatus.color"
-        variant="elevated"
-        min-width="20px"
-        border="1"
-      >
+      <v-btn v-bind="props" :color="currentStatus.color" variant="elevated" min-width="20px" border="1">
         {{ currentStatus.name }}
         <template #append>
           <v-icon @click.stop="nextStatus">
@@ -47,11 +41,7 @@ watch(currentStatus, () => {
     </template>
 
     <v-list>
-      <v-list-item
-        v-for="(status, index) in statuses"
-        :key="index"
-        @click="selectStatus(status, index)"
-      >
+      <v-list-item v-for="(status, index) in statuses" :key="index" @click="selectStatus(status, index)">
         {{ status.name }}
       </v-list-item>
     </v-list>

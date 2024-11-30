@@ -16,7 +16,7 @@ declare global {
   interface Status {
     name: string
     color: string
-    todos: Todos[]
+    todos?: Todos[]
   }
 
   interface List {
