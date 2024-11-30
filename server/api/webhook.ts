@@ -26,12 +26,10 @@ export default defineEventHandler(async (event) => {
         // Handle delete event
         console.log('Received delete event:', body)
         console.log('payload:', body.payload)
-        try {
-            const data = JSON.parse(body)
-            console.log('data parsed:', data.payload.ref)
-        } catch (error) {
-            console.error('Invalid JSON:', error)
-        }
+
+        console.log('payload:', body.payload["ref"])
+
+        console.log('payload type', typeof body.payload)
         const ref = body.payload.ref
         console.log('Deleted branch:', ref)
         const response = await TodoSchema.findOneAndUpdate({
