@@ -26,13 +26,18 @@ export const TodoSchema = defineMongooseModel({
     order: {
       type: Number,
     },
+    // @ts-ignore
     createdAt: {
       type: Date,
       default: Date.now,
     },
+    // @ts-ignore
     updatedAt: {
       type: Date,
       default: Date.now,
     },
+    githubBranchName: {
+      type: 'string',
+    }
   },
 })

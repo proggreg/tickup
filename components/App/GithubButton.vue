@@ -2,12 +2,18 @@
 
 import { get } from 'mongoose';
 const config = useRuntimeConfig()
-const { todoName } = defineProps(['todoName'])
+const { todo } = defineProps(['todo'])
 const { $octokit } = useNuxtApp()
+const listStore = useListsStore()
 
-
-const filteredTodoName = computed(() => todoName.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2700}-\u{27BF}]|[\u{1F000}-\u{1F02F}]|[\u{1F0A0}-\u{1F0FF}]|[\u{1F100}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2B00}-\u{2BFF}]/gu, '').trim())
+const filteredTodoName = computed(() => todo.name.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2700}-\u{27BF}]|[\u{1F000}-\u{1F02F}]|[\u{1F0A0}-\u{1F0FF}]|[\u{1F100}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2B00}-\u{2BFF}]/gu, '').trim())
 const githubBranchName = computed(() => {
+    console.log('todo', todo)
+    if (todo?.githubBranchName) {
+        console.log('todo branch name', todo.githubBranchName)
+
+        return todo.githubBranchName
+    }
     let branchName = filteredTodoName.value.replace(/[!@#$%^&*(),.?":{}|<>]/g, '').replace(/ /g, '-').toLowerCase()
     if (branchName.charAt(branchName.length - 1) === '-') {
         branchName = branchName.slice(0, -1)
@@ -34,7 +40,6 @@ const githubBtn = ref()
 
 const todoBranch = computed(async () => {
     return await getBranch(githubBranchName.value)
-
 })
 
 async function createBranch() {
@@ -79,6 +84,8 @@ function createBranchOnGithub(sha: string) {
         message.value = 'Branch created'
         open.value = true
         getBranch(githubBranchName.value)
+        listStore.currentTodo.githubBranchName = githubBranchName.value
+        listStore.updateTodo(listStore.currentTodo)
     }).catch((error) => {
         console.log(error)
         message.value = error.message
@@ -153,6 +160,8 @@ onUpdated(() => {
                     Create Branch
                 </v-btn>
                 <v-btn v-else class="font-weight-bold" :href="branchURL" target="_blank">View Branch</v-btn>
+                <!-- <v-text-field v-if="githubBranchName" v-model="githubBranchName" label="Branch Name" outlined
+                    readonly /> -->
             </v-list-item>
         </v-list>
     </v-menu>

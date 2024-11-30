@@ -5,7 +5,7 @@ definePageMeta({
   layout: 'todo',
 })
 
-onMounted(() => {
+onBeforeMount(() => {
   $fetch(`/api/todo/${params.id}`).then((todo) => {
     listStore.setCurrentTodo(todo)
     $fetch(`/api/list/${todo.listId}`).then((data) => {
@@ -13,6 +13,14 @@ onMounted(() => {
     })
   })
 })
+// onMounted(() => {
+//   $fetch(`/api/todo/${params.id}`).then((todo) => {
+//     listStore.setCurrentTodo(todo)
+//     $fetch(`/api/list/${todo.listId}`).then((data) => {
+//       listStore.setCurrentList(data)
+//     })
+//   })
+// })
 
 </script>
 <template>

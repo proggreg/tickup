@@ -1,12 +1,25 @@
 <script setup lang="ts">
-const { currentTodo, updateTodo } = useListsStore()
+const listStore = useListsStore()
 const { statuses } = useSettingsStore()
 const index = ref(0)
-const initStatus = statuses.find(status => status.name === currentTodo.status)
-let currentStatus: Status = { name: 'Open', color: 'grey', todos: [] }
-if (initStatus) {
-  currentStatus = reactive({ name: initStatus.name, color: initStatus.color, todos: [] })
-}
+let currentStatus = computed((): Status => {
+  // statuses[index.value]).value
+  const defaultStatus = { name: 'Open', color: 'grey', todos: [] }
+  console.log('computed currentStatus', listStore.currentTodo)
+  if (listStore.currentTodo.status) {
+    const status = statuses.find(status => status.name === listStore.currentTodo.status)
+    if (status) {
+      return status
+    }
+  }
+  return defaultStatus
+})
+
+// if (initStatus) {
+//   console.log('initStatus', initStatus)
+//   console.log('current Todo', listStore.currentTodo)
+//   currentStatus = reactive({ name: initStatus.name, color: initStatus.color, todos: [] })
+// }
 
 function selectStatus(status: Status, newIndex: number) {
   index.value = newIndex
@@ -23,8 +36,8 @@ function nextStatus() {
 }
 
 watch(currentStatus, () => {
-  currentTodo.status = currentStatus.name
-  updateTodo(currentTodo)
+  listStore.currentTodo.status = currentStatus.name
+  listStore.updateTodo(listStore.currentTodo)
 })
 </script>
 <template>

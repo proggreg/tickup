@@ -11,6 +11,7 @@ declare global {
     edit: boolean
     selected?: boolean
     color: string
+    githubBranchName?: string
   }
 
   interface Status {

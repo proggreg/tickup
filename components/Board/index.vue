@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const { statuses } = useSettingsStore()
-const store = useListsStore()
 const dragging = ref(false)
 const on = useToolbar()
 const { data } = useAuth()
@@ -23,7 +22,7 @@ const groupedTodos = computed(() => {
     return statuses.map((status) => {
       return {
         ...status,
-        todos: store.currentList.todos
+        todos: listStore.currentList.todos
           .filter(todo => todo.status === status.name)
           .sort((a, b) => a.name.localeCompare(b.name)),
         addTodo: newTodo.value.status === status.name,
@@ -38,14 +37,14 @@ async function updateTodo(e: { added?: { element: Todo } }, status: Status) {
   if (e.added) {
     console.debug('added todo')
     if (e.added.element.status !== status.name) {
-      const index = store.currentList.todos.findIndex((todo: Todo) => todo._id === e.added?.element._id)
-      store.currentList.todos[index].status = status.name
+      const index = listStore.currentList.todos.findIndex((todo: Todo) => todo._id === e.added?.element._id)
+      listStore.currentList.todos[index].status = status.name
 
       const updatedTodo = {
         ...e.added.element,
         status: status.name,
       }
-      const res = await store.updateTodo(updatedTodo)
+      const res = await listStore.updateTodo(updatedTodo)
       console.debug('update res', res)
     }
   }
@@ -60,10 +59,10 @@ function getComponentData(statusName: string) {
 
 async function addTodo(status: string) {
   newTodo.value.status = status
-  const savedTodo = await store.addTodo(newTodo.value)
+  const savedTodo = await listStore.addTodo(newTodo.value)
   for (const status of statuses) {
     if (status.name === savedTodo.status) {
-      store.currentList.todos.push(savedTodo)
+      listStore.currentList.todos.push(savedTodo)
     }
   }
   newTodo.value.name = ''
@@ -94,7 +93,7 @@ watch(dragging, (isDragging) => {
   }
 })
 
-watch(store.currentList.todos, (todos) => {
+watch(listStore.currentList.todos, (todos) => {
   on.value = todos.filter((todo: Todo) => todo.selected).length > 0
 })
 </script>

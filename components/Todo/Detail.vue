@@ -43,7 +43,7 @@ const desc = ref(listsStore.currentTodo.desc)
 
     <v-card-actions>
       <AppDeleteButton :todo="listsStore.currentTodo" />
-      <AppGithubButton :todo-name="listsStore.currentTodo.name" />
+      <AppGithubButton :todo="listsStore.currentTodo" />
       <v-spacer />
       <v-file-input label="File input" variant="solo-inverted" density="compact" hide-details disabled />
     </v-card-actions>

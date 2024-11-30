@@ -94,6 +94,7 @@ export const useListsStore = defineStore('lists', {
         method: 'PUT',
         body: todo,
       })
+      console.log('updatedTodo', updatedTodo)
       return updatedTodo
     },
     async deleteTodo(id: string) {
