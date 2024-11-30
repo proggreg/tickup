@@ -3,6 +3,19 @@ import { defineEventHandler } from 'h3'
 export default defineEventHandler(async (event) => {
   console.log('event', event)
 
+  if (event.method === 'GET') {
+    const query = getQuery(event)
+    const ref = query.ref
+    const response = await TodoSchema.findOneAndUpdate({
+        githubBranchName: ref
+      }, {status: 'Closed'}, { new: true })
+      console.log('Updated todo: ' + ref, response)
+    return {
+      status: 'error',
+      message: 'Invalid method'
+    }
+  }
+
   const body = await readBody(event)
   
   try {
