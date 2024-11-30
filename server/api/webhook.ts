@@ -27,6 +27,13 @@ export default defineEventHandler(async (event) => {
         console.log('Received delete event:', body)
         console.log('payload:', body.payload)
 
+        try {
+            const payload = JSON.parse(body.payload)
+            console.log('payload:', payload)
+            console.log('payload: ref', payload.ref)
+        } catch (error) {
+          console.error('Error:', error)
+        }
         console.log('payload:', body.payload["ref"])
 
         console.log('payload type', typeof body.payload)
