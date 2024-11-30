@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
             console.log('payload: ref', payload.ref)
             
             const response = await TodoSchema.findOneAndUpdate({
-            githubBranchName: ref
+            githubBranchName: payload.ref
           }, {status: 'Closed'}, { new: true })
           console.log('Updated todo:', response)
         } catch (error) {
