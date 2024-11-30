@@ -134,6 +134,8 @@ export default defineNuxtConfig({
       clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET,
     },
     public: {
+      github: process.env.NUXT_GITHUB_PERSONAL_ACCESS_TOKEN,
+      
       hotjarId: process.env.HOTJAR_ID,
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
@@ -155,54 +157,54 @@ export default defineNuxtConfig({
     uri: process.env.MONGODB_URI,
   },
 
-  pwa: {
-    strategies: 'generateSW',
-    srcDir: undefined,
-    filename: undefined,
-    registerType: 'autoUpdate',
-    manifest: {
-      name: 'Tickup',
-      short_name: 'Tickup',
-      theme_color: '#000000',
-      icons: [
-        {
-          src: 'pwa-192x192.png',
-          sizes: '192x192',
-          type: 'image/png',
-        },
-        {
-          src: 'pwa-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
-        },
-        {
-          src: 'pwa-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
-          purpose: 'any maskable',
-        },
-      ],
-    },
-    workbox: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-    },
-    injectManifest: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-    },
-    client: {
-      installPrompt: true,
-      // you don't need to include this: only for testing purposes
-      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
-      periodicSyncForUpdates: 20,
-    },
-    devOptions: {
-      enabled: true,
-      suppressWarnings: true,
-      navigateFallback: '/',
-      navigateFallbackAllowlist: [/^\/$/],
-      type: 'module',
-    },
-  },
+  // pwa: {
+  //   strategies: 'generateSW',
+  //   srcDir: undefined,
+  //   filename: undefined,
+  //   registerType: 'autoUpdate',
+  //   manifest: {
+  //     name: 'Tickup',
+  //     short_name: 'Tickup',
+  //     theme_color: '#000000',
+  //     icons: [
+  //       {
+  //         src: 'pwa-192x192.png',
+  //         sizes: '192x192',
+  //         type: 'image/png',
+  //       },
+  //       {
+  //         src: 'pwa-512x512.png',
+  //         sizes: '512x512',
+  //         type: 'image/png',
+  //       },
+  //       {
+  //         src: 'pwa-512x512.png',
+  //         sizes: '512x512',
+  //         type: 'image/png',
+  //         purpose: 'any maskable',
+  //       },
+  //     ],
+  //   },
+  //   workbox: {
+  //     globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+  //   },
+  //   injectManifest: {
+  //     globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+  //   },
+  //   client: {
+  //     installPrompt: true,
+  //     // you don't need to include this: only for testing purposes
+  //     // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
+  //     periodicSyncForUpdates: 20,
+  //   },
+  //   devOptions: {
+  //     enabled: true,
+  //     suppressWarnings: true,
+  //     navigateFallback: '/',
+  //     navigateFallbackAllowlist: [/^\/$/],
+  //     type: 'module',
+  //   },
+  // },
 
   vite: {},
   compatibilityDate: '2024-09-21',
