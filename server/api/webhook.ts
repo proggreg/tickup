@@ -25,8 +25,8 @@ export default defineEventHandler(async (event) => {
     if (githubEvent === 'delete') {
         // Handle delete event
         console.log('Received delete event:', body)
-        const ref = body.ref
-        console.log('Deleted todo:', ref)
+        const ref = body.payload.ref
+        console.log('Deleted branch:', ref)
         const response = await TodoSchema.findOneAndUpdate({
           githubBranchName: ref
         }, {status: 'Closed'}, { new: true })
