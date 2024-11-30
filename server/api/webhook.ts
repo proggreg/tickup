@@ -29,20 +29,17 @@ export default defineEventHandler(async (event) => {
 
         try {
             const payload = JSON.parse(body.payload)
-            console.log('payload:', payload)
+
             console.log('payload: ref', payload.ref)
+            
+            const response = await TodoSchema.findOneAndUpdate({
+            githubBranchName: ref
+          }, {status: 'Closed'}, { new: true })
+          console.log('Updated todo:', response)
         } catch (error) {
           console.error('Error:', error)
         }
-        console.log('payload:', body.payload["ref"])
 
-        console.log('payload type', typeof body.payload)
-        const ref = body.payload.ref
-        console.log('Deleted branch:', ref)
-        const response = await TodoSchema.findOneAndUpdate({
-          githubBranchName: ref
-        }, {status: 'Closed'}, { new: true })
-        console.log('Updated todo:', response)
         return {
         status: 'success',
         message: 'Webhook received'
