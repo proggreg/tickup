@@ -48,7 +48,16 @@ export default defineEventHandler(async (event) => {
       }
     } else if (githubEvent === 'delete') {
         // Handle delete event
-        console.log('Received delete event:', body)
+        console.log('Received delete event:', typeof body, body)
+
+        if (typeof body === 'string') {
+          const b = JSON.parse(body)
+          console.log(Object.keys(b))
+          return {
+            status: 'error',
+            message: 'Invalid request'
+          }
+        }
         console.log('body.ref:', body.ref)
 
         try {
