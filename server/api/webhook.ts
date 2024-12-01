@@ -25,17 +25,12 @@ export default defineEventHandler(async (event) => {
     if (githubEvent === 'push') {
       // Handle push event
       console.log('Received push event:', body)
-      console.log('payload:', body.payload)
 
       try {
-        console.log('payload: ref', typeof body.payload.ref)
         console.log('payload: ref', body.ref)
-        const payload = JSON.parse(body.payload)
 
-        console.log('payload: ref', payload.ref)
-        
         const response = await TodoSchema.findOneAndUpdate({
-        githubBranchName: payload.ref
+        githubBranchName: body.ref
       }, {status: 'In Progress'}, { new: true })
       console.log('Updated todo:', response)
       } catch (error) {
@@ -48,23 +43,11 @@ export default defineEventHandler(async (event) => {
       }
     } else if (githubEvent === 'delete') {
         // Handle delete event
-        console.log('Received delete event:', typeof body, body)
+        console.log('Received delete event:', body)
 
-        if (typeof body === 'string') {
-          const b = JSON.parse(body)
-          console.log(Object.keys(b))
-          return {
-            status: 'error',
-            message: 'Invalid request'
-          }
-        }
         console.log('body.ref:', body.ref)
 
         try {
-            // const payload = JSON.parse(body.payload)
-
-            console.log('payload: ref', body.ref)
-            
             const response = await TodoSchema.findOneAndUpdate({
             githubBranchName: body.ref
           }, {status: 'Closed'}, { new: true })
