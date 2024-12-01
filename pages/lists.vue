@@ -11,7 +11,9 @@ const open = ref(false)
 <template>
   <v-list>
     <AppNavItems />
-  </v-list>  
+  </v-list>
   <ListNew :open="open" @close="open = false" />
-  <v-fab @click="open = true" color="primary" style="position: fixed; bottom: 75px; z-index: 1000; right: 15px" icon="mdi-plus" variant="elevated"></v-fab>
+  <v-fab size="large" @click="open = true" color="primary"
+    style="border-radius: 50% !important; position: fixed; bottom: 100px; z-index: 1000; right: 75px" icon="mdi-plus"
+    variant="elevated"></v-fab>
 </template>

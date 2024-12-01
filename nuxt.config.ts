@@ -83,6 +83,9 @@ export default defineNuxtConfig({
         VCard: {
           rounded: 'xl',
         },
+        VFab: {
+          rounded: 'circle',
+        },
       },
       theme: {
         themes: {
