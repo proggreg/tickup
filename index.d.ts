@@ -18,6 +18,7 @@ declare global {
     name: string
     color: string
     todos?: Todos[]
+    Edit?: boolean
   }
 
   interface List {

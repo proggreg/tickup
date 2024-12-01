@@ -7,20 +7,14 @@ definePageMeta({
 
 onBeforeMount(() => {
   $fetch(`/api/todo/${params.id}`).then((todo) => {
-    listStore.setCurrentTodo(todo)
-    $fetch(`/api/list/${todo.listId}`).then((data) => {
-      listStore.setCurrentList(data)
-    })
+    listStore.setCurrentTodo(todo as Todo)
+    if (todo) {
+      $fetch(`/api/list/${todo.listId}`).then((list) => {
+        listStore.setCurrentList(list as List)
+      })
+    }
   })
 })
-// onMounted(() => {
-//   $fetch(`/api/todo/${params.id}`).then((todo) => {
-//     listStore.setCurrentTodo(todo)
-//     $fetch(`/api/list/${todo.listId}`).then((data) => {
-//       listStore.setCurrentList(data)
-//     })
-//   })
-// })
 
 </script>
 <template>

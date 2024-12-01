@@ -4,7 +4,7 @@ export const useSettingsStore = defineStore('settings', () => {
 
   const userStatuses = ref<Status[]>([])
 
-  const defaultStatuses = [
+  const defaultStatuses: Status[] = [
     {
       name: 'Open',
       color: '#87909e',
@@ -19,7 +19,7 @@ export const useSettingsStore = defineStore('settings', () => {
     },
   ]
 
-  const statuses = computed(() => {
+  const statuses = computed((): Status[] => {
     if (userStatuses.value.length) {
       return userStatuses.value
     }

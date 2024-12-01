@@ -28,7 +28,7 @@ const desc = ref(listsStore.currentTodo.desc)
           <TodoStatus />
         </v-col>
         <v-spacer />
-        <v-col cols="2">
+        <v-col sm="3" md="2" cols="6">
           <AppDueDate :todo-due-date="listsStore.currentTodo.dueDate" :todo="listsStore.currentTodo" :show-detail="true"
             @set-date="updateDueDate" />
         </v-col>

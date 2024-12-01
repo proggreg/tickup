@@ -35,7 +35,7 @@ export default defineNuxtConfig({
     presets: [
       {
         from: 'vuetify',
-        imports: ['useDisplay', 'useDate'],
+        imports: ['useDisplay'],
       },
     ],
   },
@@ -150,8 +150,7 @@ export default defineNuxtConfig({
     provider: {
       type: 'authjs',
     },
-    baseURL: process.env.VERCEL_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : process.env.VERCEL_ENV === 'development' ? 'http://dev-tickup.gregfield.dev/api/auth' :
-     process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/auth` : undefined,
+    baseURL: process.env.VERCEL_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/auth` : undefined,
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: true,
   },
