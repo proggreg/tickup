@@ -1,11 +1,12 @@
 <script setup lang="ts">
-const { statuses } = useSettingsStore()
+const statusStore = useSettingsStore()
 const dragging = ref(false)
 const on = useToolbar()
 const { data } = useAuth()
 const route = useRoute()
 const listStore = useListsStore()
 const showFooter = ref('')
+const { todos } = defineProps<{ todos: Todo[] }>()
 const newTodo = ref<Todo>({
   name: '',
   userId: data.value?.user.id || data.value?.user?.sub,
@@ -17,14 +18,12 @@ const newTodo = ref<Todo>({
 })
 
 const groupedTodos = computed(() => {
-  if (statuses) {
-    console.debug('computed groupedTodos', groupedTodos)
-    return statuses.map((status) => {
+  if (statusStore.statuses) {
+    return statusStore.statuses.map((status) => {
       return {
         ...status,
-        todos: listStore.currentList.todos
-          .filter(todo => todo.status === status.name)
-          .sort((a, b) => a.name.localeCompare(b.name)),
+        todos: todos
+          .filter(todo => todo.status === status.name),
         addTodo: newTodo.value.status === status.name,
       }
     })
@@ -33,9 +32,7 @@ const groupedTodos = computed(() => {
 })
 
 async function updateTodo(e: { added?: { element: Todo } }, status: Status) {
-  console.debug('update todo', e)
   if (e.added) {
-    console.debug('added todo')
     if (e.added.element.status !== status.name) {
       const index = listStore.currentList.todos.findIndex((todo: Todo) => todo._id === e.added?.element._id)
       listStore.currentList.todos[index].status = status.name
@@ -44,8 +41,7 @@ async function updateTodo(e: { added?: { element: Todo } }, status: Status) {
         ...e.added.element,
         status: status.name,
       }
-      const res = await listStore.updateTodo(updatedTodo)
-      console.debug('update res', res)
+      await listStore.updateTodo(updatedTodo)
     }
   }
 }
@@ -60,11 +56,11 @@ function getComponentData(statusName: string) {
 async function addTodo(status: string) {
   newTodo.value.status = status
   const savedTodo = await listStore.addTodo(newTodo.value)
-  for (const status of statuses) {
-    if (status.name === savedTodo.status) {
-      listStore.currentList.todos.push(savedTodo)
-    }
-  }
+  // for (const status of statuses) {
+  //   if (status.name === savedTodo.status) {
+  //     listStore.currentList.todos.push(savedTodo)
+  //   }
+  // }
   newTodo.value.name = ''
   newTodo.value.status = ''
 }

@@ -4,10 +4,8 @@ const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`)
 const { data: todos } = await useFetch<Todo[]>('/api/list/todos', { query: { id: params.id } })
 const store = useListsStore()
 const tabs = ref<View[]>(['board', 'list'])
-const currentTab = ref<View>('board')
+const currentTab = ref<View>('list')
 const { xs } = useDisplay()
-
-console.log('currentList', currentList)
 
 if (currentList.value) {
   store.setListName(currentList.value.name)

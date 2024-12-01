@@ -32,7 +32,7 @@ function addStatus() {
     return
   }
   console.log('store.statuses', store.statuses)
-  
+
   const top = store.statuses[store.statuses.length - 1]
   if (top.name === '') {
     store.statuses[store.statuses.length - 1].Edit = true
@@ -49,7 +49,7 @@ async function save() {
       store.statuses[i].Edit = false
     }
     if (store.statuses[i].name === '') {
-      store.statuses[i].splice(i, 1)
+      store.statuses.splice(i, 1)
     }
   }
 
@@ -98,7 +98,7 @@ function cancel() {
 
               <v-menu>
                 <template #activator="{ props }">
-                  <v-btn class="pa-0" v-bind="props" icon="mdi-dots-horizontal" variant="text" size="small" />
+                  <v-btn class="pa-0" v-bind="props" icon="mdi-dots-horizontal" variant="text" />
                 </template>
                 <v-list class="px-2">
                   <v-list-item v-for="(option, index) in options" :key="index" :value="option.name"
