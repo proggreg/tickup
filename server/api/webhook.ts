@@ -28,6 +28,8 @@ export default defineEventHandler(async (event) => {
       console.log('payload:', body.payload)
 
       try {
+        console.log('payload: ref', typeof body.payload.ref)
+        console.log('payload: ref', body.payload.ref)
         const payload = JSON.parse(body.payload)
 
         console.log('payload: ref', payload.ref)
