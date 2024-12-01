@@ -22,6 +22,10 @@ const githubBranchName = computed(() => {
 })
 
 const githubBranchCommand = computed(() => {
+    console.log('githubBranchName', todo)
+    if (todo.githubBranchName) {
+        return `git checkout ${todo.githubBranchName}`
+    }
     return `git checkout -b ${githubBranchName.value}`
 })
 
