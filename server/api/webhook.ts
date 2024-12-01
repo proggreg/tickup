@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
 
       try {
         console.log('payload: ref', typeof body.payload.ref)
-        console.log('payload: ref', body.payload.ref)
+        console.log('payload: ref', body.ref)
         const payload = JSON.parse(body.payload)
 
         console.log('payload: ref', payload.ref)
@@ -49,15 +49,15 @@ export default defineEventHandler(async (event) => {
     } else if (githubEvent === 'delete') {
         // Handle delete event
         console.log('Received delete event:', body)
-        console.log('payload:', body.payload)
+        console.log('body.ref:', body.ref)
 
         try {
-            const payload = JSON.parse(body.payload)
+            // const payload = JSON.parse(body.payload)
 
-            console.log('payload: ref', payload.ref)
+            console.log('payload: ref', body.ref)
             
             const response = await TodoSchema.findOneAndUpdate({
-            githubBranchName: payload.ref
+            githubBranchName: body.ref
           }, {status: 'Closed'}, { new: true })
           console.log('Updated todo:', response)
         } catch (error) {
