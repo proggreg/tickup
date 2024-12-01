@@ -14,8 +14,8 @@ if (currentList.value) {
   store.currentList = currentList.value
 }
 
-if (todos) {
-  store.setListTodos(todos)
+if (todos.value) {
+  store.setListTodos(todos.value)
 }
 
 if (!currentList) {
@@ -34,52 +34,17 @@ watch(currentTab, (newTab) => {
 </script>
 
 <template>
-  <v-col
-    cols="12"
-    style="height: 100%;"
-  >
-    <!-- <DashBoard /> -->
-    <v-tabs
-      v-model="currentTab"
-    >
-      <v-tab
-        v-for="tab in tabs"
-        :key="tab"
-        :text="tab"
-        :value="tab"
-      />
+  <v-col cols="12" style="height: 100%;">
+    <v-tabs v-model="currentTab">
+      <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
     </v-tabs>
-    <v-window
-      v-model="currentTab"
-      :touch="false"
-      class=""
-    >
-      <v-window-item
-        value="board"
-        class=""
-      >
-        <Board
-          v-if="todos"
-          :todos="todos"
-        />
+    <v-window v-model="currentTab" :touch="false" class="">
+      <v-window-item value="board" class="">
+        <Board v-if="todos" :todos="todos" />
       </v-window-item>
-      <v-window-item
-        value="list"
-        class="fill-height"
-      >
-        <ListTable
-          v-if="todos"
-          :list_id="params.id"
-          :todos="todos"
-        />
+      <v-window-item value="list" class="fill-height">
+        <ListTable v-if="todos" :list_id="params.id" :todos="todos" />
       </v-window-item>
     </v-window>
-    <!-- <div v-else>
-      <ListTable
-        v-if="todos"
-        :todos="todos"
-        :list_id="params.id"
-      />
-    </div> -->
   </v-col>
 </template>
