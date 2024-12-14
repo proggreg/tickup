@@ -2,6 +2,11 @@
 const on = useToolbar()
 const store = useListsStore()
 
+const toolbarOn = computed(() => {
+  if (!store.currentList.todos || store.currentList.todos.length === 0) return false
+  return store.currentList.todos.some(todo => todo.selected)
+})
+
 function deleteSelected() {
   // TODO use delete many
   const deleteTodos = store.currentList.todos.filter(todo => todo.selected)
@@ -16,10 +21,7 @@ function deleteSelected() {
 </script>
 
 <template>
-  <v-snackbar
-    v-model="on"
-    timeout="-1"
-  >
+  <v-snackbar v-model="toolbarOn" timeout="-1">
     <template #text>
       <v-btn @click="on = false">
         Dismiss

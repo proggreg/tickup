@@ -7,6 +7,10 @@ const deleteButton = ref()
 const buttonFocused = ref(false)
 
 async function deleteTodo() {
+  if (!todo._id) {
+    console.error('No todo id', todo)
+    return
+  }
   await listsStore.deleteTodo(todo._id)
 }
 onMounted(() => {
@@ -44,7 +48,7 @@ async function focusDeleteButton() {
 <template>
   <v-dialog width="250px">
     <template #activator="{ props: activatorProps }">
-      <v-btn v-bind="activatorProps" color="red" icon="mdi-trash-can" variant="text" size="x-small"
+      <v-btn v-bind="activatorProps" color="red" icon="mdi-trash-can" variant="text" size="small"
         @click="focusDeleteButton" />
     </template>
     <template #default="{ isActive }">

@@ -82,11 +82,15 @@ export const useListsStore = defineStore('lists', {
     },
 
     async addTodo(newTodo: Todo) {
-      // this.currentList.todos.push(todo)
+      this.currentList.todos.push(newTodo)
       const todo = await $fetch<Todo>('/api/todo', {
         method: 'POST',
         body: newTodo,
       })
+
+      this.currentList.todos[this.currentList.todos.length - 1]._id = todo._id
+
+      console.log('todo added', todo)
       return todo
     },
     async updateTodo(todo: Todo) {
