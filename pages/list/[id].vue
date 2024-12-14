@@ -3,18 +3,18 @@ const { params } = useRoute()
 const listStore = useListsStore()
 const tabs = ref<View[]>(['board', 'list'])
 const currentTab = ref<View>('list')
-const { xs } = useDisplay()
 const on = useToolbar()
 
 onBeforeMount(async () => {
-
   const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`, { cache: 'no-cache', key: `/api/list/${params.id}` })
   const { data: todos } = await useFetch<Todo[]>('/api/list/todos', { query: { id: params.id }, cache: 'no-cache' })
   console.log('list page before mount', todos.value)
   console.log('currentList', currentList.value)
   if (todos.value) {
-
     listStore.setListTodos(todos.value)
+  }
+  if (currentList.value) {
+    listStore.setCurrentList(currentList.value)
   }
 })
 
