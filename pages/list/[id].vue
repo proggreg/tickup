@@ -13,6 +13,9 @@ onBeforeMount(async () => {
   if (todos.value) {
     listStore.setListTodos(todos.value)
   }
+  if (currentList.value?.name) {
+    listStore.setCurrentListName(currentList.value.name)
+  }
 })
 
 if (!listStore.currentList) {
@@ -48,7 +51,7 @@ watch(listStore.currentList.todos, (todos) => {
     </v-tabs>
     <v-window v-model="currentTab" :touch="false" class="">
       <v-window-item value="board" class="">
-        <!-- <Board /> -->
+        <Board />
       </v-window-item>
       <v-window-item value="list" class="fill-height">
         <ListTable />
