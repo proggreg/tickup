@@ -2,61 +2,38 @@
 const listStore = useListsStore()
 const { statuses } = useSettingsStore()
 const index = ref(0)
-let currentStatus = computed((): Status => {
-  // statuses[index.value]).value
-  const defaultStatus = { name: 'Open', color: 'grey', todos: [] }
-  console.log('computed currentStatus', listStore.currentTodo)
-  if (listStore.currentTodo.status) {
-    const status = statuses.find(status => status.name === listStore.currentTodo.status)
-    if (status) {
-      return status
-    }
+const currentStatus = computed((): Status => {
+  const status = statuses.find(status => status.name === listStore.currentTodo.status)
+  if (status) {
+    return status
   }
-  return defaultStatus
+  return statuses[0]
 })
 
-// if (initStatus) {
-//   console.log('initStatus', initStatus)
-//   console.log('current Todo', listStore.currentTodo)
-//   currentStatus = reactive({ name: initStatus.name, color: initStatus.color, todos: [] })
-// }
+function selectStatus(statusName: string) {
+  console.log('select status', statusName)
+  if (!statusName) return
 
-function selectStatus(status: Status, newIndex: number) {
-  index.value = newIndex
-  currentStatus.name = status.name
-  currentStatus.color = status.color
-}
-function nextStatus() {
-  if (index.value < statuses.length - 1) {
-    index.value++
-
-    currentStatus.name = statuses[index.value].name
-    currentStatus.color = statuses[index.value].color
-  }
+  console.log('current Status', currentStatus.value)
+  listStore.currentTodo.status = statusName
+  updateStatus(currentStatus.value.name)
 }
 
-watch(currentStatus, () => {
-  listStore.currentTodo.status = currentStatus.name
+function updateStatus(statusName: string) {
+  listStore.currentTodo.status = statusName
   listStore.updateTodo(listStore.currentTodo)
-})
+}
 </script>
-<template>
-  <v-menu>
-    <template #activator="{ props }">
-      <v-btn v-bind="props" :color="currentStatus.color" variant="elevated" min-width="20px" border="1">
-        {{ currentStatus.name }}
-        <template #append>
-          <v-icon @click.stop="nextStatus">
-            mdi-chevron-right
-          </v-icon>
-        </template>
-      </v-btn>
-    </template>
 
-    <v-list>
-      <v-list-item v-for="(status, index) in statuses" :key="index" @click="selectStatus(status, index)">
-        {{ status.name }}
+<template>
+  <v-select v-model="listStore.currentTodo.status" flat tile density="compact" hide-selected center-affix width="200" item-title="name" :bg-color="currentStatus.color" :items="statuses" variant="plain" @update:model-value="selectStatus">
+    <template #selection="{}">
+      <v-list-item class="py-0 my-0">
+        {{ listStore.currentTodo.status }}
       </v-list-item>
-    </v-list>
-  </v-menu>
+    </template>
+    <template #item="{ props, item }">
+      <v-list-item v-bind="props" :base-color="item.raw.color" :title="item.raw.name" />
+    </template>
+  </v-select>
 </template>
