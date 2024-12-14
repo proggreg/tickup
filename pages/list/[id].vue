@@ -13,6 +13,9 @@ onBeforeMount(async () => {
   if (todos.value) {
     listStore.setListTodos(todos.value)
   }
+  if (currentList.value?.name) {
+    listStore.setCurrentListName(currentList.value.name)
+  }
 })
 
 if (!listStore.currentList) {
