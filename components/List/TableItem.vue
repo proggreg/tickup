@@ -25,7 +25,7 @@ function formatDate(date: Date) {
     </td>
     <template v-for="column in columns" :key="column.key">
       <template v-if="column.key !== 'data-table-group'">
-        <td v-if="column.key === 'name' || (column.key === 'desc' && !xs)" colspan="5">
+        <td v-if="column.key === 'name' " colspan="7">
           {{ item.columns[column.key] }}
         </td>
         <td v-else-if="column.key === 'dueDate' && !xs">
