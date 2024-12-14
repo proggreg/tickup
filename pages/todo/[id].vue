@@ -15,8 +15,8 @@ onBeforeMount(() => {
     }
   })
 })
-
 </script>
+
 <template>
   <NuxtErrorBoundary>
     <template #error="{ error }">

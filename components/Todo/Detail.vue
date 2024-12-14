@@ -17,7 +17,6 @@ function updateDesc() {
   listsStore.updateTodo(listsStore.currentTodo)
 }
 const desc = ref(listsStore.currentTodo.desc)
-
 </script>
 
 <template>
@@ -29,8 +28,10 @@ const desc = ref(listsStore.currentTodo.desc)
         </v-col>
         <v-spacer />
         <v-col sm="3" md="2" cols="6">
-          <AppDueDate :todo-due-date="listsStore.currentTodo.dueDate" :todo="listsStore.currentTodo" :show-detail="true"
-            @set-date="updateDueDate" />
+          <AppDueDate
+            :todo-due-date="listsStore.currentTodo.dueDate" :todo="listsStore.currentTodo" :show-detail="true"
+            @set-date="updateDueDate"
+          />
         </v-col>
       </v-row>
     </v-card-item>

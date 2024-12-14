@@ -77,9 +77,6 @@ export default defineNuxtConfig({
         VListItem: {
           rounded: 'xl',
         },
-        VList: {
-          rounded: 'xl',
-        },
         VMenu: {
           rounded: 'xl',
         },
@@ -88,6 +85,9 @@ export default defineNuxtConfig({
         },
         VFab: {
           rounded: 'circle',
+        },
+        VSelect: {
+          rounded: 'xl',
         },
       },
       theme: {
@@ -141,7 +141,7 @@ export default defineNuxtConfig({
     },
     public: {
       github: process.env.NUXT_GITHUB_PERSONAL_ACCESS_TOKEN,
-      
+
       hotjarId: process.env.HOTJAR_ID,
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
