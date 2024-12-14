@@ -4,6 +4,7 @@ const listStore = useListsStore()
 const router = useRouter()
 console.log(router.getRoutes())
 </script>
+
 <template>
   <ColorScheme>
     <v-theme-provider with-background :theme="colorMode.preference">
@@ -11,7 +12,7 @@ console.log(router.getRoutes())
         <v-layout>
           <app-nav />
           <v-main>
-            <v-container fluid>
+            <v-container style="height: 100%" fluid>
               <v-row class="fill-height">
                 <v-col cols="12">
                   <v-btn @click="$router.back()">
