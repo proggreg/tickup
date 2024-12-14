@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const { data } = useAuth()
 const newTodoVariant = ref<'text' | 'outlined'>("text");
-const newTodo = ref(null)
 const openNewTodo = ref('');
 const newTodoTitle = ref("");
 const store = useListsStore()
@@ -14,8 +13,10 @@ async function createTodo(status: string) {
       name: newTodoTitle.value,
       status,
       desc: "",
-      listId: params.id,
-      userId: data?.value?.user?.sub
+      listId: params.id as string,
+      userId: data?.value?.user?.sub,
+      color: "grey",
+      edit: false
     };
     await store.addTodo(newTodo);
     newTodoTitle.value = ''
@@ -23,14 +24,10 @@ async function createTodo(status: string) {
   } else {
     openNewTodo.value = ''
   }
-  if (newTodo.value.length > 0) {
-    newTodo.value[0].focus()
-  }
 }
 </script>
 <template>
   <tr>
-    <!-- <td></td> -->
     <td v-if="openNewTodo === '' || openNewTodo !== groupItem.value" colspan="5">
       <v-btn :variant="newTodoVariant" size="x-small" elevation="0" @click="openNewTodo = groupItem.value"
         @mouseover="newTodoVariant = 'outlined'" @mouseleave="newTodoVariant = 'text'">
@@ -39,7 +36,7 @@ async function createTodo(status: string) {
     </td>
 
     <td colspan="5" v-else-if="groupItem.value === openNewTodo">
-      <v-text-field ref="newTodo" v-model="newTodoTitle" autofocus variant="plain" placeholder="new todo"
+      <v-text-field v-model="newTodoTitle" autofocus variant="plain" placeholder="new todo"
         @blur="createTodo(groupItem.value)" @keyup.enter="$event.target.blur()" />
     </td>
   </tr>

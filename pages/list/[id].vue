@@ -1,33 +1,45 @@
 <script setup lang="ts">
 const { params } = useRoute()
-const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`)
-const { data: todos } = await useFetch<Todo[]>('/api/list/todos', { query: { id: params.id } })
-const store = useListsStore()
+const listStore = useListsStore()
 const tabs = ref<View[]>(['board', 'list'])
 const currentTab = ref<View>('list')
 const { xs } = useDisplay()
+const on = useToolbar()
 
-if (currentList.value) {
-  store.setListName(currentList.value.name)
-  store.currentList = currentList.value
-}
+onBeforeMount(async () => {
 
-if (todos.value) {
-  store.setListTodos(todos.value)
-}
+  const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`, { cache: 'no-cache', key: `/api/list/${params.id}` })
+  const { data: todos } = await useFetch<Todo[]>('/api/list/todos', { query: { id: params.id }, cache: 'no-cache' })
+  console.log('list page before mount', todos.value)
+  console.log('currentList', currentList.value)
+  if (todos.value) {
 
-if (!currentList) {
+    listStore.setListTodos(todos.value)
+  }
+})
+
+if (!listStore.currentList) {
   navigateTo('/')
 }
 
-if (currentList.value) {
+if (listStore.currentList) {
   useHead({
-    title: `TickUp:${currentList.value.name}`,
+    title: `TickUp:${listStore.currentList.name}`,
   })
 }
 
+onMounted(() => {
+  console.log('list page mounted')
+})
+onUnmounted(() => {
+  console.log('list page unmounted')
+})
 watch(currentTab, (newTab) => {
-  store.setView(newTab)
+  listStore.setView(newTab)
+})
+watch(listStore.currentList.todos, (todos) => {
+  on.value = todos.filter((todo: Todo) => todo.selected).length > 0
+  console.log('todos changed', on.value)
 })
 </script>
 
@@ -38,10 +50,10 @@ watch(currentTab, (newTab) => {
     </v-tabs>
     <v-window v-model="currentTab" :touch="false" class="">
       <v-window-item value="board" class="">
-        <Board v-if="todos" :todos="todos" />
+        <Board />
       </v-window-item>
       <v-window-item value="list" class="fill-height">
-        <ListTable v-if="todos" :list_id="params.id" :todos="todos" />
+        <ListTable :list_id="params.id" />
       </v-window-item>
     </v-window>
   </v-col>

@@ -3,31 +3,30 @@ const listsStore = useListsStore()
 const { statuses } = useSettingsStore()
 const { smAndDown } = useDisplay()
 const itemProps = defineProps<{
-  todos: Todo[],
+  todos: Todo[]
   status: string
 }>()
 
 const emit = defineEmits(['TodoClicked', 'updateTodos'])
 
-function selectTodo (todo: Todo) {
+function selectTodo(todo: Todo) {
   listsStore.setCurrentTodo(todo)
 }
 
-function editTodo (todo: Todo, status: Status) {
+function editTodo(todo: Todo, status: Status) {
   todo.status = status.name
   $fetch(`/api/todo/${todo._id}`, {
     method: 'PUT',
-    body: todo
+    body: todo,
   })
 }
 
-function deleteTodo (todo: Todo) {
-  if (todo._id) {
-    listsStore.deleteTodo(todo._id)
-    emit('updateTodos')
-  }
-}
-
+// function deleteTodo(todo: Todo) {
+//   if (todo._id) {
+//     listsStore.deleteTodo(todo._id)
+//     emit('updateTodos')
+//   }
+// }
 </script>
 
 <template>
@@ -47,7 +46,7 @@ function deleteTodo (todo: Todo) {
         <template #prepend>
           <v-list-item-action start>
             <v-menu>
-              <template #activator="{props}">
+              <template #activator="{ props }">
                 <ListStatus
                   v-bind="props"
                   :todo="todo"
@@ -85,8 +84,8 @@ function deleteTodo (todo: Todo) {
     </template>
   </v-hover>
 </template>
-<style scoped>
 
+<style scoped>
 .add-todo-field {
   position: relative;
   z-index: 1;

@@ -10,6 +10,9 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
   ],
+  // app: {
+  //   layoutTransition: { name: 'layout', mode: 'out-in' }
+  // },
 
   experimental: {
     payloadExtraction: false,

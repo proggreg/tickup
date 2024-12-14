@@ -1,12 +1,10 @@
 <script setup lang="ts">
 const statusStore = useSettingsStore()
 const dragging = ref(false)
-const on = useToolbar()
 const { data } = useAuth()
 const route = useRoute()
 const listStore = useListsStore()
 const showFooter = ref('')
-const { todos } = defineProps<{ todos: Todo[] }>()
 const newTodo = ref<Todo>({
   name: '',
   userId: data.value?.user.id || data.value?.user?.sub,
@@ -22,7 +20,7 @@ const groupedTodos = computed(() => {
     return statusStore.statuses.map((status) => {
       return {
         ...status,
-        todos: todos
+        todos: listStore.currentList.todos
           .filter(todo => todo.status === status.name),
         addTodo: newTodo.value.status === status.name,
       }
@@ -55,12 +53,7 @@ function getComponentData(statusName: string) {
 
 async function addTodo(status: string) {
   newTodo.value.status = status
-  const savedTodo = await listStore.addTodo(newTodo.value)
-  // for (const status of statuses) {
-  //   if (status.name === savedTodo.status) {
-  //     listStore.currentList.todos.push(savedTodo)
-  //   }
-  // }
+  await listStore.addTodo(newTodo.value)
   newTodo.value.name = ''
   newTodo.value.status = ''
 }
@@ -88,38 +81,41 @@ watch(dragging, (isDragging) => {
     document.body.style.cursor = 'auto'
   }
 })
-
-watch(listStore.currentList.todos, (todos) => {
-  on.value = todos.filter((todo: Todo) => todo.selected).length > 0
-})
 </script>
 
 <template>
   <v-slide-group :show-arrows="true" class="fill-height">
     <v-slide-group-item v-for="status in groupedTodos" :key="status.name" v-slot="{ toggle, selectedClass }">
-      <v-card :class="['ma-2', selectedClass, '', 'flex-column']" width="300" variant="tonal" :title="status.name"
-        :color="status.color" @click="toggle">
+      <v-card
+        :class="['ma-2', selectedClass, '', 'flex-column']" width="300" variant="tonal" :title="status.name"
+        :color="status.color" @click="toggle"
+      >
         <template #append>
           <BoardOptions :status="status" />
         </template>
         <v-card-item class="flex-fill" style="overflow-y: auto; ">
-          <draggable v-model="status.todos" item-key="_id" group="status"
+          <draggable
+            v-model="status.todos" item-key="_id" group="status"
             :component-data="getComponentData(status.name)" auto-scroll @start="dragging = true" @end="dragging = false"
-            @change="(e: any) => updateTodo(e, status)">
+            @change="(e: any) => updateTodo(e, status)"
+          >
             <template #item="{ element }">
-              <v-card class="mb-2" :color="status.color" style="cursor: pointer" :title="element.name"
-                @click="gotoTodo(element)">
+              <v-card
+                class="mb-2" :color="status.color" style="cursor: pointer" :title="element.name"
+                @click="gotoTodo(element)"
+              >
                 <template #append>
-                  <v-checkbox v-model="element.selected" size="small" density="compact" hide-details @click.stop
-                    @mouseover="console.debug('hovering')" />
+                  <v-checkbox v-model="element.selected" size="small" density="compact" hide-details @click.stop />
                 </template>
               </v-card>
             </template>
             <template v-if="status.addTodo" #footer>
               <v-card class="px-4 ma-2">
                 <v-card-item class="px-0">
-                  <v-text-field v-model="newTodo.name" placeholder="Add todo" hide-details class="ma-0 pa-0" autofocus
-                    variant="plain" @blur="newTodo.status = ''" @keyup.enter.stop="addTodo(status.name)" />
+                  <v-text-field
+                    v-model="newTodo.name" placeholder="Add todo" hide-details class="ma-0 pa-0" autofocus
+                    variant="plain" @blur="newTodo.status = ''" @keyup.enter.stop="addTodo(status.name)"
+                  />
                 </v-card-item>
               </v-card>
             </template>

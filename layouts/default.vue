@@ -8,6 +8,8 @@ const listName = computed(() => {
   return store?.currentList?.name || 'Today'
 })
 
+
+
 watch(rename, (newVal) => {
   if (!newVal) {
     if (!store.currentList._id) {
@@ -37,7 +39,7 @@ watch(listName, (newName) => {
   <ColorScheme>
     <v-theme-provider with-background :theme="colorMode.preference">
       <v-app>
-        <BoardToolbar />
+        <AppToolbar />
         <v-layout>
           <AppNav />
           <AppMobileNav />
@@ -45,14 +47,14 @@ watch(listName, (newName) => {
             <v-container class="align-start" style="height: 100%;" fluid>
               <v-row style="height: 100%;">
                 <v-col v-if="store.currentList" cols="12">
-                  <!-- <v-text-field ref="input" v-model="store.currentList.name" :size="store.currentList.name.length + 1"
-                    placeholder="My List" variant="plain" :focused="rename"
+                  <v-text-field ref="input" v-model="store.currentList.name" :size="store.currentList.name.length + 1"
+                    placeholder="My List" variant="plain" :focused="rename" readonly
                     class="align-center font-weight-bold list-title" @keyup.enter="rename = false"
                     @blur="rename = false">
                     <template v-if="router.params.id" #append>
                       <ListOptions :list-id="router.params.id" @rename="rename = true" />
                     </template>
-</v-text-field> -->
+                  </v-text-field>
                 </v-col>
                 <AppSettings />
 
