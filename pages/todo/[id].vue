@@ -15,16 +15,16 @@ onBeforeMount(() => {
     }
   })
 })
-
 </script>
+
 <template>
   <NuxtErrorBoundary>
     <template #error="{ error }">
-      <v-alert litype="error">
+      <v-alert type="error">
         {{ error }}
       </v-alert>
     </template>
-    <v-col>
+    <v-col class="fill-height">
       <TodoDetail />
     </v-col>
   </NuxtErrorBoundary>
