@@ -5,6 +5,7 @@ const { data } = useAuth()
 const route = useRoute()
 const listStore = useListsStore()
 const showFooter = ref('')
+const { todos } = defineProps<{ todos: Todo[] }>()
 const newTodo = ref<Todo>({
   name: '',
   userId: data.value?.user.id || data.value?.user?.sub,
