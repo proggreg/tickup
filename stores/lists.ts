@@ -5,10 +5,18 @@ interface listsState {
   todos?: Todo[]
   todaysTodos: Todo[]
   view: View
+  newTodo: Todo
 }
 
 export const useListsStore = defineStore('lists', {
   state: (): listsState => ({
+    newTodo: {
+      name: '',
+      status: 'Open',
+      desc: '',
+      edit: false,
+      color: '#87909e',
+    },
     lists: [],
     currentList: {
       name: '',
@@ -82,11 +90,23 @@ export const useListsStore = defineStore('lists', {
     },
 
     async addTodo(newTodo: Todo) {
+      if (newTodo._id) {
+        console.warn('todo already has an id', newTodo)
+        return
+      }
       this.currentList.todos.push(newTodo)
       const todo = await $fetch<Todo>('/api/todo', {
         method: 'POST',
         body: newTodo,
       })
+
+      this.newTodo = {
+        name: '',
+        status: 'Open',
+        desc: '',
+        edit: false,
+        color: '#87909e',
+      }
 
       this.currentList.todos[this.currentList.todos.length - 1]._id = todo._id
 
@@ -118,9 +138,7 @@ export const useListsStore = defineStore('lists', {
       }
     },
     setCurrentListName(name: string) {
-      if (name) {
-        this.currentList.name = name
-      }
+      this.currentList.name = name
     },
     setView(view: 'list' | 'board') {
       this.view = view

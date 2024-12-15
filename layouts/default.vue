@@ -42,9 +42,9 @@ watch(listName, (newName) => {
           <AppNav />
           <AppMobileNav />
           <v-main>
-            <v-container class="align-start" style="height: 100%;" fluid>
+            <v-container class="fill-height" fluid>
               <v-row style="height: 100%;">
-                <v-col v-if="store.currentList" cols="12">
+                <v-col v-if="store.currentList.name" cols="12">
                   <v-text-field
                     ref="input" v-model="store.currentList.name" :size="store.currentList.name.length + 1"
                     placeholder="My List" variant="plain" readonly

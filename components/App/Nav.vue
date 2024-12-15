@@ -7,7 +7,7 @@ const loggedIn = computed(() => status.value === 'authenticated')
 </script>
 
 <template>
-  <v-app-bar v-if="!smAndDown" class="" extension-height="0">
+  <v-app-bar v-if="!smAndDown" extension-height="0">
     <template #prepend>
       <template v-if="loggedIn">
         <v-btn v-if="smAndDown" size="small" style="padding: 0;" elevation="0" @click="open = !open">

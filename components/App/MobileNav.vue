@@ -1,11 +1,9 @@
 <script setup lang="ts">
 const { smAndDown } = useDisplay()
-function navClick(value: string) {
-  console.debug(value)
-}
 </script>
+
 <template>
-  <v-bottom-navigation v-if="smAndDown" style="position: fixed;">
+  <v-bottom-navigation v-if="smAndDown">
     <v-btn to="/" value="home">
       <v-icon>mdi-home</v-icon>
       <span>Home</span>
