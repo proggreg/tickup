@@ -118,9 +118,7 @@ export const useListsStore = defineStore('lists', {
       }
     },
     setCurrentListName(name: string) {
-      if (name) {
-        this.currentList.name = name
-      }
+      this.currentList.name = name
     },
     setView(view: 'list' | 'board') {
       this.view = view

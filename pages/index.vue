@@ -7,6 +7,8 @@ const dialog = ref(false)
 
 useHead({ title: 'TickUp:Home' })
 
+listsStore.setCurrentListName('')
+
 definePageMeta({
   layout: 'default',
   auth: {
