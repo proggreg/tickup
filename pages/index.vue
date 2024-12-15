@@ -38,18 +38,15 @@ function selectTodo(todo: Todo) {
 <template>
   <v-col
     cols="12"
-    class="fill-height"
+    class="d-flex flex-column"
   >
     <v-tabs
       v-model="tab"
+      grow
       align-tabs="center"
     >
-      <v-tab>
-        todo
-      </v-tab>
-      <v-tab>
-        done
-      </v-tab>
+      <v-tab class="text-h5">Todo</v-tab>
+      <v-tab class="text-h5">Done</v-tab>
     </v-tabs>
     <v-window
       v-model="tab"
@@ -64,13 +61,6 @@ function selectTodo(todo: Todo) {
           variant="flat"
         >
           <v-list class="pa-4">
-            <AppDialog
-              :open="dialog"
-              @close="dialog = false"
-            >
-              <TodoDetail />
-            </AppDialog>
-
             <v-list-item
               v-for="todo in todaysTodos"
               :key="todo._id"
@@ -80,7 +70,7 @@ function selectTodo(todo: Todo) {
               <template #prepend>
                 <ListStatus :todo="todo" />
               </template>
-              <v-list-item-title class="ml-4">
+              <v-list-item-title class="ml-4 text-h6">
                 {{ todo.name }}
               </v-list-item-title>
 
@@ -93,15 +83,16 @@ function selectTodo(todo: Todo) {
         <v-card
           v-else
           variant="tonal"
+          class="d-flex flex-column justify-center align-center fill-height"
         >
           <AppEmptyState />
         </v-card>
       </v-window-item>
       <v-window-item
         value="done"
-        height="100"
+        class="fill-height"
       >
-        <v-card variant="tonal">
+        <v-card variant="tonal" class="fill-height">
           <v-list
             v-if="todaysClosedTodos.length"
             class="pa-4"
@@ -113,7 +104,7 @@ function selectTodo(todo: Todo) {
               <template #prepend>
                 <ListStatus :todo="todo" />
               </template>
-              <v-list-item-title class="ml-4">
+              <v-list-item-title class="ml-4 text-h6">
                 {{ todo.name }}
               </v-list-item-title>
 
@@ -128,9 +119,29 @@ function selectTodo(todo: Todo) {
               </template>
             </v-list-item>
           </v-list>
+          <AppEmptyState v-else />
         </v-card>
       </v-window-item>
     </v-window>
+    <v-fab
+      size="large" color="primary" style="border-radius: 50% !important; position: fixed; bottom: 100px; z-index: 1000; right: 75px"
+      icon="mdi-plus" variant="elevated"
+      @click="dialog = true"
+    />
+    <AppDialog
+      :open="dialog"
+      @close="dialog = false"
+    >
+      <TodoNew class="mx-8" @add-todo="dialog = false" />
+      <template #buttons>
+        <v-btn
+          color="primary"
+          @click="dialog = false"
+        >
+          Save
+        </v-btn>
+      </template>
+    </AppDialog>
   </v-col>
 
   <!-- TODO add reminders feature -->

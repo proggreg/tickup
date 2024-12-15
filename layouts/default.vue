@@ -42,7 +42,7 @@ watch(listName, (newName) => {
           <AppNav />
           <AppMobileNav />
           <v-main>
-            <v-container class="align-start" style="height: 100%;" fluid>
+            <v-container class="fill-height" fluid>
               <v-row style="height: 100%;">
                 <v-col v-if="store.currentList.name" cols="12">
                   <v-text-field
