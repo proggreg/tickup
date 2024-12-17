@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { status } = useAuth()
+const { status, data } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
 const listsStore = useListsStore()
 const tab = ref('todo')
@@ -21,8 +21,15 @@ if (!loggedIn.value) {
   navigateTo('/login')
 }
 
+onBeforeMount(() => {
+  const userId = data?.value?.user?.sub
+  if (userId) {
+    listsStore.getTodaysTodos(userId)
+  }
+})
+
 const todaysTodos = computed(() => {
-  return listsStore.todaysTodos.filter(todo => todo.status !== 'Closed' && todo._id)
+  return listsStore.todaysTodos.filter(todo => todo.status !== 'Closed')
 })
 
 const todaysClosedTodos = computed(() => {
@@ -38,19 +45,21 @@ function selectTodo(todo: Todo) {
 <template>
   <v-col
     cols="12"
-    class="d-flex flex-column"
+    class="pa-0"
   >
     <v-tabs
       v-model="tab"
       grow
       align-tabs="center"
+      :hide-slider="true"
+      class="mb-4"
     >
       <v-tab class="text-h5">Todo</v-tab>
       <v-tab class="text-h5">Done</v-tab>
     </v-tabs>
     <v-window
       v-model="tab"
-      class="fill-height"
+      class="fill-height px-4"
     >
       <v-window-item
         value="todo"
@@ -58,13 +67,12 @@ function selectTodo(todo: Todo) {
       >
         <v-card
           v-if="todaysTodos && todaysTodos.length"
-          variant="flat"
+          variant="tonal"
         >
-          <v-list class="pa-4">
+          <v-list>
             <v-list-item
               v-for="todo in todaysTodos"
               :key="todo._id"
-              class="fill-height my-2"
               @click="selectTodo(todo)"
             >
               <template #prepend>
@@ -112,7 +120,7 @@ function selectTodo(todo: Todo) {
                 <v-btn
                   icon
                   elevation="0"
-                  @click="listsStore.deleteTodo(todo._id)"
+                  @click="listsStore.deleteTodo(todo._id!)"
                 >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
