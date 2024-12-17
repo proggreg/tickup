@@ -3,6 +3,7 @@ const listsStore = useListsStore()
 const { data } = useAuth()
 const route = useRoute()
 const emit = defineEmits(['addTodo'])
+const { saveTodo } = defineProps<{ saveTodo: boolean }>()
 
 async function addTodo() {
   if (!route.params.id) {
@@ -28,6 +29,12 @@ async function addTodo() {
     emit('addTodo')
   }
 }
+
+watch(() => saveTodo, (newVal) => {
+  if (newVal) {
+    addTodo()
+  }
+})
 </script>
 
 <template>

@@ -4,11 +4,7 @@ const loggedIn = computed(() => status.value === 'authenticated')
 const listsStore = useListsStore()
 const tab = ref('todo')
 const dialog = ref(false)
-
-useHead({ title: 'TickUp:Home' })
-
-listsStore.setCurrentListName('')
-
+const saveTodo = ref(false)
 definePageMeta({
   layout: 'default',
   auth: {
@@ -16,6 +12,9 @@ definePageMeta({
     navigateUnauthenticatedTo: '/login',
   },
 })
+useHead({ title: 'TickUp:Home' })
+
+listsStore.setCurrentListName('')
 
 if (!loggedIn.value) {
   navigateTo('/login')
@@ -140,11 +139,11 @@ function selectTodo(todo: Todo) {
       :open="dialog"
       @close="dialog = false"
     >
-      <TodoNew class="mx-8" @add-todo="dialog = false" />
+      <TodoNew :save-todo="saveTodo" class="mx-8" @add-todo="dialog = false; saveTodo = false" />
       <template #buttons>
         <v-btn
           color="primary"
-          @click="dialog = false"
+          @click="saveTodo = true; dialog = false"
         >
           Save
         </v-btn>
