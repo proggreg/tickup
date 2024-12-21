@@ -99,7 +99,7 @@ function selectTodo(todo: Todo) {
         value="done"
         class="fill-height"
       >
-        <v-card variant="tonal" class="fill-height">
+        <v-card variant="tonal" class="d-flex flex-column justify-center align-center fill-height">
           <v-list
             v-if="todaysClosedTodos.length"
             class="pa-4"
@@ -150,11 +150,4 @@ function selectTodo(todo: Todo) {
       </template>
     </AppDialog>
   </v-col>
-
-  <!-- TODO add reminders feature -->
-  <!-- <v-col >
-      <v-card class="pa-4">
-        <h2>reminders</h2>
-      </v-card>
-    </v-col> -->
 </template>
