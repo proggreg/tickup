@@ -143,7 +143,8 @@ function selectTodo(todo: Todo) {
       <template #buttons>
         <v-btn
           color="primary"
-          @click="saveTodo = true; dialog = false"
+          :disabled="listsStore.newTodo.name === ''"
+          @click.stop="saveTodo = true; dialog = false"
         >
           Save
         </v-btn>
