@@ -2,7 +2,6 @@ export default defineNuxtConfig({
   modules: [
     'vuetify-nuxt-module',
     '@pinia/nuxt',
-    '@nuxt/devtools',
     '@vueuse/nuxt',
     'nuxt-mongoose',
     'nuxt-bugsnag',
