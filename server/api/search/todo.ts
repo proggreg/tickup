@@ -3,7 +3,8 @@ export default defineEventHandler(async (event) => {
     const { q, id } = getQuery(event)
 
     return await TodoSchema.find({ userId: id, name: { $regex: q, $options: 'i' } })
-  } catch (error) {
+  }
+  catch (error) {
     return error
   }
 })

@@ -6,15 +6,15 @@ definePageMeta({
     navigateUnauthenticatedTo: '/login',
   },
 })
-
 </script>
+
 <template>
   <v-row>
     <v-col cols="12">
       <SearchBar />
     </v-col>
     <v-col cols="12">
-      <SearchResults /> 
+      <SearchResults />
     </v-col>
   </v-row>
 </template>

@@ -22,7 +22,7 @@ const loggedIn = computed(() => status.value === 'authenticated')
       </template>
     </template>
 
-    <Search v-if="loggedIn" />
+    <Search />
 
     <template #append>
       <AppDarkMode />
