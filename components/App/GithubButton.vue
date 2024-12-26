@@ -36,10 +36,6 @@ const copyToClipBoard = () => {
 }
 const githubBtn = ref()
 
-const todoBranch = computed(async () => {
-  return await getBranch(githubBranchName.value)
-})
-
 async function createBranch() {
   console.log('create branch')
 
@@ -48,23 +44,12 @@ async function createBranch() {
     return
   }
 
-
   const sha = await getDevBranchSHA()
   if (!sha) {
     console.error('SHA not found')
     return
   }
   createBranchOnGithub(sha)
-  console.log('sha', sha)
-  // $octokit.rest.repos.getBranch({
-  //     owner: 'gregfield',
-  //     repo: 'tickup',
-  //     branch: 'develop'
-  // }).then(({ data }) => {
-  //     console.log(data)
-  // }).catch((error) => {
-  //     console.log(error)
-  // })
 }
 function createBranchOnGithub(sha: string) {
   $octokit.rest.git.createRef({
@@ -72,15 +57,13 @@ function createBranchOnGithub(sha: string) {
     repo: 'tickup',
     ref: `refs/heads/${githubBranchName.value}`,
     sha: sha,
-  }).then(({ data }) => {
-    console.log(data)
+  }).then(() => {
     message.value = 'Branch created'
     open.value = true
     getBranch(githubBranchName.value)
     listStore.currentTodo.githubBranchName = githubBranchName.value
     listStore.updateTodo(listStore.currentTodo)
   }).catch((error) => {
-    console.log(error)
     message.value = error.message
     open.value = true
   })
@@ -95,9 +78,7 @@ function getBranch(branchName: string) {
     repo: 'tickup',
     branch: branchName,
   }).then(({ data }) => {
-    console.log('branch', data)
     if (data) {
-      console.log('branch url', data?._links?.html)
       branchURL.value = data?._links?.html
       hasBranch.value = true
     }
@@ -107,22 +88,11 @@ function getBranch(branchName: string) {
   })
 }
 
-function listBranches() {
-  $octokit.rest.repos.listBranches({
-    owner: 'proggreg',
-    repo: 'tickup',
-  }).then(({ data }) => {
-    console.log(data)
-  }).catch((error) => {
-    console.log(error)
-  })
-}
-
 function getDevBranchSHA() {
   return $octokit.rest.repos.getBranch({
     owner: 'proggreg',
     repo: 'tickup',
-    branch: 'develop',
+    branch: 'main',
   }).then(({ data }) => {
     return data.commit.sha
   }).catch((error) => {
@@ -130,7 +100,6 @@ function getDevBranchSHA() {
   })
 }
 onUpdated(() => {
-  console.log('updated')
   getBranch(githubBranchName.value)
 })
 </script>
@@ -160,8 +129,6 @@ onUpdated(() => {
           Create Branch
         </v-btn>
         <v-btn v-else class="font-weight-bold" :href="branchURL" target="_blank">View Branch</v-btn>
-        <!-- <v-text-field v-if="githubBranchName" v-model="githubBranchName" label="Branch Name" outlined
-                    readonly /> -->
       </v-list-item>
     </v-list>
   </v-menu>
