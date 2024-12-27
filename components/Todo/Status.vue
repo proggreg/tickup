@@ -26,7 +26,10 @@ function updateStatus(statusName: string) {
 </script>
 
 <template>
-  <v-select v-model="listStore.currentTodo.status" flat tile density="compact" hide-selected center-affix width="200" item-title="name" :bg-color="currentStatus.color" :items="statuses" variant="plain" @update:model-value="selectStatus">
+  <v-select
+    v-model="listStore.currentTodo.status" flat tile density="compact" hide-selected center-affix
+    item-title="name" :bg-color="currentStatus.color" :items="statuses" variant="plain" @update:model-value="selectStatus"
+  >
     <template #selection="{}">
       <v-list-item class="py-0 my-0">
         {{ listStore.currentTodo.status }}

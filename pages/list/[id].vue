@@ -38,10 +38,10 @@ watch(listStore.currentList.todos, (todos) => {
 </script>
 
 <template>
-  <v-col v-if="$device.isMobile" style="height: 100%;">
+  <div v-if="$device.isMobile" style="width: 100%;height: 100%;">
     <ListTable />
-  </v-col>
-  <v-col v-else cols="12" style="height: 100%;">
+  </div>
+  <div v-else cols="12" style="width: 100%; height: 100%;">
     <v-tabs v-model="currentTab">
       <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
     </v-tabs>
@@ -53,5 +53,5 @@ watch(listStore.currentList.todos, (todos) => {
         <ListTable />
       </v-window-item>
     </v-window>
-  </v-col>
+  </div>
 </template>

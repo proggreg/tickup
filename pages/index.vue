@@ -3,8 +3,8 @@ const { status, data } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
 const listsStore = useListsStore()
 const tab = ref('todo')
-const dialog = ref(false)
 const saveTodo = ref(false)
+const dialog = useDialog()
 definePageMeta({
   layout: 'default',
   auth: {
@@ -132,18 +132,18 @@ function selectTodo(todo: Todo) {
     <v-fab
       size="large" color="primary" style="border-radius: 50% !important; position: fixed; bottom: 100px; z-index: 1000; right: 75px"
       icon="mdi-plus" variant="elevated"
-      @click="dialog = true"
+      @click="dialog.open = true"
     />
     <AppDialog
-      :open="dialog"
-      @close="dialog = false"
+      :open="dialog.page === 'index' && dialog.open"
+      @close="dialog.open"
     >
       <TodoNew :save-todo="saveTodo" class="mx-8" @add-todo="dialog = false; saveTodo = false" />
       <template #buttons>
         <v-btn
           color="primary"
           :disabled="listsStore.newTodo.name === ''"
-          @click.stop="saveTodo = true; dialog = false"
+          @click.stop="saveTodo = true; dialog.open = false"
         >
           Save
         </v-btn>
