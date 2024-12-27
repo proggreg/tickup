@@ -1,15 +1,7 @@
 <script setup lang="ts">
 const { smAndDown } = useDisplay()
 const store = useListsStore()
-const navOpen = useNav()
 const editListName = ref('')
-
-async function navigate(list: List) {
-  await navigateTo(`/list/${list._id}`)
-  if (smAndDown.value) {
-    navOpen.value = false
-  }
-}
 
 function renameList(list: List) {
   store.updateList(list)
@@ -27,7 +19,7 @@ function rename(list: List) {
   <v-hover v-for="list in store.lists" :key="list._id">
     <template #default="{ isHovering, props }">
       <v-list-item
-        v-bind="props" :key="list._id" :variant="isHovering ? 'tonal' : 'text'" class="my-2 font-weight-bold"
+        v-bind="props" :key="list._id" :variant="isHovering || smAndDown ? 'tonal' : 'text'" class="my-2 font-weight-bold"
         style="cursor: pointer;" :to="`/list/${list._id}`"
       >
         <v-text-field

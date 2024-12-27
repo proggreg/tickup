@@ -10,7 +10,7 @@ const open = ref(false)
 </script>
 
 <template>
-  <div>
+  <div style="width: 100%; height: 100%;">
     <v-list>
       <AppNavItems />
     </v-list>

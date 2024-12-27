@@ -11,7 +11,7 @@ const listStore = useListsStore()
           <app-nav />
           <v-main>
             <v-container style="height: 100%" fluid>
-              <v-row class="fill-height">
+              <v-row class="">
                 <v-col cols="12">
                   <v-btn :to="listStore.currentTodo.listId ? `/list/${listStore.currentTodo.listId}`: `/`">
                     <template #prepend>

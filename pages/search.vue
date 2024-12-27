@@ -1,10 +1,16 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'mobile',
+  layout: false,
   auth: {
     unauthenticatedOnly: false,
     navigateUnauthenticatedTo: '/login',
   },
+})
+
+const store = useSearchStore()
+
+onMounted(async () => {
+  // store.search()
 })
 </script>
 
