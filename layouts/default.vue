@@ -36,32 +36,30 @@ watch(listName, (newName) => {
 <template>
   <ColorScheme>
     <v-theme-provider with-background :theme="colorMode.preference">
-      <v-app>
+      <v-app full-height>
         <AppToolbar />
-        <v-layout>
-          <AppNav />
-          <v-main>
-            <v-container class="fill-height" fluid>
-              <v-row style="height: 100%;">
-                <v-col v-if="store.currentList.name" cols="12">
-                  <v-text-field
-                    ref="input" v-model="store.currentList.name" :size="store.currentList.name.length + 1"
-                    placeholder="My List" variant="plain" readonly
-                    class="align-center font-weight-bold list-title" @keyup.enter="rename = false"
-                    @blur="rename = false"
-                  >
-                    <template v-if="router.params.id" #append>
-                      <ListOptions :list-id="router.params.id" @rename="rename = true" />
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <AppSettings />
+        <AppNav />
+        <v-main max-height="100vh">
+          <v-container class="bg-red" style="height: 100%;" fluid>
+            <v-row style="height: 100%;">
+              <v-col v-if="store.currentList.name" cols="12">
+                <v-text-field
+                  ref="input" v-model="store.currentList.name" :size="store.currentList.name.length + 1"
+                  placeholder="My List" variant="plain" readonly
+                  class="align-center font-weight-bold list-title" @keyup.enter="rename = false"
+                  @blur="rename = false"
+                >
+                  <template v-if="router.params.id" #append>
+                    <ListOptions :list-id="router.params.id" @rename="rename = true" />
+                  </template>
+                </v-text-field>
+              </v-col>
+              <AppSettings />
 
-                <NuxtPage />
-              </v-row>
-            </v-container>
-          </v-main>
-        </v-layout>
+              <NuxtPage />
+            </v-row>
+          </v-container>
+        </v-main>
       </v-app>
     </v-theme-provider>
   </ColorScheme>

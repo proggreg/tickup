@@ -19,11 +19,6 @@
       <span>Search</span>
     </v-btn>
 
-    <v-btn to="/settings" value="settings">
-      <v-icon>mdi-cog</v-icon>
-      <span>Settings</span>
-    </v-btn>
-
     <v-btn to="/account" value="settings">
       <v-icon>mdi-account-circle</v-icon>
       <span>Account</span>

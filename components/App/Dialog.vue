@@ -1,15 +1,14 @@
 <script setup lang="ts">
-const { title, open } = defineProps<{
+const { title } = defineProps<{
   title?: string
-  open: boolean
 }>()
-const emit = defineEmits(['close'])
+const dialog = useDialog()
 </script>
 
 <template>
   <v-dialog
-    max-width="500" :model-value="open" transition="dialog-bottom-transition"
-    location="top" @update:model-value="emit('close')"
+    max-width="500" :model-value="dialog.open" transition="dialog-bottom-transition"
+    location="top" @update:model-value="dialog.open = false"
   >
     <template #activator>
       <slot name="open" />
@@ -22,13 +21,13 @@ const emit = defineEmits(['close'])
         </v-card-title>
       </template>
       <template #append>
-        <v-icon @click="emit('close')">mdi-close</v-icon>
+        <v-icon @click="dialog.open = false">mdi-close</v-icon>
       </template>
 
       <slot />
       <v-card-actions>
         <v-spacer />
-        <v-btn @click="emit('close')">
+        <v-btn @click="dialog.open = false">
           Close
         </v-btn>
         <slot name="buttons" />

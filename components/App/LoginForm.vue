@@ -4,7 +4,7 @@ const username = ref('')
 const password = ref('')
 const loginForm = ref()
 const correctCredentials = ref(false)
-const config = useRuntimeConfig()
+const loggingIn = ref(false)
 const userNameRules = [
   (value: string) => {
     if (value) return true
@@ -28,28 +28,34 @@ onMounted(() => {
 })
 
 const loginUser = async () => {
+  loggingIn.value = true
   const { valid } = await loginForm.value.validate()
 
   if (valid) {
     await signIn('credentials', { username: username.value, password: password.value })
   }
+  loggingIn.value = false
 }
 </script>
 
 <template>
-  <v-form ref="loginForm" validate-on="input lazy" @submit.prevent="loginUser">
-    <v-text-field v-model="username" label="Username" :hide-details="false" :rules="userNameRules" required
-      class="error" />
+  <v-form ref="loginForm" style="max-width: 400px" class="flex-1 mx-auto" validate-on="input lazy" @submit.prevent="loginUser">
+    <v-text-field
+      v-model="username" label="Username" :hide-details="false" :rules="userNameRules" required
+      class="error"
+    />
 
-    <v-text-field v-model="password" label="Password" :hide-details="false" :rules="passwordRules" type="password"
-      required />
-    <v-btn class="mb-4" color="primary" block type="submit">
+    <v-text-field
+      v-model="password" label="Password" :hide-details="false" :rules="passwordRules" type="password"
+      required
+    />
+    <v-btn :disabled="loggingIn" class="mb-4" color="primary" block type="submit">
       Login
     </v-btn>
-    <v-btn color="primary" append-icon="mdi-github" class="mb-4" block @click="signIn(`github`)">
+    <v-btn :disabled="loggingIn" color="primary" append-icon="mdi-github" class="mb-4" block @click="signIn(`github`)">
       Github Sign In
     </v-btn>
-    <div class="text-caption text-center">
+    <div class="text-center">
       <span>Don't have an account </span>
       <NuxtLink color="secondary" to="/register">Register
       </NuxtLink>
