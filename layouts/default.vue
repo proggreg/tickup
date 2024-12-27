@@ -40,7 +40,6 @@ watch(listName, (newName) => {
         <AppToolbar />
         <v-layout>
           <AppNav />
-          <AppMobileNav />
           <v-main>
             <v-container class="fill-height" fluid>
               <v-row style="height: 100%;">

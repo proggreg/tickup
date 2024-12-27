@@ -1,8 +1,6 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
 const listStore = useListsStore()
-const router = useRouter()
-console.log(router.getRoutes())
 </script>
 
 <template>
@@ -13,9 +11,9 @@ console.log(router.getRoutes())
           <app-nav />
           <v-main>
             <v-container style="height: 100%" fluid>
-              <v-row class="fill-height">
+              <v-row class="">
                 <v-col cols="12">
-                  <v-btn @click="$router.back()">
+                  <v-btn :to="listStore.currentTodo.listId ? `/list/${listStore.currentTodo.listId}`: `/`">
                     <template #prepend>
                       <v-icon>mdi-arrow-left</v-icon>
                     </template>

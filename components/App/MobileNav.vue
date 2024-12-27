@@ -1,9 +1,9 @@
 <script setup lang="ts">
-const { smAndDown } = useDisplay()
+
 </script>
 
 <template>
-  <v-bottom-navigation v-if="smAndDown">
+  <v-bottom-navigation grow>
     <v-btn to="/" value="home">
       <v-icon>mdi-home</v-icon>
       <span>Home</span>

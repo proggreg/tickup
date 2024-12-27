@@ -1,80 +1,58 @@
 <script setup lang="ts">
-import { useDebounceFn } from '@vueuse/core'
-
-const { mdAndUp } = useDisplay()
-const query = ref<string>('')
-const results = ref([])
+const searchStore = useSearchStore()
+const router = useRouter()
 const open = ref(false)
-const todoDialogOpen = ref(false)
-const { data } = useAuth()
-const items = ref([])
+const loading = ref(false)
 
-onMounted(() => {
-  // search()
+if (import.meta.client) {
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'k') {
+      e.preventDefault()
+      open.value = !open.value
+      return false
+    }
+  })
+}
+
+router.beforeResolve(() => {
+  open.value = false
+  searchStore.searchQuery = ''
+})
+
+watch(() => searchStore.searchQuery, () => {
+  if (searchStore.searchQuery.length) {
+    open.value = true
+  }
+  searchStore.debouncedSearch()
 })
 </script>
 
 <template>
-  <v-dialog width="500">
+  <v-dialog class="ma-6" width="500" min-height="300" max-height="100%" height="100%" :model-value="open" @after-leave="open = false">
     <template #activator="{ props }">
-      <slot />
+      <v-text-field v-model="searchStore.searchQuery" placeholder="ctrl + k" class="mx-12" append-inner-icon="mdi-magnify" v-on="props" />
     </template>
 
     <template #default="{ isActive }">
-      <v-card v-show="isActive">
+      <v-card v-show="isActive" min-height="300">
         <v-card-item class="pa-4">
           <v-text-field
-            v-model="query"
+            v-model="searchStore.searchQuery"
             placeholder="search"
             autofocus
-            class="ma-4"
-            @keyup="debouncedSearch"
           />
         </v-card-item>
 
         <v-divider />
-        <!-- <v-virtual-scroll :items="items" height="300" item-height="50">
-          <template #default="{ item }">
-            <v-list-item link :to="`/todo/${item._id}`" @click="open = false">
-              <template #prepend>
-                <ListStatus :todo="item" />
-              </template>
 
-              <v-list-item-title class="font-weight-bold pa-4">
-                {{ item.name }}
-              </v-list-item-title>
-
-              <template #append>
-                <v-btn :to="`/todo/${item._id}`" icon="mdi-open-in-new" variant="text" />
-              </template>
+        <v-card-item>
+          <v-list v-if="loading">
+            <v-list-item v-for="n in 5" :key="n">
+              <v-skeleton-loader type="list-item" />
             </v-list-item>
-          </template>
-        </v-virtual-scroll> -->
-        <!-- <v-list-item
-              v-for="(result, index) in results"
-              :key="index"
-              @click="openTodoDialog(result)"
-            >
-              <v-list-item-title class="font-weight-bold">
-                {{ result.name }}
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                {{ result.status }}
-              </v-list-item-subtitle>
-
-              <div
-                v-if="result.updatedAt"
-                class="text-overline"
-              >
-                Updated at: {{ formattedDate(result.updatedAt) }} {{ formattedTime(result.updatedAt) }}
-              </div>
-            </v-list-item> -->
-        <AppDialog
-          v-if="mdAndUp"
-          @close="todoDialogOpen = false"
-        >
-          <TodoDetail />
-        </AppDialog>
+          </v-list>
+          <SearchResults v-else />
+        </v-card-item>
       </v-card>
     </template>
   </v-dialog>

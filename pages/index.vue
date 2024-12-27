@@ -44,7 +44,7 @@ function selectTodo(todo: Todo) {
 <template>
   <v-col
     cols="12"
-    class="pa-0"
+    class="pa-0 fill-height"
   >
     <v-tabs
       v-model="tab"
@@ -58,7 +58,7 @@ function selectTodo(todo: Todo) {
     </v-tabs>
     <v-window
       v-model="tab"
-      class="fill-height px-4"
+      class="fill-height bg-yellow px-4"
     >
       <v-window-item
         value="todo"
@@ -92,16 +92,15 @@ function selectTodo(todo: Todo) {
           variant="tonal"
           class="d-flex flex-column justify-center align-center fill-height"
         >
-          <AppEmptyState />
+          <AppEmptyState height="100%" />
         </v-card>
       </v-window-item>
       <v-window-item
         value="done"
         class="fill-height"
       >
-        <v-card variant="tonal" class="d-flex flex-column justify-center align-center fill-height">
+        <v-card v-if="todaysClosedTodos.length" variant="tonal">
           <v-list
-            v-if="todaysClosedTodos.length"
             class="pa-4"
           >
             <v-list-item
@@ -126,8 +125,8 @@ function selectTodo(todo: Todo) {
               </template>
             </v-list-item>
           </v-list>
-          <AppEmptyState v-else />
         </v-card>
+        <AppEmptyState v-else class="bg-red" height="100%" />
       </v-window-item>
     </v-window>
     <v-fab

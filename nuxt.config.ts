@@ -1,14 +1,5 @@
 export default defineNuxtConfig({
-  modules: [
-    'vuetify-nuxt-module',
-    '@pinia/nuxt',
-    '@vueuse/nuxt',
-    'nuxt-mongoose',
-    'nuxt-bugsnag',
-    '@sidebase/nuxt-auth',
-    '@nuxtjs/color-mode',
-    '@nuxt/eslint',
-  ],
+  modules: ['vuetify-nuxt-module', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-mongoose', 'nuxt-bugsnag', '@sidebase/nuxt-auth', '@nuxtjs/color-mode', '@nuxt/eslint', '@nuxtjs/device'],
   // app: {
   //   layoutTransition: { name: 'layout', mode: 'out-in' }
   // },
