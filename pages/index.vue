@@ -58,7 +58,7 @@ function selectTodo(todo: Todo) {
     </v-tabs>
     <v-window
       v-model="tab"
-      class="fill-height bg-yellow px-4"
+      class="fill-height px-4"
     >
       <v-window-item
         value="todo"
@@ -126,7 +126,7 @@ function selectTodo(todo: Todo) {
             </v-list-item>
           </v-list>
         </v-card>
-        <AppEmptyState v-else class="bg-red" height="100%" />
+        <AppEmptyState v-else height="100%" />
       </v-window-item>
     </v-window>
     <v-fab
