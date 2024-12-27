@@ -70,18 +70,18 @@ function deleteStatus(status: Status) {
 function cancel() {
   console.debug('cancel')
 }
-
-
 </script>
 
 <template>
   <v-row>
-    <v-col cols="10">
-      <h2>Settings</h2>
-      <v-card class="pa-4">
+    <v-col cols="12">
+      <h2 class="text-center">Settings</h2>
+      <v-card variant="flat" class="pa-4">
         <v-list variant="tonal">
-          <v-list-item v-for="status in store.statuses" :key="status.name" class="my-2" width="200"
-            :base-color="status.color">
+          <v-list-item
+            v-for="status in store.statuses" :key="status.name" class="my-2"
+            :base-color="status.color"
+          >
             <template #prepend>
               <v-menu :close-on-content-click="false">
                 <template #activator="{ props }">
@@ -90,29 +90,27 @@ function cancel() {
                 <v-color-picker v-model="status.color" class="ma-4" show-swatches />
               </v-menu>
             </template>
-            <v-text-field class="mx-2" v-if="status.Edit" v-model="status.name" autofocus />
-            <v-list-item-title class="mx-2" v-else>
+            <v-text-field v-if="status.Edit" v-model="status.name" class="mx-2" autofocus />
+            <v-list-item-title v-else class="mx-2">
               {{ status.name }}
             </v-list-item-title>
             <template #append>
-
               <v-menu>
                 <template #activator="{ props }">
                   <v-btn class="pa-0" v-bind="props" icon="mdi-dots-horizontal" variant="text" />
                 </template>
                 <v-list class="px-2">
-                  <v-list-item v-for="(option, index) in options" :key="index" :value="option.name"
+                  <v-list-item
+                    v-for="(option, index) in options" :key="index" :value="option.name"
                     :append-icon="option.icon" :class="option.destructive ? 'text-red' : ''"
-                    @click.passive="option.handler(status)">
+                    @click.passive="option.handler(status)"
+                  >
                     <v-list-item-title class="text-body-2">
                       {{ option.name }}
                     </v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
-
-
-
             </template>
           </v-list-item>
           <v-list-item width="200" variant="plain">
@@ -121,10 +119,10 @@ function cancel() {
             </v-btn>
           </v-list-item>
         </v-list>
-        <v-btn color="secondary" @click="cancel">
+        <v-btn block color="secondary" @click="cancel">
           Cancel
         </v-btn>
-        <v-btn color="primary" @click="save">
+        <v-btn block color="primary" @click="save">
           Save
         </v-btn>
       </v-card>

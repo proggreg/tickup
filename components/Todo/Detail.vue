@@ -19,7 +19,7 @@ const desc = ref(listsStore.currentTodo.desc)
 </script>
 
 <template>
-  <v-card width="100%" elevation="0" class="pa-2 d-flex flex-column" style="height: 100%">
+  <v-card width="100%" elevation="0" class="pa-0 d-flex flex-column" style="height: 100%">
     <v-card-item>
       <v-row>
         <v-col cols="6">
