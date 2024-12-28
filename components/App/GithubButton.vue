@@ -31,14 +31,16 @@ const copyToClipBoard = () => {
   if (githubBranchName.value) {
     navigator.clipboard.writeText(githubBranchCommand.value)
     message.value = 'Copied to clipboard'
+    if (!branchURL.value) {
+      updateBranchName()
+    }
+
     open.value = true
   }
 }
 const githubBtn = ref()
 
 async function createBranch() {
-  console.log('create branch')
-
   if (!config.public.github) {
     console.warn('Github token not found')
     return
@@ -102,6 +104,17 @@ function getDevBranchSHA() {
 onUpdated(() => {
   getBranch(githubBranchName.value)
 })
+
+function updateBranchName() {
+  listStore.currentTodo.githubBranchName = githubBranchName.value
+  listStore.updateTodo(listStore.currentTodo)
+}
+onMounted(async () => {
+  const hasBranch = await getBranch(githubBranchName.value)
+  if (hasBranch && !todo.githubBranchName) {
+    updateBranchName()
+  }
+})
 </script>
 
 <template>
@@ -112,11 +125,16 @@ onUpdated(() => {
     <v-list>
       <v-list-item class="d-flex pa-8">
         <v-text-field
+
           ref="githubBtn" class="font-weight-bold" append-icon="mdi-content-copy"
           variant="outlined" @click:append.stop="copyToClipBoard"
         >
           {{ githubBranchCommand }}
         </v-text-field>
+
+        <p class="px-4 py-2 font-weight-bold">
+          Branch Name: {{ todo.githubBranchName }}
+        </p>
         <v-snackbar
           v-model="open" min-width="10px" attach="githubBtn" location="end center"
           location-strategy="connected" contained timeout="2000"
