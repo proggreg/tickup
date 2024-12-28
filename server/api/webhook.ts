@@ -27,6 +27,7 @@ export default defineEventHandler(async (event) => {
           githubBranchName: ref,
         }, { status: 'In Progress' }, { new: true })
         if (!response) {
+          useBugsnag().notify('Todo not found')
           throw Error('Todo not found')
         }
         console.log('Updated todo:', response)
