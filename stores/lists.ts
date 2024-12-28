@@ -79,7 +79,9 @@ export const useListsStore = defineStore('lists', {
       this.currentList.name = newName
     },
     setListTodos(todos: Todo[]) {
-      this.currentList.todos = todos || []
+      if (todos && todos.length) {
+        this.currentList.todos
+      }
     },
     async getListTodos(listId: string) {
       const { data } = await useFetch<Todo[]>(`/api/list/todo/${listId}`)

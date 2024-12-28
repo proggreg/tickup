@@ -10,7 +10,7 @@ onBeforeMount(async () => {
   const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`, { cache: 'no-cache', key: `/api/list/${params.id}` })
   const { data: todos } = await useFetch<Todo[]>('/api/list/todos', { query: { id: params.id }, cache: 'no-cache' })
 
-  if (todos.value) {
+  if (todos.value && todos.value.length) {
     listStore.setListTodos(todos.value)
   }
   if (currentList.value?.name) {
