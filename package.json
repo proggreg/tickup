@@ -51,6 +51,7 @@
     "@types/bcrypt": "^5.0.2",
     "@vite-pwa/nuxt": "^0.1.1",
     "@vuepic/vue-datepicker": "^7.0.0",
+    "aws-sdk": "^2.1692.0",
     "bcrypt": "^5.1.1",
     "mongodb": "^6.3.0",
     "mongoose": "^7.5.0",
