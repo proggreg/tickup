@@ -38,20 +38,25 @@ watch(listStore.currentList.todos, (todos) => {
 </script>
 
 <template>
-  <div v-if="$device.isMobile" style="width: 100%;height: 100%;">
-    <ListTable />
-  </div>
-  <div v-else cols="12" style="width: 100%; height: 100%;">
-    <v-tabs v-model="currentTab">
-      <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
-    </v-tabs>
-    <v-window v-model="currentTab" :touch="false" class="">
-      <v-window-item value="board">
-        <Board />
-      </v-window-item>
-      <v-window-item value="list" class="fill-height">
-        <ListTable />
-      </v-window-item>
-    </v-window>
+  <div style="width: 100%;height: 100%;">
+    <div v-if="listStore.currentList.name" class="pa-2 d-flex justify-center" align-content="center">
+      <v-btn :active="false" class="font-weight-bold text-h5 text-capitalize mx-auto" :to="`/list/${listStore.currentList._id}`" :text="listStore.currentList.name" />
+    </div>
+    <div v-if="$device.isMobile">
+      <ListTable />
+    </div>
+    <div v-else cols="12" style="width: 100%; height: 100%;">
+      <v-tabs v-model="currentTab">
+        <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
+      </v-tabs>
+      <v-window v-model="currentTab" :touch="false" class="">
+        <v-window-item value="board">
+          <Board />
+        </v-window-item>
+        <v-window-item value="list" class="fill-height">
+          <ListTable />
+        </v-window-item>
+      </v-window>
+    </div>
   </div>
 </template>

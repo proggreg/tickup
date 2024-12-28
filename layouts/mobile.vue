@@ -30,9 +30,6 @@ function addEventHandler() {
       <v-app full-height>
         <v-layout>
           <v-main>
-            <div v-if="listStore.currentList.name && listStore.currentList._id" class="pa-2 d-flex justify-center" align-content="center">
-              <v-btn :active="false" class="font-weight-bold text-h5 text-capitalize mx-auto" :to="`/list/${listStore.currentList._id}`" :text="listStore.currentList.name" />
-            </div>
             <v-container class="fill-height align-start pb-16" fluid>
               <NuxtPage />
             </v-container>
