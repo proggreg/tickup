@@ -39,7 +39,7 @@ watch(listStore.currentList.todos, (todos) => {
 
 <template>
   <div style="width: 100%;height: 100%;">
-    <div v-if="listStore.currentList.name" class="pa-2 d-flex justify-center" align-content="center">
+    <div v-if="isMobile && listStore.currentList.name" class="pa-2 d-flex justify-center" align-content="center">
       <v-btn :active="false" class="font-weight-bold text-h5 text-capitalize mx-auto" :to="`/list/${listStore.currentList._id}`" :text="listStore.currentList.name" />
     </div>
     <div v-if="$device.isMobile">
