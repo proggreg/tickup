@@ -14,6 +14,27 @@ function updateName() {
 function updateDesc() {
   listsStore.updateTodo(listsStore.currentTodo)
 }
+
+const formattedDesc = computed(() => {
+  if (!listsStore.currentTodo.desc) return ''
+
+  // URL regex pattern
+  const urlPattern = /(https?:\/\/[^\s]+)/g
+
+  // Replace URLs with HTML links
+  return listsStore.currentTodo.desc.replace(urlPattern, '<a href="$1" target="_blank">$1</a>')
+})
+
+watch(() => listsStore.currentTodo.desc, (newDesc) => {
+  if (!newDesc) return
+
+  // Check if desc contains a URL
+  const urlPattern = /(https?:\/\/[^\s]+)/g
+  if (urlPattern.test(newDesc)) {
+    // Update the desc with formatted links
+    listsStore.currentTodo.desc = formattedDesc.value
+  }
+})
 </script>
 
 <template>
