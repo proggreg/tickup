@@ -12,10 +12,8 @@ function updateName() {
 }
 
 function updateDesc() {
-  listsStore.currentTodo.desc = desc.value
   listsStore.updateTodo(listsStore.currentTodo)
 }
-const desc = ref(listsStore.currentTodo.desc)
 </script>
 
 <template>
@@ -37,7 +35,7 @@ const desc = ref(listsStore.currentTodo.desc)
     <v-card-title>
       <v-text-field v-model="listsStore.currentTodo.name" label="Title" hide-details @blur="updateName" />
     </v-card-title>
-    <v-textarea v-model="desc" class="ma-4" auto-grow label="Description" hide-details max-rows="20" @blur="updateDesc" />
+    <v-textarea v-model="listsStore.currentTodo.desc" class="ma-4" auto-grow label="Description" hide-details max-rows="20" @input="updateDesc" @blur="updateDesc" />
     <v-card-actions class="py-6">
       <AppDeleteButton :todo="listsStore.currentTodo" />
       <AppGithubButton :todo="listsStore.currentTodo" />

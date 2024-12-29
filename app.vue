@@ -34,14 +34,12 @@ if (route.params.id) {
 }
 
 const layoutName = computed(() => {
-  console.log('route name', route.name)
   if (route.name === 'login' || route.name === 'register') {
     return 'login'
   }
   if (isMobile) {
     return 'mobile'
   }
-  console.log('route name', route.name)
   if (route.name === 'todo-id') {
     return 'todo'
   }
