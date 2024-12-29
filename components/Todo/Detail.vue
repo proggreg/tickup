@@ -32,7 +32,7 @@ watch(() => listsStore.currentTodo.desc, (newDesc) => {
   const urlPattern = /(https?:\/\/[^\s]+)/g
   if (urlPattern.test(newDesc)) {
     // Update the desc with formatted links
-    listsStore.currentTodo.desc = formattedDesc.value
+    // listsStore.currentTodo.desc = formattedDesc.value
   }
 })
 </script>
@@ -56,6 +56,7 @@ watch(() => listsStore.currentTodo.desc, (newDesc) => {
     <v-card-title>
       <v-text-field v-model="listsStore.currentTodo.name" label="Title" hide-details @blur="updateName" />
     </v-card-title>
+
     <v-textarea v-model="listsStore.currentTodo.desc" class="ma-4" auto-grow label="Description" hide-details max-rows="20" @input="updateDesc" @blur="updateDesc" />
     <v-card-actions class="py-6">
       <AppDeleteButton :todo="listsStore.currentTodo" />
