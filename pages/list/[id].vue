@@ -4,7 +4,6 @@ const listStore = useListsStore()
 const tabs = ref<View[]>(['board', 'list'])
 const currentTab = ref<View>('list')
 const on = useToolbar()
-const { isMobile } = useDevice()
 
 onBeforeMount(async () => {
   const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`, { cache: 'no-cache', key: `/api/list/${params.id}` })

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
-
 </script>
+
 <template>
   <ColorScheme>
     <v-theme-provider with-background :theme="colorMode.preference">

@@ -3,7 +3,8 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event)
 
     return await ListSchema.find({ userId: query.id })
-  } catch (error) {
+  }
+  catch (error) {
     return error
   }
 })

@@ -1,4 +1,5 @@
 import { getToken } from '#auth'
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   try {
@@ -8,7 +9,8 @@ export default defineEventHandler(async (event) => {
       body.userId = token.sub
     }
     return await new ListSchema(body).save()
-  } catch (error) {
+  }
+  catch (error) {
     return error
   }
 })

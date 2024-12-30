@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const store = useListsStore()
 const on = useToolbar()
-const { status } = defineProps(['status'])
+const { status } = defineProps<{ status: Status }>()
 const selectAll = () => {
   for (const todo of store.currentList.todos) {
     if (todo.status === status.name) {
