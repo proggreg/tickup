@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
+const editTodo = ref(false)
 
 function updateDueDate(newDate: Date) {
   listsStore.currentTodo.dueDate = newDate
@@ -18,11 +19,10 @@ function updateDesc() {
 const formattedDesc = computed(() => {
   if (!listsStore.currentTodo.desc) return ''
 
-  // URL regex pattern
   const urlPattern = /(https?:\/\/[^\s]+)/g
 
-  // Replace URLs with HTML links
   return listsStore.currentTodo.desc.replace(urlPattern, '<a href="$1" target="_blank">$1</a>')
+    .replace(/\n/g, '<br />')
 })
 
 watch(() => listsStore.currentTodo.desc, (newDesc) => {
@@ -56,8 +56,14 @@ watch(() => listsStore.currentTodo.desc, (newDesc) => {
     <v-card-title>
       <v-text-field v-model="listsStore.currentTodo.name" label="Title" hide-details @blur="updateName" />
     </v-card-title>
-
-    <v-textarea v-model="listsStore.currentTodo.desc" class="ma-4" auto-grow label="Description" hide-details max-rows="20" @input="updateDesc" @blur="updateDesc" />
+    <v-card-item>
+      <v-textarea
+        v-if="editTodo" v-model="listsStore.currentTodo.desc" auto-grow label="Description"
+        class="mt-2"
+        hide-details max-rows="20" @input="updateDesc" @blur="updateDesc; editTodo = false"
+      />
+      <div v-else class="pa-3 rounded-xl" style="border: 1px solid rgba(0,0,0,0.2); border-radius: 4px; min-height: 56px;" @click="editTodo = true" v-html="formattedDesc" />
+    </v-card-item>
     <v-card-actions class="py-6">
       <AppDeleteButton :todo="listsStore.currentTodo" />
       <AppGithubButton :todo="listsStore.currentTodo" />
