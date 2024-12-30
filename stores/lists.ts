@@ -80,7 +80,7 @@ export const useListsStore = defineStore('lists', {
     },
     setListTodos(todos: Todo[]) {
       if (todos && todos.length) {
-        this.currentList.todos
+        this.currentList.todos = todos
       }
     },
     async getListTodos(listId: string) {
