@@ -5,19 +5,19 @@ export const UserSchema = defineMongooseModel({
   schema: {
     username: {
       type: 'string',
-      required: true
+      required: true,
     },
     password: {
       type: 'string',
-      required: true
+      required: true,
     },
     settings: {
       type: {
         statuses: {
           type: ['string'],
-          default: ['todo', 'in-progress', 'done']
-        }
+          default: ['todo', 'in-progress', 'done'],
+        },
       },
     },
-  }
+  },
 })

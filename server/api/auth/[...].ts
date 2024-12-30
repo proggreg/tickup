@@ -26,11 +26,11 @@ export default NuxtAuthHandler({
 
           if (!user) {
             return false
-          } 
+          }
 
-          if (credentials.password && user.password && 
-              bcrypt.compareSync(credentials.password, user.password)) {
-              return user
+          if (credentials.password && user.password
+            && bcrypt.compareSync(credentials.password, user.password)) {
+            return user
           }
 
           return false

@@ -46,19 +46,19 @@ function editTodo(todo: Todo, status: Status) {
         <template #prepend>
           <v-list-item-action start>
             <v-menu>
-              <template #activator="{ props }">
+              <template #activator="{ props: statusProps }">
                 <ListStatus
-                  v-bind="props"
+                  v-bind="statusProps"
                   :todo="todo"
                 />
               </template>
               <v-list>
                 <v-list-item
-                  v-for="status in statuses"
-                  :key="status.name"
-                  @click="editTodo(todo, status)"
+                  v-for="statusItem in statuses"
+                  :key="statusItem.name"
+                  @click="editTodo(todo, statusItem)"
                 >
-                  {{ status.name }}
+                  {{ statusItem.name }}
                 </v-list-item>
               </v-list>
             </v-menu>

@@ -70,6 +70,7 @@ export const useListsStore = defineStore('lists', {
         const data = await $fetch<List>(`/api/list/${listId}`, {
           method: 'DELETE',
         })
+        console.log('list deleted', data)
       }
     },
     setListName(newName: string) {

@@ -6,6 +6,7 @@ const formattedDate = computed(() => {
   if (dueDateProps.todoDueDate) {
     return new Date(dueDateProps.todoDueDate).toLocaleDateString('en-GB')
   }
+  return ''
 })
 
 function updateDueDate(newDate: Date | unknown) {
