@@ -6,14 +6,14 @@ const currentTab = ref<View>('list')
 const on = useToolbar()
 
 onBeforeMount(async () => {
-  const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`, { cache: 'no-cache', key: `/api/list/${params.id}` })
-  const { data: todos } = await useFetch<Todo[]>('/api/list/todos', { query: { id: params.id }, cache: 'no-cache' })
+  const currentList = await $fetch<List>(`/api/list/${params.id}`, { cache: 'no-cache', key: `/api/list/${params.id}` })
+  const todos = await $fetch<Todo[]>('/api/list/todos', { query: { id: params.id }, cache: 'no-cache' })
 
-  if (todos.value) {
-    listStore.setListTodos(todos.value)
+  if (todos) {
+    listStore.setListTodos(todos)
   }
-  if (currentList.value?.name) {
-    listStore.setCurrentListName(currentList.value.name)
+  if (currentList.name) {
+    listStore.setCurrentListName(currentList.name)
   }
 })
 
