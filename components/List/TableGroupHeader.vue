@@ -35,7 +35,7 @@ onMounted(() => {
 
 <template>
   <tr v-if="groupItem.key === 'status'">
-    <th :colspan="headerColumns.length">
+    <th :colspan="2">
       <v-btn
         class="mr-4" style="font-size: 1.2rem" variant="plain" :icon="isGroupOpen(groupItem) ? '$expand' : '$next'"
         @click="toggleGroup(groupItem)"
@@ -45,6 +45,7 @@ onMounted(() => {
         @click="toggleGroup(groupItem)"
       />
     </th>
+    <th colspan="8" />
   </tr>
   <template v-if="isGroupOpen(groupItem)">
     <tr>
@@ -93,6 +94,8 @@ onMounted(() => {
           </template>
         </v-hover>
       </template>
+
+      <th colspan="8" />
     </tr>
     <ListTableItem :columns="columns" :group-item="groupItem" />
     <ListTableNewItem :group-item="groupItem" />

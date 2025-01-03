@@ -5,14 +5,16 @@ const loggedIn = computed(() => status.value === 'authenticated')
 const name = computed(() => {
   if (!data.value.user) {
     return 'no user'
-  } else if (data?.value.user?.name) {
+  }
+  else if (data?.value.user?.name) {
     return data.value.user.name
-  } else if (data?.value?.user?._doc){
+  }
+  else if (data?.value?.user?._doc) {
     return data?.value?.user?._doc.username
   }
 })
-
 </script>
+
 <template>
   <v-menu v-if="loggedIn">
     <template #activator="{ props }">
@@ -32,16 +34,17 @@ const name = computed(() => {
       </v-btn>
     </template>
     <v-list>
-      <v-list-item class="text-body-2 py-0 ma-2" append-icon="mdi-cog-outline"
+      <v-list-item
+        class="text-body-2 py-0 ma-2" append-icon="mdi-cog-outline"
         @click="navigateTo('/settings')"
       >
         Settings
       </v-list-item>
       <v-list-item
-class="text-body-2 py-0 ma-2" append-icon="mdi-logout"
-      @click="signOut()"
->
-          Sign Out
+        class="text-body-2 py-0 ma-2" append-icon="mdi-logout"
+        @click="signOut()"
+      >
+        Sign Out
       </v-list-item>
     </v-list>
   </v-menu>

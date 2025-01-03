@@ -77,32 +77,32 @@ function removeImage() {
 
 <template>
   <v-col align-self="start">
-    <v-card min-height="100" :image="aiImage || store.currentList.image" class="pa-4">
-      <v-row>
-        <v-col cols="6" :class="['text-capitalize', (aiImage || store.currentList.image) ? 'text-white' : '']">
-          <v-text-field
-            ref="listNameRef"
-            v-model="store.currentList.name" validate-on="input"
-            :rules="[validateListName]"
-            placeholder="My List" variant="plain" :readonly="!rename"
-            style="font-size: 2rem; font-weight: bold;"
-            class="text-capitalize font-weight-bold"
+    <v-card min-height="100" :image="aiImage || store.currentList.image" class="pa-4 ">
+      <div class="tint ma-n4">
+        <v-row class="">
+          <v-col cols="6" :class="['text-capitalize', (aiImage || store.currentList.image) ? 'text-white' : '']">
+            <v-text-field
+              ref="listNameRef"
+              v-model="store.currentList.name" validate-on="input"
+              :rules="[validateListName]"
+              placeholder="My List" variant="plain" :readonly="!rename"
+              style=" font-weight: bold; "
+              auto
+              @click="rename = !rename"
+              @keyup.enter="store.currentList.name ? rename = false : null"
+              @blur="store.currentList.name ? rename = false : null"
+            />
+          </v-col>
+        </v-row>
 
-            auto
-            @click="rename = !rename"
-            @keyup.enter="store.currentList.name ? rename = false : null"
-            @blur="store.currentList.name ? rename = false : null"
-          />
-        </v-col>
-      </v-row>
+        <v-card-actions :class="['text-capitalize', store.currentList.image ? 'text-white' : '']">
+          <v-btn size="small" class="mr-2" :disabled="imageGenerating" @click="generateImage">
+            <v-icon start>mdi-creation </v-icon><v-icon start>mdi-image </v-icon>
+          </v-btn>
 
-      <v-card-actions :class="['text-capitalize', store.currentList.image ? 'text-white' : '']">
-        <v-btn size="small" class="mr-2" :disabled="imageGenerating" @click="generateImage">
-          <v-icon start>mdi-creation </v-icon><v-icon start>mdi-image </v-icon>
-        </v-btn>
-
-        <v-btn v-if="store.currentList.image" icon="mdi-trash-can" size="small" @click="removeImage" />
-      </v-card-actions>
+          <v-btn v-if="store.currentList.image" class="" icon="mdi-trash-can" size="small" @click="removeImage" />
+        </v-card-actions>
+      </div>
     </v-card>
   </v-col>
 
@@ -111,12 +111,14 @@ function removeImage() {
 
 <style scoped>
 .v-text-field :deep(.v-field__input) {
-  font-size: 2rem;
+  @media (min-width: 600px) {
+    font-size: 2.5rem;
+  }
   text-transform: capitalize;
   font-weight: bold;
 }
 
-.v-text-field {
-  font-size: 5em;
+.tint {
+  background-color: rgba(0,0,0,0.5); padding: 0.5rem; border-radius: 4px;
 }
 </style>

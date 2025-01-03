@@ -2,6 +2,7 @@
 const { smAndDown } = useDisplay()
 const store = useListsStore()
 const editListName = ref('')
+const emit = defineEmits(['open'])
 
 function renameList(list: List) {
   store.updateList(list)
@@ -13,6 +14,10 @@ function rename(list: List) {
     store.currentList = list
   }
 }
+
+function openContextMenu(el: MouseEvent, list: List) {
+  emit('open', el, list)
+}
 </script>
 
 <template>
@@ -21,6 +26,7 @@ function rename(list: List) {
       <v-list-item
         v-bind="props" :key="list._id" :variant="isHovering || smAndDown ? 'tonal' : 'text'" class="my-2 font-weight-bold"
         style="cursor: pointer;" :to="`/list/${list._id}`"
+        @click.right.prevent="(el: any) => openContextMenu(el, list)"
       >
         <v-text-field
           v-if="editListName === list._id" v-model="list.name" class="font-weight-bold text-body-2"

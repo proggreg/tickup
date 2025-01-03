@@ -39,15 +39,6 @@ const options = reactive([{
 
 <template>
   <v-menu>
-    <template #activator="{ props }">
-      <v-btn
-        class="pa-0"
-        icon="mdi-dots-horizontal"
-        variant="plain"
-        :ripple="false"
-        v-bind="props"
-      />
-    </template>
     <v-list class="px-2">
       <v-list-item
         v-for="(option, index) in options"

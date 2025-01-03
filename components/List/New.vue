@@ -32,7 +32,7 @@ async function createNewList() {
 
 <template>
   <AppDialog
-    :open="dialog.page === 'lists' && dialog.open"
+    :open="true"
     title="Create List"
     @close="dialog.open = false"
   >
