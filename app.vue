@@ -9,6 +9,17 @@ const config = useRuntimeConfig()
 const event = useRequestEvent()
 
 if (status.value === 'authenticated') {
+  if (import.meta.client) {
+    listsStore.$subscribe((mutation, state) => {
+      localStorage.setItem('listState', JSON.stringify(state))
+    })
+
+    const cachedState = localStorage.getItem('listState')
+    if (cachedState) {
+      listsStore.$state = JSON.parse(cachedState)
+    }
+  }
+
   await useAsyncData(() => settingsStore.getUserSettings().then(() => true))
   const userId = data?.value?.user?.sub
   if (userId) {
@@ -35,7 +46,7 @@ if (route.params.id) {
 
 const layoutName = computed(() => {
   if (route.name === 'login' || route.name === 'register') {
-    return 'login'
+    return 'login-register'
   }
   if (isMobile) {
     return 'mobile'
