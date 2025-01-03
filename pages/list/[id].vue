@@ -1,22 +1,16 @@
 <script setup lang="ts">
-const { params } = useRoute()
+const route = useRoute()
 const listStore = useListsStore()
 const tabs = ref<View[]>(['board', 'list'])
 const currentTab = ref<View>('list')
 const on = useToolbar()
 const { isMobile } = useDevice()
 
-onBeforeMount(async () => {
-  const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`, { cache: 'no-cache', key: `/api/list/${params.id}` })
-  const { data: todos } = await useFetch<Todo[]>('/api/list/todos', { query: { id: params.id }, cache: 'no-cache' })
+onMounted(async () => {
+  const data = await $fetch<List>(`/api/list/${route.params.id}`, { cache: 'no-cache', key: `/api/list/${route.params.id}` })
 
-  console.log('before mount todos', todos.value)
-  if (todos.value && todos.value.length) {
-    listStore.setListTodos(todos.value)
-  }
-  if (currentList.value?.name) {
-    listStore.setCurrentListName(currentList.value.name)
-  }
+  listStore.setCurrentList(data)
+  console.log('list page', data)
 })
 
 if (!listStore.currentList) {
@@ -39,14 +33,15 @@ watch(listStore.currentList.todos, (todos) => {
 </script>
 
 <template>
-  <div style="width: 100%;height: 100%;">
-    <div v-if="isMobile && listStore.currentList.name" class="pa-2 d-flex justify-center" align-content="center">
+  <div class="pa-0" style="width: 100%;height: 100%;">
+    <ListHeader v-if="!isMobile" />
+    <div v-if="listStore.currentList.name && isMobile" class="pa-2 d-flex justify-center text-capitalize" align-content="center">
       <v-btn :active="false" class="font-weight-bold text-h5 text-capitalize mx-auto" :to="`/list/${listStore.currentList._id}`" :text="listStore.currentList.name" />
     </div>
     <div v-if="$device.isMobile">
       <ListTable />
     </div>
-    <div v-else cols="12" style="width: 100%; height: 100%;">
+    <v-card v-else cols="12" style="width: 100%; height: 100%;">
       <v-tabs v-model="currentTab">
         <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
       </v-tabs>
@@ -58,6 +53,6 @@ watch(listStore.currentList.todos, (todos) => {
           <ListTable />
         </v-window-item>
       </v-window>
-    </div>
+    </v-card>
   </div>
 </template>

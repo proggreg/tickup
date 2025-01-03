@@ -27,13 +27,9 @@ function rename(list: List) {
           autofocus variant="plain" @input.stop="() => rename(list)" @keyup.enter="renameList(list)"
           @blur="renameList(list)"
         />
-        <v-list-item-title v-else class="font-weight-bold text-body-2">
+        <v-list-item-title v-else class="font-weight-bold text-body-2 text-capitalize">
           {{ list.name }}
         </v-list-item-title>
-
-        <template #append>
-          <ListOptions v-if="list._id" :list-id="list._id" size="small" @rename="editListName = list._id" />
-        </template>
       </v-list-item>
     </template>
   </v-hover>

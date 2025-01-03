@@ -26,22 +26,24 @@ else {
   }
 }
 
-if (route.params.id) {
-  const { data: currentList } = await useFetch<List>(`/api/list/${route.params.id}`)
-  if (currentList.value) {
-    listsStore.setListName(currentList.value.name)
-  }
-}
+onBeforeMount(() => {
+  console.log('on before app mount')
+  if (route.params.id) {
+    const { data: currentList } = useFetch<List>(`/api/list/${route.params.id}`)
 
+    if (currentList.value) {
+      listsStore.setCurrentList(currentList.value)
+    }
+  }
+})
 const layoutName = computed(() => {
-  console.log('route name', route.name)
   if (route.name === 'login' || route.name === 'register') {
     return 'login'
   }
   if (isMobile) {
     return 'mobile'
   }
-  console.log('route name', route.name)
+
   if (route.name === 'todo-id') {
     return 'todo'
   }

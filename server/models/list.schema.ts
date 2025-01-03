@@ -5,14 +5,18 @@ export const ListSchema = defineMongooseModel({
   schema: {
     userId: {
       type: 'string',
-      required: false
+      required: false,
     },
     name: {
       type: 'string',
-      required: true
+      required: true,
     },
     descriptions: {
-      type: 'string'
-    }
-  }
+      type: 'string',
+    },
+    image: {
+      type: 'string',
+      required: false,
+    },
+  },
 })

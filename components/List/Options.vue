@@ -1,9 +1,8 @@
 <script setup lang="ts">
 const store = useListsStore()
 const emit = defineEmits(['rename', 'settings'])
-const { listId, size } = defineProps<{
+const { listId } = defineProps<{
   listId?: string
-  size?: string | number | undefined
 }>()
 
 async function deleteList() {
@@ -13,9 +12,9 @@ async function deleteList() {
   }
 }
 
-function handleSettings() {
-  emit('settings')
-}
+// function handleSettings() {
+//   emit('settings')
+// }
 
 function renameList() {
   emit('rename')
@@ -24,11 +23,12 @@ const options = reactive([{
   name: 'Rename',
   handler: renameList,
   icon: 'mdi-pencil',
-}, {
-  name: 'Settings',
-  handler: handleSettings,
-  icon: 'mdi-cog',
 },
+// {
+//   name: 'Settings',
+//   handler: handleSettings,
+//   icon: 'mdi-cog',
+// },
 {
   name: 'Delete',
   handler: deleteList,
@@ -42,11 +42,10 @@ const options = reactive([{
     <template #activator="{ props }">
       <v-btn
         class="pa-0"
-        v-bind="props"
         icon="mdi-dots-horizontal"
         variant="plain"
         :ripple="false"
-        :size="size"
+        v-bind="props"
       />
     </template>
     <v-list class="px-2">
