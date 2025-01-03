@@ -70,7 +70,7 @@ function deleteList() {
           <ListNew :open="dialog" @close="dialog.open = false" />
         </template>
         <template #append>
-          <v-btn icon="mdi-plus" @click="dialog.open = true; console.log('clicked')" />
+          <v-btn icon="mdi-plus" @click="dialog.page = 'list';dialog.open = true; console.log('clicked')" />
         </template>
       </v-list-item>
     </v-list>

@@ -10,6 +10,11 @@ export default defineEventHandler(async (event) => {
     const prompt = body.prompt
     const client = new BedrockRuntimeClient({
       region: 'us-east-1',
+      credentials: {
+        accessKeyId: useRuntimeConfig().awsAccessKey,
+        secretAccessKey: useRuntimeConfig().awsSecretKey,
+      },
+      }
     })
 
     const command = new InvokeModelCommand({

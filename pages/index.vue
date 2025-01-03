@@ -129,11 +129,7 @@ function selectTodo(todo: Todo) {
         <AppEmptyState v-else height="100%" />
       </v-window-item>
     </v-window>
-    <v-fab
-      size="large" color="primary" style="border-radius: 50% !important; position: fixed; bottom: 100px; z-index: 1000; right: 75px"
-      icon="mdi-plus" variant="elevated"
-      @click="dialog.open = true"
-    />
+
     <AppDialog
       :open="dialog.page === 'index' && dialog.open"
       @close="dialog.open"
