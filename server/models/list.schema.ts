@@ -14,9 +14,5 @@ export const ListSchema = defineMongooseModel({
     descriptions: {
       type: 'string',
     },
-    image: {
-      type: 'string',
-      required: false,
-    },
   },
 })

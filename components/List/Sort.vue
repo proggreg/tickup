@@ -4,7 +4,7 @@ const selectedSort = ref(null)
 const sortOptions = ref([
   { text: 'Default', value: 'default' },
   { text: 'Priority', value: 'priority' },
-  { text: 'Due Date', value: 'dueDate' }
+  { text: 'Due Date', value: 'dueDate' },
 ])
 const sortDirection = ref('ascending')
 
@@ -13,11 +13,12 @@ watch([selectedSort, sortDirection], ([newOption, newDirection]) => {
   store.sortByDate(newDirection)
 })
 const icon = ref('mdi-arrow-down')
-function changeIcon () {
+function changeIcon() {
   if (sortDirection.value === 'ascending') {
     sortDirection.value = 'descending'
     icon.value = 'mdi-arrow-down'
-  } else {
+  }
+  else {
     sortDirection.value = 'ascending'
     icon.value = 'mdi-arrow-up'
   }

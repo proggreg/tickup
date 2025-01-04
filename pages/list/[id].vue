@@ -4,6 +4,7 @@ const listsStore = useListsStore()
 const tabs = ref<View[]>(['board', 'list'])
 const currentTab = ref<View>('list')
 const on = useToolbar()
+
 const { isMobile } = useDevice()
 const saveTodo = ref(false)
 const dialog = useDialog()

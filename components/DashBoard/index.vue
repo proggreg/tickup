@@ -2,7 +2,6 @@
 const { params } = useRoute()
 
 const { data: todos } = await useFetch<Todo[]>('/api/list/todos', { query: { id: params.id } })
-
 </script>
 
 <template>

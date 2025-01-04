@@ -1,10 +1,18 @@
 <script setup lang="ts">
 const { groupItem, isGroupOpen, columns, toggleGroup, sortBy, toggleSort, expanded } = defineProps(
-  ['groupItem', 'isGroupOpen', 'columns', 'toggleGroup', 'sortBy', 'toggleSort', 'expanded'])
+  {
+    groupItem: { type: Object, required: true },
+    isGroupOpen: { type: Function, required: true },
+    columns: { type: Array, required: true },
+    toggleGroup: { type: Function, required: true },
+    sortBy: { type: Array, required: true },
+    toggleSort: { type: Function, required: true },
+    expanded: { type: Array, required: true },
+  })
 const { statuses } = useSettingsStore()
-const { xs } = useDisplay()
 const headerColumns = ref(columns)
 
+// TODO fix exapanded keep state
 function getStatusColor(todoStatus: string) {
   const status = statuses.filter(status => status.name === todoStatus)
   if (status.length > 0) {
@@ -12,25 +20,18 @@ function getStatusColor(todoStatus: string) {
   }
 }
 
-function isSorted(sortBy: any, column: any) {
-  return sortBy.some((item: any) => item.key === column.key)
+function isSorted(sortBy: { key: string }[], column: { key: string }) {
+  return sortBy.some(item => item.key === column.key)
 }
 
-function isSortedIndex(sortBy: any, column: any) {
-  let index = sortBy.findIndex((item: any) => item.key === column.key)
+function isSortedIndex(sortBy: { key: string, order: string }[], column: { key: string }) {
+  let index = sortBy.findIndex(item => item.key === column.key)
   index++
   if (index > 0) {
     return index
   }
   return false
 }
-
-onMounted(() => {
-  // TODO weird bug where closed will render twice
-  if (expanded.includes(groupItem.value) && !isGroupOpen(groupItem)) {
-    toggleGroup(groupItem)
-  }
-})
 </script>
 
 <template>

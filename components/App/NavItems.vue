@@ -5,11 +5,13 @@ const editListName = ref('')
 const emit = defineEmits(['open'])
 
 function renameList(list: List) {
+  console.log('renameList', list)
   store.updateList(list)
   editListName.value = ''
 }
 
 function rename(list: List) {
+  console.log('rename', list)
   if (store.currentList._id === list._id) {
     store.currentList = list
   }
