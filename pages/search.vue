@@ -1,20 +1,26 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'mobile',
+  layout: false,
   auth: {
     unauthenticatedOnly: false,
     navigateUnauthenticatedTo: '/login',
   },
 })
 
+const store = useSearchStore()
+
+onMounted(async () => {
+  // store.search()
+})
 </script>
+
 <template>
   <v-row>
     <v-col cols="12">
       <SearchBar />
     </v-col>
     <v-col cols="12">
-      <SearchResults /> 
+      <SearchResults />
     </v-col>
   </v-row>
 </template>

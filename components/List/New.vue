@@ -8,8 +8,7 @@ const newList = ref<List>({
 const listsStore = useListsStore()
 const navOpen = useNav()
 const { smAndDown } = useDisplay()
-const props = defineProps<{ open: boolean }>()
-const emit = defineEmits(['close'])
+const dialog = useDialog()
 
 async function createNewList() {
   newList.value.userId = data?.value?.user?._id ? data?.value?.user?._id : data?.value?.user?.sub
@@ -22,7 +21,7 @@ async function createNewList() {
       todos: [],
       _id: undefined,
     }
-    emit('close')
+    dialog.value.open = false
     if (smAndDown.value) {
       navOpen.value = false
     }
@@ -33,9 +32,9 @@ async function createNewList() {
 
 <template>
   <AppDialog
-    :open="props.open"
+    :open="dialog.page === 'lists' && dialog.open"
     title="Create List"
-    @close="emit('close')"
+    @close="dialog.open = false"
   >
     <template #open />
     <v-container

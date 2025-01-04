@@ -2,41 +2,50 @@
 const listsStore = useListsStore()
 const { data } = useAuth()
 const route = useRoute()
-const newTodo = ref<Todo>({
-  name: '',
-  dueDate: undefined,
-  status: 'Open',
-  desc: '',
-  listId: route.params.id ? route.params.id : '',
-  _id: undefined,
-  userId: data.value?.user.id ? data.value?.user.id : data.value?.user.sub,
-})
-
 const emit = defineEmits(['addTodo'])
+const { saveTodo } = defineProps<{ saveTodo: boolean }>()
 
 async function addTodo() {
   if (!route.params.id) {
-    newTodo.value.dueDate = new Date()
+    listsStore.newTodo.dueDate = new Date()
   }
-  if (newTodo.value && newTodo.value.name) {
-    await listsStore.addTodo(newTodo.value)
+  if (route.params.id) {
+    listsStore.newTodo.listId = route.params.id as string
+  }
+  if (data.value?.user?.id) {
+    listsStore.newTodo.userId = data.value?.user?.id
+  }
+  else if (data.value?.user?.sub) {
+    listsStore.newTodo.userId = data.value?.user?.sub
+  }
+
+  if (listsStore.newTodo && listsStore.newTodo.name) {
+    await listsStore.addTodo(listsStore.newTodo)
     if (!route.params.id) {
-      await listsStore.getTodaysTodos(data.value?.user.id ? data.value?.user.id : data.value?.user.sub)
+      await listsStore.getTodaysTodos(data.value?.user.id || data.value?.user.sub || '')
     }
-    newTodo.value.name = ''
-    newTodo.value.dueDate = undefined
+    listsStore.newTodo.name = ''
+    listsStore.newTodo.dueDate = undefined
     emit('addTodo')
   }
 }
+
+watch(() => saveTodo, (newVal) => {
+  if (newVal) {
+    addTodo()
+  }
+})
 </script>
 
 <template>
-  <v-text-field v-if="listsStore.currentList" v-model="newTodo.name"
-    :placeholder="'Add todo to ' + listsStore.currentList.name" autofocus @keyup.enter="addTodo">
+  <v-text-field
+    v-if="listsStore.currentList" v-model="listsStore.newTodo.name"
+    :placeholder="'Add todo to ' + listsStore.currentList.name" autofocus @keyup.enter="addTodo"
+  >
     <template #append-inner>
-      <AppDueDate :todo="newTodo" :date="newTodo.dueDate" @set-date="(newDate: Date) => newTodo.dueDate = newDate" />
+      <AppDueDate :todo="listsStore.newTodo" :date="listsStore.newTodo.dueDate" @set-date="(newDate: Date) => listsStore.newTodo.dueDate = newDate" />
 
-      <v-btn :disabled="!newTodo.name" size="small" variant="text" icon="mdi-plus" @click="addTodo" />
+      <v-btn :disabled="!listsStore.newTodo.name" size="small" variant="text" icon="mdi-plus" @click="addTodo" />
     </template>
   </v-text-field>
 </template>

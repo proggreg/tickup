@@ -2,24 +2,56 @@
 const { signIn } = useAuth()
 const username = ref('')
 const password = ref('')
+const registering = ref(false)
 async function registerUser() {
-  const { data } = await useFetch('/api/auth/user', {
+  registering.value = true
+  const { data } = await useFetch<{ username: string, password: string }>('/api/auth/user', {
     method: 'POST',
     body: {
       username: username.value,
       password: password.value,
     },
   })
-  console.debug('data', data.value)
 
   if (data.value?.username && data.value?.password) {
     signIn('credentials', { username: username.value, password: password.value })
+    registering.value = false
   }
 }
 
 const userNameRules = [
-  (value: boolean | string) => {
-    if (value) return true
+  (username: string) => {
+    if (username) {
+      console.log('validate username ', username)
+      // Length requirements (typically 3-30 characters)
+      if (username.length < 3 || username.length > 30) {
+        return 'Username must be between 3 and 30 characters'
+      }
+
+      // Allowed characters (letters, numbers, and some special characters)
+      const validCharacters = /^[a-zA-Z0-9._-]+$/
+      if (!validCharacters.test(username)) {
+        return 'Username can only contain letters, numbers, dots, underscores, and hyphens'
+      }
+
+      // Prevent username starting/ending with special characters
+      if (/^[._-]|[._-]$/.test(username)) {
+        return 'Username cannot start or end with dots, underscores, or hyphens'
+      }
+
+      // Prevent consecutive special characters
+      if (/[._-]{2,}/.test(username)) {
+        return 'Username cannot contain consecutive dots, underscores, or hyphens'
+      }
+
+      // Prevent reserved words/names
+      const reservedWords = ['admin', 'administrator', 'root', 'system', 'support']
+      if (reservedWords.includes(username.toLowerCase())) {
+        return 'This username is reserved'
+      }
+
+      return true
+    }
     return 'Oops! Username required to register. 😊'
   },
   async (value: boolean | string) => {
@@ -46,14 +78,14 @@ const passwordRules = [
 </script>
 
 <template>
-  <v-form validate-on="submit" @submit.prevent>
+  <v-form style="max-width: 400px" class="flex-1 mx-auto" validate-on="input lazy" @submit.prevent>
     <v-text-field v-model="username" label="Username" type="text" :rules="userNameRules" :hide-details="false" />
     <v-text-field v-model="password" label="Password" type="password" :rules="passwordRules" :hide-details="false" />
 
-    <v-btn block type="submit" color="primary" class="mb-4" @click="registerUser">
+    <v-btn :disabled="registering" block type="submit" color="primary" class="mb-4" @click="registerUser">
       Register
     </v-btn>
-    <div class="text-caption text-center">
+    <div class="text-center">
       <span>Already a user? </span>
       <NuxtLink color="secondary" to="/login">Login</NuxtLink>
     </div>

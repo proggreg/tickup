@@ -1,12 +1,10 @@
 <script setup lang="ts">
-const { status } = useAuth()
+const { status, data } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
 const listsStore = useListsStore()
 const tab = ref('todo')
-const dialog = ref(false)
-
-useHead({ title: 'TickUp:Home' })
-
+const saveTodo = ref(false)
+const dialog = useDialog()
 definePageMeta({
   layout: 'default',
   auth: {
@@ -14,13 +12,23 @@ definePageMeta({
     navigateUnauthenticatedTo: '/login',
   },
 })
+useHead({ title: 'TickUp:Home' })
+
+listsStore.setCurrentListName('')
 
 if (!loggedIn.value) {
   navigateTo('/login')
 }
 
+onBeforeMount(() => {
+  const userId = data?.value?.user?.sub
+  if (userId) {
+    listsStore.getTodaysTodos(userId)
+  }
+})
+
 const todaysTodos = computed(() => {
-  return listsStore.todaysTodos.filter(todo => todo.status !== 'Closed' && todo._id)
+  return listsStore.todaysTodos.filter(todo => todo.status !== 'Closed')
 })
 
 const todaysClosedTodos = computed(() => {
@@ -36,22 +44,21 @@ function selectTodo(todo: Todo) {
 <template>
   <v-col
     cols="12"
-    class="fill-height"
+    class="pa-0 fill-height"
   >
     <v-tabs
       v-model="tab"
+      grow
       align-tabs="center"
+      :hide-slider="true"
+      class="mb-4"
     >
-      <v-tab>
-        todo
-      </v-tab>
-      <v-tab>
-        done
-      </v-tab>
+      <v-tab class="text-h5">Todo</v-tab>
+      <v-tab class="text-h5">Done</v-tab>
     </v-tabs>
     <v-window
       v-model="tab"
-      class="fill-height"
+      class="fill-height px-4"
     >
       <v-window-item
         value="todo"
@@ -59,26 +66,18 @@ function selectTodo(todo: Todo) {
       >
         <v-card
           v-if="todaysTodos && todaysTodos.length"
-          variant="flat"
+          variant="tonal"
         >
-          <v-list class="pa-4">
-            <AppDialog
-              :open="dialog"
-              @close="dialog = false"
-            >
-              <TodoDetail />
-            </AppDialog>
-
+          <v-list>
             <v-list-item
               v-for="todo in todaysTodos"
               :key="todo._id"
-              class="fill-height my-2"
               @click="selectTodo(todo)"
             >
               <template #prepend>
                 <ListStatus :todo="todo" />
               </template>
-              <v-list-item-title class="ml-4">
+              <v-list-item-title class="ml-4 text-h6">
                 {{ todo.name }}
               </v-list-item-title>
 
@@ -91,17 +90,17 @@ function selectTodo(todo: Todo) {
         <v-card
           v-else
           variant="tonal"
+          class="d-flex flex-column justify-center align-center fill-height"
         >
-          <AppEmptyState />
+          <AppEmptyState height="100%" />
         </v-card>
       </v-window-item>
       <v-window-item
         value="done"
-        height="100"
+        class="fill-height"
       >
-        <v-card variant="tonal">
+        <v-card v-if="todaysClosedTodos.length" variant="tonal">
           <v-list
-            v-if="todaysClosedTodos.length"
             class="pa-4"
           >
             <v-list-item
@@ -111,7 +110,7 @@ function selectTodo(todo: Todo) {
               <template #prepend>
                 <ListStatus :todo="todo" />
               </template>
-              <v-list-item-title class="ml-4">
+              <v-list-item-title class="ml-4 text-h6">
                 {{ todo.name }}
               </v-list-item-title>
 
@@ -119,7 +118,7 @@ function selectTodo(todo: Todo) {
                 <v-btn
                   icon
                   elevation="0"
-                  @click="listsStore.deleteTodo(todo._id)"
+                  @click="listsStore.deleteTodo(todo._id!)"
                 >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
@@ -127,14 +126,28 @@ function selectTodo(todo: Todo) {
             </v-list-item>
           </v-list>
         </v-card>
+        <AppEmptyState v-else height="100%" />
       </v-window-item>
     </v-window>
+    <v-fab
+      size="large" color="primary" style="border-radius: 50% !important; position: fixed; bottom: 100px; z-index: 1000; right: 75px"
+      icon="mdi-plus" variant="elevated"
+      @click="dialog.open = true"
+    />
+    <AppDialog
+      :open="dialog.page === 'index' && dialog.open"
+      @close="dialog.open"
+    >
+      <TodoNew :save-todo="saveTodo" class="mx-8" @add-todo="dialog = false; saveTodo = false" />
+      <template #buttons>
+        <v-btn
+          color="primary"
+          :disabled="listsStore.newTodo.name === ''"
+          @click.stop="saveTodo = true; dialog.open = false"
+        >
+          Save
+        </v-btn>
+      </template>
+    </AppDialog>
   </v-col>
-
-  <!-- TODO add reminders feature -->
-  <!-- <v-col >
-      <v-card class="pa-4">
-        <h2>reminders</h2>
-      </v-card>
-    </v-col> -->
 </template>

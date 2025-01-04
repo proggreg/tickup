@@ -1,9 +1,6 @@
 <script setup lang="ts">
 const { params } = useRoute()
 const listStore = useListsStore()
-definePageMeta({
-  layout: 'todo',
-})
 
 onBeforeMount(() => {
   $fetch(`/api/todo/${params.id}`).then((todo) => {
@@ -15,16 +12,17 @@ onBeforeMount(() => {
     }
   })
 })
-
 </script>
+
 <template>
   <NuxtErrorBoundary>
     <template #error="{ error }">
-      <v-alert litype="error">
+      <v-alert type="error">
         {{ error }}
       </v-alert>
     </template>
-    <v-col>
+
+    <v-col class=" pa-0">
       <TodoDetail />
     </v-col>
   </NuxtErrorBoundary>
