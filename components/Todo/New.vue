@@ -41,7 +41,7 @@ watch(() => saveTodo, (newVal) => {
   <v-text-field
     v-if="listsStore.currentList" v-model="listsStore.newTodo.name"
     min-width="300"
-    :placeholder="'Add todo to ' + listsStore.currentList.name" autofocus @keyup.enter="addTodo"
+    :placeholder="'Add todo to ' + listsStore.currentList.name" @keyup.enter="addTodo"
   >
     <template #append-inner>
       <AppDueDate :todo="listsStore.newTodo" :date="listsStore.newTodo.dueDate" @set-date="(newDate: Date) => listsStore.newTodo.dueDate = newDate" />
