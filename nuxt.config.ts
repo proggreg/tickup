@@ -1,8 +1,18 @@
+import vuetifyOptions from './config/vuetify'
+
 export default defineNuxtConfig({
-  modules: ['vuetify-nuxt-module', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-mongoose', 'nuxt-bugsnag', '@sidebase/nuxt-auth', '@nuxtjs/color-mode', '@nuxt/eslint', '@nuxtjs/device'],
-  // app: {
-  //   layoutTransition: { name: 'layout', mode: 'out-in' }
-  // },
+  modules: [
+    'vuetify-nuxt-module',
+    '@pinia/nuxt',
+    '@vueuse/nuxt',
+    'nuxt-mongoose',
+    'nuxt-bugsnag',
+    '@sidebase/nuxt-auth',
+    '@nuxtjs/color-mode',
+    '@nuxt/eslint',
+    '@nuxtjs/device',
+    '@vite-pwa/nuxt',
+  ],
 
   experimental: {
     payloadExtraction: false,
@@ -37,68 +47,7 @@ export default defineNuxtConfig({
     storesDirs: ['./stores/**'],
   },
 
-  vuetify: {
-    vuetifyOptions: {
-      labComponents: false,
-      defaults: {
-        VAppBar: {
-          elevation: 0,
-        },
-        VSheet: {
-          elevation: 10,
-          width: 300,
-          class: 'pa-4',
-          rounded: 'xl',
-        },
-        VBtn: {
-          rounded: 'xl',
-          elevation: 0,
-        },
-        VTextField: {
-          rounded: 'xl',
-          variant: 'outlined',
-          density: 'compact',
-          hideDetails: 'auto',
-        },
-        VCheckbox: {
-          hideDetails: 'auto',
-        },
-        VTextarea: {
-          rounded: 'xl',
-          variant: 'outlined',
-        },
-        VListItem: {
-          rounded: 'xl',
-        },
-        VMenu: {
-          rounded: 'xl',
-        },
-        VCard: {
-          rounded: 'xl',
-        },
-        VFab: {
-          rounded: 'circle',
-        },
-        VSelect: {
-          rounded: 'xl',
-        },
-      },
-      theme: {
-        themes: {
-          light: {
-            colors: {
-              secondary: '#FFFFFF',
-            },
-          },
-          dark: {
-            colors: {
-              secondary: '#000000',
-            },
-          },
-        },
-      },
-    },
-  },
+  vuetify: vuetifyOptions,
 
   typescript: {
     strict: true,
@@ -156,54 +105,54 @@ export default defineNuxtConfig({
     uri: process.env.MONGODB_URI,
   },
 
-  // pwa: {
-  //   strategies: 'generateSW',
-  //   srcDir: undefined,
-  //   filename: undefined,
-  //   registerType: 'autoUpdate',
-  //   manifest: {
-  //     name: 'Tickup',
-  //     short_name: 'Tickup',
-  //     theme_color: '#000000',
-  //     icons: [
-  //       {
-  //         src: 'pwa-192x192.png',
-  //         sizes: '192x192',
-  //         type: 'image/png',
-  //       },
-  //       {
-  //         src: 'pwa-512x512.png',
-  //         sizes: '512x512',
-  //         type: 'image/png',
-  //       },
-  //       {
-  //         src: 'pwa-512x512.png',
-  //         sizes: '512x512',
-  //         type: 'image/png',
-  //         purpose: 'any maskable',
-  //       },
-  //     ],
-  //   },
-  //   workbox: {
-  //     globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-  //   },
-  //   injectManifest: {
-  //     globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-  //   },
-  //   client: {
-  //     installPrompt: true,
-  //     // you don't need to include this: only for testing purposes
-  //     // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
-  //     periodicSyncForUpdates: 20,
-  //   },
-  //   devOptions: {
-  //     enabled: true,
-  //     suppressWarnings: true,
-  //     navigateFallback: '/',
-  //     navigateFallbackAllowlist: [/^\/$/],
-  //     type: 'module',
-  //   },
-  // },
+  pwa: {
+    strategies: 'generateSW',
+    srcDir: undefined,
+    filename: undefined,
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Tickup',
+      short_name: 'Tickup',
+      theme_color: '#000000',
+      icons: [
+        {
+          src: 'pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any maskable',
+        },
+      ],
+    },
+    workbox: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+    },
+    injectManifest: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+    },
+    client: {
+      installPrompt: true,
+      // you don't need to include this: only for testing purposes
+      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
+      periodicSyncForUpdates: 20,
+    },
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+      navigateFallback: '/',
+      navigateFallbackAllowlist: [/^\/$/],
+      type: 'module',
+    },
+  },
 
   vite: {},
   compatibilityDate: '2024-09-21',

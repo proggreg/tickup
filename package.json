@@ -52,7 +52,7 @@
     "@pinia/nuxt": "^0.5.1",
     "@sidebase/nuxt-auth": "^0.6.5",
     "@types/bcrypt": "^5.0.2",
-    "@vite-pwa/nuxt": "^0.1.1",
+    "@vite-pwa/nuxt": "^0.10.6",
     "@vuepic/vue-datepicker": "^7.0.0",
     "aws-sdk": "^2.1692.0",
     "bcrypt": "^5.1.1",

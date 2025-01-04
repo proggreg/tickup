@@ -64,7 +64,7 @@ const layoutName = computed(() => {
 
 <template>
   <div>
-    <!-- <VitePwaManifest /> -->
+    <VitePwaManifest />
     <NuxtLayout :name="layoutName">
       <NuxtPage />
     </NuxtLayout>
