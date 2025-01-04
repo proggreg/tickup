@@ -26,6 +26,10 @@ export default defineEventHandler(async (event) => {
         const response = await TodoSchema.findOneAndUpdate({
           githubBranchName: ref,
         }, { status: 'In Progress' }, { new: true })
+        if (!response) {
+          useBugsnag().notify(`Todo not found ref: ${ref}`)
+          throw Error(`Todo not found ref: ${ref}`)
+        }
         console.log('Updated todo:', response)
       }
       catch (error) {
