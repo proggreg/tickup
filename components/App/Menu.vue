@@ -6,8 +6,11 @@ const name = computed(() => {
   if (!data.value?.user) {
     return 'no user'
   }
-  else if (data.value?.user?.name) {
+  else if (data?.value.user?.name) {
     return data.value.user.name
+  }
+  else if (data?.value?.user?._doc) {
+    return data?.value?.user?._doc.username
   }
   else if (data.value?.user?.username) {
     return data.value.user.username

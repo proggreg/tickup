@@ -1,9 +1,28 @@
 <script setup lang="ts">
 const open = useNav()
-const dialog = ref(false)
+const dialog = useDialog()
 const { smAndDown } = useDisplay()
 const { signOut, status } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
+const contextMenuOpen = ref(false)
+const menuTarget = ref([])
+const selectedList = ref<List>()
+const listsStore = useListsStore()
+function openContextMenu(event: MouseEvent, list: List) {
+  contextMenuOpen.value = true
+  menuTarget.value = [event.clientX, event.clientY]
+  selectedList.value = list
+}
+
+function deleteList() {
+  contextMenuOpen.value = false
+  menuTarget.value = []
+  if (!selectedList.value || !selectedList.value._id) {
+    console.warn('No list selected')
+    return
+  }
+  listsStore.deleteList(selectedList.value._id)
+}
 </script>
 
 <template>
@@ -48,15 +67,23 @@ const loggedIn = computed(() => status.value === 'authenticated')
           Lists
         </div>
         <template #prepend>
-          <ListNew :open="dialog" @close="dialog = false" />
+          <ListNew :open="dialog" @close="dialog.open = false" />
         </template>
         <template #append>
-          <v-btn icon="mdi-plus" @click="dialog = true" />
+          <v-btn icon="mdi-plus" @click="dialog.page = 'list';dialog.open = true; console.log('clicked')" />
         </template>
       </v-list-item>
     </v-list>
     <v-divider />
-    <AppNavItems />
+    <AppNavItems @open="openContextMenu" />
+
+    <v-menu v-if="menuTarget" v-model="contextMenuOpen" :target="menuTarget" location-strategy="connected">
+      <v-list>
+        <v-list-item>
+          <v-btn variant="text" color="red" icon="mdi-trash-can" @click="deleteList" />
+        </v-list-item>
+      </v-list>
+    </v-menu>
 
     <template #append>
       <div v-if="smAndDown" class="pa-2 d-flex flex-column ga-2">

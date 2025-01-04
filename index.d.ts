@@ -26,6 +26,7 @@ declare global {
     name: string
     todos: Todo[]
     _id?: string
+    image?: string
   }
 
   interface Settings {

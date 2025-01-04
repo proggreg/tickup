@@ -1,13 +1,14 @@
 <script setup lang="ts">
 const { title } = defineProps<{
   title?: string
+  page: string
 }>()
 const dialog = useDialog()
 </script>
 
 <template>
   <v-dialog
-    max-width="500" :model-value="dialog.open" transition="dialog-bottom-transition"
+    max-width="500" :model-value="dialog.open && dialog.page === page" transition="dialog-bottom-transition"
     location="top" @update:model-value="dialog.open = false"
   >
     <template #activator>

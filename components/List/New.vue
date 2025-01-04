@@ -32,9 +32,8 @@ async function createNewList() {
 
 <template>
   <AppDialog
-    :open="dialog.page === 'lists' && dialog.open"
     title="Create List"
-    @close="dialog.open = false"
+    page="list"
   >
     <template #open />
     <v-container
