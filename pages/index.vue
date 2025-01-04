@@ -1,10 +1,4 @@
 <script setup lang="ts">
-const { status, data } = useAuth()
-const loggedIn = computed(() => status.value === 'authenticated')
-const listsStore = useListsStore()
-const tab = ref('todo')
-const saveTodo = ref(false)
-const dialog = useDialog()
 definePageMeta({
   layout: 'default',
   auth: {
@@ -13,6 +7,15 @@ definePageMeta({
   },
 })
 useHead({ title: 'TickUp:Home' })
+
+const { status, data } = useAuth()
+const loggedIn = computed(() => status.value === 'authenticated')
+const listsStore = useListsStore()
+const tab = ref('todo')
+const saveTodo = ref(false)
+const dialog = useDialog()
+
+const { isMobile } = useDevice()
 
 listsStore.setCurrentListName('')
 
@@ -39,6 +42,16 @@ function selectTodo(todo: Todo) {
   listsStore.setCurrentTodo(todo)
   navigateTo(`/todo/${todo._id}`)
 }
+
+function setClosed(todo: Todo) {
+  todo.status = 'Closed'
+  listsStore.updateTodo(todo)
+}
+
+function setOpen(todo: Todo) {
+  todo.status = 'Open'
+  listsStore.updateTodo(todo)
+}
 </script>
 
 <template>
@@ -64,20 +77,24 @@ function selectTodo(todo: Todo) {
         value="todo"
         class="fill-height"
       >
+        <div class="mb-4">
+          <TodoNew :save-todo="saveTodo" @add-todo="dialog = false; saveTodo = false" />
+        </div>
         <v-card
           v-if="todaysTodos && todaysTodos.length"
-          variant="tonal"
+          variant="flat"
         >
           <v-list>
             <v-list-item
               v-for="todo in todaysTodos"
               :key="todo._id"
+              class="align-center"
               @click="selectTodo(todo)"
             >
               <template #prepend>
-                <ListStatus :todo="todo" />
+                <v-checkbox @click.stop="setClosed(todo)" />
               </template>
-              <v-list-item-title class="ml-4 text-h6">
+              <v-list-item-title class="text-h6">
                 {{ todo.name }}
               </v-list-item-title>
 
@@ -89,8 +106,8 @@ function selectTodo(todo: Todo) {
         </v-card>
         <v-card
           v-else
-          variant="tonal"
-          class="d-flex flex-column justify-center align-center fill-height"
+          variant="flat"
+          :class="['d-flex flex-column justify-center align-center', !isMobile ? 'fill-height' : '']"
         >
           <AppEmptyState height="100%" />
         </v-card>
@@ -99,7 +116,7 @@ function selectTodo(todo: Todo) {
         value="done"
         class="fill-height"
       >
-        <v-card v-if="todaysClosedTodos.length" variant="tonal">
+        <v-card v-if="todaysClosedTodos.length" variant="flat">
           <v-list
             class="pa-4"
           >
@@ -108,9 +125,9 @@ function selectTodo(todo: Todo) {
               :key="todo._id"
             >
               <template #prepend>
-                <ListStatus :todo="todo" />
+                <v-checkbox :model-value="true" @click.stop="setOpen(todo)" />
               </template>
-              <v-list-item-title class="ml-4 text-h6">
+              <v-list-item-title class="text-h6">
                 {{ todo.name }}
               </v-list-item-title>
 
@@ -126,14 +143,20 @@ function selectTodo(todo: Todo) {
             </v-list-item>
           </v-list>
         </v-card>
-        <AppEmptyState v-else height="100%" />
+        <v-card
+          v-else
+          variant="flat"
+          :class="['d-flex flex-column justify-center align-center', !isMobile ? 'fill-height' : '']"
+        >
+          <AppEmptyState height="100%" />
+        </v-card>
       </v-window-item>
     </v-window>
 
     <AppDialog
       page="todo"
     >
-      <TodoNew :save-todo="saveTodo" class="mx-8" @add-todo="dialog = false; saveTodo = false" />
+      <TodoNew :save-todo="saveTodo" @add-todo="dialog = false; saveTodo = false" />
       <template #buttons>
         <v-btn
           color="primary"

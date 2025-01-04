@@ -5,6 +5,8 @@
         <v-icon color="surface-variant" />
       </template>
 
+      <slot />
+
       <template #headline>
         <div class="text-h4">
           All Done For Now!

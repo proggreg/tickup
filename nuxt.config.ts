@@ -60,6 +60,9 @@ export default defineNuxtConfig({
           density: 'compact',
           hideDetails: 'auto',
         },
+        VCheckbox: {
+          hideDetails: 'auto',
+        },
         VTextarea: {
           rounded: 'xl',
           variant: 'outlined',
