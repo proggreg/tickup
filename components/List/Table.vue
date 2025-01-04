@@ -41,7 +41,7 @@ const group = ref([
         </template>
       </template>
       <template v-else>
-        <TodoNew />
+        <TodoNew :save-todo="false" />
         <AppEmptyState />
       </template>
     </template>

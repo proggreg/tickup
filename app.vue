@@ -9,6 +9,17 @@ const config = useRuntimeConfig()
 const event = useRequestEvent()
 
 if (status.value === 'authenticated') {
+  if (import.meta.client) {
+    listsStore.$subscribe((mutation, state) => {
+      localStorage.setItem('listState', JSON.stringify(state))
+    })
+
+    const cachedState = localStorage.getItem('listState')
+    if (cachedState) {
+      listsStore.$state = JSON.parse(cachedState)
+    }
+  }
+
   await useAsyncData(() => settingsStore.getUserSettings().then(() => true))
   const userId = data?.value?.user?.sub
   if (userId) {
@@ -26,21 +37,23 @@ else {
   }
 }
 
-if (route.params.id) {
-  const { data: currentList } = await useFetch<List>(`/api/list/${route.params.id}`)
-  if (currentList.value) {
-    listsStore.setListName(currentList.value.name)
-  }
-}
+onBeforeMount(() => {
+  console.log('on before app mount')
+  if (route.params.id) {
+    const { data: currentList } = useFetch<List>(`/api/list/${route.params.id}`)
 
+    if (currentList.value) {
+      listsStore.setCurrentList(currentList.value)
+    }
+  }
+})
 const layoutName = computed(() => {
   if (route.name === 'login' || route.name === 'register') {
-    return 'login'
+    return 'login-register'
   }
   if (isMobile) {
     return 'mobile'
   }
-
   if (route.name === 'todo-id') {
     return 'todo'
   }

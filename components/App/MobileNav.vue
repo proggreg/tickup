@@ -1,7 +1,3 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <v-bottom-navigation grow>
     <v-btn to="/" value="home">

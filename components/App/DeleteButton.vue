@@ -33,7 +33,7 @@ async function focusDeleteButton() {
   <v-dialog width="250px">
     <template #activator="{ props: activatorProps }">
       <v-btn
-        v-bind="activatorProps" color="red" icon="mdi-trash-can" variant="text" size="small"
+        v-bind="activatorProps" color="red" icon="mdi-trash-can" variant="text"
         @click="focusDeleteButton"
       />
     </template>

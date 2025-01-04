@@ -40,6 +40,7 @@ watch(() => saveTodo, (newVal) => {
 <template>
   <v-text-field
     v-if="listsStore.currentList" v-model="listsStore.newTodo.name"
+    min-width="300"
     :placeholder="'Add todo to ' + listsStore.currentList.name" autofocus @keyup.enter="addTodo"
   >
     <template #append-inner>
@@ -49,3 +50,9 @@ watch(() => saveTodo, (newVal) => {
     </template>
   </v-text-field>
 </template>
+
+<style scoped>
+:deep(.v-field__field) {
+  align-items: center;
+}
+</style>

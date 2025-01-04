@@ -38,6 +38,6 @@ export const TodoSchema = defineMongooseModel({
     },
     githubBranchName: {
       type: 'string',
-    }
+    },
   },
 })

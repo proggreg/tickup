@@ -4,6 +4,7 @@ function toggleDarkMode() {
   colorMode.preference = colorMode.preference === 'light' ? 'dark' : 'light'
 }
 </script>
+
 <template>
   <v-btn
     variant="text"

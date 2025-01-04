@@ -21,6 +21,8 @@ export const useListsStore = defineStore('lists', {
     currentList: {
       name: '',
       todos: [],
+      _id: '',
+      image: '',
     },
     view: 'list',
     currentTodo: {
@@ -48,18 +50,21 @@ export const useListsStore = defineStore('lists', {
         return newList
       }
     },
-    async updateList(list: List) {
-      console.time('updateList')
+    async updateList(list?: List) {
+      if (!this.currentList._id || (list && list._id)) {
+        console.warn('no id')
 
-      const updatedList = await $fetch<List>(`/api/list/${list._id}`, {
+        throw Error('no list id')
+      }
+      const listToUpdate = list ? list : this.currentList
+      const updatedList = await $fetch<List>(`/api/list/${listToUpdate._id}`, {
         method: 'PUT',
-        body: list,
+        body: listToUpdate,
       })
 
       this.setLists(
         this.lists.map(l => (l._id === updatedList._id ? updatedList : l)),
       )
-      console.timeEnd('updateList')
     },
     setLists(lists: Array<List>) {
       this.lists = lists
@@ -70,6 +75,7 @@ export const useListsStore = defineStore('lists', {
         const data = await $fetch<List>(`/api/list/${listId}`, {
           method: 'DELETE',
         })
+        console.log('list deleted', data)
       }
     },
     setListName(newName: string) {
@@ -79,7 +85,9 @@ export const useListsStore = defineStore('lists', {
       this.currentList.name = newName
     },
     setListTodos(todos: Todo[]) {
-      this.currentList.todos = todos || []
+      if (todos && todos.length) {
+        this.currentList.todos = todos
+      }
     },
     async getListTodos(listId: string) {
       const { data } = await useFetch<Todo[]>(`/api/list/todo/${listId}`)
@@ -133,8 +141,12 @@ export const useListsStore = defineStore('lists', {
       }
     },
     setCurrentList(list: List) {
+      console.log('setCurrentList', list)
       if (list) {
         this.currentList = list
+        if (!this.currentList.todos) {
+          this.currentList.todos = []
+        }
       }
     },
     setCurrentListName(name: string) {
@@ -165,10 +177,12 @@ export const useListsStore = defineStore('lists', {
       }
     },
     async getList(id: string) {
-      const { data } = await useFetch<List>(`/api/list/${id}`)
+      const data = await $fetch<List>(`/api/list/${id}`)
 
-      if (data.value) {
-        this.currentList = data.value
+      console.log('get list', data)
+
+      if (data) {
+        this.currentList = data
         return this.currentList
       }
     },

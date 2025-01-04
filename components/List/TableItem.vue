@@ -25,18 +25,18 @@ function formatDate(date: Date) {
     </td>
     <template v-for="column in columns" :key="column.key">
       <template v-if="column.key !== 'data-table-group'">
-        <td v-if="column.key === 'name' " colspan="7">
+        <td v-if="column.key === 'name' " colspan="6">
           {{ item.columns[column.key] }}
         </td>
-        <td v-else-if="column.key === 'dueDate' && !xs">
+        <td v-else-if="column.key === 'dueDate' && !xs" colspan="2">
           {{ formatDate(item.columns[column.key]) }}
         </td>
-        <td v-else-if="column.key === 'actions' && !xs">
-          <div class="d-flex">
-            <AppDeleteButton :todo="item.raw" />
+        <td v-else-if="column.key === 'actions' && !xs" colspan="4">
+          <div class="d-flex justify-end">
             <v-checkbox
               v-model="item.raw.selected" size="small" density="compact" hide-details @click.stop
             />
+            <AppDeleteButton :todo="item.raw" />
           </div>
         </td>
       </template>

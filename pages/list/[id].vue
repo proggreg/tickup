@@ -1,57 +1,72 @@
 <script setup lang="ts">
-const { params } = useRoute()
-const listStore = useListsStore()
+const route = useRoute()
+const listsStore = useListsStore()
 const tabs = ref<View[]>(['board', 'list'])
 const currentTab = ref<View>('list')
 const on = useToolbar()
-const { isMobile } = useDevice()
+const saveTodo = ref(false)
+const dialog = useDialog()
 
-onBeforeMount(async () => {
-  const { data: currentList } = await useFetch<List>(`/api/list/${params.id}`, { cache: 'no-cache', key: `/api/list/${params.id}` })
-  const { data: todos } = await useFetch<Todo[]>('/api/list/todos', { query: { id: params.id }, cache: 'no-cache' })
+onMounted(async () => {
+  const data = await $fetch<List>(`/api/list/${route.params.id}`)
+  const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { id: route.params.id } })
 
-  if (todos.value) {
-    listStore.setListTodos(todos.value)
-  }
-  if (currentList.value?.name) {
-    listStore.setCurrentListName(currentList.value.name)
-  }
+  data.todos = todos
+  listsStore.setCurrentList(data)
 })
 
-if (!listStore.currentList) {
+if (!listsStore.currentList) {
   navigateTo('/')
 }
 
-if (listStore.currentList) {
+if (listsStore.currentList) {
   useHead({
-    title: `TickUp:${listStore.currentList.name}`,
+    title: `TickUp:${listsStore.currentList.name}`,
   })
 }
 
 watch(currentTab, (newTab) => {
-  listStore.setView(newTab)
+  listsStore.setView(newTab)
 })
-watch(listStore.currentList.todos, (todos) => {
+watch(listsStore.currentList.todos, (todos) => {
   if (!todos) return
   on.value = todos.filter((todo: Todo) => todo.selected).length > 0
 })
 </script>
 
 <template>
-  <div v-if="$device.isMobile" style="width: 100%;height: 100%;">
-    <ListTable />
-  </div>
-  <div v-else cols="12" style="width: 100%; height: 100%;">
-    <v-tabs v-model="currentTab">
-      <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
-    </v-tabs>
-    <v-window v-model="currentTab" :touch="false" class="">
-      <v-window-item value="board">
-        <Board />
-      </v-window-item>
-      <v-window-item value="list" class="fill-height">
-        <ListTable />
-      </v-window-item>
-    </v-window>
+  <div style="width: 100%;height: 100%;">
+    <ListHeader />
+    <div v-if="$device.isMobile">
+      <ListTable />
+    </div>
+    <v-col v-else>
+      <v-card cols="12" style="width: 100%; height: 100%;">
+        <v-tabs v-model="currentTab">
+          <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
+        </v-tabs>
+        <v-window v-model="currentTab" :touch="false" class="">
+          <v-window-item value="board">
+            <Board />
+          </v-window-item>
+          <v-window-item value="list" class="fill-height">
+            <ListTable />
+          </v-window-item>
+        </v-window>
+      </v-card>
+    </v-col>
+
+    <AppDialog page="todo" title="New Todo">
+      <TodoNew :save-todo="saveTodo" @add-todo="dialog.open = false; saveTodo = false" />
+      <template #buttons>
+        <v-btn
+          color="primary"
+          :disabled="listsStore.newTodo.name === ''"
+          @click.stop="saveTodo = true; dialog.open = false"
+        >
+          Save
+        </v-btn>
+      </template>
+    </AppDialog>
   </div>
 </template>

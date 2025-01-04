@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --host",
     "start": "node .output/server/index.mjs",
     "test": "vitest",
     "generate": "nuxt generate",
@@ -46,11 +46,15 @@
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^2.3.3",
+    "@aws-sdk/client-bedrock": "^3.716.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.716.0",
+    "@aws-sdk/client-s3": "^3.717.0",
     "@pinia/nuxt": "^0.5.1",
     "@sidebase/nuxt-auth": "^0.6.5",
     "@types/bcrypt": "^5.0.2",
     "@vite-pwa/nuxt": "^0.10.6",
     "@vuepic/vue-datepicker": "^7.0.0",
+    "aws-sdk": "^2.1692.0",
     "bcrypt": "^5.1.1",
     "mongodb": "^6.3.0",
     "mongoose": "^7.5.0",
@@ -62,5 +66,6 @@
     "pinia": "^2.1.7",
     "vue-hotjar-next": "^2.0.1",
     "vuedraggable": "^4.1.0"
-  }
+  },
+  "type": "module"
 }
