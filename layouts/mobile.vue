@@ -15,35 +15,43 @@ router.beforeResolve((route) => {
 
 function addEventHandler() {
   if (route.name === 'lists') {
-    dialog.value.page = 'lists'
+    dialog.value.page = 'list'
   }
-  else if (route.name === 'index') {
-    dialog.value.page = 'index'
+  else if (route.name === 'index' || route.name === 'list-id') {
+    dialog.value.page = 'todo'
   }
+
+  console.log('addEventHandler', dialog.value.page)
   dialog.value.open = true
 }
+
+const showFab = computed(() => {
+  return route.name === 'lists' || route.name === 'list-id' || route.name === 'index'
+})
 </script>
 
 <template>
   <ColorScheme>
     <v-theme-provider with-background :theme="colorMode.preference">
-      <v-app full-height>
+      <v-app>
         <v-layout>
           <v-main>
-            <v-container class="fill-height align-start pb-16" fluid>
+            <v-container class="fill-height align-start" fluid>
               <NuxtPage />
             </v-container>
           </v-main>
         </v-layout>
-        <v-fab
-          v-if="route.name === 'lists' || route.name === 'index'"
-          location="bottom end"
-          absolute
-          size="large"
-          style="margin-right: 1em; margin-bottom: 5em;"
-          color="primary" icon="mdi-plus"
-          variant="elevated" @click="addEventHandler"
-        />
+        <div style="position: fixed; z-index: 99999; background-color: red; width: 100%; height: 0; bottom: 100px">
+          <v-fab
+            v-if="showFab"
+            position="static"
+            size="large"
+            style="position: absolute; right: 75px"
+            color="primary" icon="mdi-plus"
+            variant="elevated" @click="addEventHandler"
+          />
+        </div>
+
         <AppMobileNav v-if="status === 'authenticated'" />
       </v-app>
     </v-theme-provider>

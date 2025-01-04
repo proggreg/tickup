@@ -131,8 +131,7 @@ function selectTodo(todo: Todo) {
     </v-window>
 
     <AppDialog
-      :open="dialog.page === 'index' && dialog.open"
-      @close="dialog.open"
+      page="todo"
     >
       <TodoNew :save-todo="saveTodo" class="mx-8" @add-todo="dialog = false; saveTodo = false" />
       <template #buttons>

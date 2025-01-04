@@ -1,34 +1,35 @@
 <script setup lang="ts">
 const route = useRoute()
-const listStore = useListsStore()
+const listsStore = useListsStore()
 const tabs = ref<View[]>(['board', 'list'])
 const currentTab = ref<View>('list')
 const on = useToolbar()
 const { isMobile } = useDevice()
+const saveTodo = ref(false)
+const dialog = useDialog()
 
 onMounted(async () => {
   const data = await $fetch<List>(`/api/list/${route.params.id}`)
   const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { id: route.params.id } })
 
   data.todos = todos
-  listStore.setCurrentList(data)
-  console.log('list page', data)
+  listsStore.setCurrentList(data)
 })
 
-if (!listStore.currentList) {
+if (!listsStore.currentList) {
   navigateTo('/')
 }
 
-if (listStore.currentList) {
+if (listsStore.currentList) {
   useHead({
-    title: `TickUp:${listStore.currentList.name}`,
+    title: `TickUp:${listsStore.currentList.name}`,
   })
 }
 
 watch(currentTab, (newTab) => {
-  listStore.setView(newTab)
+  listsStore.setView(newTab)
 })
-watch(listStore.currentList.todos, (todos) => {
+watch(listsStore.currentList.todos, (todos) => {
   if (!todos) return
   on.value = todos.filter((todo: Todo) => todo.selected).length > 0
 })
@@ -37,8 +38,8 @@ watch(listStore.currentList.todos, (todos) => {
 <template>
   <div style="width: 100%;height: 100%;">
     <ListHeader />
-    <div v-if="listStore.currentList.name && isMobile" class="pa-2 d-flex justify-center text-capitalize" align-content="center">
-      <v-btn :active="false" class="font-weight-bold text-h5 text-capitalize mx-auto" :to="`/list/${listStore.currentList._id}`" :text="listStore.currentList.name" />
+    <div v-if="listsStore.currentList.name && isMobile" class="pa-2 d-flex justify-center text-capitalize" align-content="center">
+      <v-btn :active="false" class="font-weight-bold text-h5 text-capitalize mx-auto" :to="`/list/${listsStore.currentList._id}`" :text="listsStore.currentList.name" />
     </div>
     <div v-if="$device.isMobile">
       <ListTable />
@@ -58,5 +59,18 @@ watch(listStore.currentList.todos, (todos) => {
         </v-window>
       </v-card>
     </v-col>
+
+    <AppDialog page="todo">
+      <TodoNew :save-todo="saveTodo" class="mx-8" @add-todo="dialog.open = false; saveTodo = false" />
+      <template #buttons>
+        <v-btn
+          color="primary"
+          :disabled="listsStore.newTodo.name === ''"
+          @click.stop="saveTodo = true; dialog.open = false"
+        >
+          Save
+        </v-btn>
+      </template>
+    </AppDialog>
   </div>
 </template>

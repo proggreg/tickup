@@ -30,7 +30,6 @@ function formatDate(date: Date) {
         </td>
         <td v-else-if="column.key === 'dueDate' && !xs" colspan="2">
           {{ formatDate(item.columns[column.key]) }}
-          here
         </td>
         <td v-else-if="column.key === 'actions' && !xs" colspan="4">
           <div class="d-flex justify-end">
