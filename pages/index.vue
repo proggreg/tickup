@@ -154,6 +154,7 @@ function setOpen(todo: Todo) {
     </v-window>
 
     <AppDialog
+      title="New Todo"
       page="todo"
     >
       <TodoNew :save-todo="saveTodo" @add-todo="dialog = false; saveTodo = false" />

@@ -4,8 +4,6 @@ const listsStore = useListsStore()
 const tabs = ref<View[]>(['board', 'list'])
 const currentTab = ref<View>('list')
 const on = useToolbar()
-
-const { isMobile } = useDevice()
 const saveTodo = ref(false)
 const dialog = useDialog()
 
@@ -39,9 +37,6 @@ watch(listsStore.currentList.todos, (todos) => {
 <template>
   <div style="width: 100%;height: 100%;">
     <ListHeader />
-    <div v-if="listsStore.currentList.name && isMobile" class="pa-2 d-flex justify-center text-capitalize" align-content="center">
-      <v-btn :active="false" class="font-weight-bold text-h5 text-capitalize mx-auto" :to="`/list/${listsStore.currentList._id}`" :text="listsStore.currentList.name" />
-    </div>
     <div v-if="$device.isMobile">
       <ListTable />
     </div>
@@ -61,7 +56,7 @@ watch(listsStore.currentList.todos, (todos) => {
       </v-card>
     </v-col>
 
-    <AppDialog page="todo">
+    <AppDialog page="todo" title="New Todo">
       <TodoNew :save-todo="saveTodo" @add-todo="dialog.open = false; saveTodo = false" />
       <template #buttons>
         <v-btn

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { title } = defineProps<{
-  title?: string
+  title: string
   page: string
 }>()
 const dialog = useDialog()
@@ -24,8 +24,9 @@ const dialog = useDialog()
       <template #append>
         <v-icon @click="dialog.open = false">mdi-close</v-icon>
       </template>
-
-      <slot />
+      <v-card-item>
+        <slot />
+      </v-card-item>
       <v-card-actions>
         <v-spacer />
         <v-btn @click="dialog.open = false">

@@ -32,7 +32,7 @@ async function createNewList() {
 
 <template>
   <AppDialog
-    title="Create List"
+    title="New List"
     page="list"
   >
     <template #open />

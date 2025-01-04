@@ -1,13 +1,13 @@
 <script setup lang="ts">
 const { params } = useRoute()
-const listStore = useListsStore()
+const listsStore = useListsStore()
 
 onBeforeMount(() => {
   $fetch(`/api/todo/${params.id}`).then((todo) => {
-    listStore.setCurrentTodo(todo as Todo)
+    listsStore.setCurrentTodo(todo as Todo)
     if (todo) {
       $fetch(`/api/list/${todo.listId}`).then((list) => {
-        listStore.setCurrentList(list as List)
+        listsStore.setCurrentList(list as List)
       })
     }
   })
@@ -21,7 +21,14 @@ onBeforeMount(() => {
         {{ error }}
       </v-alert>
     </template>
-
+    <v-col cols="12">
+      <v-btn :to="listsStore.currentTodo.listId ? `/list/${listsStore.currentTodo.listId}`: `/`">
+        <template #prepend>
+          <v-icon>mdi-arrow-left</v-icon>
+        </template>
+        {{ listsStore.currentList.name }}
+      </v-btn>
+    </v-col>
     <v-col class=" pa-0">
       <TodoDetail />
     </v-col>
