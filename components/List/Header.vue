@@ -77,8 +77,8 @@ function removeImage() {
 
 <template>
   <v-col align-self="start">
-    <v-card min-height="100" :image="aiImage || store.currentList.image" class="pa-4 ">
-      <div class="tint ma-n4">
+    <v-card min-height="100" :image="store.currentList.image" class="pa-4 ">
+      <div :class="[store.currentList.image ? 'tint ma-n4 py-4 px-4': '']">
         <v-row class="">
           <v-col cols="6" :class="['text-capitalize', (aiImage || store.currentList.image) ? 'text-white' : '']">
             <v-text-field
