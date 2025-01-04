@@ -62,7 +62,7 @@ watch(listsStore.currentList.todos, (todos) => {
     </v-col>
 
     <AppDialog page="todo">
-      <TodoNew :save-todo="saveTodo" class="mx-8" @add-todo="dialog.open = false; saveTodo = false" />
+      <TodoNew :save-todo="saveTodo" @add-todo="dialog.open = false; saveTodo = false" />
       <template #buttons>
         <v-btn
           color="primary"
