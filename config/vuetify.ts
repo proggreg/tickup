@@ -21,6 +21,10 @@ export default {
         density: 'compact',
         hideDetails: 'auto',
       },
+      VCheckbox: {
+        rounded: 'xl',
+        hideDetails: 'auto',
+      },
       VTextarea: {
         rounded: 'xl',
         variant: 'outlined',

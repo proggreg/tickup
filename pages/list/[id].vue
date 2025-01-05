@@ -11,7 +11,7 @@ onMounted(async () => {
   const data = await $fetch<List>(`/api/list/${route.params.id}`)
   const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { id: route.params.id } })
 
-  data.todos = todos
+  data.todos = todos || []
   listsStore.setCurrentList(data)
 })
 

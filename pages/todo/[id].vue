@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { params } = useRoute()
+const { history } = useRouter().options
 const listsStore = useListsStore()
 
 onBeforeMount(() => {
@@ -22,14 +23,16 @@ onBeforeMount(() => {
       </v-alert>
     </template>
     <v-col cols="12">
-      <v-btn :to="listsStore.currentTodo.listId ? `/list/${listsStore.currentTodo.listId}`: `/`">
+      <v-btn :to="history.state.back as string">
         <template #prepend>
           <v-icon>mdi-arrow-left</v-icon>
         </template>
-        {{ listsStore.currentList.name }}
+        <span v-if="history.state.back !== '/'">
+          {{ listsStore.currentList.name }}
+        </span>
       </v-btn>
     </v-col>
-    <v-col class=" pa-0">
+    <v-col>
       <TodoDetail />
     </v-col>
   </NuxtErrorBoundary>
