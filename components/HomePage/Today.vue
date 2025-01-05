@@ -19,7 +19,7 @@ function setClosed(todo: Todo) {
     v-if="todaysTodos && todaysTodos.length"
     variant="flat"
   >
-    <v-list>
+    <v-list variant="plain">
       <v-list-item
         v-for="todo in todaysTodos"
         :key="todo._id"

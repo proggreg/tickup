@@ -13,8 +13,9 @@ function setOpen(todo: Todo) {
 </script>
 
 <template>
-  <v-card v-if="todaysClosedTodos.length" variant="flat">
+  <v-card v-if="todaysClosedTodos.length">
     <v-list
+      variant="plain"
       class="pa-4"
     >
       <v-list-item

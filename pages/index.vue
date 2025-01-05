@@ -67,7 +67,9 @@ onBeforeMount(() => {
       <v-window-item
         value="done"
         class="fill-height"
-      />
+      >
+        <HomePageTodayClosed />
+      </v-window-item>
     </v-window>
 
     <AppDialog

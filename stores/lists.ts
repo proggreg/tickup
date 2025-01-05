@@ -138,6 +138,9 @@ export const useListsStore = defineStore('lists', {
     setCurrentList(list: List) {
       if (list) {
         this.currentList = list
+        if (!this.currentList.todos) {
+          this.currentList.todos = []
+        }
       }
     },
     setCurrentListName(name: string) {
