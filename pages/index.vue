@@ -11,11 +11,9 @@ useHead({ title: 'TickUp:Home' })
 const { status, data } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
 const listsStore = useListsStore()
-const tab = ref('todo')
+const tab = ref('overdue')
 const saveTodo = ref(false)
 const dialog = useDialog()
-
-const { isMobile } = useDevice()
 
 listsStore.setCurrentListName('')
 
@@ -29,29 +27,6 @@ onBeforeMount(() => {
     listsStore.getTodaysTodos(userId)
   }
 })
-
-const todaysTodos = computed(() => {
-  return listsStore.todaysTodos.filter(todo => todo.status !== 'Closed')
-})
-
-const todaysClosedTodos = computed(() => {
-  return listsStore.todaysTodos.filter(todo => todo.status === 'Closed')
-})
-
-function selectTodo(todo: Todo) {
-  listsStore.setCurrentTodo(todo)
-  navigateTo(`/todo/${todo._id}`)
-}
-
-function setClosed(todo: Todo) {
-  todo.status = 'Closed'
-  listsStore.updateTodo(todo)
-}
-
-function setOpen(todo: Todo) {
-  todo.status = 'Open'
-  listsStore.updateTodo(todo)
-}
 </script>
 
 <template>
@@ -63,9 +38,10 @@ function setOpen(todo: Todo) {
       v-model="tab"
       grow
       align-tabs="center"
-      :hide-slider="true"
+      :hide-slider="false"
       class="mb-4"
     >
+      <v-tab class="text-h5">Overdue</v-tab>
       <v-tab class="text-h5">Todo</v-tab>
       <v-tab class="text-h5">Done</v-tab>
     </v-tabs>
@@ -74,83 +50,24 @@ function setOpen(todo: Todo) {
       class="fill-height px-4"
     >
       <v-window-item
+        value="overdue"
+        class="fill-height"
+      >
+        <HomePageOverDue />
+      </v-window-item>
+      <v-window-item
         value="todo"
         class="fill-height"
       >
         <div class="mb-4">
           <TodoNew :save-todo="saveTodo" @add-todo="dialog = false; saveTodo = false" />
         </div>
-        <v-card
-          v-if="todaysTodos && todaysTodos.length"
-          variant="flat"
-        >
-          <v-list>
-            <v-list-item
-              v-for="todo in todaysTodos"
-              :key="todo._id"
-              class="align-center"
-              @click="selectTodo(todo)"
-            >
-              <template #prepend>
-                <v-checkbox @click.stop="setClosed(todo)" />
-              </template>
-              <v-list-item-title class="text-h6">
-                {{ todo.name }}
-              </v-list-item-title>
-
-              <template #append>
-                <AppDeleteButton :todo="todo" />
-              </template>
-            </v-list-item>
-          </v-list>
-        </v-card>
-        <v-card
-          v-else
-          variant="flat"
-          :class="['d-flex flex-column justify-center align-center', !isMobile ? 'fill-height' : '']"
-        >
-          <AppEmptyState height="100%" />
-        </v-card>
+        <HomePageToday />
       </v-window-item>
       <v-window-item
         value="done"
         class="fill-height"
-      >
-        <v-card v-if="todaysClosedTodos.length" variant="flat">
-          <v-list
-            class="pa-4"
-          >
-            <v-list-item
-              v-for="todo in todaysClosedTodos"
-              :key="todo._id"
-            >
-              <template #prepend>
-                <v-checkbox :model-value="true" @click.stop="setOpen(todo)" />
-              </template>
-              <v-list-item-title class="text-h6">
-                {{ todo.name }}
-              </v-list-item-title>
-
-              <template #append>
-                <v-btn
-                  icon
-                  elevation="0"
-                  @click="listsStore.deleteTodo(todo._id!)"
-                >
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-              </template>
-            </v-list-item>
-          </v-list>
-        </v-card>
-        <v-card
-          v-else
-          variant="flat"
-          :class="['d-flex flex-column justify-center align-center', !isMobile ? 'fill-height' : '']"
-        >
-          <AppEmptyState height="100%" />
-        </v-card>
-      </v-window-item>
+      />
     </v-window>
 
     <AppDialog

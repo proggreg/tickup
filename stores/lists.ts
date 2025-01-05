@@ -4,6 +4,7 @@ interface listsState {
   currentTodo: Todo
   todos?: Todo[]
   todaysTodos: Todo[]
+  overdueTodos: Todo[]
   view: View
   newTodo: Todo
 }
@@ -21,8 +22,6 @@ export const useListsStore = defineStore('lists', {
     currentList: {
       name: '',
       todos: [],
-      _id: '',
-      image: '',
     },
     view: 'list',
     currentTodo: {
@@ -34,6 +33,7 @@ export const useListsStore = defineStore('lists', {
     },
     todos: [],
     todaysTodos: [],
+    overdueTodos: [],
   }),
   actions: {
     async addList(newList: List) {
@@ -50,21 +50,18 @@ export const useListsStore = defineStore('lists', {
         return newList
       }
     },
-    async updateList(list?: List) {
-      if (!this.currentList._id || (list && list._id)) {
-        console.warn('no id')
+    async updateList(list: List) {
+      console.time('updateList')
 
-        throw Error('no list id')
-      }
-      const listToUpdate = list ? list : this.currentList
-      const updatedList = await $fetch<List>(`/api/list/${listToUpdate._id}`, {
+      const updatedList = await $fetch<List>(`/api/list/${list._id}`, {
         method: 'PUT',
-        body: listToUpdate,
+        body: list,
       })
 
       this.setLists(
         this.lists.map(l => (l._id === updatedList._id ? updatedList : l)),
       )
+      console.timeEnd('updateList')
     },
     setLists(lists: Array<List>) {
       this.lists = lists
@@ -85,9 +82,7 @@ export const useListsStore = defineStore('lists', {
       this.currentList.name = newName
     },
     setListTodos(todos: Todo[]) {
-      if (todos && todos.length) {
-        this.currentList.todos = todos
-      }
+      this.currentList.todos = todos || []
     },
     async getListTodos(listId: string) {
       const { data } = await useFetch<Todo[]>(`/api/list/todo/${listId}`)
@@ -141,12 +136,8 @@ export const useListsStore = defineStore('lists', {
       }
     },
     setCurrentList(list: List) {
-      console.log('setCurrentList', list)
       if (list) {
         this.currentList = list
-        if (!this.currentList.todos) {
-          this.currentList.todos = []
-        }
       }
     },
     setCurrentListName(name: string) {
@@ -177,12 +168,10 @@ export const useListsStore = defineStore('lists', {
       }
     },
     async getList(id: string) {
-      const data = await $fetch<List>(`/api/list/${id}`)
+      const { data } = await useFetch<List>(`/api/list/${id}`)
 
-      console.log('get list', data)
-
-      if (data) {
-        this.currentList = data
+      if (data.value) {
+        this.currentList = data.value
         return this.currentList
       }
     },
@@ -211,6 +200,15 @@ export const useListsStore = defineStore('lists', {
 
       if (data.value) {
         this.todaysTodos = data.value
+      }
+    },
+    async getOverdueTodos(id: string) {
+      const { data } = await useFetch<Todo[]>('/api/todos', {
+        query: { overdue: true, id },
+      })
+
+      if (data.value) {
+        this.overdueTodos = data.value
       }
     },
     sortByDate(newDirection: string) {

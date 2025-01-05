@@ -25,6 +25,7 @@ if (status.value === 'authenticated') {
   if (userId) {
     listsStore.getLists(userId)
     listsStore.getTodaysTodos(userId)
+    listsStore.getOverdueTodos(userId)
   }
 }
 else {
