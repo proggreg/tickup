@@ -11,7 +11,7 @@ useHead({ title: 'TickUp:Home' })
 const { status, data } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
 const listsStore = useListsStore()
-const tab = ref('overdue')
+const tab = ref('1')
 const saveTodo = ref(false)
 const dialog = useDialog()
 
