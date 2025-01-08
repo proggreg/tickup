@@ -16,7 +16,7 @@ if (status.value === 'authenticated') {
 
     const cachedState = localStorage.getItem('listState')
     if (cachedState) {
-      listsStore.$state = JSON.parse(cachedState)
+      // listsStore.$state = JSON.parse(cachedState)
     }
   }
 
