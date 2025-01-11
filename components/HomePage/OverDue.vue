@@ -34,6 +34,7 @@ const closedTodos = computed(() => {
 <template>
   <v-card
     v-if="listsStore.overdueTodos && listsStore.overdueTodos.length"
+    variant="flat"
   >
     <v-list :opened="opened" variant="plain">
       <v-list-group value="Open">
