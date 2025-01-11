@@ -47,7 +47,7 @@ onBeforeMount(() => {
     </v-tabs>
     <v-window
       v-model="tab"
-      class="fill-height px-4"
+      class="fill-height"
     >
       <v-window-item
         value="overdue"
@@ -59,7 +59,7 @@ onBeforeMount(() => {
         value="todo"
         class="fill-height"
       >
-        <div class="mb-4">
+        <div class="ma-4">
           <TodoNew :save-todo="saveTodo" @add-todo="dialog = false; saveTodo = false" />
         </div>
         <HomePageToday />
