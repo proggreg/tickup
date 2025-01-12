@@ -23,6 +23,7 @@ export const useListsStore = defineStore('lists', {
       todos: [],
       _id: '',
       image: '',
+      listType: '',
     },
     view: 'list',
     currentTodo: {

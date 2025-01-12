@@ -45,7 +45,13 @@ async function createNewList() {
         autofocus
         placeholder="New List"
         @keyup.enter="createNewList"
-      />
+      >
+        <template #append>
+          <div style="min-width: 150px">
+            <ListType />
+          </div>
+        </template>
+      </v-text-field>
     </v-container>
     <template #buttons>
       <v-btn

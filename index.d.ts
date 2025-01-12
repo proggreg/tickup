@@ -27,6 +27,7 @@ declare global {
     todos: Todo[]
     _id?: string
     image?: string
+    listType: string
   }
 
   interface Settings {

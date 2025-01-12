@@ -42,6 +42,14 @@ watch(listsStore.currentList.todos, (todos) => {
     <div v-if="listsStore.currentList.name && isMobile" class="pa-2 d-flex justify-center text-capitalize" align-content="center">
       <v-btn :active="false" class="font-weight-bold text-h5 text-capitalize mx-auto" :to="`/list/${listsStore.currentList._id}`" :text="listsStore.currentList.name" />
     </div>
+
+    <v-row>
+      <v-spacer />
+      <v-col cols="2">
+        <ListType />
+      </v-col>
+    </v-row>
+
     <div v-if="$device.isMobile">
       <ListTable />
     </div>

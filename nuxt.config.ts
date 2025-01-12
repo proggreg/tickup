@@ -81,6 +81,7 @@ export default defineNuxtConfig({
         },
         VSelect: {
           rounded: 'xl',
+          hideDetails: true,
         },
       },
       theme: {
