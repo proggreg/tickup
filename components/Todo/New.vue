@@ -50,9 +50,3 @@ watch(() => saveTodo, (newVal) => {
     </template>
   </v-text-field>
 </template>
-
-<style scoped>
-:deep(.v-field__field) {
-  align-items: center;
-}
-</style>

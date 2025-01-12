@@ -11,11 +11,9 @@ useHead({ title: 'TickUp:Home' })
 const { status, data } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
 const listsStore = useListsStore()
-const tab = ref('todo')
+const tab = ref('1')
 const saveTodo = ref(false)
 const dialog = useDialog()
-
-const { isMobile } = useDevice()
 
 listsStore.setCurrentListName('')
 
@@ -63,54 +61,31 @@ function setOpen(todo: Todo) {
       v-model="tab"
       grow
       align-tabs="center"
-      :hide-slider="true"
+      :hide-slider="false"
       class="mb-4"
     >
+      <v-tab class="text-h5">Overdue</v-tab>
       <v-tab class="text-h5">Todo</v-tab>
       <v-tab class="text-h5">Done</v-tab>
     </v-tabs>
     <v-window
       v-model="tab"
-      class="fill-height px-4"
+      class="fill-height"
     >
+      <v-window-item
+        value="overdue"
+        class="fill-height"
+      >
+        <HomePageOverDue />
+      </v-window-item>
       <v-window-item
         value="todo"
         class="fill-height"
       >
-        <div class="mb-4">
+        <div class="ma-4">
           <TodoNew :save-todo="saveTodo" @add-todo="dialog = false; saveTodo = false" />
         </div>
-        <v-card
-          v-if="todaysTodos && todaysTodos.length"
-          variant="flat"
-        >
-          <v-list>
-            <v-list-item
-              v-for="todo in todaysTodos"
-              :key="todo._id"
-              class="align-center"
-              @click="selectTodo(todo)"
-            >
-              <template #prepend>
-                <v-checkbox @click.stop="setClosed(todo)" />
-              </template>
-              <v-list-item-title class="text-h6">
-                {{ todo.name }}
-              </v-list-item-title>
-
-              <template #append>
-                <AppDeleteButton :todo="todo" />
-              </template>
-            </v-list-item>
-          </v-list>
-        </v-card>
-        <v-card
-          v-else
-          variant="flat"
-          :class="['d-flex flex-column justify-center align-center', !isMobile ? 'fill-height' : '']"
-        >
-          <AppEmptyState height="100%" />
-        </v-card>
+        <HomePageToday />
       </v-window-item>
       <v-window-item
         value="done"
@@ -154,8 +129,10 @@ function setOpen(todo: Todo) {
     </v-window>
 
     <AppDialog
+      title="New Todo"
       page="todo"
     >
+      <TodoNew :save-todo="saveTodo" @add-todo="dialog = false; saveTodo = false" />
       <TodoNew :save-todo="saveTodo" @add-todo="dialog = false; saveTodo = false" />
       <template #buttons>
         <v-btn

@@ -62,7 +62,7 @@ watch(() => listsStore.currentTodo.desc, (newDesc) => {
         class="mt-2"
         hide-details max-rows="20" @input="updateDesc" @blur="updateDesc; editTodo = false"
       />
-      <div v-else class="pa-3 rounded-xl" style="border: 1px solid rgba(0,0,0,0.2); border-radius: 4px; min-height: 56px;" @click="editTodo = true" v-html="formattedDesc" />
+      <div v-else class="mt-2 pa-3 v-text-field rounded-xl text-secondary border text-white" style="min-height: 50px" @click="editTodo = true" v-html="formattedDesc" />
     </v-card-item>
     <v-card-actions class="py-6">
       <AppDeleteButton :todo="listsStore.currentTodo" />

@@ -4,8 +4,6 @@ const listsStore = useListsStore()
 const tabs = ref<View[]>(['board', 'list'])
 const currentTab = ref<View>('list')
 const on = useToolbar()
-
-const { isMobile } = useDevice()
 const saveTodo = ref(false)
 const dialog = useDialog()
 
@@ -13,7 +11,7 @@ onMounted(async () => {
   const data = await $fetch<List>(`/api/list/${route.params.id}`)
   const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { id: route.params.id } })
 
-  data.todos = todos
+  data.todos = todos || []
   listsStore.setCurrentList(data)
 })
 
@@ -69,7 +67,7 @@ watch(listsStore.currentList.todos, (todos) => {
       </v-card>
     </v-col>
 
-    <AppDialog page="todo">
+    <AppDialog page="todo" title="New Todo">
       <TodoNew :save-todo="saveTodo" @add-todo="dialog.open = false; saveTodo = false" />
       <template #buttons>
         <v-btn

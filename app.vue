@@ -16,7 +16,7 @@ if (status.value === 'authenticated') {
 
     const cachedState = localStorage.getItem('listState')
     if (cachedState) {
-      listsStore.$state = JSON.parse(cachedState)
+      // listsStore.$state = JSON.parse(cachedState)
     }
   }
 
@@ -25,6 +25,7 @@ if (status.value === 'authenticated') {
   if (userId) {
     listsStore.getLists(userId)
     listsStore.getTodaysTodos(userId)
+    listsStore.getOverdueTodos(userId)
   }
 }
 else {
@@ -64,7 +65,7 @@ const layoutName = computed(() => {
 
 <template>
   <div>
-    <!-- <VitePwaManifest /> -->
+    <VitePwaManifest />
     <NuxtLayout :name="layoutName">
       <NuxtPage />
     </NuxtLayout>

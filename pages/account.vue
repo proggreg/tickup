@@ -11,6 +11,9 @@ const { signOut, data } = useAuth()
   <v-row no-gutters class="d-flex " style="height: 100%;">
     <v-col class="d-flex justify-center" cols="12">
       <h1> My Account</h1>
+      <div style="position: absolute; right: 25px">
+        <AppDarkMode />
+      </div>
     </v-col>
     <v-col class="d-flex justify-center" cols="12">
       <h4>{{ data?.user.name }}</h4>
