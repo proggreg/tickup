@@ -1,11 +1,10 @@
 <script setup lang="ts">
 const route = useRoute()
 const listsStore = useListsStore()
-const tabs = ref<View[]>(['board', 'list'])
-const currentTab = ref<View>('list')
 const on = useToolbar()
 const saveTodo = ref(false)
 const dialog = useDialog()
+const { isMobile } = useDevice()
 
 onMounted(async () => {
   const data = await $fetch<List>(`/api/list/${route.params.id}`)
@@ -25,9 +24,6 @@ if (listsStore.currentList) {
   })
 }
 
-watch(currentTab, (newTab) => {
-  listsStore.setView(newTab)
-})
 watch(listsStore.currentList.todos, (todos) => {
   if (!todos) return
   on.value = todos.filter((todo: Todo) => todo.selected).length > 0
@@ -49,21 +45,14 @@ watch(listsStore.currentList.todos, (todos) => {
     </v-row>
 
     <div v-if="$device.isMobile">
-      <ListTable />
+      <ListSimple v-if="listsStore.currentList.listType === 'simple'" />
+      <ListTable v-else />
     </div>
     <v-col v-else>
       <v-card cols="12" style="width: 100%; height: 100%;">
-        <v-tabs v-model="currentTab">
-          <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
-        </v-tabs>
-        <v-window v-model="currentTab" :touch="false" class="">
-          <v-window-item value="board">
-            <Board />
-          </v-window-item>
-          <v-window-item value="list" class="fill-height">
-            <ListTable />
-          </v-window-item>
-        </v-window>
+        <ListSimple v-if="listsStore.currentList.listType === 'simple'" />
+        <ListComplex v-else />
+        <!-- <ListComplex /> -->
       </v-card>
     </v-col>
 

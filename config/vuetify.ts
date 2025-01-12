@@ -43,6 +43,7 @@ export default {
       },
       VSelect: {
         rounded: 'xl',
+        hideDetails: true,
       },
     },
     theme: {
