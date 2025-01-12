@@ -3,7 +3,7 @@ const listsStore = useListsStore()
 const settingsStore = useSettingsStore()
 const { data, status } = useAuth()
 const { isMobile } = useDevice()
-// const { $pwa } = useNuxtApp()
+const { $DarkReader } = useNuxtApp()
 const route = useRoute()
 const config = useRuntimeConfig()
 const event = useRequestEvent()
@@ -13,6 +13,8 @@ if (status.value === 'authenticated') {
     listsStore.$subscribe((mutation, state) => {
       localStorage.setItem('listState', JSON.stringify(state))
     })
+
+    console.log('$DarkReader', $DarkReader)
 
     const cachedState = localStorage.getItem('listState')
     if (cachedState) {
