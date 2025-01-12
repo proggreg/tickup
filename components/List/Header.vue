@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const route = useRoute()
 const store = useListsStore()
 const rename = ref(true)
 const router = useRoute()
