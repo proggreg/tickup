@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
 const editTodo = ref(false)
+const links = reactive([])
 
 function updateDueDate(newDate: Date) {
   listsStore.currentTodo.dueDate = newDate
@@ -12,27 +13,80 @@ function updateName() {
   }
 }
 
-function updateDesc() {
+function updateTodo() {
   listsStore.updateTodo(listsStore.currentTodo)
 }
 
-const formattedDesc = computed(() => {
-  if (!listsStore.currentTodo.desc) return ''
+watch(links, () => {
+  // for (const link of links) {
+  //   if (!listsStore.currentTodo.links.includes((l) => {
+  //     return link.url === l.url
+  //   })) {
+  //     listsStore.currentTodo.links.push(link)
+  //   }
+  // }
 
-  const urlPattern = /(https?:\/\/[^\s]+)/g
+  // console.log('updated todo links', listsStore.currentTodo.links)
 
-  return listsStore.currentTodo.desc.replace(urlPattern, '<a href="$1" target="_blank">$1</a>')
-    .replace(/\n/g, '<br />')
+  // listsStore.updateTodo(listsStore.currentTodo)
 })
 
-watch(() => listsStore.currentTodo.desc, (newDesc) => {
-  if (!newDesc) return
-
-  // Check if desc contains a URL
+async function fetchUrlsTitles() {
+  if (!listsStore.currentTodo.desc) return
   const urlPattern = /(https?:\/\/[^\s]+)/g
-  if (urlPattern.test(newDesc)) {
-    // Update the desc with formatted links
-    // listsStore.currentTodo.desc = formattedDesc.value
+
+  const urls = listsStore.currentTodo.desc.match(urlPattern)
+
+  if (urls) {
+    console.log('urls', urls)
+    return await $fetch('/api/metadata', { query: { urls: JSON.stringify(urls) } })
+  }
+
+  return []
+}
+
+async function removeLink(link) {
+  console.log('remove link', link)
+
+  const newLinks = listsStore.currentTodo.links.filter((l) => {
+    return l._id !== link._id
+  })
+
+  listsStore.currentTodo.links = newLinks
+
+  updateTodo()
+}
+
+watch(() => listsStore.currentTodo.desc, async () => {
+  if (!listsStore.currentTodo.desc) return
+  try {
+    const linkTitles = await fetchUrlsTitles()
+
+    if (!linkTitles || !linkTitles.length) return
+
+    listsStore.currentTodo
+    if (!listsStore.currentTodo.desc) return
+
+    for (const linkTitle of linkTitles) {
+      if (!listsStore.currentTodo.links.find((l) => {
+        return l.url === linkTitle.url
+      })) {
+        listsStore.currentTodo.links.push(linkTitle)
+      }
+    }
+
+    listsStore.updateTodo(listsStore.currentTodo)
+    const urlPattern = /(https?:\/\/[^\s]+)/g
+
+    const urls = listsStore.currentTodo.desc.match(urlPattern)
+
+    for (const url of urls) {
+      listsStore.currentTodo.desc = listsStore.currentTodo.desc.replace(url, '')
+    }
+    listsStore.updateTodo(listsStore.currentTodo)
+  }
+  catch (e) {
+    console.error(e)
   }
 })
 </script>
@@ -58,12 +112,23 @@ watch(() => listsStore.currentTodo.desc, (newDesc) => {
     </v-card-title>
     <v-card-item>
       <v-textarea
-        v-if="editTodo" v-model="listsStore.currentTodo.desc" auto-grow label="Description"
+        v-model="listsStore.currentTodo.desc" auto-grow
         class="mt-2"
-        hide-details max-rows="20" @input="updateDesc" @blur="updateDesc; editTodo = false"
+        hide-details max-rows="20" @input="updateTodo" @blur="updateTodo; editTodo = false"
       />
-      <div v-else class="mt-2 pa-3 v-text-field rounded-xl text-secondary border text-white" style="min-height: 50px" @click="editTodo = true" v-html="formattedDesc" />
     </v-card-item>
+
+    <v-text>Links</v-text>
+    <v-list>
+      <v-list-item v-for="(link, index) in listsStore.currentTodo.links" :key="index">
+        <v-list-item-title>
+          <a :href="link.url" target="_blank">{{ link.title }}</a>
+        </v-list-item-title>
+        <template #append>
+          <v-btn color="red" icon="mdi-delete" variant="text" @click="removeLink(link)" />
+        </template>
+      </v-list-item>
+    </v-list>
     <v-card-actions class="py-6">
       <AppDeleteButton :todo="listsStore.currentTodo" />
       <AppGithubButton :todo="listsStore.currentTodo" />
