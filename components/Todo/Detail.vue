@@ -118,8 +118,8 @@ watch(() => listsStore.currentTodo.desc, async () => {
       />
     </v-card-item>
 
-    <v-text>Links</v-text>
     <v-list>
+      <v-list-subheader>Links</v-list-subheader>
       <v-list-item v-for="(link, index) in listsStore.currentTodo.links" :key="index">
         <v-list-item-title>
           <a :href="link.url" target="_blank">{{ link.title }}</a>
