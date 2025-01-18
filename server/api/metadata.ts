@@ -4,16 +4,16 @@ async function getTitle(url: string) {
   return await $fetch(url as string).then((response: any) => {
     try {
       const $ = cheerio.load(response)
+      const title = $('title').text().replace(/\n/g, '').trim().split(' ').slice(0, 10).join(' ').split('').slice(0, 100).join('')
 
-      const title = $('title')
-
-      return title.text().replace(/\n/g, '').trim().split(' ').slice(0, 10).join(' ')
+      if (!title) {
+        return url.split('?')[0]
+      }
+      return title
     }
     catch (error) {
       console.error('getting title', error)
     }
-
-    return ''
   })
 }
 
@@ -34,6 +34,8 @@ export default defineEventHandler(async (event): Promise<{ title: string, url: s
     if (parsedUrls.length < 1) {
       throw new Error('No URLs provided')
     }
+
+    console.log('parsedUrls', parsedUrls)
 
     for (const url of parsedUrls) {
       const title = await getTitle(url)

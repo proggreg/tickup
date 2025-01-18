@@ -1,76 +1,16 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
-const editTodo = ref(false)
 
 function updateDueDate(newDate: Date) {
   listsStore.currentTodo.dueDate = newDate
   listsStore.updateTodo(listsStore.currentTodo)
 }
 function updateName() {
+  // TODO add a validation message to say todo names can't be blank
   if (listsStore.currentTodo.name) {
     listsStore.updateTodo(listsStore.currentTodo)
   }
 }
-
-function updateTodo() {
-  listsStore.updateTodo(listsStore.currentTodo)
-}
-
-async function fetchUrlsTitles() {
-  if (!listsStore.currentTodo.desc) return
-  const urlPattern = /(https?:\/\/[^\s]+)/g
-
-  const urls = listsStore.currentTodo.desc.match(urlPattern)
-
-  if (urls) {
-    console.log('urls', urls)
-    return await $fetch('/api/metadata', { query: { urls: JSON.stringify(urls) } })
-  }
-
-  return []
-}
-
-async function removeLink(link) {
-  const newLinks = listsStore.currentTodo.links.filter((l) => {
-    return l._id !== link._id
-  })
-
-  listsStore.currentTodo.links = newLinks
-
-  updateTodo()
-}
-
-watch(() => listsStore.currentTodo.desc, async () => {
-  if (!listsStore.currentTodo.desc) return
-  try {
-    const linkTitles = await fetchUrlsTitles()
-
-    if (!linkTitles || !linkTitles.length) return
-
-    if (!listsStore.currentTodo.desc) return
-
-    for (const linkTitle of linkTitles) {
-      if (!listsStore.currentTodo.links.find((l) => {
-        return l.url === linkTitle.url
-      })) {
-        listsStore.currentTodo.links.push(linkTitle)
-      }
-    }
-
-    listsStore.updateTodo(listsStore.currentTodo)
-    const urlPattern = /(https?:\/\/[^\s]+)/g
-
-    const urls = listsStore.currentTodo.desc.match(urlPattern)
-
-    for (const url of urls) {
-      listsStore.currentTodo.desc = listsStore.currentTodo.desc.replace(url, '')
-    }
-    listsStore.updateTodo(listsStore.currentTodo)
-  }
-  catch (e) {
-    console.error(e)
-  }
-})
 </script>
 
 <template>
@@ -96,21 +36,13 @@ watch(() => listsStore.currentTodo.desc, async () => {
       <v-textarea
         v-model="listsStore.currentTodo.desc" auto-grow
         class="mt-2"
-        hide-details max-rows="20" @input="updateTodo" @blur="updateTodo; editTodo = false"
+        hide-details max-rows="20" @input="listsStore.updateTodo(listsStore.currentTodo)"
+        @blur="listsStore.updateTodo(listsStore.currentTodo)"
       />
     </v-card-item>
 
-    <v-list>
-      <v-list-subheader>Links</v-list-subheader>
-      <v-list-item v-for="(link, index) in listsStore.currentTodo.links" :key="index">
-        <v-list-item-title>
-          <a :href="link.url" target="_blank">{{ link.title }}</a>
-        </v-list-item-title>
-        <template #append>
-          <v-btn color="red" icon="mdi-delete" variant="text" @click="removeLink(link)" />
-        </template>
-      </v-list-item>
-    </v-list>
+    <TodoLinks />
+
     <v-card-actions class="py-6">
       <AppDeleteButton :todo="listsStore.currentTodo" />
       <AppGithubButton :todo="listsStore.currentTodo" />

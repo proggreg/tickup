@@ -118,7 +118,11 @@ export const useListsStore = defineStore('lists', {
       console.log('todo added', todo)
       return todo
     },
-    async updateTodo(todo: Todo) {
+    async updateTodo(todo?: Todo) {
+      if (!todo) {
+        todo = this.currentTodo
+      }
+
       const updatedTodo = await $fetch<Todo>(`/api/todo/${todo._id}`, {
         method: 'PUT',
         body: todo,
