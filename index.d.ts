@@ -12,10 +12,10 @@ declare global {
     selected?: boolean
     color: string
     githubBranchName?: string
-    links: [{
+    links: {
       title: string
       url: string
-    }]
+    }[]
   }
 
   interface Status {

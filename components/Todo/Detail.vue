@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
 const editTodo = ref(false)
-const links = reactive([])
 
 function updateDueDate(newDate: Date) {
   listsStore.currentTodo.dueDate = newDate
@@ -16,20 +15,6 @@ function updateName() {
 function updateTodo() {
   listsStore.updateTodo(listsStore.currentTodo)
 }
-
-watch(links, () => {
-  // for (const link of links) {
-  //   if (!listsStore.currentTodo.links.includes((l) => {
-  //     return link.url === l.url
-  //   })) {
-  //     listsStore.currentTodo.links.push(link)
-  //   }
-  // }
-
-  // console.log('updated todo links', listsStore.currentTodo.links)
-
-  // listsStore.updateTodo(listsStore.currentTodo)
-})
 
 async function fetchUrlsTitles() {
   if (!listsStore.currentTodo.desc) return
@@ -46,8 +31,6 @@ async function fetchUrlsTitles() {
 }
 
 async function removeLink(link) {
-  console.log('remove link', link)
-
   const newLinks = listsStore.currentTodo.links.filter((l) => {
     return l._id !== link._id
   })
@@ -64,7 +47,6 @@ watch(() => listsStore.currentTodo.desc, async () => {
 
     if (!linkTitles || !linkTitles.length) return
 
-    listsStore.currentTodo
     if (!listsStore.currentTodo.desc) return
 
     for (const linkTitle of linkTitles) {

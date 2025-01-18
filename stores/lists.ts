@@ -17,10 +17,7 @@ export const useListsStore = defineStore('lists', {
       desc: '',
       edit: false,
       color: '#87909e',
-      links: [{
-        title: '',
-        url: '',
-      }],
+      links: [],
     },
     lists: [],
     currentList: {
@@ -34,6 +31,7 @@ export const useListsStore = defineStore('lists', {
       desc: '',
       edit: false,
       color: '#87909e',
+      links: [],
     },
     todos: [],
     todaysTodos: [],
