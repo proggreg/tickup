@@ -75,6 +75,8 @@ function getBranch(branchName: string) {
   if (!branchName) {
     return
   }
+
+  // TODO might be better to search before fetching
   return $octokit.rest.repos.getBranch({
     owner: 'proggreg',
     repo: 'tickup',
@@ -85,8 +87,8 @@ function getBranch(branchName: string) {
       hasBranch.value = true
     }
     return data
-  }).catch((error) => {
-    console.log(error)
+  }).catch(() => {
+
   })
 }
 

@@ -1,40 +1,16 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
-const editTodo = ref(false)
 
 function updateDueDate(newDate: Date) {
   listsStore.currentTodo.dueDate = newDate
   listsStore.updateTodo(listsStore.currentTodo)
 }
 function updateName() {
+  // TODO add a validation message to say todo names can't be blank
   if (listsStore.currentTodo.name) {
     listsStore.updateTodo(listsStore.currentTodo)
   }
 }
-
-function updateDesc() {
-  listsStore.updateTodo(listsStore.currentTodo)
-}
-
-const formattedDesc = computed(() => {
-  if (!listsStore.currentTodo.desc) return ''
-
-  const urlPattern = /(https?:\/\/[^\s]+)/g
-
-  return listsStore.currentTodo.desc.replace(urlPattern, '<a href="$1" target="_blank">$1</a>')
-    .replace(/\n/g, '<br />')
-})
-
-watch(() => listsStore.currentTodo.desc, (newDesc) => {
-  if (!newDesc) return
-
-  // Check if desc contains a URL
-  const urlPattern = /(https?:\/\/[^\s]+)/g
-  if (urlPattern.test(newDesc)) {
-    // Update the desc with formatted links
-    // listsStore.currentTodo.desc = formattedDesc.value
-  }
-})
 </script>
 
 <template>
@@ -58,12 +34,15 @@ watch(() => listsStore.currentTodo.desc, (newDesc) => {
     </v-card-title>
     <v-card-item>
       <v-textarea
-        v-if="editTodo" v-model="listsStore.currentTodo.desc" auto-grow label="Description"
+        v-model="listsStore.currentTodo.desc" auto-grow
         class="mt-2"
-        hide-details max-rows="20" @input="updateDesc" @blur="updateDesc; editTodo = false"
+        hide-details max-rows="20" @input="listsStore.updateTodo(listsStore.currentTodo)"
+        @blur="listsStore.updateTodo(listsStore.currentTodo)"
       />
-      <div v-else class="mt-2 pa-3 v-text-field rounded-xl text-secondary border text-white" style="min-height: 50px" @click="editTodo = true" v-html="formattedDesc" />
     </v-card-item>
+
+    <TodoLinks />
+
     <v-card-actions class="py-6">
       <AppDeleteButton :todo="listsStore.currentTodo" />
       <AppGithubButton :todo="listsStore.currentTodo" />
