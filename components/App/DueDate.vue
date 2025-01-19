@@ -19,7 +19,7 @@ function updateDueDate(newDate: Date | unknown) {
   <v-dialog location="top" :fullscreen="xs" class="ma-2" max-width="500">
     <template #activator="{ props }">
       <v-text-field
-        v-if="dueDateProps.showDetail" v-bind="props" placeholder="date" class="text-h6" width="100%"
+        v-if="dueDateProps.showDetail" v-bind="props" placeholder="date" width="100%"
         :value="formattedDate" append-inner-icon="mdi-calendar" autocomplete="off"
       >
         <template #append-inner>
@@ -39,8 +39,14 @@ function updateDueDate(newDate: Date | unknown) {
   </v-dialog>
 </template>
 
-<style>
+<style scoped>
 .v-picker__body {
   max-width: 100%;
+}
+
+.v-text-field :deep(.v-field__input) {
+  @media (max-width: 600px) {
+    font-size: 0.9rem;
+  }
 }
 </style>

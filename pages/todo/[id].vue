@@ -6,7 +6,7 @@ const listsStore = useListsStore()
 onBeforeMount(() => {
   $fetch(`/api/todo/${params.id}`).then((todo) => {
     listsStore.setCurrentTodo(todo as Todo)
-    if (todo) {
+    if (todo && todo.listId) {
       $fetch(`/api/list/${todo.listId}`).then((list) => {
         listsStore.setCurrentList(list as List)
       })
