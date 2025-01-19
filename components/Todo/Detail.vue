@@ -17,11 +17,11 @@ function updateName() {
   <v-card width="100%" elevation="0" class="pa-0 d-flex flex-column" style="height: 100%">
     <v-card-item>
       <v-row>
-        <v-col cols="6">
+        <v-col sm="3" md="2" cols="6">
           <TodoStatus />
         </v-col>
         <v-spacer />
-        <v-col sm="3" md="2" cols="6">
+        <v-col sm="4" md="4" cols="6">
           <AppDueDate
             :todo-due-date="listsStore.currentTodo.dueDate" :todo="listsStore.currentTodo" :show-detail="true"
             @set-date="updateDueDate"

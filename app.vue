@@ -31,15 +31,11 @@ if (status.value === 'authenticated') {
 else {
   if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.headers.get('host')
     && !event?.headers.get('host')?.includes('tickup.gregfield.dev')) {
-    console.log('host', event?.headers.get('host'))
-    console.log('should redirect', !event?.headers.get('host')?.includes('tickup.gregfield.dev'))
-    console.log('redirecting to login', 'https://tickup.gregfield.dev/login')
     navigateTo('https://tickup.gregfield.dev/login', { external: true })
   }
 }
 
 onBeforeMount(() => {
-  console.log('on before app mount')
   if (route.params.id) {
     const { data: currentList } = useFetch<List>(`/api/list/${route.params.id}`)
 
