@@ -8,6 +8,11 @@ const saveTodo = ref(false)
 const dialog = useDialog()
 
 onBeforeMount(async () => {
+  const currentList = listsStore.lists.find((list: List) => list._id === route.params.id)
+  console.log('current list', currentList)
+  if (currentList) {
+    listsStore.setCurrentList(currentList)
+  }
   const data = await $fetch<List>(`/api/list/${route.params.id}`)
   const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { id: route.params.id } })
 
