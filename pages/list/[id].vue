@@ -7,7 +7,7 @@ const on = useToolbar()
 const saveTodo = ref(false)
 const dialog = useDialog()
 
-onMounted(async () => {
+onBeforeMount(async () => {
   const data = await $fetch<List>(`/api/list/${route.params.id}`)
   const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { id: route.params.id } })
 
