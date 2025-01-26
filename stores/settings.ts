@@ -38,3 +38,6 @@ export const useSettingsStore = defineStore('settings', () => {
 
   return { darkMode, statuses, getUserSettings, userStatuses }
 })
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useSettingsStore, import.meta.hot))
+}
