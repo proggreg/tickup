@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const route = useRoute()
 const store = useListsStore()
 const rename = ref(true)
 const router = useRoute()
@@ -16,7 +15,7 @@ watch(rename, (newVal) => {
       store.currentList._id = router.params.id as string
     }
 
-    store.updateList()
+    store.updateList(store.currentList)
   }
   else {
     if (listNameRef.value) {

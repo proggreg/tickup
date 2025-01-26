@@ -52,8 +52,14 @@ export const useListsStore = defineStore('lists', {
         return newList
       }
     },
-    async updateList(list: List) {
+    async updateList(list?: List) {
       console.time('updateList')
+
+      if (!list) {
+        list = this.currentList
+      }
+
+      if (!list.name) return
 
       const updatedList = await $fetch<List>(`/api/list/${list._id}`, {
         method: 'PUT',

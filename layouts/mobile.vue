@@ -9,7 +9,7 @@ const dialog = useDialog()
 router.beforeResolve((route) => {
   console.log('before route', route)
   if (route.name !== 'list-id' && route.name !== 'todo-id') {
-    listStore.currentList.name = ''
+    // listStore.currentList.name = ''
   }
 })
 
