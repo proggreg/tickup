@@ -64,6 +64,7 @@
     "nuxt-time": "^0.1.1",
     "octokit": "^4.0.2",
     "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^4.2.0",
     "vue-hotjar-next": "^2.0.1",
     "vuedraggable": "^4.1.0"
   },

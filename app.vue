@@ -9,24 +9,13 @@ const config = useRuntimeConfig()
 const event = useRequestEvent()
 
 if (status.value === 'authenticated') {
-  if (import.meta.client) {
-    listsStore.$subscribe((mutation, state) => {
-      localStorage.setItem('listState', JSON.stringify(state))
-    })
-
-    const cachedState = localStorage.getItem('listState')
-    if (cachedState) {
-      // listsStore.$state = JSON.parse(cachedState)
-    }
-  }
-
   await useAsyncData(() => settingsStore.getUserSettings().then(() => true))
-  const userId = data?.value?.user?.sub
-  if (userId) {
-    listsStore.getLists(userId)
-    listsStore.getTodaysTodos(userId)
-    listsStore.getOverdueTodos(userId)
-  }
+
+  // if (userId) {
+  //   listsStore.getLists(userId)
+  //   listsStore.getTodaysTodos(userId)
+  //   listsStore.getOverdueTodos(userId)
+  // }
 }
 else {
   if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.headers.get('host')
@@ -34,8 +23,17 @@ else {
     navigateTo('https://tickup.gregfield.dev/login', { external: true })
   }
 }
+if (data?.value?.user?.sub) {
+  await useAsyncData('lists', () => listsStore.getLists(data?.value?.user?.sub ? data?.value?.user?.sub : '').then(() => true))
+}
 
 onBeforeMount(() => {
+  const userId = data?.value?.user?.sub
+  console.log('userId', userId)
+  if (userId) {
+    // listsStore.getLists(userId)
+  }
+
   if (route.params.id) {
     const { data: currentList } = useFetch<List>(`/api/list/${route.params.id}`)
 

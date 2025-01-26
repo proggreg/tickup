@@ -6,13 +6,19 @@ const currentTab = ref<View>('list')
 const on = useToolbar()
 const saveTodo = ref(false)
 const dialog = useDialog()
+const { data: user } = useAuth()
 
-onMounted(async () => {
-  const data = await $fetch<List>(`/api/list/${route.params.id}`)
-  const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { id: route.params.id } })
+onBeforeMount(async () => {
+  if (user?.value?.user._id) {
+    await listsStore.getLists(user?.value?.user._id)
+  }
+  const currentList = listsStore.lists.find((list: List) => list._id === route.params.id)
+  console.log('current list', currentList)
 
-  data.todos = todos || []
-  listsStore.setCurrentList(data)
+  console.log('lists', listsStore.lists)
+  if (currentList) {
+    listsStore.setCurrentList(currentList)
+  }
 })
 
 if (!listsStore.currentList) {
