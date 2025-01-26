@@ -10,9 +10,9 @@ const event = useRequestEvent()
 
 if (status.value === 'authenticated') {
   if (import.meta.client) {
-    listsStore.$subscribe((mutation, state) => {
-      localStorage.setItem('listState', JSON.stringify(state))
-    })
+    // listsStore.$subscribe((mutation, state) => {
+    //   localStorage.setItem('listState', JSON.stringify(state))
+    // })
 
     const cachedState = localStorage.getItem('listState')
     if (cachedState) {

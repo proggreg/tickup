@@ -240,4 +240,8 @@ export const useListsStore = defineStore('lists', {
       })
     },
   },
+  persist: {
+    debug: true,
+    storage: piniaPluginPersistedstate.localStorage(),
+  },
 })
