@@ -42,7 +42,9 @@ watch(listsStore.currentList.todos, (todos) => {
   <div style="width: 100%;height: 100%;">
     <ListHeader />
     <div v-if="$device.isMobile">
-      <ListTable />
+      <v-col>
+        <ListTable />
+      </v-col>
     </div>
     <v-col v-else>
       <v-card cols="12" style="width: 100%; height: 100%;">
