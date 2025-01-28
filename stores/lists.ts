@@ -119,6 +119,7 @@ export const useListsStore = defineStore('lists', {
         console.warn('todo already has an id', newTodo)
         return
       }
+      if (!this.currentList.todos) this.currentList.todos = []
       this.currentList.todos.push(newTodo)
       const todo = await $fetch<Todo>('/api/todo', {
         method: 'POST',
@@ -131,6 +132,7 @@ export const useListsStore = defineStore('lists', {
         desc: '',
         edit: false,
         color: '#87909e',
+        links: [],
       }
 
       this.currentList.todos[this.currentList.todos.length - 1]._id = todo._id
