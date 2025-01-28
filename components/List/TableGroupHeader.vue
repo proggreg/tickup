@@ -38,11 +38,12 @@ function isSortedIndex(sortBy: { key: string, order: string }[], column: { key: 
   <tr v-if="groupItem.key === 'status'">
     <th :colspan="2">
       <v-btn
-        class="mr-4" style="font-size: 1.2rem" variant="plain" :icon="isGroupOpen(groupItem) ? '$expand' : '$next'"
+        class="mr-4" style="font-size: 1.4rem" variant="plain" :icon="isGroupOpen(groupItem) ? '$expand' : '$next'"
         @click="toggleGroup(groupItem)"
       />
       <v-btn
         size="x-small" :color="getStatusColor(groupItem.value)" variant="tonal" :text="groupItem.value"
+        style="font-size: 1rem"
         @click="toggleGroup(groupItem)"
       />
     </th>

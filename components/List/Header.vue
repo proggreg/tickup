@@ -104,8 +104,6 @@ function removeImage() {
       </div>
     </v-card>
   </v-col>
-
-  <v-col align-self="end" cols="1" style="margin-bottom: auto;" />
 </template>
 
 <style scoped>
