@@ -23,7 +23,7 @@ function updateDueDate(newDate: Date | unknown) {
         :value="formattedDate" append-inner-icon="mdi-calendar" autocomplete="off"
       >
         <template #append-inner>
-          <v-icon @click.stop="updateDueDate(null)">
+          <v-icon :color="$colorMode.preference === 'dark' ? 'white': 'black'" @click.stop="updateDueDate(null)">
             mdi-close
           </v-icon>
         </template>
@@ -31,7 +31,7 @@ function updateDueDate(newDate: Date | unknown) {
       <v-btn v-else v-bind="props" icon="mdi-calendar" variant="text" />
     </template>
     <template #default="{ isActive }">
-      <v-icon style="position: absolute; right: 0; margin: 15px" @click="isActive.value = false">
+      <v-icon :color="$colorMode.preference === 'dark' ? 'white': 'black'" style="position: absolute; right: 0; margin: 15px" @click="isActive.value = false">
         mdi-close
       </v-icon>
       <v-date-picker width="100%" @update:model-value="(val: unknown) => updateDueDate(val)" />
