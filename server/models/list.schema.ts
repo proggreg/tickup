@@ -10,6 +10,10 @@ export const ListSchema = defineMongooseModel({
     name: {
       type: 'string',
       required: true,
+      validate: {
+        validator: v => v.trim() !== '',
+        message: 'Name cannot be empty',
+      },
     },
     descriptions: {
       type: 'string',

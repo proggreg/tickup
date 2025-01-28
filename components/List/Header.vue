@@ -82,7 +82,7 @@ function removeImage() {
           <v-col cols="6" :class="['text-capitalize', (aiImage || store.currentList.image) ? 'text-white' : '']">
             <v-text-field
               ref="listNameRef"
-              v-model="store.currentList.name" validate-on="input"
+              v-model="store.currentList.name" validate-on="blur eager"
               :rules="[validateListName]"
               placeholder="My List" variant="plain" :readonly="!rename"
               style=" font-weight: bold; "

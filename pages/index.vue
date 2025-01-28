@@ -15,8 +15,6 @@ const tab = ref('1')
 const saveTodo = ref(false)
 const dialog = useDialog()
 
-listsStore.setCurrentListName('')
-
 if (!loggedIn.value) {
   navigateTo('/login')
 }

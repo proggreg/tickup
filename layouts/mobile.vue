@@ -1,17 +1,8 @@
 <script setup lang="ts">
 const { status } = useAuth()
 const colorMode = useColorMode()
-const listStore = useListsStore()
 const route = useRoute()
-const router = useRouter()
 const dialog = useDialog()
-
-router.beforeResolve((route) => {
-  console.log('before route', route)
-  if (route.name !== 'list-id' && route.name !== 'todo-id') {
-    // listStore.currentList.name = ''
-  }
-})
 
 function addEventHandler() {
   if (route.name === 'lists') {

@@ -13,9 +13,7 @@ onBeforeMount(async () => {
     await listsStore.getLists(user?.value?.user._id)
   }
   const currentList = listsStore.lists.find((list: List) => list._id === route.params.id)
-  console.log('current list', currentList)
 
-  console.log('lists', listsStore.lists)
   if (currentList) {
     listsStore.setCurrentList(currentList)
   }
