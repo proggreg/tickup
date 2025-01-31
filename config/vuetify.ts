@@ -39,7 +39,7 @@ export default {
         rounded: 'xl',
       },
       VFab: {
-        rounded: 'circle',
+        rounded: 'xl',
       },
       VSelect: {
         rounded: 'xl',

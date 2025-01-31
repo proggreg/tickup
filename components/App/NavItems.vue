@@ -27,7 +27,7 @@ function openContextMenu(el: MouseEvent, list: List) {
     <template #default="{ isHovering, props }">
       <v-list-item
         v-bind="props" :key="list._id" :variant="isHovering || smAndDown ? 'tonal' : 'text'"
-        class="mb-2 px-6 py-2"
+        class="mb-2 py-2"
         style="cursor: pointer;" :to="`/list/${list._id}`"
 
         @click.right.prevent="(el: any) => openContextMenu(el, list)"
@@ -38,7 +38,7 @@ function openContextMenu(el: MouseEvent, list: List) {
           @blur="renameList(list)"
         />
         <v-list-item-title v-else class="">
-          <span class="text-h4 text-md-h6 text-capitalize  nav-item-title">{{ list.name }}</span>
+          <span class="text-h4 text-sm-h6 text-capitalize  nav-item-title">{{ list.name }}</span>
         </v-list-item-title>
       </v-list-item>
     </template>
@@ -49,5 +49,8 @@ function openContextMenu(el: MouseEvent, list: List) {
 .nav-item-title {
   text-transform: capitalize !important;
   font-weight: bold;
+  @media (min-width: 600px) {
+    font-size: 1rem !important;
+  }
 }
 </style>

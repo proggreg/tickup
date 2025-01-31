@@ -70,13 +70,14 @@ function deleteList() {
           <ListNew :open="dialog" @close="dialog.open = false" />
         </template>
         <template #append>
-          <v-btn icon="mdi-plus" @click="dialog.page = 'list';dialog.open = true; console.log('clicked')" />
+          <v-btn icon="mdi-plus" @click="dialog.page = 'list';dialog.open = true;" />
         </template>
       </v-list-item>
     </v-list>
     <v-divider />
-    <AppNavItems @open="openContextMenu" />
-
+    <div class="py-2">
+      <AppNavItems @open="openContextMenu" />
+    </div>
     <v-menu v-if="menuTarget" v-model="contextMenuOpen" :target="menuTarget" location-strategy="connected">
       <v-list>
         <v-list-item>

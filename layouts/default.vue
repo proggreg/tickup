@@ -4,7 +4,7 @@ const colorMode = useColorMode()
 
 <template>
   <ColorScheme>
-    <v-theme-provider with-background :theme="colorMode.preference">
+    <v-theme-provider with-background :theme="colorMode.preference" class="overflow-auto">
       <v-app full-height>
         <AppToolbar />
         <AppNav />

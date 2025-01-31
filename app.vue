@@ -67,13 +67,7 @@ const layoutName = computed(() => {
 </template>
 
 <style>
-.layout-enter-active,
-.layout-leave-active {
-  transition: all 0.4s;
-}
-
-.layout-enter-from,
-.layout-leave-to {
-  filter: grayscale(1);
+html,body, #__nuxt, #__layout{
+  overflow: auto;
 }
 </style>
