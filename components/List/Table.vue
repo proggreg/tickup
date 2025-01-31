@@ -41,7 +41,9 @@ const group = ref([
         </template>
       </template>
       <template v-else>
-        <TodoNew :save-todo="false" />
+        <div class="pa-4">
+          <TodoNew :save-todo="false" />
+        </div>
         <AppEmptyState />
       </template>
     </template>

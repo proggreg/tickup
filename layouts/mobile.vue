@@ -36,11 +36,13 @@ const showFab = computed(() => {
           <v-fab
             v-if="showFab"
             position="static"
-            size="large"
-            style="position: absolute; right: 75px"
-            color="primary" icon="mdi-plus"
+            size="small"
+            style="position: absolute; right: 80px; bottom: -20px"
+            color="primary" append-icon="mdi-plus"
             variant="elevated" @click="addEventHandler"
-          />
+          >
+            New
+          </v-fab>
         </div>
 
         <AppMobileNav v-if="status === 'authenticated'" />
