@@ -7,6 +7,11 @@ const toolbarOn = computed(() => {
   return store.currentList.todos.some(todo => todo.selected)
 })
 
+async function deselectAll() {
+  store.currentList.todos.forEach(todo => todo.selected = false)
+  on.value = false
+}
+
 function deleteSelected() {
   // TODO use delete many
   const deleteTodos = store.currentList.todos.filter(todo => todo.selected)
@@ -23,8 +28,8 @@ function deleteSelected() {
 <template>
   <v-snackbar v-model="toolbarOn" timeout="-1">
     <template #text>
-      <v-btn @click="on = false">
-        Dismiss
+      <v-btn @click="deselectAll">
+        Deselect All
       </v-btn>
     </template>
     <template #actions>
