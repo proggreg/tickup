@@ -243,12 +243,12 @@ export const useListsStore = defineStore('lists', {
       }
     },
     async getOverdueTodos(id: string) {
-      const { data } = await useFetch<Todo[]>('/api/todos', {
+      const todos = await $fetch<Todo[]>('/api/todos', {
         query: { overdue: true, id },
       })
 
-      if (data.value) {
-        this.overdueTodos = data.value
+      if (todos) {
+        this.overdueTodos = todos
       }
     },
     sortByDate(newDirection: string) {
@@ -271,10 +271,10 @@ export const useListsStore = defineStore('lists', {
       })
     },
   },
-  persist: {
-    debug: true,
-    storage: piniaPluginPersistedstate.localStorage(),
-  },
+  // persist: {
+  //   debug: true,
+  //   storage: piniaPluginPersistedstate.sessionStorage(),
+  // },
 })
 
 if (import.meta.hot) {

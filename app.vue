@@ -11,11 +11,12 @@ const event = useRequestEvent()
 if (status.value === 'authenticated') {
   await useAsyncData(() => settingsStore.getUserSettings().then(() => true))
 
-  // if (userId) {
-  //   listsStore.getLists(userId)
-  //   listsStore.getTodaysTodos(userId)
-  //   listsStore.getOverdueTodos(userId)
-  // }
+  const userId = data?.value?.user?.sub
+  if (userId) {
+    listsStore.getLists(userId)
+    listsStore.getTodaysTodos(userId)
+    listsStore.getOverdueTodos(userId)
+  }
 }
 else {
   if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.headers.get('host')
@@ -31,7 +32,7 @@ onBeforeMount(() => {
   const userId = data?.value?.user?.sub
   console.log('userId', userId)
   if (userId) {
-    // listsStore.getLists(userId)
+    listsStore.getLists(userId)
   }
 
   if (route.params.id) {
@@ -67,7 +68,13 @@ const layoutName = computed(() => {
 </template>
 
 <style>
-html,body, #__nuxt, #__layout{
-  overflow: auto;
+.layout-enter-active,
+.layout-leave-active {
+  transition: all 0.4s;
+}
+
+.layout-enter-from,
+.layout-leave-to {
+  filter: grayscale(1);
 }
 </style>

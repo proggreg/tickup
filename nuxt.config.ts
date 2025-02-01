@@ -107,6 +107,7 @@ export default defineNuxtConfig({
   },
 
   pwa: {
+    disable: true,
     strategies: 'generateSW',
     srcDir: undefined,
     filename: undefined,
