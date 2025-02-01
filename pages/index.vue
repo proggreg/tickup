@@ -58,7 +58,7 @@ onBeforeMount(() => {
         class="fill-height"
       >
         <div class="mb-4">
-          <TodoNew :save-todo="saveTodo" @add-todo="dialog = false; saveTodo = false" />
+          <TodoNew :save-todo="saveTodo" @add-todo="dialog.open = false; saveTodo = false" />
         </div>
         <HomePageToday />
       </v-window-item>
@@ -74,7 +74,7 @@ onBeforeMount(() => {
       title="New Todo"
       page="todo"
     >
-      <TodoNew :save-todo="saveTodo" @add-todo="dialog = false; saveTodo = false" />
+      <TodoNew :save-todo="saveTodo" @add-todo="dialog.open = false; saveTodo = false" />
       <template #buttons>
         <v-btn
           color="primary"
