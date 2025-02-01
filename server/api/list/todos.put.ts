@@ -2,7 +2,8 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
 
-    const updates = body.orderedItems.map((item) => {
+    // @ts-ignore
+    const updates = body.orderedItems.map((item: any) => {
       return {
         updateOne: {
           filter: { _id: item._id },

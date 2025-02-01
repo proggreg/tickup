@@ -12,6 +12,7 @@ export const TodoSchema = defineMongooseModel<{
   updatedAt: Date
   githubBranchName: string
   links: Array<{ title: string, url: string, _id: string }>
+  priority: string
 }>({
   name: 'Todo',
   schema: {
@@ -64,6 +65,11 @@ export const TodoSchema = defineMongooseModel<{
       }],
       required: false,
       default: () => [],
+    },
+    priority: {
+      type: 'string',
+      default: 'normal',
+      enum: ['low', 'normal', 'high'],
     },
   },
 })

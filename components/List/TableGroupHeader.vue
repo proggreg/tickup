@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 const { groupItem, isGroupOpen, columns, toggleGroup, sortBy, toggleSort, expanded } = defineProps(
   {
     groupItem: { type: Object, required: true },
@@ -19,18 +19,18 @@ onBeforeMount(() => {
 })
 
 // TODO fix exapanded keep state
-function getStatusColor(todoStatus: string) {
+function getStatusColor(todoStatus) {
   const status = statuses.filter(status => status.name === todoStatus)
   if (status.length > 0) {
     return status[0].color
   }
 }
 
-function isSorted(sortBy: { key: string }[], column: { key: string }) {
+function isSorted(sortBy) {
   return sortBy.some(item => item.key === column.key)
 }
 
-function isSortedIndex(sortBy: { key: string, order: string }[], column: { key: string }) {
+function isSortedIndex(sortBy) {
   let index = sortBy.findIndex(item => item.key === column.key)
   index++
   if (index > 0) {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
-const editLinks = ref([])
-async function removeLink(link) {
+const editLinks = ref<Link[]>([])
+async function removeLink(link: Link) {
   const newLinks = listsStore.currentTodo.links.filter((l) => {
     return l._id !== link._id
   })
@@ -24,13 +24,13 @@ async function fetchUrlsTitles() {
   return []
 }
 
-function editLink(link) {
-  editLinks.value.push(link.url)
+function editLink(link: Link) {
+  editLinks.value.push(link)
 }
 
-function cancelEditLink(link) {
+function cancelEditLink(link: Link) {
   // TODO make a copy and revert back if cancelled
-  editLinks.value = editLinks.value.filter(url => url !== link.url)
+  editLinks.value = editLinks.value.filter(editLink => editLink.url !== link.url)
 }
 
 watch(() => listsStore.currentTodo.desc, async () => {
@@ -38,10 +38,12 @@ watch(() => listsStore.currentTodo.desc, async () => {
   try {
     const linkTitles = await fetchUrlsTitles()
 
+    // @ts-ignore
     if (!linkTitles || !linkTitles.length) return
 
     if (!listsStore.currentTodo.desc) return
 
+    // @ts-ignore
     for (const linkTitle of linkTitles) {
       if (!listsStore.currentTodo.links.find((l) => {
         return l.url === linkTitle.url
@@ -54,6 +56,7 @@ watch(() => listsStore.currentTodo.desc, async () => {
 
     const urls = listsStore.currentTodo.desc.match(urlPattern)
 
+    // @ts-ignore
     for (const url of urls) {
       listsStore.currentTodo.desc = listsStore.currentTodo.desc.replace(url, '')
     }
@@ -71,11 +74,18 @@ watch(() => listsStore.currentTodo.desc, async () => {
 
     <v-list-item v-for="(link, index) in listsStore.currentTodo.links" :key="index">
       <v-list-item-title>
-        <a v-if="!editLinks.includes(link.url)" :href="link.url" target="_blank">{{ link.title }}</a>
+        <a
+          v-if="!editLinks.find((editLink) => editLink.url === link.url)"
+          :href="link.url" target="_blank"
+        >{{ link.title }}</a>
         <v-text-field v-else v-model="link.title" variant="outlined" @blur="listsStore.updateTodo()" />
       </v-list-item-title>
       <template #append>
-        <v-btn v-if="!editLinks.includes(link.url)" icon="mdi-pencil" variant="text" @click="() => editLink(link)" />
+        <v-btn
+          v-if="!editLinks.find((editLink) => editLink.url === link.url)"
+          icon="mdi-pencil" variant="text"
+          @click="() => editLink(link)"
+        />
         <v-btn v-else icon="mdi-cancel" variant="text" @click="() => cancelEditLink(link)" />
 
         <v-btn color="red" icon="mdi-delete" variant="text" @click="removeLink(link)" />

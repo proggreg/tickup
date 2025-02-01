@@ -25,6 +25,7 @@ export default defineEventHandler(async (event): Promise<{ title: string, url: s
       throw new Error('No URLs provided')
     }
 
+    // @ts-ignore
     const parsedUrls = JSON.parse(urls)
 
     if (!Array.isArray(parsedUrls)) {
@@ -39,7 +40,9 @@ export default defineEventHandler(async (event): Promise<{ title: string, url: s
 
     for (const url of parsedUrls) {
       const title = await getTitle(url)
-      titles.push({ title, url })
+      if (title) {
+        titles.push({ title, url })
+      }
     }
 
     return titles

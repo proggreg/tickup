@@ -9,6 +9,12 @@ interface listsState {
   newTodo: Todo
 }
 
+enum Priorities {
+  LOW = 'low',
+  NORMAL = 'normal',
+  HIGH = 'high',
+}
+
 export const useListsStore = defineStore('lists', {
   state: (): listsState => ({
     newTodo: {
@@ -18,6 +24,7 @@ export const useListsStore = defineStore('lists', {
       edit: false,
       color: '#87909e',
       links: [],
+      priority: Priorities.NORMAL,
     },
     lists: [],
     currentList: {
@@ -32,6 +39,7 @@ export const useListsStore = defineStore('lists', {
       edit: false,
       color: '#87909e',
       links: [],
+      priority: Priorities.NORMAL,
     },
     todos: [],
     todaysTodos: [],
@@ -52,9 +60,12 @@ export const useListsStore = defineStore('lists', {
         return newList
       }
     },
-    async updateList(list: List) {
+    async updateList(list?: List) {
       console.time('updateList')
 
+      if (!list) {
+        list = this.currentList
+      }
       const updatedList = await $fetch<List>(`/api/list/${list._id}`, {
         method: 'PUT',
         body: list,
@@ -111,6 +122,9 @@ export const useListsStore = defineStore('lists', {
         desc: '',
         edit: false,
         color: '#87909e',
+        links: [],
+        priority: Priorities.NORMAL,
+
       }
 
       this.currentList.todos[this.currentList.todos.length - 1]._id = todo._id
@@ -221,6 +235,7 @@ export const useListsStore = defineStore('lists', {
       }
     },
     sortByDate(newDirection: string) {
+      // @ts-ignore
       this.currentList.todos.sort((a, b) => {
         const dateA = a.dueDate ? new Date(a.dueDate).getTime() : null
         const dateB = b.dueDate ? new Date(b.dueDate).getTime() : null

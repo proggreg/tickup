@@ -20,6 +20,9 @@ function updateName() {
         <v-col sm="3" md="2" cols="6">
           <TodoStatus />
         </v-col>
+        <v-col sm="3" md="2" cols="6">
+          <TodoPriority />
+        </v-col>
         <v-spacer />
         <v-col sm="4" md="4" cols="6">
           <AppDueDate

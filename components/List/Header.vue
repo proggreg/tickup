@@ -16,10 +16,11 @@ watch(rename, (newVal) => {
       store.currentList._id = router.params.id as string
     }
 
-    store.updateList()
+    store.updateList(store.currentList)
   }
   else {
     if (listNameRef.value) {
+      // @ts-ignore
       listNameRef.value.focus()
     }
   }

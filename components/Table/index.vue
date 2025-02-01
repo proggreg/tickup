@@ -31,7 +31,7 @@ function getStatusColor(todoStatus: string) {
   }
 }
 
-function handleRowClick(event, row: any) {
+function handleRowClick(event: MouseEvent, row: any) {
   console.log('clicked row', row)
   listsStore.setCurrentTodo(row.item)
   navigateTo(`/todo/${row.item._id}`)

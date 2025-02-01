@@ -1,5 +1,14 @@
-export { Todo, Status, List }
+export { Todo, Status, List, Priorities, Settings, View, Link }
 declare global {
+
+  interface List {
+    userId?: string
+    name: string
+    todos: Todo[]
+    _id?: string
+    image?: string
+  }
+
   interface Todo {
     userId?: string
     name: string
@@ -12,10 +21,8 @@ declare global {
     selected?: boolean
     color: string
     githubBranchName?: string
-    links: {
-      title: string
-      url: string
-    }[]
+    links: Link[]
+    priority: Priorities
   }
 
   interface Status {
@@ -25,12 +32,10 @@ declare global {
     Edit?: boolean
   }
 
-  interface List {
-    userId?: string
-    name: string
-    todos: Todo[]
-    _id?: string
-    image?: string
+  enum Priorities {
+    LOW = 'low',
+    NORMAL = 'normal',
+    HIGH = 'high',
   }
 
   interface Settings {
@@ -39,4 +44,9 @@ declare global {
 
   type View = 'list' | 'board'
 
+  interface Link {
+    title: string
+    url: string
+    _id: string
+  }
 }

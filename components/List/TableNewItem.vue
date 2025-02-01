@@ -17,6 +17,8 @@ async function createTodo(status: string) {
       userId: data?.value?.user?.sub,
       color: 'grey',
       edit: false,
+      links: [],
+      priority: Priorities.NORMAL,
     }
     await store.addTodo(newTodo)
     newTodoTitle.value = ''

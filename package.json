@@ -39,8 +39,9 @@
     "nuxt-vitest": "^0.11.0",
     "playwright-core": "^1.40.1",
     "prettier": "^3.0.3",
-    "typescript": "^5.0.4",
+    "typescript": "^5.7.2",
     "vitest": "^1.1.1",
+    "vue-tsc": "^2.2.0",
     "vuetify-nuxt-module": "^0.14.1"
   },
   "dependencies": {

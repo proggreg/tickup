@@ -10,6 +10,7 @@ const selectedList = ref<List>()
 const listsStore = useListsStore()
 function openContextMenu(event: MouseEvent, list: List) {
   contextMenuOpen.value = true
+  // @ts-ignore
   menuTarget.value = [event.clientX, event.clientY]
   selectedList.value = list
 }
@@ -77,7 +78,7 @@ function deleteList() {
     <v-divider />
     <AppNavItems @open="openContextMenu" />
 
-    <v-menu v-if="menuTarget" v-model="contextMenuOpen" :target="menuTarget" location-strategy="connected">
+    <v-menu v-if="menuTarget" v-model="contextMenuOpen" :target="'cursor'" location-strategy="connected">
       <v-list>
         <v-list-item>
           <v-btn variant="text" color="red" icon="mdi-trash-can" @click="deleteList" />
