@@ -4,6 +4,12 @@ const listsStore = useListsStore()
 const statuses = computed(() => settingsStore.statuses)
 const search = ref('')
 
+enum Priorities {
+  low = 0,
+  normal = 1,
+  high = 2,
+}
+
 const headers = reactive([
   {
     title: 'Status', key: 'status', sortable: true, sort: (a: string, b: string) => {
@@ -13,7 +19,11 @@ const headers = reactive([
   { title: 'Title', key: 'name', sortable: true },
   { title: 'Description', key: 'desc', sortable: true },
   { title: 'Date', key: 'dueDate', sortable: true },
-  { title: 'Priority', key: 'actions', sortable: true },
+  { title: 'Priority', key: 'priority',
+    sortable: true, sortRaw: (a: Todo, b: Todo) => {
+      return Priorities[a.priority] - Priorities[b.priority]
+    },
+  },
 ])
 
 function formatDate(date: Date) {

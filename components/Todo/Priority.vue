@@ -28,6 +28,11 @@ function updatePriority(priority: Priorities | null) {
     item-title="name" variant="plain"
     @update:model-value="(priority: Priorities | null) => updatePriority(priority)"
   >
+    <template #selection="{}">
+      <v-list-item class="py-0 my-0">
+        {{ listStore.currentTodo.priority }}
+      </v-list-item>
+    </template>
     <template #item="{ props, item }">
       <v-list-item v-bind="props" :title="item.title" />
     </template>
