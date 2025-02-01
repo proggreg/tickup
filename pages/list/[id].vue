@@ -50,7 +50,7 @@ watch(listsStore.currentList.todos, (todos) => {
             <Board />
           </v-window-item>
           <v-window-item value="list" class="fill-height">
-            <ListTable />
+            <Table />
           </v-window-item>
         </v-window>
       </v-card>

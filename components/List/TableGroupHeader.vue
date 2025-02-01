@@ -56,12 +56,8 @@ function isSortedIndex(sortBy: { key: string, order: string }[], column: { key: 
   </tr>
   <template v-if="isGroupOpen(groupItem)">
     <tr>
-      <th colspan="1">
-        Status
-      </th>
-
       <template v-for="column in headerColumns" :key="column.key">
-        <v-hover
+        <!-- <v-hover
           v-if="column.key !== 'data-table-group'
             && column.key !== 'data-table-expand'
             && column.key !== 'status'
@@ -99,10 +95,11 @@ function isSortedIndex(sortBy: { key: string, order: string }[], column: { key: 
               </div>
             </th>
           </template>
-        </v-hover>
+        </v-hover> -->
+        <th v-if="column.title !== 'Group'" colspan="auto">
+          {{ column.title }}
+        </th>
       </template>
-
-      <th colspan="8" />
     </tr>
     <ListTableItem :columns="columns" :group-item="groupItem" />
     <ListTableNewItem :group-item="groupItem" />

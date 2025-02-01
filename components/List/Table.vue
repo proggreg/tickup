@@ -5,15 +5,16 @@ const opened = ref([])
 const listsStore = useListsStore()
 
 const headers = reactive([
-  { title: 'Title', key: 'name', sortable: true },
-  { title: 'Description', key: 'desc', sortable: true },
-  { title: 'Date', key: 'dueDate', sortable: true },
-  { title: '', key: 'actions', sortable: false },
   {
     title: 'Status', key: 'status', sortable: true, sort: (a: string, b: string) => {
       return settingsStore.statuses.findIndex(status => status.name === a) - settingsStore.statuses.findIndex(status => status.name === b)
     },
   },
+  { title: 'Title', key: 'name', sortable: true },
+  { title: 'Description', key: 'desc', sortable: true },
+  { title: 'Date', key: 'dueDate', sortable: true },
+  { title: 'Priority', key: 'actions', sortable: true },
+
 ])
 
 const group = ref([
