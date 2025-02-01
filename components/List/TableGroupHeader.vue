@@ -12,6 +12,12 @@ const { groupItem, isGroupOpen, columns, toggleGroup, sortBy, toggleSort, expand
 const { statuses } = useSettingsStore()
 const headerColumns = ref(columns)
 
+onBeforeMount(() => {
+  if (groupItem.value === 'Open' && !isGroupOpen(groupItem)) {
+    toggleGroup(groupItem)
+  }
+})
+
 // TODO fix exapanded keep state
 function getStatusColor(todoStatus: string) {
   const status = statuses.filter(status => status.name === todoStatus)
