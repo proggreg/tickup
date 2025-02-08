@@ -16,7 +16,7 @@ if (import.meta.client) {
 
 router.beforeResolve(() => {
   open.value = false
-  // searchStore.searchQuery = ''
+  searchStore.searchQuery = ''
 })
 
 watch(() => searchStore.searchQuery, () => {

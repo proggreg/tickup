@@ -12,7 +12,7 @@ export const useSearchStore = defineStore('search', () => {
     const userId = getUserId()
     console.log('searching for ', searchQuery)
 
-    $fetch<Todo[]>('/api/search/todo', { query: { q: searchQuery.value, id: userId } })
+    $fetch<Todo[]>('/api/search/vector', { query: { q: searchQuery.value, id: userId } })
       .then((res) => {
         results.splice(0, results.length, ...res)
         console.log('got results ', results)

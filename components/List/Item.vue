@@ -50,7 +50,7 @@ function editTodo(todo: Todo, status: Status) {
                 <ListStatus
                   v-bind="statusProps"
                   :todo="todo"
-                />
+                /> 88888
               </template>
               <v-list>
                 <v-list-item

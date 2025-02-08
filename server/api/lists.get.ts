@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
 
     const lists = await ListSchema.find({ userId: query.id })
 
-    console.log('get lists', lists)
+    // console.log('get lists', lists)
     return lists
   }
   catch (error) {
