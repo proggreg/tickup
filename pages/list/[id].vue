@@ -61,6 +61,9 @@ watch(listsStore.currentList.todos, (todos) => {
         </v-window>
       </v-card>
     </v-col>
+    <v-col>
+      <Chat />
+    </v-col>
 
     <AppDialog page="todo" title="New Todo">
       <TodoNew :save-todo="saveTodo" @add-todo="dialog.open = false; saveTodo = false" />
