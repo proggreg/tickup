@@ -8,10 +8,7 @@ export default defineEventHandler(async (event) => {
       githubBranchName: ref,
     }, { status: 'Closed' }, { new: true })
     console.log('Updated todo: ' + ref, response)
-    return {
-      status: 'error',
-      message: 'Invalid method',
-    }
+    return response
   }
 
   const body = await readBody(event)
