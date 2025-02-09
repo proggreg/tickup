@@ -2,6 +2,7 @@ import vuetifyOptions from './config/vuetify'
 
 export default defineNuxtConfig({
   modules: [
+    '@vite-pwa/nuxt',
     'vuetify-nuxt-module',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
@@ -12,7 +13,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
     '@nuxtjs/device',
-    '@vite-pwa/nuxt',
+
   ],
 
   experimental: {
@@ -149,7 +150,7 @@ export default defineNuxtConfig({
     },
     devOptions: {
       enabled: true,
-      suppressWarnings: true,
+      suppressWarnings: false,
       navigateFallback: '/',
       navigateFallbackAllowlist: [/^\/$/],
       type: 'module',

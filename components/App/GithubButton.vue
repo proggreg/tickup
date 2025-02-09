@@ -41,34 +41,33 @@ const copyToClipBoard = () => {
 const githubBtn = ref()
 
 async function createBranch() {
-  if (!config.public.github) {
-    console.warn('Github token not found')
-    return
-  }
-
-  const sha = await getDevBranchSHA()
-  if (!sha) {
-    console.error('SHA not found')
-    return
-  }
-  createBranchOnGithub(sha)
+  createBranchOnGithub()
 }
-function createBranchOnGithub(sha: string) {
-  $octokit.rest.git.createRef({
-    owner: 'proggreg',
-    repo: 'tickup',
-    ref: `refs/heads/${githubBranchName.value}`,
-    sha: sha,
-  }).then(() => {
-    message.value = 'Branch created'
-    open.value = true
-    getBranch(githubBranchName.value)
-    listStore.currentTodo.githubBranchName = githubBranchName.value
-    listStore.updateTodo(listStore.currentTodo)
-  }).catch((error) => {
-    message.value = error.message
-    open.value = true
+async function createBranchOnGithub() {
+  // debugger
+  const response = await $fetch('/api/github', {
+    method: 'POST',
+    body: {
+      branchName: githubBranchName.value,
+    },
   })
+  console.log('response', response)
+
+  // $octokit.rest.git.createRef({
+  //   owner: 'proggreg',
+  //   repo: 'tickup',
+  //   ref: `refs/heads/${githubBranchName.value}`,
+  //   sha: sha,
+  // }).then(() => {
+  //   message.value = 'Branch created'
+  //   open.value = true
+  //   getBranch(githubBranchName.value)
+  //   listStore.currentTodo.githubBranchName = githubBranchName.value
+  //   listStore.updateTodo(listStore.currentTodo)
+  // }).catch((error) => {
+  //   message.value = error.message
+  //   open.value = true
+  // })
 }
 
 function getBranch(branchName: string) {
