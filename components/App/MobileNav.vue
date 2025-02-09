@@ -1,11 +1,5 @@
-<script setup lang="ts">
-const { smAndDown } = useDisplay()
-function navClick(value: string) {
-  console.debug(value)
-}
-</script>
 <template>
-  <v-bottom-navigation v-if="smAndDown" style="position: fixed;">
+  <v-bottom-navigation grow>
     <v-btn to="/" value="home">
       <v-icon>mdi-home</v-icon>
       <span>Home</span>
@@ -19,11 +13,6 @@ function navClick(value: string) {
     <v-btn to="/search" value="search">
       <v-icon>mdi-magnify</v-icon>
       <span>Search</span>
-    </v-btn>
-
-    <v-btn to="/settings" value="settings">
-      <v-icon>mdi-cog</v-icon>
-      <span>Settings</span>
     </v-btn>
 
     <v-btn to="/account" value="settings">

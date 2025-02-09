@@ -9,6 +9,8 @@ declare module 'next-auth' {
       sub: string
       _id: string
       id: string
+      username: string
+      image: string
     }
   }
 }

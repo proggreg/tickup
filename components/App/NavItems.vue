@@ -1,17 +1,11 @@
 <script setup lang="ts">
 const { smAndDown } = useDisplay()
 const store = useListsStore()
-const navOpen = useNav()
 const editListName = ref('')
-
-async function navigate(list: List) {
-  await navigateTo(`/list/${list._id}`)
-  if (smAndDown.value) {
-    navOpen.value = false
-  }
-}
+const emit = defineEmits(['open'])
 
 function renameList(list: List) {
+  console.log('renameList', list)
   store.updateList(list)
   editListName.value = ''
 }
@@ -22,24 +16,41 @@ function rename(list: List) {
     store.currentList = list
   }
 }
+
+function openContextMenu(el: MouseEvent, list: List) {
+  emit('open', el, list)
+}
 </script>
 
 <template>
   <v-hover v-for="list in store.lists" :key="list._id">
     <template #default="{ isHovering, props }">
-      <v-list-item v-bind="props" :key="list._id" :variant="isHovering ? 'tonal' : 'text'" class="my-2 font-weight-bold"
-        style="cursor: pointer;" :to="`/list/${list._id}`">
-        <v-text-field v-if="editListName === list._id" v-model="list.name" class="font-weight-bold text-body-2"
-          autofocus variant="plain" @input.stop="() => rename(list)" @keyup.enter="renameList(list)"
-          @blur="renameList(list)" />
-        <v-list-item-title v-else class="font-weight-bold text-body-2">
-          {{ list.name }}
-        </v-list-item-title>
+      <v-list-item
+        v-bind="props" :key="list._id" :variant="isHovering || smAndDown ? 'tonal' : 'text'"
+        class="mb-2 py-2"
+        style="cursor: pointer;" :to="`/list/${list._id}`"
 
-        <template #append>
-          <ListOptions v-if="list._id" :list-id="list._id" size="small" @rename="editListName = list._id" />
-        </template>
+        @click.right.prevent="(el: any) => openContextMenu(el, list)"
+      >
+        <v-text-field
+          v-if="editListName === list._id" v-model="list.name" class="font-weight-bold "
+          autofocus variant="plain" @input.stop="() => rename(list)" @keyup.enter="renameList(list)"
+          @blur="renameList(list)"
+        />
+        <v-list-item-title v-else class="">
+          <span class="text-h4 text-sm-h6 text-capitalize  nav-item-title">{{ list.name }}</span>
+        </v-list-item-title>
       </v-list-item>
     </template>
   </v-hover>
 </template>
+
+<style scoped>
+.nav-item-title {
+  text-transform: capitalize !important;
+  font-weight: bold;
+  @media (min-width: 600px) {
+    font-size: 1rem !important;
+  }
+}
+</style>

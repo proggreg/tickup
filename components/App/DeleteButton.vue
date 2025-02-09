@@ -13,25 +13,10 @@ async function deleteTodo() {
   }
   await listsStore.deleteTodo(todo._id)
 }
-onMounted(() => {
-  console.log('delete modal mounted')
-})
-
-onUpdated(() => {
-  console.log('delete modal updated')
-})
-onUnmounted(() => {
-  console.log('delete modal unmounted')
-})
-
-watchEffect((deleteButton) => {
-  console.log('delete button changed', deleteButton)
-})
 
 // TODO - autofocus delete button
 async function focusDeleteButton() {
   await nextTick()
-  console.log(deleteButton)
 
   setTimeout(() => {
     buttonFocused.value = true
@@ -39,7 +24,6 @@ async function focusDeleteButton() {
 
   buttonFocused.value = !buttonFocused.value
   if (deleteButton.value) {
-    console.log(deleteButton)
     // deleteButton.value.focus()
   }
 }
@@ -48,8 +32,10 @@ async function focusDeleteButton() {
 <template>
   <v-dialog width="250px">
     <template #activator="{ props: activatorProps }">
-      <v-btn v-bind="activatorProps" color="red" icon="mdi-trash-can" variant="text" size="small"
-        @click="focusDeleteButton" />
+      <v-btn
+        v-bind="activatorProps" color="red" icon="mdi-trash-can" variant="text"
+        @click="focusDeleteButton"
+      />
     </template>
     <template #default="{ isActive }">
       <v-card>

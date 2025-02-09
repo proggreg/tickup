@@ -1,1 +1,1 @@
-export const useToolbar = () => useState<boolean>("useToolbar", () => false);
+export const useToolbar = () => useState<boolean>('useToolbar', () => false)

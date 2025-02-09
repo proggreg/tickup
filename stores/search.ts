@@ -1,25 +1,31 @@
-export const useSearchStore = defineStore("search", () => {
-	const query = ref("");
-	const results = ref([]);
-	watch(query, async (newQuery) => {
-		const { data: user } = useAuth();
-		const userId = user.value?.user?.sub;
-		const data = await $fetch("/api/search/todo", {
-			query: { q: newQuery, id: userId },
-		});
-		results.value = data;
-	});
+export const useSearchStore = defineStore('search', () => {
+  const searchQuery = ref('')
+  const results = reactive<Todo[]>([])
 
-	function search(query, userId) {
-		$fetch("/api/search/todo", { query: { q: query, id: userId } })
-			.then((res) => {
-				items.value = res;
-			})
-			.catch((err) => {
-				results.value = err;
-			});
-	}
-	const debouncedSearch = useDebounceFn(search, 500);
+  function getUserId() {
+    const { data: user } = useAuth()
+    const userId = user.value?.user?.sub
+    return userId
+  }
 
-	return { results, search, debouncedSearch, query };
-});
+  function search() {
+    const userId = getUserId()
+    console.log('searching for ', searchQuery)
+
+    $fetch<Todo[]>('/api/search/todo', { query: { q: searchQuery.value, id: userId } })
+      .then((res) => {
+        results.splice(0, results.length, ...res)
+        console.log('got results ', results)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+  }
+  const debouncedSearch = useDebounceFn(search, 500)
+
+  return { results, search, debouncedSearch, searchQuery }
+})
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useSearchStore, import.meta.hot))
+}

@@ -5,14 +5,18 @@ export const ListSchema = defineMongooseModel({
   schema: {
     userId: {
       type: 'string',
-      required: false
+      required: false,
     },
     name: {
       type: 'string',
-      required: true
+      required: true,
+      validate: {
+        validator: v => v.trim() !== '',
+        message: 'Name cannot be empty',
+      },
     },
     descriptions: {
-      type: 'string'
-    }
-  }
+      type: 'string',
+    },
+  },
 })

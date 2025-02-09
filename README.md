@@ -44,6 +44,11 @@ Locally preview production build:
 npm run preview
 ```
 
+Github Sign Setup
+
+To setup the Github Sign In you need to generate the credentials and callback URI.
+Login to github go to settings > developer settings > oauth apps and create an app
+
 Checkout the [deployment documentation](https://v3.nuxtjs.org/guide/deploy/presets) for more information.
 
 

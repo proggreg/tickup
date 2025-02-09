@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
-
 </script>
 
 <template>
@@ -8,7 +7,6 @@ const colorMode = useColorMode()
     <v-theme-provider with-background :theme="colorMode.preference">
       <v-app>
         <v-layout>
-          <AppMobileNav />
           <app-nav />
           <v-main>
             <v-container fluid class="fill-height flex justify-center align-start">

@@ -2,7 +2,6 @@
 const settingsStore = useSettingsStore()
 const expanded = reactive(['Open', 'In Progress']) // TODO open status renders twice?
 const opened = ref([])
-// const { todos } = defineProps<{ todos: Todo[] }>()
 const listsStore = useListsStore()
 
 const headers = reactive([
@@ -42,6 +41,9 @@ const group = ref([
         </template>
       </template>
       <template v-else>
+        <div class="pa-4">
+          <TodoNew :save-todo="false" />
+        </div>
         <AppEmptyState />
       </template>
     </template>
