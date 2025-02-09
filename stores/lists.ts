@@ -101,11 +101,11 @@ export const useListsStore = defineStore('lists', {
       this.currentList.todos = todos || []
     },
     async getListTodos(listId: string): Promise<Todo[]> {
-      console.log('getListTodos', listId)
+      // console.log('getListTodos', listId)
 
       const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { listId } })
 
-      console.log('get list todos here', todos)
+      // console.log('get list todos here', todos)
 
       if (todos) {
         this.setListTodos(todos)
@@ -189,17 +189,17 @@ export const useListsStore = defineStore('lists', {
       this.currentList.todos[index].name = name
     },
     async getLists(userId: string) {
-      console.log('get lists')
+      // console.log('get lists')
       const lists = await $fetch<List[]>('/api/lists', { query: { id: userId } })
-      console.log('get lists lists', lists)
+      // console.log('get lists lists', lists)
       if (!lists) return
 
       for (const list of lists) {
-        console.log('get list loop todos list', list)
+        // console.log('get list loop todos list', list)
         if (!list._id) continue
-        console.log('get list todos list', list._id)
+        // console.log('get list todos list', list._id)
         const todos = await this.getListTodos(list._id)
-        console.log('get list todos todos', todos)
+        // console.log('get list todos todos', todos)
         list.todos = todos
       }
 

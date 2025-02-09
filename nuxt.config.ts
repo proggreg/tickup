@@ -82,10 +82,10 @@ export default defineNuxtConfig({
     github: {
       clientId: process.env.NUXT_GITHUB_CLIENT_ID,
       clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET,
+      personal: process.env.NUXT_GITHUB_PERSONAL_ACCESS_TOKEN,
     },
-    public: {
-      github: process.env.NUXT_GITHUB_PERSONAL_ACCESS_TOKEN,
 
+    public: {
       hotjarId: process.env.HOTJAR_ID,
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
@@ -108,7 +108,7 @@ export default defineNuxtConfig({
   },
 
   pwa: {
-    disable: false,
+    disable: true,
     strategies: 'generateSW',
     srcDir: undefined,
     filename: undefined,

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
+const hasGithub = await useHasGithub()
 
 function updateDueDate(newDate: Date) {
   listsStore.currentTodo.dueDate = newDate
@@ -45,7 +46,7 @@ function updateName() {
 
     <v-card-actions class="py-6">
       <AppDeleteButton :todo="listsStore.currentTodo" />
-      <AppGithubButton :todo="listsStore.currentTodo" />
+      <AppGithubButton v-if="hasGithub" :todo="listsStore.currentTodo" />
       <v-spacer />
       <v-file-input label="File input" variant="solo-inverted" density="compact" hide-details disabled />
     </v-card-actions>

@@ -1,8 +1,11 @@
 <script setup lang="ts">
-const config = useRuntimeConfig()
 const { todo } = defineProps<{ todo: Todo }>()
-const { $octokit } = useNuxtApp()
 const listStore = useListsStore()
+const open = ref(false)
+const message = ref('')
+const branchURL = ref('')
+const githubBtn = ref()
+const hasGithub = useHasGithub()
 
 const filteredTodoName = computed(() => todo.name.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2700}-\u{27BF}]|[\u{1F000}-\u{1F02F}]|[\u{1F0A0}-\u{1F0FF}]|[\u{1F100}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2B00}-\u{2BFF}]/gu, '').trim())
 const githubBranchName = computed(() => {
@@ -23,10 +26,6 @@ const githubBranchCommand = computed(() => {
   return `git checkout -b "${githubBranchName.value}"`
 })
 
-const open = ref(false)
-const message = ref('')
-const hasBranch = ref(false)
-const branchURL = ref('')
 const copyToClipBoard = () => {
   if (githubBranchName.value) {
     navigator.clipboard.writeText(githubBranchCommand.value)
@@ -38,72 +37,36 @@ const copyToClipBoard = () => {
     open.value = true
   }
 }
-const githubBtn = ref()
 
 async function createBranch() {
-  createBranchOnGithub()
-}
-async function createBranchOnGithub() {
-  // debugger
   const response = await $fetch('/api/github', {
     method: 'POST',
     body: {
       branchName: githubBranchName.value,
     },
   })
-  console.log('response', response)
 
-  // $octokit.rest.git.createRef({
-  //   owner: 'proggreg',
-  //   repo: 'tickup',
-  //   ref: `refs/heads/${githubBranchName.value}`,
-  //   sha: sha,
-  // }).then(() => {
-  //   message.value = 'Branch created'
-  //   open.value = true
-  //   getBranch(githubBranchName.value)
-  //   listStore.currentTodo.githubBranchName = githubBranchName.value
-  //   listStore.updateTodo(listStore.currentTodo)
-  // }).catch((error) => {
-  //   message.value = error.message
-  //   open.value = true
-  // })
+  if (response.ref) {
+    updateBranchName()
+  }
 }
 
-function getBranch(branchName: string) {
-  if (!branchName) {
+async function getBranch() {
+  if (!githubBranchName.value) {
     return
   }
+  const branch = await $fetch('/api/github', { query: { branchName: githubBranchName.value } })
+  console.log(branch)
+  if (branch && branch._links) {
+    branchURL.value = branch._links.html
+  }
 
-  // TODO might be better to search before fetching
-  return $octokit.rest.repos.getBranch({
-    owner: 'proggreg',
-    repo: 'tickup',
-    branch: branchName,
-  }).then(({ data }) => {
-    if (data) {
-      branchURL.value = data?._links?.html
-      hasBranch.value = true
-    }
-    return data
-  }).catch(() => {
-
-  })
+  return branch
 }
 
-function getDevBranchSHA() {
-  return $octokit.rest.repos.getBranch({
-    owner: 'proggreg',
-    repo: 'tickup',
-    branch: 'main',
-  }).then(({ data }) => {
-    return data.commit.sha
-  }).catch((error) => {
-    console.error(error)
-  })
-}
 onUpdated(() => {
-  getBranch(githubBranchName.value)
+  if (!hasGithub) return
+  getBranch()
 })
 
 function updateBranchName() {
@@ -111,7 +74,9 @@ function updateBranchName() {
   listStore.updateTodo(listStore.currentTodo)
 }
 onMounted(async () => {
-  const hasBranch = await getBranch(githubBranchName.value)
+  if (!hasGithub) return
+
+  const hasBranch = await getBranch()
   if (hasBranch && !todo.githubBranchName) {
     updateBranchName()
   }
