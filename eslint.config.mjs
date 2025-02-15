@@ -9,6 +9,7 @@ export default withNuxt(
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@stylistic/ts/indent': 'off',
+      '@stylistic/indent': 'off',
     },
   },
 )
