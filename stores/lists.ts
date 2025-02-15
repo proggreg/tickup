@@ -180,17 +180,12 @@ export const useListsStore = defineStore('lists', {
       this.currentList.todos[index].name = name
     },
     async getLists(userId: string) {
-      // console.log('get lists')
       const lists = await $fetch<List[]>('/api/lists', { query: { id: userId } })
-      // console.log('get lists lists', lists)
       if (!lists) return
 
       for (const list of lists) {
-        // console.log('get list loop todos list', list)
         if (!list._id) continue
-        // console.log('get list todos list', list._id)
         const todos = await this.getListTodos(list._id)
-        // console.log('get list todos todos', todos)
         list.todos = todos
       }
 

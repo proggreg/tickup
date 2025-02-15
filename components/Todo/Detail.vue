@@ -2,6 +2,7 @@
 const listsStore = useListsStore()
 const hasGithub = await useHasGithub()
 
+console.log('hasGithub', hasGithub)
 function updateDueDate(newDate: Date) {
   listsStore.currentTodo.dueDate = newDate
   listsStore.updateTodo(listsStore.currentTodo)

@@ -1,6 +1,13 @@
 import { defineMongooseModel } from '#nuxt/mongoose'
 
-export const UserSchema = defineMongooseModel({
+export const UserSchema = defineMongooseModel<{
+  username: string
+  password: string
+  settings: {
+    statuses: string[]
+  }
+  hasGithub: boolean
+}>({
   name: 'User',
   schema: {
     username: {
@@ -18,6 +25,10 @@ export const UserSchema = defineMongooseModel({
           default: ['todo', 'in-progress', 'done'],
         },
       },
+    },
+    hasGithub: {
+      type: 'boolean',
+      default: false,
     },
   },
 })

@@ -1,8 +1,14 @@
-import { getToken } from '#auth'
+import mongoose from 'mongoose'
+import { getToken, getServerSession } from '#auth'
 
 export default defineEventHandler(async (event) => {
   const token = await getToken({ event })
+  const session = await getServerSession(event)
+  console.log('session', session)
+  console.log('token', token)
   console.log('check github')
+
+  console.log('connections', mongoose.connections)
 
   if (!token) {
     console.log('no token')
