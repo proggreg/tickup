@@ -7,7 +7,8 @@ export default defineEventHandler(async (event) => {
   console.debug('session', session)
   console.debug('token', token)
   console.debug('check github')
-
+  const sub = session?.user.sub
+  console.log('sub', sub)
   console.debug('connections', mongoose.connections)
 
   if (!token) {
@@ -16,5 +17,5 @@ export default defineEventHandler(async (event) => {
 
   // Check if it's your specific account
   const ALLOWED_USER = process.env.ADMIN_USER_ID
-  return token && token.sub === ALLOWED_USER
+  return sub === ALLOWED_USER
 })
