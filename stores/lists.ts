@@ -194,14 +194,14 @@ export const useListsStore = defineStore('lists', {
       // console.log('get lists lists', lists)
       if (!lists) return
 
-      for (const list of lists) {
-        // console.log('get list loop todos list', list)
-        if (!list._id) continue
-        // console.log('get list todos list', list._id)
-        const todos = await this.getListTodos(list._id)
-        // console.log('get list todos todos', todos)
-        list.todos = todos
-      }
+      // for (const list of lists) {
+      //   // console.log('get list loop todos list', list)
+      //   if (!list._id) continue
+      //   // console.log('get list todos list', list._id)
+      //   const todos = await this.getListTodos(list._id)
+      //   // console.log('get list todos todos', todos)
+      //   list.todos = todos
+      // }
 
       if (lists) {
         this.setLists(lists)
