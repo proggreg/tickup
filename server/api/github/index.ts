@@ -1,11 +1,16 @@
 import { defineEventHandler, getQuery, readBody, createError } from 'h3'
 import { Octokit } from 'octokit'
-import { getToken } from '#auth'
+import { getToken, getServerSession } from '#auth'
 
 export default defineEventHandler(async (event) => {
   const token = await getToken({ event })
+  const session = await getServerSession(event)
+  console.debug('session', session)
+  console.debug('token', token)
+  console.debug('check github')
+  const sub = session?.user.sub
 
-  if (!token) {
+  if (!sub) {
     throw createError({
       statusCode: 401,
       message: 'Unauthorized',
@@ -14,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
   // Check if it's your specific account
   const ALLOWED_USER = process.env.ADMIN_USER_ID //
-  if (token.sub !== ALLOWED_USER) {
+  if (sub !== ALLOWED_USER) {
     throw createError({
       statusCode: 403,
       message: 'Forbidden: Access restricted',
@@ -44,7 +49,7 @@ export default defineEventHandler(async (event) => {
     }
     catch (error: any) {
       console.error('Error fetching branch:', error)
-    //   return createError({ statusCode: error.status || 500, message: error.message || 'Failed to fetch branch' })
+      //   return createError({ statusCode: error.status || 500, message: error.message || 'Failed to fetch branch' })
     }
   }
   else if (event.method === 'POST') {
