@@ -4,14 +4,14 @@ import { getToken, getServerSession } from '#auth'
 export default defineEventHandler(async (event) => {
   const token = await getToken({ event })
   const session = await getServerSession(event)
-  console.log('session', session)
-  console.log('token', token)
-  console.log('check github')
+  console.debug('session', session)
+  console.debug('token', token)
+  console.debug('check github')
 
-  console.log('connections', mongoose.connections)
+  console.debug('connections', mongoose.connections)
 
   if (!token) {
-    console.log('no token')
+    console.debug('no token')
   }
 
   // Check if it's your specific account
