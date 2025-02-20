@@ -1,8 +1,8 @@
 <script setup lang="ts">
-const { smAndDown } = useDisplay()
 const store = useListsStore()
 const editListName = ref('')
 const emit = defineEmits(['open'])
+const { isMobile } = useDevice()
 
 function renameList(list: List) {
   console.log('renameList', list)
@@ -24,10 +24,10 @@ function openContextMenu(el: MouseEvent, list: List) {
 
 <template>
   <v-hover v-for="list in store.lists" :key="list._id">
-    <template #default="{ isHovering, props }">
+    <template #default="{ props }">
       <v-list-item
-        v-bind="props" :key="list._id" :variant="isHovering || smAndDown ? 'tonal' : 'text'"
-        class="mb-2 py-2"
+        v-bind="props" :key="list._id"
+        class="my-2 px-4 py-2"
         style="cursor: pointer;" :to="`/list/${list._id}`"
 
         @click.right.prevent="(el: any) => openContextMenu(el, list)"
@@ -37,10 +37,15 @@ function openContextMenu(el: MouseEvent, list: List) {
           autofocus variant="plain" @input.stop="() => rename(list)" @keyup.enter="renameList(list)"
           @blur="renameList(list)"
         />
-        <v-list-item-title v-else class="">
-          <span class="text-h4 text-sm-h6 text-capitalize  nav-item-title">{{ list.name }}</span>
+        <v-list-item-title v-else>
+          <span class="text-h5 text-sm-h6 text-capitalize  nav-item-title">{{ list.name }}</span>
         </v-list-item-title>
+        <template #prepend>
+          <v-icon v-if="list.icon">{{ list.icon }}</v-icon>
+          <v-icon v-else>mdi-format-list-bulleted</v-icon>
+        </template>
       </v-list-item>
+      <v-divider v-if="isMobile" />
     </template>
   </v-hover>
 </template>
@@ -51,6 +56,6 @@ function openContextMenu(el: MouseEvent, list: List) {
   font-weight: bold;
   @media (min-width: 600px) {
     font-size: 1rem !important;
-  }
+   }
 }
 </style>

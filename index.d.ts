@@ -31,6 +31,7 @@ declare global {
     todos: Todo[]
     _id?: string
     image?: string
+    icon: string
   }
 
   interface Settings {
