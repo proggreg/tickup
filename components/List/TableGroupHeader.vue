@@ -11,6 +11,7 @@ const { groupItem, isGroupOpen, columns, toggleGroup, sortBy, toggleSort, expand
   })
 const { statuses } = useSettingsStore()
 const headerColumns = ref(columns)
+const { mdAndUp } = useDisplay()
 
 // TODO fix exapanded keep state
 function getStatusColor(todoStatus: string) {
@@ -38,7 +39,8 @@ function isSortedIndex(sortBy: { key: string, order: string }[], column: { key: 
   <tr v-if="groupItem.key === 'status'">
     <th :colspan="2">
       <v-btn
-        class="mr-4" style="font-size: 1.4rem" variant="plain" :icon="isGroupOpen(groupItem) ? '$expand' : '$next'"
+        class="mr-4" style="font-size: 1.4rem" variant="text" :icon="isGroupOpen(groupItem) ? '$expand' : '$next'"
+        size="x-small"
         @click="toggleGroup(groupItem)"
       />
       <v-btn
@@ -50,8 +52,8 @@ function isSortedIndex(sortBy: { key: string, order: string }[], column: { key: 
     <th colspan="8" />
   </tr>
   <template v-if="isGroupOpen(groupItem)">
-    <tr>
-      <th colspan="1">
+    <tr v-if="mdAndUp">
+      <th colspan="1" class="text-h6">
         Status
       </th>
 
@@ -67,7 +69,7 @@ function isSortedIndex(sortBy: { key: string, order: string }[], column: { key: 
         >
           <template #default="{ isHovering, props }">
             <th
-              :style="isHovering ? 'cursor: pointer' : ''" v-bind="props" colspan="1" class="table-header"
+              :style="isHovering ? 'cursor: pointer' : ''" v-bind="props" colspan="1" class="table-header text-h6"
               @click="toggleSort(column)"
             >
               <div style="display: flex;">

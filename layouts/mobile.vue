@@ -27,7 +27,7 @@ const showFab = computed(() => {
       <v-app>
         <v-layout>
           <v-main>
-            <v-container class="align-start" fluid>
+            <v-container class="align-start pa-0" fluid>
               <NuxtPage />
             </v-container>
           </v-main>

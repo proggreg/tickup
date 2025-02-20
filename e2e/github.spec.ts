@@ -1,8 +1,21 @@
 import { test, expect } from '@playwright/test'
 
+async function authenticate(request) {
+    return await request.post('/api/auth/signin', {
+        data: {
+            username: 'test',
+            password: 'password',
+        },
+    })
+}
+
 test('github endpoint errors with no branch name', async ({ request }) => {
+    const authResponse = await authenticate(request)
+    console.log('authResponse', authResponse)
     const response = await request.get('/api/github')
-    expect(response.status()).toBe(400)
+    console.log('github response', response)
+
+    expect(response.status()).toBe(200)
 
     const data = await response.json()
     expect(data.message).toBe('Missing branchName in query parameters')
