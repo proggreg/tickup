@@ -23,31 +23,35 @@ function openContextMenu(el: MouseEvent, list: List) {
 </script>
 
 <template>
-  <v-hover v-for="list in store.lists" :key="list._id">
-    <template #default="{ props }">
-      <v-list-item
-        v-bind="props" :key="list._id"
-        class="my-2 px-4 py-2"
-        style="cursor: pointer;" :to="`/list/${list._id}`"
+  <v-virtual-scroll min-height="100%" :item-size="50" :items="store.lists">
+    <template #default="{ item }">
+      <v-hover>
+        <template #default="{ props }">
+          <v-list-item
+            v-bind="props" :key="item._id"
+            class="my-2 px-4 py-2"
+            style="cursor: pointer;" :to="`/list/${item._id}`"
 
-        @click.right.prevent="(el: any) => openContextMenu(el, list)"
-      >
-        <v-text-field
-          v-if="editListName === list._id" v-model="list.name" class="font-weight-bold "
-          autofocus variant="plain" @input.stop="() => rename(list)" @keyup.enter="renameList(list)"
-          @blur="renameList(list)"
-        />
-        <v-list-item-title v-else>
-          <span class="text-h5 text-sm-h6 text-capitalize  nav-item-title">{{ list.name }}</span>
-        </v-list-item-title>
-        <template #prepend>
-          <v-icon v-if="list.icon">{{ list.icon }}</v-icon>
-          <v-icon v-else>mdi-format-list-bulleted</v-icon>
+            @click.right.prevent="(el: any) => openContextMenu(el, item)"
+          >
+            <v-text-field
+              v-if="editListName === item._id" v-model="item.name" class="font-weight-bold "
+              autofocus variant="plain" @input.stop="() => rename(item)" @keyup.enter="renameList(item)"
+              @blur="renameList(item)"
+            />
+            <v-list-item-title v-else>
+              <span class="text-h5 text-sm-h6 text-capitalize  nav-item-title">{{ item.name }}</span>
+            </v-list-item-title>
+            <template #prepend>
+              <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
+              <v-icon v-else>mdi-format-list-bulleted</v-icon>
+            </template>
+          </v-list-item>
+          <v-divider v-if="isMobile" />
         </template>
-      </v-list-item>
-      <v-divider v-if="isMobile" />
+      </v-hover>
     </template>
-  </v-hover>
+  </v-virtual-scroll>
 </template>
 
 <style scoped>

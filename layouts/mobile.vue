@@ -25,27 +25,23 @@ const showFab = computed(() => {
   <ColorScheme>
     <v-theme-provider with-background :theme="colorMode.preference">
       <v-app>
-        <v-layout>
-          <v-main>
-            <v-container class="align-start pa-0" fluid>
-              <NuxtPage />
-            </v-container>
-          </v-main>
-        </v-layout>
-        <div style="position: fixed; z-index: 99999; background-color: red; width: 100%; height: 0; bottom: 100px">
-          <v-fab
-            v-if="showFab"
-            position="static"
-            size="small"
-            style="position: absolute; right: 80px; bottom: -20px"
-            color="primary" append-icon="mdi-plus"
-            variant="elevated" @click="addEventHandler"
-          >
-            New
-          </v-fab>
-        </div>
+        <v-main>
+          <v-container class="align-start pa-0" fluid>
+            <NuxtPage />
+          </v-container>
+        </v-main>
 
         <AppMobileNav v-if="status === 'authenticated'" />
+        <v-fab
+          v-if="showFab"
+          position="fixed"
+          size="small"
+          style="z-index: 99999; right: 20px; bottom: 20px"
+          color="primary" append-icon="mdi-plus"
+          variant="elevated" @click="addEventHandler"
+        >
+          New
+        </v-fab>
       </v-app>
     </v-theme-provider>
   </ColorScheme>
