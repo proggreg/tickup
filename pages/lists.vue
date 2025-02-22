@@ -11,6 +11,7 @@ definePageMeta({
 <template>
   <div style="width: 100%; height: 100%;">
     <AppNavItems />
+
     <ListNew />
   </div>
 </template>

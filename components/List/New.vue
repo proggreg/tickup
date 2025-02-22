@@ -4,6 +4,7 @@ const newList = ref<List>({
   name: '',
   todos: [],
   _id: undefined,
+  icon: '',
 })
 const listsStore = useListsStore()
 const navOpen = useNav()
@@ -20,12 +21,12 @@ async function createNewList() {
       name: '',
       todos: [],
       _id: undefined,
+      icon: '',
     }
     dialog.value.open = false
     if (smAndDown.value) {
       navOpen.value = false
     }
-    await navigateTo(`/list/${list._id}`)
   }
 }
 </script>
