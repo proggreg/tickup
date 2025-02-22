@@ -35,7 +35,8 @@ const showFab = computed(() => {
           app
           size="small"
           position="relative"
-          location="center center"
+          location="bottom end"
+          style="bottom: 50px;"
           elevation="12"
           color="primary" append-icon="mdi-plus"
           variant="elevated" extended
