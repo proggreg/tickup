@@ -23,7 +23,12 @@ function openContextMenu(el: MouseEvent, list: List) {
 </script>
 
 <template>
-  <v-virtual-scroll min-height="100%" :item-size="50" :items="store.lists">
+  <v-virtual-scroll
+    :item-size="1"
+    :items="store.lists"
+    class="pa-0 nav-items-scroll"
+    height="100%"
+  >
     <template #default="{ item }">
       <v-hover>
         <template #default="{ props }">
@@ -55,6 +60,12 @@ function openContextMenu(el: MouseEvent, list: List) {
 </template>
 
 <style scoped>
+.nav-items-scroll {
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
 .nav-item-title {
   text-transform: capitalize !important;
   font-weight: bold;

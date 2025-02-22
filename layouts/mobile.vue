@@ -30,18 +30,19 @@ const showFab = computed(() => {
             <NuxtPage />
           </v-container>
         </v-main>
-
-        <AppMobileNav v-if="status === 'authenticated'" />
         <v-fab
           v-if="showFab"
-          position="fixed"
+          app
           size="small"
-          style="z-index: 99999; right: 20px; bottom: 20px"
+          position="relative"
+          location="center center"
+          elevation="12"
           color="primary" append-icon="mdi-plus"
-          variant="elevated" @click="addEventHandler"
-        >
-          New
-        </v-fab>
+          variant="elevated" extended
+          text="New"
+          @click="addEventHandler"
+        />
+        <AppMobileNav v-if="status === 'authenticated'" />
       </v-app>
     </v-theme-provider>
   </ColorScheme>

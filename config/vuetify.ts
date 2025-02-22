@@ -54,6 +54,7 @@ export default {
         },
         dark: {
           colors: {
+            primary: '#FFFFFF',
             secondary: '#000000',
           },
         },

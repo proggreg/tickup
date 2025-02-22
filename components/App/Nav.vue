@@ -51,33 +51,18 @@ function deleteList() {
     </template>
   </v-app-bar>
 
-  <v-navigation-drawer v-if="loggedIn" v-model="open" class="pa-2 font-weight-bold" :permanent="!smAndDown">
-    <v-list nav>
-      <v-spacer />
-      <v-list-item>
-        <template #prepend>
-          Home
-        </template>
-        <template #append>
-          <v-btn icon="mdi-home" to="/" />
-        </template>
-      </v-list-item>
-      <v-list-item>
-        <div class="d-flex justify-space-between">
-          Lists
-        </div>
-        <template #prepend>
-          <ListNew :open="dialog" @close="dialog.open = false" />
-        </template>
-        <template #append>
-          <v-btn icon="mdi-plus" @click="dialog.page = 'list';dialog.open = true;" />
-        </template>
+  <v-navigation-drawer v-if="loggedIn" v-model="open" style="max-height: 100vh; overflow-y: hidden !important;" disable-resize-watcher class="font-weight-bold" :permanent="!smAndDown" height="100vh">
+    <v-list>
+      <!-- <v-spacer /> -->
+      <v-list-item to="/" class="text-h5 text-sm-h6 text-capitalize  nav-item-title" prepend-icon="mdi-home" title="Home" />
+      <v-list-item prepend-icon="mdi-plus" class="text-h5 text-sm-h6 text-capitalize  nav-item-title" title="New List" @click="dialog.page = 'list';dialog.open = true;">
+        <ListNew :open="dialog" @close="dialog.open = false" />
       </v-list-item>
     </v-list>
     <v-divider />
-    <div class="py-2">
-      <AppNavItems @open="openContextMenu" />
-    </div>
+
+    <AppNavItems @open="openContextMenu" />
+
     <v-menu v-if="menuTarget" v-model="contextMenuOpen" :target="menuTarget" location-strategy="connected">
       <v-list>
         <v-list-item>
@@ -96,3 +81,22 @@ function deleteList() {
     </template>
   </v-navigation-drawer>
 </template>
+
+<style scoped>
+.nav-item-title {
+  text-transform: capitalize !important;
+  font-weight: bold;
+  @media (min-width: 600px) {
+    font-size: 1rem !important;
+   }
+}
+
+:deep(.v-navigation-drawer__content) {
+  overflow-y: hidden !important;
+}
+
+:deep(.v-list-item-title) {
+  text-transform: capitalize !important;
+  font-weight: bold;
+}
+</style>
