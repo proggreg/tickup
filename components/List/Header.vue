@@ -92,6 +92,9 @@ function removeImage() {
               @blur="store.currentList.name ? rename = false : null"
             />
           </v-col>
+          <v-col class="text-right">
+            <ListSettingsButton />
+          </v-col>
         </v-row>
 
         <v-card-actions :class="['text-capitalize', store.currentList.image ? 'text-white' : '']">

@@ -29,11 +29,15 @@ export default {
         rounded: 'xl',
         variant: 'outlined',
       },
+      VList: {
+        // variant: 'plain',
+      },
       VListItem: {
-        rounded: 'xl',
+        // rounded: 'xl',
+        // variant: 'plain',
       },
       VMenu: {
-        rounded: 'xl',
+        // rounded: 'xl',
       },
       VCard: {
         rounded: 'xl',

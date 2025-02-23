@@ -5,13 +5,11 @@ const emit = defineEmits(['open'])
 const { isMobile } = useDevice()
 
 function renameList(list: List) {
-  console.log('renameList', list)
   store.updateList(list)
   editListName.value = ''
 }
 
 function rename(list: List) {
-  console.log('rename', list)
   if (store.currentList._id === list._id) {
     store.currentList = list
   }
@@ -34,8 +32,9 @@ function openContextMenu(el: MouseEvent, list: List) {
         <template #default="{ props }">
           <v-list-item
             v-bind="props" :key="item._id"
-            class="my-2 px-4 py-2"
-            style="cursor: pointer;" :to="`/list/${item._id}`"
+            class=""
+            style="cursor: pointer;"
+            @click.stop="() => $router.push(`/list/${item._id}`)"
 
             @click.right.prevent="(el: any) => openContextMenu(el, item)"
           >
@@ -45,11 +44,14 @@ function openContextMenu(el: MouseEvent, list: List) {
               @blur="renameList(item)"
             />
             <v-list-item-title v-else>
-              <span class="text-h5 text-sm-h6 text-capitalize  nav-item-title">{{ item.name }}</span>
+              <span class="">{{ item.name }}</span>
             </v-list-item-title>
             <template #prepend>
               <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
               <v-icon v-else>mdi-format-list-bulleted</v-icon>
+            </template>
+            <template #append>
+              <list-settings-button :list-id="item._id" />
             </template>
           </v-list-item>
           <v-divider v-if="isMobile" />
