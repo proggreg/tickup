@@ -74,21 +74,23 @@ export const useListsStore = defineStore('lists', {
     setLists(lists: Array<List>) {
       this.lists = lists
     },
-    async deleteList(listId: string) {
-      if (listId) {
-        try {
-          console.log(`delete list ${listId}`)
-          this.lists = this.lists.filter(list => list._id !== listId)
-          const data = await $fetch<List>(`/api/list/${listId}`, {
-            method: 'DELETE',
-          })
-          if (data) {
-            console.log(`list ${listId} deleted`)
-          }
+    async deleteList(listId?: string) {
+      if (!listId) {
+        listId = this.currentList._id
+      }
+
+      try {
+        console.log(`delete list ${listId}`)
+        this.lists = this.lists.filter(list => list._id !== listId)
+        const data = await $fetch<List>(`/api/list/${listId}`, {
+          method: 'DELETE',
+        })
+        if (data) {
+          console.log(`list ${listId} deleted`)
         }
-        catch (err) {
-          console.error(err)
-        }
+      }
+      catch (err) {
+        console.error(err)
       }
     },
     setListName(newName: string) {

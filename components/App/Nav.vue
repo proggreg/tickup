@@ -34,7 +34,10 @@ function deleteList() {
             mdi-menu
           </v-icon>
         </v-btn>
-        <AppMenu v-else />
+        <!-- <AppMenu v-else /> -->
+        <v-btn variant="plain" icon="mdi-home" to="/" />
+        <v-btn variant="plain" icon="mdi-cog" to="/settings" />
+        <v-btn variant="plain" icon="mdi-plus" @click="dialog.page = 'list';dialog.open = true;" />
       </template>
       <template v-else>
         <v-img src="/android-chrome-512x512.png" width="50" style="border-radius: 50%" />
@@ -52,19 +55,21 @@ function deleteList() {
   </v-app-bar>
 
   <v-navigation-drawer v-if="loggedIn" v-model="open" style="max-height: 100vh; overflow-y: hidden !important;" disable-resize-watcher class="font-weight-bold" :permanent="!smAndDown" height="100vh">
-    <v-list>
+    <v-list nav>
       <!-- <v-spacer /> -->
-      <v-list-item to="/" class="text-h5 text-sm-h6 text-capitalize  nav-item-title" prepend-icon="mdi-home" title="Home" />
-      <v-list-item prepend-icon="mdi-plus" class="text-h5 text-sm-h6 text-capitalize  nav-item-title" title="New List" @click="dialog.page = 'list';dialog.open = true;">
+      <!-- <v-btn variant="plain" icon="mdi-home" to="/" />
+      <v-btn variant="plain" icon="mdi-plus" @click="dialog.page = 'list';dialog.open = true;" /> -->
+      <ListNew :open="dialog" @close="dialog.open = false" />
+      <!-- <v-list-item to="/" class="text-h5 text-sm-h6 text-capitalize  nav-item-title" prepend-icon="mdi-home" />
+      <v-list-item prepend-icon="mdi-plus" class="text-h5 text-sm-h6 text-capitalize  nav-item-title" @click="dialog.page = 'list';dialog.open = true;">
         <ListNew :open="dialog" @close="dialog.open = false" />
-      </v-list-item>
+      </v-list-item> -->
+      <!-- <v-divider class="mb-1" /> -->
+      <AppNavItems @open="openContextMenu" />
     </v-list>
-    <v-divider />
-
-    <AppNavItems @open="openContextMenu" />
 
     <v-menu v-if="menuTarget" v-model="contextMenuOpen" :target="menuTarget" location-strategy="connected">
-      <v-list>
+      <v-list nav>
         <v-list-item>
           <v-btn variant="text" color="red" icon="mdi-trash-can" @click="deleteList" />
         </v-list-item>

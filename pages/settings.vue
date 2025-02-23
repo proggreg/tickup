@@ -2,9 +2,11 @@
 definePageMeta({
   layout: 'settings',
 })
+const { data, signOut } = useAuth()
 const store = useSettingsStore()
+
 await useAsyncData(() => store.getUserSettings().then(() => true))
-const { data } = useAuth()
+
 const options = reactive([{
   name: 'Rename',
   handler: renameStatus,
@@ -53,7 +55,7 @@ async function save() {
     }
   }
 
-  const response = await $fetch('/api/settings', {
+  await $fetch('/api/settings', {
     method: 'PUT',
     body: { userId: data.value?.user?.sub, statuses: store.statuses },
   })
@@ -119,11 +121,17 @@ function cancel() {
             </v-btn>
           </v-list-item>
         </v-list>
-        <v-btn block color="secondary" @click="cancel">
+        <v-btn color="secondary" @click="cancel">
           Cancel
         </v-btn>
-        <v-btn block color="primary" @click="save">
+        <v-btn color="primary" @click="save">
           Save
+        </v-btn>
+        <v-btn
+          class="text-body-2 py-0 ma-2" append-icon="mdi-logout"
+          @click="signOut()"
+        >
+          Sign Out
         </v-btn>
       </v-card>
     </v-col>
