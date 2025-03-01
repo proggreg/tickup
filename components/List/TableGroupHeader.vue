@@ -1,17 +1,27 @@
 <script setup lang="ts">
-const { groupItem, isGroupOpen, columns, toggleGroup, sortBy, toggleSort, expanded } = defineProps(
-  {
-    groupItem: { type: Object, required: true },
-    isGroupOpen: { type: Function, required: true },
-    columns: { type: Array, required: true },
-    toggleGroup: { type: Function, required: true },
-    sortBy: { type: Array, required: true },
-    toggleSort: { type: Function, required: true },
-    expanded: { type: Array, required: true },
-  })
+const { groupItem, isGroupOpen, columns, toggleGroup, sortBy, toggleSort, expanded } = defineProps<{
+  groupItem: any // Using any for now since Vuetify's internal types are complex
+  isGroupOpen: (item: any) => boolean
+  columns: any[] // Using any[] since Vuetify's internal header type is complex
+  toggleGroup: (item: any) => void
+  sortBy: any[] // Using any[] since Vuetify's internal sort type is complex
+  toggleSort: (column: any) => void
+  expanded: string[]
+}>()
 const { statuses } = useSettingsStore()
 const headerColumns = ref(columns)
 const { mdAndUp } = useDisplay()
+
+// Log when component mounts
+onMounted(() => {
+  console.log('TableGroupHeader mounted for group:', groupItem)
+  console.log('Is group open?', isGroupOpen(groupItem))
+  console.log('expanded', expanded)
+  if (!isGroupOpen(groupItem) && groupItem.key === 'status' && groupItem.value === 'Open') {
+    console.log('Group is open:', groupItem)
+    toggleGroup(groupItem)
+  }
+})
 
 // TODO fix exapanded keep state
 function getStatusColor(todoStatus: string) {
