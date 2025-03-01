@@ -32,7 +32,7 @@ function deleteList() {
       />
     </template>
     <v-list>
-      <v-list-item @click.self="deleteList">
+      <v-list-item @click.prevent="deleteList">
         <v-list-item-title class="text-red">Delete List</v-list-item-title>
         <template #prepend>
           <v-icon color="red" icon="mdi-delete" />
