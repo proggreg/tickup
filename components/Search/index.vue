@@ -30,7 +30,7 @@ watch(() => searchStore.searchQuery, () => {
 <template>
   <v-dialog class="ma-6" width="500" min-height="300" max-height="100%" height="100%" :model-value="open" @after-leave="open = false">
     <template #activator="{ props }">
-      <v-text-field v-model="searchStore.searchQuery" placeholder="ctrl + k" class="mx-12" append-inner-icon="mdi-magnify" v-on="props" />
+      <v-text-field v-model="searchStore.searchQuery" placeholder="ctrl + k" class="mx-6" append-inner-icon="mdi-magnify" v-on="props" />
     </template>
 
     <template #default="{ isActive }">

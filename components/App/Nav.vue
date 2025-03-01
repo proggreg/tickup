@@ -28,17 +28,21 @@ function deleteList() {
 <template>
   <v-app-bar v-if="!smAndDown" extension-height="0">
     <template #prepend>
+      <v-img class="pa-6" src="/android-chrome-512x512.png" width="40" style="border-radius: 50%" />
+
       <template v-if="loggedIn">
-        <v-btn v-if="smAndDown" size="small" style="padding: 0;" elevation="0" @click="open = !open">
-          <v-icon class="text-h4" size="x-large">
-            mdi-menu
-          </v-icon>
-        </v-btn>
-        <!-- <AppMenu v-else /> -->
-        <v-btn variant="plain" icon="mdi-home" to="/" />
-        <v-btn variant="plain" icon="mdi-cog" to="/settings" />
-        <v-btn variant="plain" icon="mdi-plus" @click="dialog.page = 'list';dialog.open = true;" />
+        <div class="ml-6" style="display: flex; justify-content: space-between;">
+          <v-btn v-if="smAndDown" size="small" style="padding: 0;" elevation="0" @click="open = !open">
+            <v-icon class="text-h4" size="x-large">
+              mdi-menu
+            </v-icon>
+          </v-btn>
+          <v-btn variant="plain" icon="mdi-home" to="/" />
+          <v-btn variant="plain" icon="mdi-cog" to="/settings" />
+          <v-btn variant="plain" icon="mdi-plus" @click="dialog.page = 'list';dialog.open = true;" />
+        </div>
       </template>
+
       <template v-else>
         <v-img src="/android-chrome-512x512.png" width="50" style="border-radius: 50%" />
       </template>
