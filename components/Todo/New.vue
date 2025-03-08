@@ -2,8 +2,7 @@
 const listsStore = useListsStore()
 const { data } = useAuth()
 const route = useRoute()
-const emit = defineEmits(['addTodo'])
-const { saveTodo } = defineProps<{ saveTodo: boolean }>()
+const emit = defineEmits(['save-todo'])
 
 async function addTodo() {
   if (!route.params.id) {
@@ -24,23 +23,23 @@ async function addTodo() {
     if (!route.params.id) {
       await listsStore.getTodaysTodos(data.value?.user.id || data.value?.user.sub || '')
     }
-    listsStore.newTodo.name = ''
-    listsStore.newTodo.dueDate = undefined
-    emit('addTodo')
+    listsStore.newReset()
+    emit('save-todo')
   }
 }
 
-watch(() => saveTodo, (newVal) => {
-  if (newVal) {
-    addTodo()
-  }
-})
+// watch(() => saveTodo, (newVal) => {
+//   if (newVal) {
+//     addTodo()
+//   }
+// })
 </script>
 
 <template>
   <v-text-field
     v-if="listsStore.currentList" v-model="listsStore.newTodo.name"
     min-width="300"
+    autofocus
     :placeholder="'Add todo to ' + listsStore.currentList.name" @keyup.enter="addTodo"
   >
     <template #append-inner>

@@ -3,10 +3,10 @@ const listsStore = useListsStore()
 const settingsStore = useSettingsStore()
 const { data, status } = useAuth()
 const { isMobile } = useDevice()
-// const { $pwa } = useNuxtApp()
 const route = useRoute()
 const config = useRuntimeConfig()
 const event = useRequestEvent()
+const dialog = useDialog()
 
 if (status.value === 'authenticated') {
   await useAsyncData(() => settingsStore.getUserSettings().then(() => true))
@@ -61,6 +61,19 @@ const layoutName = computed(() => {
 <template>
   <div>
     <VitePwaManifest />
+    <AppKeyCommands />
+    <AppDialog page="todo" title="New Todo">
+      <TodoNew @save-todo="dialog.open = false" />
+      <template #buttons>
+        <v-btn
+          color="primary"
+          :disabled="listsStore.newTodo.name === ''"
+          @click.stop="dialog.open = false"
+        >
+          Save
+        </v-btn>
+      </template>
+    </AppDialog>
     <NuxtLayout :name="layoutName">
       <NuxtPage />
     </NuxtLayout>

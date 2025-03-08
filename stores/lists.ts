@@ -1,6 +1,7 @@
 interface listsState {
   lists: List[]
   currentList: List
+  newList: List
   currentTodo: Todo
   todos?: Todo[]
   todaysTodos: Todo[]
@@ -9,36 +10,37 @@ interface listsState {
   newTodo: Todo
 }
 
+const newTodoState = {
+  name: '',
+  status: 'Open',
+  desc: '',
+  edit: false,
+  color: '#87909e',
+  links: [],
+}
+
+const newListState = {
+  name: '',
+  todos: [],
+  icon: 'mdi-format-list-bulleted',
+}
 export const useListsStore = defineStore('lists', {
   state: (): listsState => ({
-    newTodo: {
-      name: '',
-      status: 'Open',
-      desc: '',
-      edit: false,
-      color: '#87909e',
-      links: [],
-    },
-    lists: [],
-    currentList: {
-      name: '',
-      todos: [],
-    },
+    newTodo: newTodoState,
+    currentTodo: newTodoState,
+    newList: newListState,
+    currentList: newListState,
     view: 'list',
-    currentTodo: {
-      name: '',
-      status: 'Open',
-      desc: '',
-      edit: false,
-      color: '#87909e',
-      links: [],
-    },
+    lists: [],
     todos: [],
     todaysTodos: [],
     overdueTodos: [],
   }),
   actions: {
-    async addList(newList: List) {
+    async addList(newList?: List) {
+      if (!newList) {
+        newList = this.newList
+      }
       if (newList) {
         this.lists.push(newList)
         this.currentList = newList
@@ -106,7 +108,6 @@ export const useListsStore = defineStore('lists', {
       const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { listId } })
       return todos || []
     },
-
     async addTodo(newTodo: Todo) {
       if (newTodo._id) {
         console.warn('todo already has an id', newTodo)
@@ -257,6 +258,23 @@ export const useListsStore = defineStore('lists', {
 
         return newDirection === 'ascending' ? result : -result
       })
+    },
+
+    newReset() {
+      console.log('newReset')
+      this.newTodo = {
+        name: '',
+        status: 'Open',
+        desc: '',
+        edit: false,
+        color: '#87909e',
+        links: [],
+      }
+      this.newList = {
+        name: '',
+        todos: [],
+        icon: 'mdi-format-list-bulleted',
+      }
     },
   },
   // persist: {

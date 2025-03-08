@@ -32,7 +32,7 @@ export default {
       VList: {
         // variant: 'plain',
       },
-      VListItem: {
+      V45: {
         // rounded: 'xl',
         // variant: 'plain',
       },
