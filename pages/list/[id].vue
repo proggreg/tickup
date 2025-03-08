@@ -61,18 +61,5 @@ watch(listsStore.currentList.todos, (todos) => {
         </v-window>
       </v-card>
     </v-col>
-
-    <AppDialog page="todo" title="New Todo">
-      <TodoNew :save-todo="saveTodo" @add-todo="dialog.open = false; saveTodo = false" />
-      <template #buttons>
-        <v-btn
-          color="primary"
-          :disabled="listsStore.newTodo.name === ''"
-          @click.stop="saveTodo = true; dialog.open = false"
-        >
-          Save
-        </v-btn>
-      </template>
-    </AppDialog>
   </div>
 </template>

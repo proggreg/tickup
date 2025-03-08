@@ -13,6 +13,7 @@ const newTodo = ref<Todo>({
   edit: true,
   selected: false,
   color: 'grey',
+  links: [],
 })
 
 const groupedTodos = computed(() => {
