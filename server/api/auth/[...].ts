@@ -13,14 +13,14 @@ export default NuxtAuthHandler({
     signIn: '/login',
   },
   providers: [
-    // @ts-expect-error
-    CredentialsProvider.default({
+    CredentialsProvider({
       name: 'credentials',
       credentials: {
         username: { label: 'Username', type: 'text', placeholder: 'Aaron' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials: { username: string, password: string }) {
+      async authorize(credentials: Record<'username' | 'password', string> | undefined) {
+        if (!credentials?.username || !credentials?.password) return null
         try {
           const user = await UserSchema.findOne({ username: credentials.username })
 
@@ -41,8 +41,7 @@ export default NuxtAuthHandler({
       },
     }),
 
-    // @ts-expect-error
-    GithubProvider.default({
+    GithubProvider({
       clientId: useRuntimeConfig().github.clientId,
       clientSecret: useRuntimeConfig().github.clientSecret,
     }),
@@ -52,15 +51,15 @@ export default NuxtAuthHandler({
   },
 
   callbacks: {
-    async redirect({ url, baseUrl }) {
+    async redirect({ url }: { url: string }) {
       return url
     },
 
-    async jwt({ token }) {
+    async jwt({ token }: { token: any }) {
       return token
     },
 
-    async session({ session, token }) {
+    async session({ session, token }: { session: any, token: any }) {
       if (session.user && !session.user.name) {
         const user = await UserSchema.findById(token.sub)
         if (user) {
@@ -75,14 +74,12 @@ export default NuxtAuthHandler({
 
       return session
     },
-    async signIn({ user }) {
-      console.log('signIn', user)
+    async signIn({ user }: { user: any }) {
       if (user) {
         return true
       }
       return false
     },
   },
-  // @ts-expect-error
   adapter: MongoDBAdapter(clientPromise),
 })
