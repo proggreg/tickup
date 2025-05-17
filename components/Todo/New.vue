@@ -27,19 +27,12 @@ async function addTodo() {
     emit('save-todo')
   }
 }
-
-// watch(() => saveTodo, (newVal) => {
-//   if (newVal) {
-//     addTodo()
-//   }
-// })
 </script>
 
 <template>
   <v-text-field
     v-if="listsStore.currentList" v-model="listsStore.newTodo.name"
     min-width="300"
-    autofocus
     :placeholder="'Add todo to ' + listsStore.currentList.name" @keyup.enter="addTodo"
   >
     <template #append-inner>
