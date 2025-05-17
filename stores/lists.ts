@@ -9,6 +9,14 @@ interface listsState {
   newTodo: Todo
 }
 
+const newListDefaults: List = {
+  name: '',
+  todos: [],
+  _id: '',
+  image: '',
+  listType: '',
+}
+
 export const useListsStore = defineStore('lists', {
   state: (): listsState => ({
     newTodo: {
@@ -19,13 +27,7 @@ export const useListsStore = defineStore('lists', {
       color: '#87909e',
     },
     lists: [],
-    currentList: {
-      name: '',
-      todos: [],
-      _id: '',
-      image: '',
-      listType: '',
-    },
+    currentList: newListDefaults,
     view: 'list',
     currentTodo: {
       name: '',
@@ -39,6 +41,9 @@ export const useListsStore = defineStore('lists', {
     overdueTodos: [],
   }),
   actions: {
+    // =====================
+    // 1. List Management
+    // =====================
     async addList(newList: List) {
       if (newList) {
         this.lists.push(newList)
@@ -53,21 +58,30 @@ export const useListsStore = defineStore('lists', {
         return newList
       }
     },
-    async updateList(list: List) {
+    async updateList(list?: List) {
       console.time('updateList')
+      const listToUpdate = list || this.currentList
 
-      const updatedList = await $fetch<List>(`/api/list/${list._id}`, {
+      const listTodos = listToUpdate.todos
+
+      if (!listToUpdate || !listToUpdate._id) {
+        throw Error('No valid list to update')
+      }
+
+      const updatedList = await $fetch<List>(`/api/list/${listToUpdate._id}`, {
         method: 'PUT',
-        body: list,
+        body: listToUpdate,
       })
 
       this.setLists(
         this.lists.map(l => (l._id === updatedList._id ? updatedList : l)),
       )
+      // Optionally update currentList if it was the one updated
+      if (this.currentList && this.currentList._id === updatedList._id) {
+        updatedList.todos = listTodos
+        this.currentList = updatedList
+      }
       console.timeEnd('updateList')
-    },
-    setLists(lists: Array<List>) {
-      this.lists = lists
     },
     async deleteList(listId: string) {
       if (listId) {
@@ -78,6 +92,9 @@ export const useListsStore = defineStore('lists', {
         console.log('list deleted', data)
       }
     },
+    setLists(lists: Array<List>) {
+      this.lists = lists
+    },
     setListName(newName: string) {
       if (!this.currentList) {
         return
@@ -85,20 +102,47 @@ export const useListsStore = defineStore('lists', {
       this.currentList.name = newName
     },
     setListTodos(todos: Todo[]) {
-      this.currentList.todos = todos || []
+      if (!todos || !todos.length) return
+
+      console.log('set list todos', todos)
+      this.currentList.todos = todos
     },
-    async getListTodos(listId: string) {
-      const { data } = await useFetch<Todo[]>(`/api/list/todo/${listId}`)
+    async getLists(id: string) {
+      const { data } = await useFetch<List[]>('/api/lists', { query: { id } })
 
       if (data.value) {
-        this.setListTodos(data.value)
+        this.setLists(data.value)
       }
     },
+    async getList(id: string) {
+      const list = await $fetch<List>(`/api/list/${id}`)
 
+      if (list) {
+        this.getListTodos(id)
+        this.currentList = list
+        return this.currentList
+      }
+    },
+    async getListTodos(listId: string) {
+      const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { id: listId } })
+
+      if (todos) {
+        this.setListTodos(todos)
+      }
+
+      return todos
+    },
+
+    // =====================
+    // 2. Todo Management
+    // =====================
     async addTodo(newTodo: Todo) {
       if (newTodo._id) {
         console.warn('todo already has an id', newTodo)
         return
+      }
+      if (!this.currentList.todos) {
+        this.currentList.todos = []
       }
       this.currentList.todos.push(newTodo)
       const todo = await $fetch<Todo>('/api/todo', {
@@ -116,7 +160,7 @@ export const useListsStore = defineStore('lists', {
 
       this.currentList.todos[this.currentList.todos.length - 1]._id = todo._id
 
-      console.log('todo added', todo)
+      this.updateList()
       return todo
     },
     async updateTodo(todo: Todo) {
@@ -138,7 +182,30 @@ export const useListsStore = defineStore('lists', {
         this.todaysTodos = this.todaysTodos.filter(todo => todo._id !== id)
       }
     },
+    async getTodo(id: string) {
+      const { data } = await useFetch<Todo>(`/api/todo/${id}`)
+
+      if (data.value) {
+        this.currentTodo = data.value
+      }
+
+      return data
+    },
+    async getTodos(userId: string) {
+      const { data } = await useFetch<Todo[]>('/api/todos', {
+        query: { userId },
+      })
+
+      if (data.value) {
+        this.todos = data.value
+      }
+    },
+
+    // =====================
+    // 3. Current State Setters
+    // =====================
     setCurrentList(list: List) {
+      console.log('set current list', list)
       if (list) {
         this.currentList = list
         if (!this.currentList.todos) {
@@ -161,44 +228,21 @@ export const useListsStore = defineStore('lists', {
       }
     },
     setTaskName(name: string, index: number) {
-      if (!this.currentTodo || !this.currentList) {
+      // Ensure the index is valid and the todo exists before setting the name
+      if (
+        !this.currentList
+        || !Array.isArray(this.currentList.todos)
+        || index < 0
+        || index >= this.currentList.todos.length
+      ) {
         return
       }
       this.currentList.todos[index].name = name
     },
-    async getLists(id: string) {
-      const { data } = await useFetch<List[]>('/api/lists', { query: { id } })
 
-      if (data.value) {
-        this.setLists(data.value)
-      }
-    },
-    async getList(id: string) {
-      const { data } = await useFetch<List>(`/api/list/${id}`)
-
-      if (data.value) {
-        this.currentList = data.value
-        return this.currentList
-      }
-    },
-    async getTodo(id: string) {
-      const { data } = await useFetch<Todo>(`/api/todo/${id}`)
-
-      if (data.value) {
-        this.currentTodo = data.value
-      }
-
-      return data
-    },
-    async getTodos(userId: string) {
-      const { data } = await useFetch<Todo[]>('/api/todos', {
-        query: { userId },
-      })
-
-      if (data.value) {
-        this.todos = data.value
-      }
-    },
+    // =====================
+    // 4. Special Queries
+    // =====================
     async getTodaysTodos(id: string) {
       const { data } = await useFetch<Todo[]>('/api/todos', {
         query: { today: true, id },

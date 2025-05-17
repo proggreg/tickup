@@ -8,7 +8,7 @@ onBeforeMount(() => {
     listsStore.setCurrentTodo(todo as Todo)
     if (todo) {
       $fetch(`/api/list/${todo.listId}`).then((list) => {
-        listsStore.setCurrentList(list as List)
+        // listsStore.setCurrentList(list as List)
       })
     }
   })

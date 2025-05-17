@@ -16,16 +16,19 @@ const newTodo = ref<Todo>({
 })
 
 const groupedTodos = computed(() => {
-  if (statusStore.statuses) {
-    return statusStore.statuses.map((status) => {
-      return {
-        ...status,
-        todos: listStore.currentList.todos
-          .filter(todo => todo.status === status.name),
-        addTodo: newTodo.value.status === status.name,
-      }
-    })
+  if (!statusStore.statuses || !listStore.currentList.todos || !listStore.currentList.todos.length) {
+    return []
   }
+  console.log('group todos', listStore.currentList.todos)
+  return statusStore.statuses.map((status) => {
+    return {
+      ...status,
+      todos: listStore.currentList.todos
+        .filter(todo => todo.status === status.name),
+      addTodo: newTodo.value.status === status.name,
+    }
+  })
+
   return []
 })
 

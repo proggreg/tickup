@@ -1,25 +1,22 @@
 <script setup lang="ts">
 const store = useListsStore()
-const listType = ref(store.currentList.listType)
 const listTypeOptions = ref(['status', 'simple'])
-watch(listType, (newVal) => {
+watch(() => store.currentList.listType, (newVal, oldVal) => {
+  console.log('listtype', { newVal, oldVal })
   if (store.currentList) {
     store.currentList.listType = newVal
+
+    if (oldVal && oldVal !== newVal) {
+      store.updateList()
+    }
   }
 })
-
-function updateListType() {
-  if (store.currentList) {
-    store.updateList()
-  }
-}
 </script>
 
 <template>
   <v-select
-    v-model="listType"
+    v-model="store.currentList.listType"
     :items="listTypeOptions"
     label="List Type"
-    @change="updateListType"
   />
 </template>

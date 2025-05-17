@@ -5,13 +5,8 @@ const on = useToolbar()
 const saveTodo = ref(false)
 const dialog = useDialog()
 const { isMobile } = useDevice()
-
 onMounted(async () => {
-  const data = await $fetch<List>(`/api/list/${route.params.id}`)
-  const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { id: route.params.id } })
-
-  data.todos = todos || []
-  listsStore.setCurrentList(data)
+  listsStore.getList(route.params.id as string)
 })
 
 if (!listsStore.currentList) {
