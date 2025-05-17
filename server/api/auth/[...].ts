@@ -52,7 +52,7 @@ export default NuxtAuthHandler({
   },
 
   callbacks: {
-    async redirect({ url, baseUrl }) {
+    async redirect({ url }) {
       return url
     },
 
