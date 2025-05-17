@@ -4,14 +4,11 @@ const listsStore = useListsStore()
 const tabs = ref<View[]>(['board', 'list'])
 const currentTab = ref<View>('list')
 const on = useToolbar()
-const saveTodo = ref(false)
-const dialog = useDialog()
-const { data: user } = useAuth()
+// const saveTodo = ref(false)
+// const dialog = useDialog()
 
 onBeforeMount(async () => {
-  if (user?.value?.user._id) {
-    await listsStore.getLists(user?.value?.user._id)
-  }
+  await listsStore.getLists()
   const currentList = listsStore.lists.find((list: List) => list._id === route.params.id)
 
   if (currentList) {

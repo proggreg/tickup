@@ -1,16 +1,16 @@
-import { getToken } from '#auth'
+// import { getToken } from '#auth' // removed, sidebase/nuxt-auth
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   try {
-    const token = await getToken({ event })
+    // TODO: Replace auth logic as needed
 
     if (body.userId) {
       console.log('userid being sent from frontend please stop', body.userId)
     }
 
-    if (!body.userId && token) {
-      body.userId = token.sub
+    if (!body.userId) {
+      // TODO: Replace auth logic as needed
     }
     return await new ListSchema(body).save()
   }

@@ -182,7 +182,7 @@ export const useListsStore = defineStore('lists', {
       }
       this.currentList.todos[index].name = name
     },
-    async getLists(userId: string) {
+    async getLists(userId?: string) {
       const lists = await $fetch<List[]>('/api/lists', { query: { id: userId } })
       if (!lists) return
 
@@ -196,7 +196,7 @@ export const useListsStore = defineStore('lists', {
         this.setLists(lists)
       }
     },
-    async getList(id: string) {
+    async getList(id?: string) {
       const { data } = await useFetch<List>(`/api/list/${id}`)
 
       if (data.value) {
@@ -204,7 +204,7 @@ export const useListsStore = defineStore('lists', {
         return this.currentList
       }
     },
-    async getTodo(id: string) {
+    async getTodo(id?: string) {
       const { data } = await useFetch<Todo>(`/api/todo/${id}`)
 
       if (data.value) {
@@ -213,7 +213,7 @@ export const useListsStore = defineStore('lists', {
 
       return data
     },
-    async getTodos(userId: string) {
+    async getTodos(userId?: string) {
       const { data } = await useFetch<Todo[]>('/api/todos', {
         query: { userId },
       })
@@ -222,7 +222,7 @@ export const useListsStore = defineStore('lists', {
         this.todos = data.value
       }
     },
-    async getTodaysTodos(id: string) {
+    async getTodaysTodos(id?: string) {
       const { data } = await useFetch<Todo[]>('/api/todos', {
         query: { today: true, id },
       })

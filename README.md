@@ -21,6 +21,14 @@ npm install
 # pnpm
 pnpm install --shamefully-hoist
 ```
+## Testing
+
+Run Playwright tests to ensure application functionality:
+
+### Run Playwright inUI Mode
+```
+npx playwright test --ui
+```
 
 ## Development Server
 

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const { data } = useAuth()
 const newTodoVariant = ref<'text' | 'outlined'>('text')
 const openNewTodo = ref('')
 const newTodoTitle = ref('')

@@ -1,13 +1,12 @@
 <script setup lang="ts">
 const statusStore = useSettingsStore()
 const dragging = ref(false)
-const { data } = useAuth()
 const route = useRoute()
 const listStore = useListsStore()
 const showFooter = ref('')
 const newTodo = ref<Todo>({
   name: '',
-  userId: data.value?.user.id || data.value?.user?.sub,
+  userId: '',
   listId: route.params.id as string,
   status: '',
   edit: true,

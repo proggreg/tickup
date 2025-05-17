@@ -2,17 +2,10 @@ export const useSearchStore = defineStore('search', () => {
   const searchQuery = ref('')
   const results = reactive<Todo[]>([])
 
-  function getUserId() {
-    const { data: user } = useAuth()
-    const userId = user.value?.user?.sub
-    return userId
-  }
-
   function search() {
-    const userId = getUserId()
     console.log('searching for ', searchQuery)
 
-    $fetch<Todo[]>('/api/search/todo', { query: { q: searchQuery.value, id: userId } })
+    $fetch<Todo[]>('/api/search/todo', { query: { q: searchQuery.value } })
       .then((res) => {
         results.splice(0, results.length, ...res)
         console.log('got results ', results)

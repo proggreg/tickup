@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const { status } = useAuth()
 const colorMode = useColorMode()
 const route = useRoute()
 const dialog = useDialog()
@@ -43,7 +42,7 @@ const showFab = computed(() => {
           text="New"
           @click="addEventHandler"
         />
-        <AppMobileNav v-if="status === 'authenticated'" />
+        <AppMobileNav />
       </v-app>
     </v-theme-provider>
   </ColorScheme>

@@ -1,6 +1,5 @@
 export const useSettingsStore = defineStore('settings', () => {
   const darkMode = ref(false)
-  const { getSession } = useAuth()
 
   const userStatuses = ref<Status[]>([])
 

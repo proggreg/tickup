@@ -2,8 +2,6 @@
 const open = useNav()
 const dialog = useDialog()
 const { smAndDown } = useDisplay()
-const { signOut, status } = useAuth()
-const loggedIn = computed(() => status.value === 'authenticated')
 const contextMenuOpen = ref(false)
 const menuTarget = ref([])
 const selectedList = ref<List>()

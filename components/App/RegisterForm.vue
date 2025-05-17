@@ -1,23 +1,7 @@
 <script setup lang="ts">
-const { signIn } = useAuth()
 const username = ref('')
 const password = ref('')
 const registering = ref(false)
-async function registerUser() {
-  registering.value = true
-  const { data } = await useFetch<{ username: string, password: string }>('/api/auth/user', {
-    method: 'POST',
-    body: {
-      username: username.value,
-      password: password.value,
-    },
-  })
-
-  if (data.value?.username && data.value?.password) {
-    signIn('credentials', { username: username.value, password: password.value })
-    registering.value = false
-  }
-}
 
 const userNameRules = [
   (username: string) => {

@@ -3,8 +3,6 @@ definePageMeta({
   title: 'Account',
   description: 'Account page',
 })
-
-const { signOut, data } = useAuth()
 </script>
 
 <template>
@@ -26,4 +24,4 @@ const { signOut, data } = useAuth()
       </div>
     </v-col>
   </v-row>
-</template>s
+</template>

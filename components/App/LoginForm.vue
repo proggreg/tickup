@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const { signIn } = useAuth()
 const username = ref('')
 const password = ref('')
 const loginForm = ref()
@@ -32,7 +31,7 @@ const loginUser = async () => {
   const { valid } = await loginForm.value.validate()
 
   if (valid) {
-    await signIn('credentials', { username: username.value, password: password.value })
+    // Placeholder for loginUser function
   }
   loggingIn.value = false
 }
@@ -52,7 +51,7 @@ const loginUser = async () => {
     <v-btn :disabled="loggingIn" class="mb-4" color="primary" block type="submit">
       Login
     </v-btn>
-    <v-btn :disabled="loggingIn" color="primary" append-icon="mdi-github" class="mb-4" block @click="signIn(`github`)">
+    <v-btn :disabled="loggingIn" color="primary" append-icon="mdi-github" class="mb-4" block>
       Github Sign In
     </v-btn>
     <div class="text-center">

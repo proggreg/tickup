@@ -1,30 +1,30 @@
 import { defineEventHandler, getQuery, readBody, createError } from 'h3'
 import { Octokit } from 'octokit'
-import { getToken, getServerSession } from '#auth'
+// import { getToken, getServerSession } from '#auth' // removed, sidebase/nuxt-auth
 
 export default defineEventHandler(async (event) => {
-  const token = await getToken({ event })
-  const session = await getServerSession(event)
-  console.debug('session', session)
-  console.debug('token', token)
+  // const token = await getToken({ event })
+  // const session = await getServerSession(event)
+  // console.debug('session', session)
+  // console.debug('token', token)
   console.debug('check github')
-  const sub = session?.user.sub
+  // const sub = session?.user.sub
 
-  if (!sub) {
-    throw createError({
-      statusCode: 401,
-      message: 'Unauthorized',
-    })
-  }
+  // if (!sub) {
+  //   throw createError({
+  //     statusCode: 401,
+  //     message: 'Unauthorized',
+  //   })
+  // }
 
   // Check if it's your specific account
-  const ALLOWED_USER = process.env.ADMIN_USER_ID //
-  if (sub !== ALLOWED_USER) {
-    throw createError({
-      statusCode: 403,
-      message: 'Forbidden: Access restricted',
-    })
-  }
+  // const ALLOWED_USER = process.env.ADMIN_USER_ID //
+  // if (sub !== ALLOWED_USER) {
+  //   throw createError({
+  //     statusCode: 403,
+  //     message: 'Forbidden: Access restricted',
+  //   })
+  // }
   console.log('github endpoint')
   const config = useRuntimeConfig()
   const octokit = new Octokit({ auth: config.github.personal })

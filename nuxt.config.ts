@@ -9,7 +9,6 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-mongoose',
     'nuxt-bugsnag',
-    '@sidebase/nuxt-auth',
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
     '@nuxtjs/device',
@@ -92,23 +91,13 @@ export default defineNuxtConfig({
     },
   },
 
-  auth: {
-    enabled: false,
-    provider: {
-      type: 'authjs',
-    },
-    baseURL: process.env.VERCEL_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/auth` : undefined,
-    secret: process.env.NUXT_NEXTAUTH_SECRET,
-    globalAppMiddleware: true,
-  },
-
   mongoose: {
     devtools: true,
     uri: process.env.MONGODB_URI,
   },
 
   pwa: {
-    disable: true,
+    disable: false,
     strategies: 'generateSW',
     srcDir: undefined,
     filename: undefined,
@@ -144,9 +133,6 @@ export default defineNuxtConfig({
     },
     client: {
       installPrompt: true,
-      // you don't need to include this: only for testing purposes
-      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
-      periodicSyncForUpdates: 20,
     },
     devOptions: {
       enabled: true,
