@@ -20,20 +20,22 @@ if (!loggedIn.value) {
 }
 
 watch(tab as any, (newTab) => {
-  console.log('newTab', newTab)
+  const sub = data?.value?.user?.sub
+
+  if (!sub) return
+
   if (newTab === '1') {
-    listsStore.getTodaysTodos(data?.value?.user?.sub)
+    listsStore.getTodaysTodos(sub)
   }
-  else if (newTab === '0') {
-    listsStore.getOverdueTodos(data?.value?.user?.sub)
+ else if (newTab === '0') {
+    listsStore.getOverdueTodos(sub)
   }
 })
 
 onBeforeMount(() => {
-  console.log('on before mount home')
-  const userId = data?.value?.user?.sub
-  if (userId) {
-    listsStore.getTodaysTodos(userId)
+  const sub = data?.value?.user?.sub
+  if (sub) {
+    listsStore.getTodaysTodos(sub)
   }
 })
 </script>
