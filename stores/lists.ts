@@ -137,14 +137,22 @@ export const useListsStore = defineStore('lists', {
     // 2. Todo Management
     // =====================
     async addTodo(newTodo: Todo) {
+      // Check if we are on the homepage before adding a todo
+      const route = useRoute()
+      const isHomepage = route.path === '/' || route.name === 'index'
+
       if (newTodo._id) {
         console.warn('todo already has an id', newTodo)
         return
       }
-      if (!this.currentList.todos) {
-        this.currentList.todos = []
+
+      if (isHomepage) {
+        this.todaysTodos.push(newTodo)
       }
-      this.currentList.todos.push(newTodo)
+      else {
+        this.currentList.todos.push(newTodo)
+      }
+
       const todo = await $fetch<Todo>('/api/todo', {
         method: 'POST',
         body: newTodo,
@@ -158,7 +166,12 @@ export const useListsStore = defineStore('lists', {
         color: '#87909e',
       }
 
-      this.currentList.todos[this.currentList.todos.length - 1]._id = todo._id
+      if (isHomepage) {
+        this.todaysTodos[this.todaysTodos.length - 1]._id = todo._id
+      }
+      else {
+        this.currentList.todos[this.currentList.todos.length - 1]._id = todo._id
+      }
 
       this.updateList()
       return todo
