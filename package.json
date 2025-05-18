@@ -49,6 +49,7 @@
     "@aws-sdk/client-bedrock": "^3.716.0",
     "@aws-sdk/client-bedrock-runtime": "^3.716.0",
     "@aws-sdk/client-s3": "^3.717.0",
+    "@google/genai": "^0.14.1",
     "@pinia/nuxt": "^0.5.1",
     "@sidebase/nuxt-auth": "^0.6.5",
     "@types/bcrypt": "^5.0.2",
