@@ -3,6 +3,7 @@
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
       "pnpmVersion": "latest"
-    }
+    },
+     "ghcr.io/devcontainers-extra/features/vercel-cli:1": {}
   }
 }
