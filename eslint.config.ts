@@ -6,7 +6,7 @@ export default withNuxt(
     rules: {
       'vue/max-attributes-per-line': 'off',
       'vue/singleline-html-element-content-newline': 'off',
-      '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off'
     },
   },
 )

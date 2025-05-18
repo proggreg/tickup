@@ -36,4 +36,14 @@ declare global {
 
   type View = 'list' | 'board'
 
+  type Role = 'user' | 'model'
+
+  interface Part {
+    text: string;
+  }
+
+  interface ChatHistory {
+    role: Role,
+    parts: Part[]
+  }
 }

@@ -9,12 +9,16 @@ async function sendPrompt() {
   error.value = ''
   response.value = ''
   loading.value = true
-  chatHistory.value.push(prompt.value)
+  const newMessage: ChatHistory = {
+    role: 'user',   
+    parts: [{text: prompt.value}]
+  }
+  chatHistory.value.push(newMessage)
 
   try {
     const { data, error } = await useFetch('/api/gemini', {
       method: 'POST',
-      body: { prompt: prompt.value },
+      body: { prompt: prompt.value, history: chatHistory.value },
     })
     prompt.value = ''
     console.log('error', error)
@@ -23,7 +27,10 @@ async function sendPrompt() {
     }
     else {
       response.value = typeof data.value === 'string' ? data.value : JSON.stringify(data.value)
-      chatHistory.value.push(response.value)
+      chatHistory.value.push({
+        role: 'model',   
+        parts: [{text: prompt.value}]
+    })
     }
   }
   catch (e) {

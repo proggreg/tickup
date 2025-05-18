@@ -1,1 +1,1 @@
-export const useChatHistory = () => useState<string[]>('useChatHistory', () => [])
+export const useChatHistory = () => useState<ChatHistory[]>('useChatHistory', () => [])

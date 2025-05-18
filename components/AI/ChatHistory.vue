@@ -4,14 +4,14 @@ const chatHistory = useChatHistory()
 
 <template>
   <v-card
-    v-for="message in chatHistory"
-    :key="message"
-    class="ma-8"
+    v-for="(history, index) in chatHistory"
+    :key="index"
+    class="mt-4"
     variant="tonal"
   >
-    <v-card-title>Gemini</v-card-title>
-    <v-card-text>
-      <pre style="white-space: pre-wrap;">{{ message }}</pre>
+    <v-card-title>{{ history.role}}</v-card-title>
+    <v-card-text v-for="part in history.parts">
+      <pre style="white-space: pre-wrap;">{{ part.text }}</pre>
     </v-card-text>
   </v-card>
 </template>
