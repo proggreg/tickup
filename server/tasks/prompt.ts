@@ -9,10 +9,12 @@ export default defineTask({
     },
     run({ payload, context }) {
         console.log("Running AI prompt task...", payload);
-        const { stop, start } = payload
+        const { stop, start, cron }: { cron?: string; start?: boolean; stop?: boolean } = payload
 
-        if (start) {
-            job = new Cron("*/10 * * * * *", async () => {
+
+
+        if (start && cron) {
+            job = new Cron(cron, async () => {
                 // $fetch('/api/notification/send')
                 console.log('run job')
 
@@ -27,13 +29,13 @@ export default defineTask({
                     useTLS: true,
                 });
 
-                // const response = await $fetch('/api/ai/prompt')
+                const response = await $fetch('/api/ai/prompt')
 
                 pusher.trigger("my-channel", "prompt", {
-                    message: "hello world",
+                    message: response,
                 });
 
-                
+
             });
         }
 

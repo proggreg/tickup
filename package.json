@@ -36,7 +36,7 @@
     "eslint-plugin-prettier": "^5.0.1",
     "happy-dom": "^12.10.3",
     "jsdom": "^22.1.0",
-    "nuxt": "^3.15.0",
+    "nuxt": "^3.17.4",
     "nuxt-vitest": "^0.11.0",
     "playwright-core": "^1.40.1",
     "prettier": "^3.0.3",
@@ -68,8 +68,10 @@
     "octokit": "^4.0.2",
     "pinia": "^2.1.7",
     "pusher": "^5.2.0",
+    "pusher-js": "^8.4.0",
     "vue-hotjar-next": "^2.0.1",
     "vuedraggable": "^4.1.0"
   },
-  "type": "module"
+  "type": "module",
+  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }

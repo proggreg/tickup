@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
     '@nuxtjs/device',
-    '@vite-pwa/nuxt',
+    '@vite-pwa/nuxt'
   ],
 
   experimental: {
@@ -88,7 +88,7 @@ export default defineNuxtConfig({
     },
     public: {
       github: process.env.NUXT_GITHUB_PERSONAL_ACCESS_TOKEN,
-
+      PUSHER_KEY: process.env.PUSHER_KEY,
       hotjarId: process.env.HOTJAR_ID,
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
