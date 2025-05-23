@@ -22,6 +22,10 @@ export default defineNuxtConfig({
   pages: true,
 
   nitro: {
+    experimental: {
+      tasks: true,
+      websocket: true
+    },
     esbuild: {
       options: {
         target: 'esnext',
@@ -29,7 +33,8 @@ export default defineNuxtConfig({
     },
     prerender: {
       routes: [],
-    },
+    }
+
   },
 
   imports: {

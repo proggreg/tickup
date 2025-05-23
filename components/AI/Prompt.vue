@@ -29,7 +29,7 @@ async function sendPrompt() {
       response.value = typeof data.value === 'string' ? data.value : JSON.stringify(data.value)
       chatHistory.value.push({
         role: 'model',   
-        parts: [{text: prompt.value}]
+        parts: [{text: response.value}]
     })
     }
   }
