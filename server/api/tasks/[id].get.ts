@@ -1,18 +1,20 @@
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<Task | {error: string} | Error> => {
   try {
     const id = event.context.params?.id
     if (!id) {
-      return { success: false, error: 'No id provided' }
+      return { error: 'No id provided' }
     }
-    const task = await TasksSchema.findById(id)
+    const task =  await TasksSchema.findById(id)
     if (!task) {
-      return { success: false, error: 'Task not found' }
+      return { error: 'Task not found' }
     }
+
     return task
   }
   catch (error) {
     if (error instanceof Error) {
-      return { success: false, error: error.message }
+      return error
     }
+    return { error: 'An unexpected error occurred' }
   }
 })
