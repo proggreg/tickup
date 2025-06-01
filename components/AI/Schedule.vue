@@ -5,6 +5,7 @@ const taskName = ref('')
 const cron = ref('*/10 * * * * *')
 const runtimeConfig = useRuntimeConfig()
 const running = ref(false)
+const error = ref('')
 const prompt = ref('what are the most popular things to watch, get your information from rotten tomatoes. Only list the films and tv shows')
 onMounted(() => {
   Pusher.logToConsole = true
@@ -72,9 +73,14 @@ const saveSchedule = async () => {
       },
     })
     console.log('Saved', response)
+
+    if (response.error) {
+      error.value = response.error
+    }
   }
   catch (error) {
-    console.error(error)
+    error.value = error.message
+    console.error('here', error.message)
   }
 }
 </script>
@@ -105,7 +111,8 @@ const saveSchedule = async () => {
                 </v-col>
                 <v-col cols="12">
                   <!-- <v-btn v-if="!running" color="success" @click="submitSchedule">Start</v-btn> -->
-                  <v-btn v-if="!running" color="primary" @click="saveSchedule">Save</v-btn>
+                    <v-btn  v-if="!running" color="primary" @click="saveSchedule">Save</v-btn>
+                    <v-alert v-if="error">{{error}} </v-alert>
                   <!-- <v-btn v-else @click="stop" color="danger">Stop</v-btn> -->
                 </v-col>
               </v-row>
