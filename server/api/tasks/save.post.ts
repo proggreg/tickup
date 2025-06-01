@@ -1,4 +1,4 @@
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<Task | { error: string }> => {
   const body = await readBody(event)
   const { name, cron, prompt } = body
 
@@ -6,10 +6,8 @@ export default defineEventHandler(async (event) => {
     return { error: 'Missing name, cron or prompt' }
   }
 
-  const task = await TasksSchema.create({
+  return await TasksSchema.create({
     name: name,
-    cron: { name: cron },
+    cron: cron,
   })
-
-  return { success: true, task }
 })
