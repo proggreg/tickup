@@ -1,5 +1,3 @@
-import { TasksSchema } from '../../models/tasks.schema'
-
 export default defineEventHandler(async (event) => {
   try {
     const id = event.context.params?.id
@@ -13,6 +11,8 @@ export default defineEventHandler(async (event) => {
     return task
   }
   catch (error) {
-    return { success: false, error: error.message }
+    if (error instanceof Error) {
+      return { success: false, error: error.message }
+    }
   }
 })
