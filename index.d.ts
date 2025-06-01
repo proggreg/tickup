@@ -12,6 +12,7 @@ declare global {
     selected?: boolean
     color: string
     githubBranchName?: string
+    order: number
   }
 
   interface Status {
@@ -21,13 +22,16 @@ declare global {
     Edit?: boolean
   }
 
+  type ListType = 'status' | 'simple'
+
   interface List {
     userId?: string
     name: string
     todos: Todo[]
+    description?: string
     _id?: string
     image?: string
-    listType: string
+    listType: ListType
   }
 
   interface Settings {
@@ -39,11 +43,16 @@ declare global {
   type Role = 'user' | 'model'
 
   interface Part {
-    text: string;
+    text: string
   }
 
   interface ChatHistory {
-    role: Role,
+    role: Role
     parts: Part[]
+  }
+
+  interface Task {
+    name: string
+    cron: string
   }
 }

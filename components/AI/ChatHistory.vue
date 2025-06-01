@@ -9,7 +9,7 @@ const chatHistory = useChatHistory()
     class="mt-4"
     variant="tonal"
   >
-    <v-card-title>{{ history.role}}</v-card-title>
+    <v-card-title>{{ history.role }}</v-card-title>
     <v-card-text v-for="part in history.parts">
       <pre style="white-space: pre-wrap;">{{ part.text }}</pre>
     </v-card-text>

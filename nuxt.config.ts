@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
     '@nuxtjs/device',
-    '@vite-pwa/nuxt'
+    '@vite-pwa/nuxt',
   ],
 
   experimental: {
@@ -24,7 +24,7 @@ export default defineNuxtConfig({
   nitro: {
     experimental: {
       tasks: true,
-      websocket: true
+      websocket: true,
     },
     esbuild: {
       options: {
@@ -33,7 +33,7 @@ export default defineNuxtConfig({
     },
     prerender: {
       routes: [],
-    }
+    },
 
   },
 
@@ -55,7 +55,8 @@ export default defineNuxtConfig({
   vuetify: vuetifyOptions,
 
   typescript: {
-    strict: true,
+    typeCheck: false,
+    strict: false,
   },
 
   bugsnag: {

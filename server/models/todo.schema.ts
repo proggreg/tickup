@@ -1,36 +1,45 @@
+import type { SchemaDefinitionProperty } from 'mongoose'
+import { Schema } from 'mongoose'
+import type { Todo } from '../../index'
 import { defineMongooseModel } from '#nuxt/mongoose'
 
-export const TodoSchema = defineMongooseModel({
+export const TodoSchema = defineMongooseModel<Todo>({
   name: 'Todo',
   schema: {
     userId: {
-      type: 'string',
-      required: true,
-    },
+      type: Schema.Types.String,
+      required: false,
+    } as SchemaDefinitionProperty<string>,
+
     name: {
-      type: 'string',
+      type: Schema.Types.String,
       required: true,
-    },
+    } as SchemaDefinitionProperty<string>,
+
     listId: {
-      type: 'string',
-    },
+      type: Schema.Types.String,
+    } as SchemaDefinitionProperty<string>,
+
     dueDate: {
-      type: Date,
-    },
+      type: Schema.Types.Date,
+    } as SchemaDefinitionProperty<Date>,
+
     status: {
-      type: 'string',
-    },
+      type: Schema.Types.String,
+    } as SchemaDefinitionProperty<string>,
     desc: {
-      type: 'string',
-    },
+      type: Schema.Types.String,
+    } as SchemaDefinitionProperty<string>,
+
     order: {
-      type: Number,
-    },
+      type: Schema.Types.Number,
+    } as SchemaDefinitionProperty<number>,
     // @ts-ignore
     createdAt: {
       type: Date,
       default: Date.now,
     },
+
     // @ts-ignore
     updatedAt: {
       type: Date,

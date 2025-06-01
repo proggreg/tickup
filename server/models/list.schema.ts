@@ -1,17 +1,9 @@
 import type { SchemaDefinitionProperty } from 'mongoose'
 import { Schema } from 'mongoose'
+import type { List } from '../../index'
 import { defineMongooseModel } from '#nuxt/mongoose'
 
-type ListType = 'status' | 'simple'
-
-interface ListSchemaType {
-  userId?: string
-  name: string
-  descriptions?: string
-  listType: ListType
-}
-
-export const ListSchema = defineMongooseModel({
+export const ListSchema = defineMongooseModel<List>({
   name: 'List',
   schema: {
     userId: {
@@ -24,7 +16,7 @@ export const ListSchema = defineMongooseModel({
       required: true,
     } as SchemaDefinitionProperty<string>,
 
-    descriptions: {
+    description: {
       type: Schema.Types.String,
       required: false,
     } as SchemaDefinitionProperty<string>,

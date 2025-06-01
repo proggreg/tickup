@@ -1,74 +1,18 @@
 <script setup lang="ts">
 const prompt = ref('')
-const response = ref('')
-const loading = ref(false)
-const error = ref('')
-const chatHistory = useChatHistory()
-
-async function sendPrompt() {
-  error.value = ''
-  response.value = ''
-  loading.value = true
-  const newMessage: ChatHistory = {
-    role: 'user',   
-    parts: [{text: prompt.value}]
-  }
-  chatHistory.value.push(newMessage)
-
-  try {
-    const { data, error } = await useFetch('/api/gemini', {
-      method: 'POST',
-      body: { prompt: prompt.value, history: chatHistory.value },
-    })
-    prompt.value = ''
-    console.log('error', error)
-    if (error.value) {
-      throw error.value
-    }
-    else {
-      response.value = typeof data.value === 'string' ? data.value : JSON.stringify(data.value)
-      chatHistory.value.push({
-        role: 'model',   
-        parts: [{text: response.value}]
-    })
-    }
-  }
-  catch (e) {
-    error.value = 'Failed to fetch Gemini response.'
-  }
-  loading.value = false
-}
 </script>
 
 <template>
-  <v-card class="ma-8">
-    <v-card-title>
-      Gemini Prompt
-    </v-card-title>
+  <v-card title="Prompt" color="transparent">
     <v-card-text>
-      <v-text-field
+      <v-textarea
         v-model="prompt"
         label="Enter your prompt"
         outlined
+        auto-grow
         dense
-        @keyup.enter="sendPrompt"
       />
-      <v-btn
-        :loading="loading"
-        color="primary"
-        class="mt-2"
-        block
-        @click="sendPrompt"
-      >
-        Send
-      </v-btn>
-      <v-alert
-        v-if="error"
-        type="error"
-        dense
-      >
-        {{ error }}
-      </v-alert>
+      <slot />
     </v-card-text>
   </v-card>
 </template>

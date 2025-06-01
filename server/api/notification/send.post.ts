@@ -1,9 +1,8 @@
 export default defineEventHandler(async (event) => {
-    try {
+  try {
 
-
-    }
-    catch (e) {
-        return e
-    }
+  }
+  catch (e) {
+    return e
+  }
 })

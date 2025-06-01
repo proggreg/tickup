@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
 
-    const updates = body.orderedItems.map((item) => {
+    const updates = body.orderedItems.map((item: Todo) => {
       return {
         updateOne: {
           filter: { _id: item._id },
