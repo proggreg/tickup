@@ -9,5 +9,6 @@ export default defineEventHandler(async (event): Promise<Task | { error: string 
   return await TasksSchema.create({
     name: name,
     cron: cron,
+    prompt: prompt
   })
 })

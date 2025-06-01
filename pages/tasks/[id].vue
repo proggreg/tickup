@@ -3,15 +3,15 @@ const route = useRoute()
 const router = useRouter()
 const id = route.params.id
 
-const { data: task, refresh } = await useFetch(`/api/tasks/${id}`)
+const { data: task, refresh } = await useFetch<Task>(`/api/tasks/${id}`)
 
 const name = ref(task.value?.name || '')
-const desc = ref(task.value?.description || '')
+const prompt = ref(task.value?.prompt || '')
 const loading = ref(false)
 const error = ref('')
 const success = ref(false)
 
-console.log('task', task)
+console.log('task', task.value)
 
 async function updateTask() {
     loading.value = true
@@ -19,7 +19,7 @@ async function updateTask() {
     try {
         await $fetch(`/api/tasks/${id}`, {
             method: 'PUT',
-            body: { name: name.value, description: desc.value },
+            body: { name: name.value, prompt: prompt.value },
         })
         success.value = true
         setTimeout(() => router.push('/settings'), 1000)
@@ -31,6 +31,12 @@ async function updateTask() {
         loading.value = false
     }
 }
+
+onMounted(() => {
+    if (!task.value) {
+        refresh()
+    }
+})
 </script>
 
 <template>
@@ -42,7 +48,7 @@ async function updateTask() {
             <v-card-text>
                 <v-form @submit.prevent="updateTask">
                     <v-text-field v-model="name" label="Task Name" required />
-                    <v-textarea v-model="desc" label="Description" rows="3" />
+                    <v-textarea v-model="prompt" label="Description" rows="3" />
                     <v-btn :loading="loading" type="submit" color="primary" class="mt-4">Save</v-btn>
                     <v-btn class="mt-4 ml-2" @click="router.push('/settings')">Cancel</v-btn>
                 </v-form>

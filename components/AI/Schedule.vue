@@ -4,7 +4,7 @@ const router = useRouter()
 const taskName = ref('')
 const cron = ref('*/10 * * * * *')
 const runtimeConfig = useRuntimeConfig()
-const running = ref(false)
+
 const error = ref('')
 const prompt = ref('what are the most popular things to watch, get your information from rotten tomatoes. Only list the films and tv shows')
 onMounted(() => {
@@ -19,44 +19,14 @@ onMounted(() => {
   })
 
   const channel = pusher.subscribe('my-channel')
-  channel.bind('prompt', function (data) {
+  channel.bind('prompt', function (data: any) {
     alert(JSON.stringify(data))
   })
 })
 
-const submitSchedule = async () => {
-  if (!cron.value) {
-    throw Error('schedule required')
-  }
 
-  try {
-    const response = await $fetch('/api/ai/runTask', {
-      method: 'POST',
-      body: {
-        cron: cron.value,
-        prompt: prompt.value,
-        start: true,
-      },
-    })
-    running.value = true
 
-    console.log('response', response)
-  }
-  catch (error) {
-    console.error(error)
-  }
-}
 
-const stop = async () => {
-  const response = await $fetch('/api/ai/runTask', {
-    method: 'POST',
-    body: {
-      stop: true,
-    },
-  })
-
-  running.value = false
-}
 
 const saveSchedule = async () => {
   if (!cron.value) {
@@ -64,7 +34,7 @@ const saveSchedule = async () => {
   }
 
   try {
-    const response = await $fetch('/api/tasks/save', {
+    const response = await $fetch<Task | {error: string}>('/api/tasks/save', {
       method: 'POST',
       body: {
         name: taskName.value,
@@ -72,15 +42,19 @@ const saveSchedule = async () => {
         prompt: prompt.value,
       },
     })
-    console.log('Saved', response)
 
-    if (response.error) {
+    if ('error' in response) {
       error.value = response.error
     }
   }
-  catch (error) {
-    error.value = error.message
-    console.error('here', error.message)
+  catch (err) {
+    if (err instanceof Error) {
+      error.value = err.message
+    } else if (typeof err === 'string') {
+      error.value = err
+    } else {
+      error.value = 'An unknown error occurred'
+    }
   }
 }
 </script>
@@ -104,11 +78,9 @@ const saveSchedule = async () => {
                   <v-textarea v-model="prompt" label="Enter your prompt" outlined auto-grow dense />
                 </v-col>
                 <v-col cols="12">
-                  <!-- <v-btn v-if="!running" color="success" @click="submitSchedule">Start</v-btn> -->
-                  <v-btn color="primary" @click="saveSchedule">Save</v-btn>
-                  <!-- <v-btn class="ml-6" @click="router.push('/settings')">Cancel</v-btn> -->
+                  <v-btn :color="error !== '' ? 'primary' : 'danger' " @click="saveSchedule">Save</v-btn>
+                  <v-btn class="ml-6" @click="router.push('/settings')">Cancel</v-btn>
                   <v-alert v-if="error">{{ error }} </v-alert>
-                  <!-- <v-btn v-else @click="stop" color="danger">Stop</v-btn> -->
                 </v-col>
               </v-row>
             </v-form>

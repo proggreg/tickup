@@ -8,10 +8,12 @@ export const TasksSchema = defineMongooseModel<Task>({
       required: true,
     },
     cron: {
-      name: {
-        type: 'string',
-        required: true,
-      },
+      type: 'string',
+      required: true,
+    },
+    prompt: {
+      type: 'string',
+      required: true,
     },
   },
 })

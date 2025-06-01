@@ -9,31 +9,52 @@ export default defineTask({
   },
   run({ payload, context }) {
     console.log('Running AI prompt task...', payload)
-    const { stop, start, cron, prompt }: { cron?: string, start?: boolean, stop?: boolean, prompt?: string } = payload
+    const { stop, start, task }: { task?: Task, start?: boolean, stop?: boolean } = payload
+    if (!task) {
+      console.error('No task provided')
+      return { error: 'No task provided' }
+    }
+    const { cron, prompt } = task || {}
+
+    const appId = process.env.PUSHER_APP_ID || '';
+    const key = process.env.PUSHER_KEY || '';
+    const secret = process.env.PUSHER_SECRET || '';
+    const cluster = process.env.PUSHER_CLUSTER || '';
+
+    if (!appId || !key || !secret || !cluster) {
+      console.error('Pusher environment variables are not set');
+      return {  error: 'Pusher environment variables are not set' };
+    }
+
+    if (start && !prompt || !cron) {
+      console.error(`Missing prompt or cron for starting job prompt ${prompt} cron ${cron}`);
+      return { error: 'Missing prompt or cron for starting job'  }
+    }
 
     if (prompt && start && cron) {
-      job = new Cron(cron, async () => {
-        console.log('run job')
+        console.log('start job', cron)
+          job = new Cron(cron, async () => {
+              console.log('run job')
 
-        if (!process.env.PUSHER_APP_ID || !process.env.PUSHER_KEY || !process.env.PUSHER_SECRET || !process.env.PUSHER_CLUSTER) {
-          throw new Error('Pusher environment variables are not set')
-        }
-        const pusher = new Pusher({
-          appId: process.env.PUSHER_APP_ID,
-          key: process.env.PUSHER_KEY,
-          secret: process.env.PUSHER_SECRET,
-          cluster: process.env.PUSHER_CLUSTER,
-          useTLS: true,
-        })
+              const pusher = new Pusher({
+                appId,
+                key,
+                secret,
+                cluster,
+                useTLS: true,
+              })
 
-        const response = await $fetch('/api/ai/prompt', {
-          query: { prompt },
-        })
+              const response = await $fetch('/api/ai/prompt', {
+                query: { prompt },
+              })
 
-        pusher.trigger('my-channel', 'prompt', {
-          message: response,
-        })
-      })
+              console.log('prompt response', response)
+
+              pusher.trigger('my-channel', 'prompt', {
+                message: response,
+              })
+            })
+          
     }
 
     if (job && stop) {
@@ -41,6 +62,6 @@ export default defineTask({
       job.stop()
     }
 
-    return { result: 'Success yes', payload, context }
+    return { result: 'Success', payload, context }
   },
 })

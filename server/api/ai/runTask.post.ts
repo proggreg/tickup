@@ -1,8 +1,16 @@
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event) as { cron?: string, start?: boolean, stop?: boolean, prompt: string }
+  const body = await readBody(event) as { cron: string, prompt: string, start?: boolean, stop?: boolean }
   const payload = { ...body }
   console.log('body', body)
-  const { result } = await runTask('prompt', { payload })
+  try {
+    const { result} = await runTask('prompt', { payload })
 
-  return { result }
+    if (!result) {
+      throw new Error('Could not run task')
+    }
+    return { result }
+  } catch (error) {
+    console.error('Error running task:', error)
+    return { error: 'Failed to run task' }
+  }
 })
