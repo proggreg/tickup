@@ -19,6 +19,13 @@ const newTodo = ref<Todo>({
 const groupedTodos = computed(() => {
   if (statusStore.statuses) {
     return statusStore.statuses.map((status) => {
+      if (!listStore.currentList || !listStore.currentList.todos) {
+        return {
+          ...status,
+          todos: [],
+          addTodo: false,
+        }
+      }
       return {
         ...status,
         todos: listStore.currentList.todos
