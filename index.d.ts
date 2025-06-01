@@ -55,6 +55,7 @@ declare global {
 
   interface Task {
     name: string
+    prompt: string
     cron: string
     _id: ObjectId
   }
