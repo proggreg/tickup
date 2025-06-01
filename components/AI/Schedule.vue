@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Pusher from 'pusher-js'
-
+const router = useRouter()
 const taskName = ref('')
 const cron = ref('*/10 * * * * *')
 const runtimeConfig = useRuntimeConfig()
@@ -101,18 +101,13 @@ const saveSchedule = async () => {
                 </v-col>
 
                 <v-col cols="12">
-                  <v-textarea
-                    v-model="prompt"
-                    label="Enter your prompt"
-                    outlined
-                    auto-grow
-                    dense
-                  />
+                  <v-textarea v-model="prompt" label="Enter your prompt" outlined auto-grow dense />
                 </v-col>
                 <v-col cols="12">
                   <!-- <v-btn v-if="!running" color="success" @click="submitSchedule">Start</v-btn> -->
-                    <v-btn  v-if="!running" color="primary" @click="saveSchedule">Save</v-btn>
-                    <v-alert v-if="error">{{error}} </v-alert>
+                  <v-btn color="primary" @click="saveSchedule">Save</v-btn>
+                  <!-- <v-btn class="ml-6" @click="router.push('/settings')">Cancel</v-btn> -->
+                  <v-alert v-if="error">{{ error }} </v-alert>
                   <!-- <v-btn v-else @click="stop" color="danger">Stop</v-btn> -->
                 </v-col>
               </v-row>

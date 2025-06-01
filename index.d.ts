@@ -1,3 +1,5 @@
+import type { ObjectId } from 'mongoose'
+
 export { Todo, Status, List }
 declare global {
   interface Todo {
@@ -54,5 +56,6 @@ declare global {
   interface Task {
     name: string
     cron: string
+    _id: ObjectId
   }
 }

@@ -7,6 +7,10 @@ export default withNuxt(
       'vue/max-attributes-per-line': 'off',
       'vue/singleline-html-element-content-newline': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
+      'vue/html-indent': 'off',
+      '@stylistic/js/indent': 'off',
+      'indent': ['error', 4],
+      '@stylistic/ts/indent': ['error', 4] 
     },
   },
 )
