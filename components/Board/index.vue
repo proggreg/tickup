@@ -37,6 +37,10 @@ const groupedTodos = computed(() => {
   return []
 })
 
+const cardHeight = computed(() => {
+  return window.innerHeight - 200 + 'px'
+})
+
 async function updateTodo(e: { added?: { element: Todo } }, status: Status) {
   if (e.added) {
     if (e.added.element.status !== status.name) {
@@ -60,6 +64,10 @@ function getComponentData(statusName: string) {
 }
 
 async function addTodo(status: string) {
+  if (!newTodo.value.name.trim()) {
+    newTodo.value.status = ''
+    return
+  }
   newTodo.value.status = status
   await listStore.addTodo(newTodo.value)
   newTodo.value.name = ''
@@ -72,13 +80,7 @@ function gotoTodo(todo: Todo) {
 }
 
 function toggleNewTodo(status: string) {
-  newTodo.value.status = status
-  if (newTodo.value.name) {
-    addTodo(status)
-  }
-  else {
-    showFooter.value = showFooter.value === status ? '' : status
-  }
+  newTodo.value.status = newTodo.value.status === status ? '' : status
 }
 
 watch(dragging, (isDragging) => {
@@ -92,48 +94,39 @@ watch(dragging, (isDragging) => {
 </script>
 
 <template>
-  <v-slide-group :show-arrows="true" class="fill-height">
+  <v-slide-group :show-arrows="true" class="font-weight-bold">
     <v-slide-group-item v-for="status in groupedTodos" :key="status.name" v-slot="{ toggle, selectedClass }">
-      <v-card
-        :class="['ma-2', selectedClass, '', 'flex-column']" width="300" variant="tonal" :title="status.name"
-        :color="status.color" @click="toggle"
-      >
+      <v-card :class="['ma-2 font-weight-bold', selectedClass, '', 'flex-column']" width="100%" :height="cardHeight"
+        variant="tonal" :title="status.name" :color="status.color" @click="toggle">
         <template #append>
+          <v-btn @click="toggleNewTodo(status.name)" variant="plain" :color="status.color" icon="mdi-plus"></v-btn>
           <BoardOptions :status="status" />
         </template>
         <v-card-item class="flex-fill" style="overflow-y: auto; ">
-          <draggable
-            v-model="status.todos" item-key="_id" group="status"
+          <draggable v-model="status.todos" item-key="_id" group="status"
             :component-data="getComponentData(status.name)" auto-scroll @start="dragging = true" @end="dragging = false"
-            @change="(e: any) => updateTodo(e, status)"
-          >
+            @change="(e: any) => updateTodo(e, status)">
             <template #item="{ element }">
-              <v-card
-                class="mb-2" :color="status.color" style="cursor: pointer" :title="element.name"
-                @click="gotoTodo(element)"
-              >
-                <template #append>
-                  <v-checkbox v-model="element.selected" size="small" density="compact" hide-details @click.stop />
-                </template>
+              <v-card class="mb-2 pa-0" :color="status.color" style="cursor: pointer;" @click="gotoTodo(element)">
+                <v-card-item class="py-2 px-4">
+                  <div class="d-flex align-center justify-space-between">
+                    <span class="text-body-1 font-weight-bold">{{ element.name }}</span>
+                    <v-checkbox v-model="element.selected" size="small" density="compact" hide-details @click.stop />
+                  </div>
+                </v-card-item>
+
               </v-card>
             </template>
             <template v-if="status.addTodo" #footer>
-              <v-card class="px-4 ma-2">
+              <v-card class="px-4">
                 <v-card-item class="px-0">
-                  <v-text-field
-                    v-model="newTodo.name" placeholder="Add todo" hide-details class="ma-0 pa-0" autofocus
-                    variant="plain" @blur="newTodo.status = ''" @keyup.enter.stop="addTodo(status.name)"
-                  />
+                  <v-text-field v-model="newTodo.name" placeholder="Add todo" hide-details class="ma-0 pa-0" autofocus
+                    variant="plain" @blur="newTodo.status = ''" @keyup.enter.stop="addTodo(status.name)" />
                 </v-card-item>
               </v-card>
             </template>
           </draggable>
         </v-card-item>
-        <v-card-actions class="mt-auto">
-          <v-btn class="px-4 mb-2" block append-icon="mdi-plus" variant="tonal" @click="toggleNewTodo(status.name)">
-            Add
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </v-slide-group-item>
   </v-slide-group>
@@ -142,5 +135,9 @@ watch(dragging, (isDragging) => {
 <style>
 .ghost {
   opacity: 0.5;
+}
+
+:deep(.v-card-title) {
+  font-weight: bold !important;
 }
 </style>

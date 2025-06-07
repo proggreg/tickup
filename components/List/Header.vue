@@ -75,29 +75,23 @@ function removeImage() {
 </script>
 
 <template>
-  <v-col align-self="start">
-    <v-card min-height="100" :image="store.currentList.image" class="pa-4 ">
-      <div :class="[store.currentList.image ? 'tint ma-n4 py-4 px-4': '']">
-        <v-row class="">
+  <v-col cols="12" class="pt-0">
+    <v-card rounded="0" min-height="100" :image="store.currentList.image" class="pa-2">
+      <div :class="[store.currentList.image ? 'tint ma-n4 py-4 px-4' : '']">
+        <v-row>
           <v-col cols="6" :class="['text-capitalize', (aiImage || store.currentList.image) ? 'text-white' : '']">
-            <v-text-field
-              ref="listNameRef"
-              v-model="store.currentList.name" validate-on="blur eager"
-              :rules="[validateListName]"
-              placeholder="My List" variant="plain" :readonly="!rename"
-              style=" font-weight: bold; "
-              auto
-              @click="rename = !rename"
+            <v-text-field ref="listNameRef" v-model="store.currentList.name" validate-on="blur eager"
+              :rules="[validateListName]" placeholder="My List" variant="plain" :readonly="!rename"
+              style=" font-weight: bold; " auto @click="rename = !rename"
               @keyup.enter="store.currentList.name ? rename = false : null"
-              @blur="store.currentList.name ? rename = false : null"
-            />
+              @blur="store.currentList.name ? rename = false : null" />
           </v-col>
           <v-col class="text-right">
             <ListSettingsButton />
           </v-col>
         </v-row>
 
-        <v-card-actions :class="['text-capitalize', store.currentList.image ? 'text-white' : '']">
+        <v-card-actions class="pa-0" :class="['text-capitalize', store.currentList.image ? 'text-white' : '']">
           <v-btn size="small" class="mr-2" :disabled="imageGenerating" @click="generateImage">
             <v-icon start>mdi-creation </v-icon><v-icon start>mdi-image </v-icon>
           </v-btn>
@@ -114,12 +108,15 @@ function removeImage() {
   @media (min-width: 600px) {
     font-size: 2.5rem;
   }
+
   font-size: 1.5rem;
   text-transform: capitalize;
   font-weight: bold;
 }
 
 .tint {
-  background-color: rgba(0,0,0,0.5); padding: 0.5rem; border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 0.5rem;
+  border-radius: 4px;
 }
 </style>
