@@ -37,9 +37,10 @@ const groupedTodos = computed(() => {
   return []
 })
 
-const cardHeight = computed(() => {
+const boardRef = ref<HTMLElement | null>(null)
 
-  const boardElement = document.querySelector('.v-slide-group') as HTMLElement
+const cardHeight = computed(() => {
+  const boardElement = boardRef.value
   const parentElement = boardElement?.parentElement
   const parentHeight = parentElement ? parentElement.clientHeight : window.innerHeight
   console.log(`Calculating card height based on window size parentHeight ${parentHeight}`)
@@ -96,7 +97,7 @@ watch(dragging, (isDragging) => {
 </script>
 
 <template>
-  <v-slide-group :show-arrows="true" class="font-weight-bold">
+  <v-slide-group ref="boardRef" :show-arrows="true" class="font-weight-bold">
     <v-slide-group-item v-for="status in groupedTodos" :key="status.name" v-slot="{ toggle, selectedClass }">
       <v-card :class="['ma-2 font-weight-bold', selectedClass, '', 'flex-column']" :height="cardHeight" width="100%"
         variant="tonal" :color="status.color" @click="toggle">
@@ -112,13 +113,9 @@ watch(dragging, (isDragging) => {
 
           </div>
         </template>
-        <template #append>
-          <!-- <v-btn @click="toggleNewTodo(status.name)" variant="plain" :color="status.color" icon="mdi-plus"></v-btn>
-          <BoardOptions :status="status" /> -->
-        </template>
         <v-card-item class="flex-fill fill-height list">
-          <draggable v-model="status.todos" item-key="_id" group="status"
-            :component-data="getComponentData(status.name)" auto-scroll @start="dragging = true" @end="dragging = false"
+          <draggable v-model="status.todos" item-key="_id" group="status" @change="(e: any) => updateTodo(e, status)"
+            class="draggable-container">
             @change="(e: any) => updateTodo(e, status)" style="min-height: 100% !important; overflow-y: auto;">
             <template #item="{ element }">
               <v-card :id="element._id" class="mb-2 pa-0" :color="status.color" style="cursor: pointer;"
@@ -159,5 +156,9 @@ watch(dragging, (isDragging) => {
 
 .list :deep(.v-card-item__content:first-child) {
   height: 100% !important;
-}
+
+  .draggable-container {
+    min-height: 100%;
+    overflow-y: auto;
+  }</style>
 </style>
