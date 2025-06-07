@@ -160,5 +160,6 @@ watch(dragging, (isDragging) => {
   .draggable-container {
     min-height: 100%;
     overflow-y: auto;
-  }</style>
+  }
+}
 </style>
