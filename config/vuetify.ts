@@ -9,11 +9,12 @@ export default {
         elevation: 10,
         width: 300,
         class: 'pa-4',
-        rounded: 'xl',
       },
       VBtn: {
         rounded: 'xl',
         elevation: 0,
+        variant: 'plain',
+        ripple: false,
       },
       VTextField: {
         rounded: 'xl',
@@ -40,7 +41,8 @@ export default {
         // rounded: 'xl',
       },
       VCard: {
-        rounded: 'xl',
+        rounded: 'lg',
+        ripple: false,
       },
       VFab: {
         rounded: 'xl',

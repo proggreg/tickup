@@ -114,11 +114,25 @@ export const useListsStore = defineStore('lists', {
         return
       }
       if (!this.currentList.todos) this.currentList.todos = []
-      this.currentList.todos.push(newTodo)
+      
+      const newTodoTempId = crypto.randomUUID()
+      this.currentList.todos.push({...newTodo, _id: newTodoTempId })
+
       const todo = await $fetch<Todo>('/api/todo', {
         method: 'POST',
         body: newTodo,
       })
+
+      if (!todo) {
+        console.error('Failed to add todo')
+        return
+      }
+
+      // update the added todo with the server-generated ID
+      this.currentList.todos = this.currentList.todos.map(t =>
+        t._id === newTodoTempId ? { ...t, _id: todo._id } : t,
+      )
+      
 
       this.newTodo = {
         name: '',

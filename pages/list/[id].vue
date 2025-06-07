@@ -2,7 +2,7 @@
 const route = useRoute()
 const listsStore = useListsStore()
 const tabs = ref<View[]>(['board', 'list'])
-const currentTab = ref<View>('list')
+const currentTab = ref<View>('board')
 const on = useToolbar()
 const saveTodo = ref(false)
 const dialog = useDialog()
@@ -39,27 +39,27 @@ watch(listsStore.currentList.todos, (todos) => {
 </script>
 
 <template>
-  <div style="width: 100%;height: 100%;">
+  <v-row class="fill-height" no-gutters>
     <ListHeader />
     <div v-if="$device.isMobile">
       <v-col>
         <ListTable />
       </v-col>
     </div>
-    <v-col v-else>
-      <v-card cols="12" style="width: 100%; height: 100%;">
-        <v-tabs v-model="currentTab">
-          <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
-        </v-tabs>
-        <v-window v-model="currentTab" :touch="false" class="">
-          <v-window-item value="board">
-            <Board />
-          </v-window-item>
-          <v-window-item value="list" class="fill-height">
-            <ListTable />
-          </v-window-item>
-        </v-window>
-      </v-card>
+    <v-col v-else class="fill-height" cols="12">
+
+      <v-tabs v-model="currentTab">
+        <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
+      </v-tabs>
+      <v-window v-model="currentTab" :touch="false" style="height: 100%;">
+        <v-window-item value="board" class="fill-height">
+          <Board />
+        </v-window-item>
+        <v-window-item value="list" class="fill-height">
+          <ListTable />
+        </v-window-item>
+      </v-window>
+
     </v-col>
-  </div>
+  </v-row>
 </template>

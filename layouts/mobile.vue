@@ -26,23 +26,13 @@ const showFab = computed(() => {
     <v-theme-provider with-background :theme="colorMode.preference">
       <v-app>
         <v-main>
-          <v-container class="align-start pa-0" fluid>
+          <v-container class="pa-0" fluid>
             <NuxtPage />
           </v-container>
         </v-main>
-        <v-fab
-          v-if="showFab"
-          app
-          size="small"
-          position="relative"
-          location="bottom end"
-          style="bottom: 50px;"
-          elevation="12"
-          color="primary" append-icon="mdi-plus"
-          variant="elevated" extended
-          text="New"
-          @click="addEventHandler"
-        />
+        <v-fab v-if="showFab" app size="small" position="relative" location="bottom end" style="bottom: 50px;"
+          elevation="12" color="primary" append-icon="mdi-plus" variant="elevated" extended text="New"
+          @click="addEventHandler" />
         <AppMobileNav v-if="status === 'authenticated'" />
       </v-app>
     </v-theme-provider>
