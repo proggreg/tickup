@@ -47,6 +47,14 @@ const cardHeight = computed(() => {
   return (parentHeight - 30) + 'px'
 })
 
+const cardWidth = computed(() => {
+  const boardElement = boardRef.value
+  const parentElement = boardElement?.parentElement
+  const parentWidth = parentElement ? parentElement.clientWidth : window.innerWidth
+  console.log(`Calculating card width based on window size parentWidth ${parentWidth}`)
+  return (parentWidth / groupedTodos.value.length) + 'px'
+})
+
 async function updateTodo(e: { added?: { element: Todo } }, status: Status) {
   if (e.added) {
     if (e.added.element.status !== status.name) {
@@ -101,9 +109,8 @@ watch(dragging, (isDragging) => {
     <v-slide-group-item v-for="status in groupedTodos" :key="status.name" v-slot="{ toggle, selectedClass }">
       <v-card :class="['ma-2 font-weight-bold', selectedClass, '', 'flex-column']" :height="cardHeight" width="100%"
         variant="tonal" :color="status.color" @click="toggle">
-
-        <template #item>
-          <div class="d-flex align-center justify-space-between" style="height : 30px;">
+        <template #title>
+          <div class="d-flex align-center justify-space-between">
             <div>
               {{ status.name }}
               <v-btn :ripple="false" class="pa-0 ma-0" width="20" size="small" @click="toggleNewTodo(status.name)"
@@ -119,10 +126,10 @@ watch(dragging, (isDragging) => {
             @change="(e: any) => updateTodo(e, status)" style="min-height: 100% !important; overflow-y: auto;">
             <template #item="{ element }">
               <v-card :id="element._id" class="mb-2 pa-0" :color="status.color" style="cursor: pointer;"
-                @click="gotoTodo(element)">
+                :max-width="cardWidth" @click="gotoTodo(element)">
                 <v-card-item class="py-2 px-4">
                   <div class="d-flex align-center justify-space-between">
-                    <span class="text-body-1 font-weight-bold">{{ element.name }}</span>
+                    <span class="text-truncate text-body-1 font-weight-bold">{{ element.name }}</span>
                     <v-checkbox v-model="element.selected" size="small" density="compact" hide-details @click.stop />
                   </div>
                 </v-card-item>
