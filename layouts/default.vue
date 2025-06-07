@@ -9,7 +9,7 @@ const colorMode = useColorMode()
         <AppToolbar />
         <AppNav />
         <v-main>
-          <v-container fluid class="pa-0" style="height: 100vh;">
+          <v-container fluid class="pa-0" style="height: 100%;">
             <AppSettings />
 
             <NuxtPage />

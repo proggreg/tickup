@@ -12,7 +12,7 @@ const newTodo = ref<Todo>({
   status: '',
   edit: true,
   selected: false,
-  color: 'grey',
+  color: 'inherit',
   links: [],
 })
 
@@ -38,7 +38,12 @@ const groupedTodos = computed(() => {
 })
 
 const cardHeight = computed(() => {
-  return window.innerHeight - 200 + 'px'
+
+  const boardElement = document.querySelector('.v-slide-group') as HTMLElement
+  const parentElement = boardElement?.parentElement
+  const parentHeight = parentElement ? parentElement.clientHeight : window.innerHeight
+  console.log(`Calculating card height based on window size parentHeight ${parentHeight}`)
+  return (parentHeight - 30) + 'px'
 })
 
 async function updateTodo(e: { added?: { element: Todo } }, status: Status) {
@@ -64,14 +69,11 @@ function getComponentData(statusName: string) {
 }
 
 async function addTodo(status: string) {
-  if (!newTodo.value.name.trim()) {
+  if (newTodo.value.name) {
+    await listStore.addTodo(newTodo.value)
+    newTodo.value.name = ''
     newTodo.value.status = ''
-    return
   }
-  newTodo.value.status = status
-  await listStore.addTodo(newTodo.value)
-  newTodo.value.name = ''
-  newTodo.value.status = ''
 }
 
 function gotoTodo(todo: Todo) {
@@ -96,18 +98,31 @@ watch(dragging, (isDragging) => {
 <template>
   <v-slide-group :show-arrows="true" class="font-weight-bold">
     <v-slide-group-item v-for="status in groupedTodos" :key="status.name" v-slot="{ toggle, selectedClass }">
-      <v-card :class="['ma-2 font-weight-bold', selectedClass, '', 'flex-column']" width="100%" :height="cardHeight"
-        variant="tonal" :title="status.name" :color="status.color" @click="toggle">
-        <template #append>
-          <v-btn @click="toggleNewTodo(status.name)" variant="plain" :color="status.color" icon="mdi-plus"></v-btn>
-          <BoardOptions :status="status" />
+      <v-card :class="['ma-2 font-weight-bold', selectedClass, '', 'flex-column']" :height="cardHeight" width="100%"
+        variant="tonal" :color="status.color" @click="toggle">
+
+        <template #item>
+          <div class="d-flex align-center justify-space-between" style="height : 30px;">
+            <div>
+              {{ status.name }}
+              <v-btn :ripple="false" class="pa-0 ma-0" width="20" size="small" @click="toggleNewTodo(status.name)"
+                variant="plain" :color="status.color" icon="mdi-plus"></v-btn>
+            </div>
+            <BoardOptions :status="status" />
+
+          </div>
         </template>
-        <v-card-item class="flex-fill" style="overflow-y: auto; ">
+        <template #append>
+          <!-- <v-btn @click="toggleNewTodo(status.name)" variant="plain" :color="status.color" icon="mdi-plus"></v-btn>
+          <BoardOptions :status="status" /> -->
+        </template>
+        <v-card-item class="flex-fill fill-height list">
           <draggable v-model="status.todos" item-key="_id" group="status"
             :component-data="getComponentData(status.name)" auto-scroll @start="dragging = true" @end="dragging = false"
-            @change="(e: any) => updateTodo(e, status)">
+            @change="(e: any) => updateTodo(e, status)" style="min-height: 100% !important; overflow-y: auto;">
             <template #item="{ element }">
-              <v-card class="mb-2 pa-0" :color="status.color" style="cursor: pointer;" @click="gotoTodo(element)">
+              <v-card :id="element._id" class="mb-2 pa-0" :color="status.color" style="cursor: pointer;"
+                @click="gotoTodo(element)">
                 <v-card-item class="py-2 px-4">
                   <div class="d-flex align-center justify-space-between">
                     <span class="text-body-1 font-weight-bold">{{ element.name }}</span>
@@ -132,12 +147,17 @@ watch(dragging, (isDragging) => {
   </v-slide-group>
 </template>
 
-<style>
+<style scoped>
 .ghost {
   opacity: 0.5;
+  background-color: inherit;
 }
 
 :deep(.v-card-title) {
   font-weight: bold !important;
+}
+
+.list :deep(.v-card-item__content:first-child) {
+  height: 100% !important;
 }
 </style>

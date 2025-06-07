@@ -13,6 +13,8 @@ export default {
       VBtn: {
         rounded: 'xl',
         elevation: 0,
+        variant: 'plain',
+        ripple: false,
       },
       VTextField: {
         rounded: 'xl',
@@ -40,6 +42,7 @@ export default {
       },
       VCard: {
         rounded: 'lg',
+        ripple: false,
       },
       VFab: {
         rounded: 'xl',
