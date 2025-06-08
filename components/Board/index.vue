@@ -108,7 +108,7 @@ watch(dragging, (isDragging) => {
   <v-slide-group ref="boardRef" :show-arrows="true" class="font-weight-bold">
     <v-slide-group-item v-for="status in groupedTodos" :key="status.name" v-slot="{ toggle, selectedClass }">
       <v-card :class="['ma-2 font-weight-bold', selectedClass, '', 'flex-column']" :height="cardHeight" width="100%"
-        variant="tonal" :color="status.color" @click="toggle">
+        max-width="400" variant="tonal" :color="status.color" @click="toggle">
         <template #title>
           <div class="d-flex align-center justify-space-between">
             <div>
