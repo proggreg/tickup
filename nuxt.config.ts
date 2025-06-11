@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     '@vueuse/nuxt',
     'nuxt-mongoose',
-    'nuxt-bugsnag',
+    // 'nuxt-bugsnag',
     '@sidebase/nuxt-auth',
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
@@ -55,15 +55,15 @@ export default defineNuxtConfig({
     strict: true,
   },
 
-  bugsnag: {
-    baseUrl: process.env.NUXT_ENV_VERCEL_URL || 'http://localhost:3000',
-    publishRelease: true,
-    config: {
-      apiKey: process.env.BUGSNAG_API_KEY,
-      enabledReleaseStages: ['development', 'staging', 'production'],
-      releaseStage: process.env.NODE_ENV,
-    },
-  },
+  // bugsnag: {
+  //   baseUrl: process.env.NUXT_ENV_VERCEL_URL || 'http://localhost:3000',
+  //   publishRelease: true,
+  //   config: {
+  //     apiKey: process.env.BUGSNAG_API_KEY,
+  //     enabledReleaseStages: ['development', 'staging', 'production'],
+  //     releaseStage: process.env.NODE_ENV,
+  //   },
+  // },
 
   devtools: {
     enabled: true,
@@ -84,11 +84,14 @@ export default defineNuxtConfig({
       clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET,
       personal: process.env.NUXT_GITHUB_PERSONAL_ACCESS_TOKEN,
     },
-
+    private: {  
+      vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
+    },
     public: {
       hotjarId: process.env.HOTJAR_ID,
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
+      VAPID_KEY: process.env.VAPID_PUBLIC_KEY,
     },
   },
 
@@ -108,10 +111,6 @@ export default defineNuxtConfig({
   },
 
   pwa: {
-    disable: false,
-    strategies: 'generateSW',
-    srcDir: undefined,
-    filename: undefined,
     registerType: 'autoUpdate',
     manifest: {
       name: 'Tickup',
@@ -139,14 +138,8 @@ export default defineNuxtConfig({
     workbox: {
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
     },
-    injectManifest: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-    },
     client: {
       installPrompt: true,
-      // you don't need to include this: only for testing purposes
-      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
-      periodicSyncForUpdates: 20,
     },
     devOptions: {
       enabled: true,
@@ -154,6 +147,14 @@ export default defineNuxtConfig({
       navigateFallback: '/',
       navigateFallbackAllowlist: [/^\/$/],
       type: 'module',
+    },
+    // add this to handle sw within the app
+    srcDir: 'service-worker',
+    filename: 'sw.ts',
+    // add this to handle push notifications
+    strategies: 'injectManifest',
+    injectManifest: {
+      injectionPoint: 'self.__WB_MANIFEST',
     },
   },
 

@@ -111,7 +111,7 @@ watch(dragging, (isDragging) => {
         max-width="400" variant="tonal" :color="status.color" @click="toggle">
         <template #title>
           <div class="d-flex align-center justify-space-between">
-            <div>
+            <div> 
               {{ status.name }}
               <v-btn :ripple="false" class="pa-0 ma-0" width="20" size="small" @click="toggleNewTodo(status.name)"
                 variant="plain" :color="status.color" icon="mdi-plus"></v-btn>
