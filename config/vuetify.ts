@@ -11,44 +11,44 @@ export default {
         class: 'pa-4',
       },
       VBtn: {
-        rounded: 'xl',
+        rounded: 'lg',
         elevation: 0,
         variant: 'plain',
         ripple: false,
       },
       VTextField: {
-        rounded: 'xl',
+        rounded: 'lg',
         variant: 'outlined',
         density: 'compact',
         hideDetails: 'auto',
       },
       VCheckbox: {
-        rounded: 'xl',
+        rounded: 'lg',
         hideDetails: 'auto',
       },
       VTextarea: {
-        rounded: 'xl',
+        rounded: 'lg',
         variant: 'outlined',
       },
       VList: {
         // variant: 'plain',
       },
       V45: {
-        // rounded: 'xl',
+        // rounded: 'lg',
         // variant: 'plain',
       },
       VMenu: {
-        // rounded: 'xl',
+        // rounded: 'lg',
       },
       VCard: {
         rounded: 'lg',
         ripple: false,
       },
       VFab: {
-        rounded: 'xl',
+        rounded: 'lg',
       },
       VSelect: {
-        rounded: 'xl',
+        rounded: 'lg',
       },
     },
     theme: {

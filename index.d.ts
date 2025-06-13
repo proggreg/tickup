@@ -16,6 +16,11 @@ declare global {
       title: string
       url: string
     }[]
+    subtasks?: {
+      name: string
+      status: string
+      _id: string
+    }[]
   }
 
   interface Status {
