@@ -12,6 +12,7 @@ export const TodoSchema = defineMongooseModel<{
   updatedAt: Date
   githubBranchName: string
   links: Array<{ title: string, url: string, _id: string }>
+  subtasks: Array<{ name: string, status: string, _id: string }>
 }>({
   name: 'Todo',
   schema: {
@@ -61,6 +62,15 @@ export const TodoSchema = defineMongooseModel<{
           type: String,
           required: true,
         },
+      }],
+      required: false,
+      default: () => [],
+    },
+    subtasks: {
+      type: [{
+        name: { type: String, required: true },
+        status: { type: String, required: true },
+        _id: { type: String, required: true },
       }],
       required: false,
       default: () => [],
