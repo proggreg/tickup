@@ -68,7 +68,8 @@
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^4.2.0",
     "vue-hotjar-next": "^2.0.1",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "^4.1.0",
+    "web-push": "^3.6.7"
   },
   "type": "module"
 }

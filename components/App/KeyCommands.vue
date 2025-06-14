@@ -3,7 +3,7 @@ import { onKeyDown } from '@vueuse/core'
 const { status } = useAuth()
 
 const dialog = useDialog()
-if (status === 'athenticated') {
+if (status.value === 'authenticated') {
   onKeyDown(['t', 'l'], (event) => {
     const activeElement = document.activeElement
 
@@ -24,3 +24,6 @@ if (status === 'athenticated') {
 }
 
 </script>
+<template>
+  
+</template>
