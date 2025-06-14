@@ -30,13 +30,6 @@ export default {
         rounded: 'lg',
         variant: 'outlined',
       },
-      VList: {
-        // variant: 'plain',
-      },
-      V45: {
-        // rounded: 'lg',
-        // variant: 'plain',
-      },
       VMenu: {
         // rounded: 'lg',
       },
