@@ -32,8 +32,8 @@ function addSubtask() {
 </script>
 
 <template>
-  <v-card width="100%" elevation="0" class="pa-0 d-flex flex-column rounded-lg" style="height: 100%; background: #fcfcfd; border-radius: 16px;">
-    <v-card-item class="pb-0 pt-4 px-6">
+  <v-card width="100%" elevation="0" class="pa-0 d-flex flex-column rounded-lg">
+    <v-card-item class="pb-0 pt-4 px-6 mb-6">
       <v-row align="center">
         <v-col sm="3" md="2" cols="6">
           <TodoStatus />
@@ -47,10 +47,10 @@ function addSubtask() {
         </v-col>
       </v-row>
     </v-card-item>
-    <v-card-title class="px-6 pt-2 pb-0">
+    <v-card-title class="px-6 pt-2 mb-2">
       <v-text-field v-model="listsStore.currentTodo.name" label="Title" hide-details variant="outlined" class="rounded-lg" @blur="updateName" />
     </v-card-title>
-    <v-card-item class="px-6 pt-0 pb-2">
+    <v-card-item class="px-6 pt-0 pb-2 mb-2">
       <v-textarea
         v-model="listsStore.currentTodo.desc" auto-grow
         class="mt-2 rounded-lg"
@@ -62,7 +62,7 @@ function addSubtask() {
 
     <!-- Subtasks Checklist -->
     <v-card-item class="px-6 pt-0 pb-2">
-      <div class="pa-4 rounded-lg" style="background: #f9f9fb; border-radius: 16px;">
+      <div class="pa-4 rounded-lg">
         <div class="mb-2 text-subtitle-1 font-weight-bold">Subtasks</div>
         <v-list density="compact" class="pa-0" v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length">
           <v-list-item v-for="(subtask, idx) in listsStore.currentTodo.subtasks" :key="subtask._id" class="py-2 px-0 align-center">
@@ -127,5 +127,11 @@ function addSubtask() {
 
 :deep(.v-file-input .v-input__control) {
   display: none;
+}
+
+.subtask-done-outline {
+  border: 2px solid var(--v-theme-primary);
+  border-radius: 8px;
+  background-color: #f5f5f5;
 }
 </style>
