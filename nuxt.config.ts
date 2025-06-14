@@ -155,6 +155,7 @@ export default defineNuxtConfig({
     strategies: 'injectManifest',
     injectManifest: {
       injectionPoint: undefined,
+       rollupFormat: 'iife'
     },
   },
 
