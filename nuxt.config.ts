@@ -150,7 +150,7 @@ export default defineNuxtConfig({
     },
     // add this to handle sw within the app
     srcDir: 'service-worker',
-    // filename: 'sw.ts',
+    filename: 'sw.ts',
     // add this to handle push notifications
     strategies: 'injectManifest',
     injectManifest: {
