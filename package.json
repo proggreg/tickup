@@ -70,5 +70,6 @@
     "vue-hotjar-next": "^2.1.0",
     "vuedraggable": "^4.1.0"
   },
-  "type": "module"
+  "type": "module",
+   "packageManager": "pnpm@10.11.0"
 }
