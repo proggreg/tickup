@@ -7,9 +7,9 @@ export default defineEventHandler(async (event) => {
   const subscription = body.subscription
 
   console.log('subscription', subscription)
-  console.log('NUXT_ENV_VAPID_PUBLIC_KEY', process.env.NUXT_ENV_VAPID_PUBLIC_KEY)
+  console.log('NUXT_ENV_VAPID_PUBLIC_KEY', process.env.VAPID_PUBLIC_KEY)
 
-  const vapidPrivateKey = process.env.NUXT_ENV_VAPID_PRIVATE_KEY
+  const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY
 
   if (!vapidPrivateKey) {
     throw new Error('VAPID private key is not defined in environment variables.')
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
   webpush.setVapidDetails(
     'mailto:greg.field1992@gmail.com',
-    process.env.NUXT_ENV_VAPID_PUBLIC_KEY || '',
+    process.env.VAPID_PUBLIC_KEY || '',
     vapidPrivateKey
   )
 
