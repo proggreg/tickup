@@ -80,9 +80,9 @@ function addSubtask() {
               v-model="listsStore.currentTodo.subtasks[idx].name"
               hide-details
               variant="plain"
-              class="me-2 flex-grow-1"
+              :readonly="listsStore.currentTodo.subtasks[idx].status === 'done'"
+              :class="{'text-decoration-line-through text-disabled': listsStore.currentTodo.subtasks[idx].status === 'done'}"
               @blur="listsStore.updateTodo(listsStore.currentTodo)"
-              style="min-width: 120px;"
             />
             <template #append>
               <v-btn icon="mdi-delete" size="small" variant="text" @click="listsStore.currentTodo.subtasks.splice(idx, 1); listsStore.updateTodo(listsStore.currentTodo)" />
