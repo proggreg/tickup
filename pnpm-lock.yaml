@@ -147,6 +147,9 @@ importers:
       nuxt-vitest:
         specifier: ^0.11.0
         version: 0.11.5(@vitejs/plugin-vue-jsx@4.1.1(vite@6.0.6(@types/node@22.10.2)(jiti@2.4.2)(terser@5.37.0)(yaml@2.6.1))(vue@3.5.13(typescript@5.7.2)))(@vitejs/plugin-vue@4.6.2(vite@6.0.6(@types/node@22.10.2)(jiti@2.4.2)(terser@5.37.0)(yaml@2.6.1))(vue@3.5.13(typescript@5.7.2)))(happy-dom@12.10.3)(magicast@0.3.5)(rollup@4.29.1)(vite@6.0.6(@types/node@22.10.2)(jiti@2.4.2)(terser@5.37.0)(yaml@2.6.1))(vitest@1.6.0(@types/node@22.10.2)(happy-dom@12.10.3)(terser@5.37.0))(vue-router@4.5.0(vue@3.5.13(typescript@5.7.2)))(vue@3.5.13(typescript@5.7.2))
+      playwright:
+        specifier: ^1.53.0
+        version: 1.53.0
       playwright-core:
         specifier: ^1.40.1
         version: 1.49.1
@@ -5849,8 +5852,18 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  playwright-core@1.53.0:
+    resolution: {integrity: sha512-mGLg8m0pm4+mmtB7M89Xw/GSqoNC+twivl8ITteqvAndachozYe2ZA7srU6uleV1vEdAHYqjq+SV8SNxRRFYBw==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   playwright@1.49.1:
     resolution: {integrity: sha512-VYL8zLoNTBxVOrJBbDuRgDWa3i+mfQgDTrL8Ah9QXZ7ax4Dsj0MSq5bYgytRnDVVe+njoKnfsYkH3HzqVj5UZA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.53.0:
+    resolution: {integrity: sha512-ghGNnIEYZC4E+YtclRn4/p6oYbdPiASELBIYkBXfaTVKreQUYbMUYQDwS12a8F0/HtIjr/CkGjtwABeFPGcS4Q==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -15408,9 +15421,17 @@ snapshots:
 
   playwright-core@1.49.1: {}
 
+  playwright-core@1.53.0: {}
+
   playwright@1.49.1:
     dependencies:
       playwright-core: 1.49.1
+    optionalDependencies:
+      fsevents: 2.3.2
+
+  playwright@1.53.0:
+    dependencies:
+      playwright-core: 1.53.0
     optionalDependencies:
       fsevents: 2.3.2
 
