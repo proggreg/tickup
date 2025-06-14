@@ -154,7 +154,7 @@ export default defineNuxtConfig({
     // add this to handle push notifications
     strategies: 'injectManifest',
     injectManifest: {
-      injectionPoint: 'self.__WB_MANIFEST',
+      injectionPoint: undefined,
     },
   },
 
