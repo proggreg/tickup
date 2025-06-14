@@ -42,7 +42,8 @@
     "prettier": "^3.0.3",
     "typescript": "^5.0.4",
     "vitest": "^1.1.1",
-    "vuetify-nuxt-module": "^0.14.1"
+    "vuetify-nuxt-module": "^0.14.1",
+    "workbox-precaching": "^7.3.0"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^2.3.3",
@@ -68,7 +69,8 @@
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^4.2.0",
     "vue-hotjar-next": "^2.0.1",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "^4.1.0",
+    "web-push": "^3.6.7"
   },
   "type": "module"
 }

@@ -7,6 +7,7 @@ const route = useRoute()
 const config = useRuntimeConfig()
 const event = useRequestEvent()
 const dialog = useDialog()
+const { $pwa } = useNuxtApp()
 
 if (status.value === 'authenticated') {
   await useAsyncData(() => settingsStore.getUserSettings().then(() => true))
@@ -43,6 +44,13 @@ onBeforeMount(() => {
     }
   }
 })
+
+onMounted(() => {
+  console.log('App mounted pwa ', $pwa)
+  if ($pwa.offlineReady) {
+    console.log('App ready to work offline')
+  }
+})
 const layoutName = computed(() => {
   if (route.name === 'login' || route.name === 'register') {
     return 'login-register'
@@ -60,16 +68,21 @@ const layoutName = computed(() => {
 
 <template>
   <div>
-    <VitePwaManifest />
+    <NuxtPwaManifest />
     <AppKeyCommands />
+    <!-- <div v-show="$pwa.needRefresh">
+      <span>
+        New content available, click on reload button to update.
+      </span>
+
+      <button @click="$pwa.updateServiceWorker()">
+        Reload
+      </button>
+    </div> -->
     <AppDialog page="todo" title="New Todo">
       <TodoNew @save-todo="dialog.open = false" />
       <template #buttons>
-        <v-btn
-          color="primary"
-          :disabled="listsStore.newTodo.name === ''"
-          @click.stop="dialog.open = false"
-        >
+        <v-btn color="primary" :disabled="listsStore.newTodo.name === ''" @click.stop="dialog.open = false">
           Save
         </v-btn>
       </template>

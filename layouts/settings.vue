@@ -9,7 +9,7 @@ const colorMode = useColorMode()
         <v-layout>
           <app-nav />
           <v-main>
-            <v-container fluid class="fill-height flex justify-center align-start">
+            <v-container fluid class="flex align-start">
               <NuxtPage />
             </v-container>
           </v-main>
