@@ -15,6 +15,10 @@ declare global {
     color: string
     githubBranchName?: string
     order: number
+    links: {
+      title: string
+      url: string
+    }[]
   }
 
   interface Status {
@@ -34,6 +38,7 @@ declare global {
     _id?: string
     image?: string
     listType: ListType
+    icon: string
   }
 
   interface Settings {
@@ -64,4 +69,31 @@ declare global {
     _id: ObjectId
     userId?: string
   }
+  export interface PwaInjection {
+    /**
+     * @deprecated use `isPWAInstalled` instead
+     */
+    isInstalled: boolean
+    /**
+     * From version v0.3.5+. 
+     */  
+    isPWAInstalled: Ref<boolean>
+    showInstallPrompt: Ref<boolean>
+    cancelInstall: () => void
+    install: () => Promise<void>
+    swActivated: Ref<boolean>
+    registrationError: Ref<boolean>
+    offlineReady: Ref<boolean>
+    needRefresh: Ref<boolean>
+    updateServiceWorker: (reloadPage?: boolean | undefined) => Promise<void>
+    cancelPrompt: () => Promise<void>
+    getSWRegistration: () => ServiceWorkerRegistration | undefined
+  }
+  
+  declare module '#app' {
+    interface NuxtApp {
+      $pwa: UnwrapNestedRefs<PwaInjection>
+    }
+  }
+
 }

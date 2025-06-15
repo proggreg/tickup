@@ -9,11 +9,12 @@ export default {
         elevation: 10,
         width: 300,
         class: 'pa-4',
-        rounded: 'xl',
       },
       VBtn: {
         rounded: 'xl',
         elevation: 0,
+        variant: 'plain',
+        ripple: false,
       },
       VTextField: {
         rounded: 'xl',
@@ -29,17 +30,22 @@ export default {
         rounded: 'xl',
         variant: 'outlined',
       },
-      VListItem: {
-        rounded: 'xl',
+      VList: {
+        // variant: 'plain',
+      },
+      V45: {
+        // rounded: 'xl',
+        // variant: 'plain',
       },
       VMenu: {
-        rounded: 'xl',
+        // rounded: 'xl',
       },
       VCard: {
-        rounded: 'xl',
+        rounded: 'lg',
+        ripple: false,
       },
       VFab: {
-        rounded: 'circle',
+        rounded: 'xl',
       },
       VSelect: {
         rounded: 'xl',
@@ -55,6 +61,7 @@ export default {
         },
         dark: {
           colors: {
+            primary: '#FFFFFF',
             secondary: '#000000',
           },
         },

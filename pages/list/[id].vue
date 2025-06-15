@@ -1,12 +1,25 @@
 <script setup lang="ts">
 const route = useRoute()
 const listsStore = useListsStore()
+const tabs = ref<View[]>(['board', 'list'])
+const currentTab = ref<View>('board')
 const on = useToolbar()
 const saveTodo = ref(false)
 const dialog = useDialog()
 const { isMobile } = useDevice()
 onMounted(async () => {
   listsStore.getList(route.params.id as string)
+const { data: user } = useAuth()
+
+onBeforeMount(async () => {
+  if (user?.value?.user._id) {
+    await listsStore.getLists(user?.value?.user._id)
+  }
+  const currentList = listsStore.lists.find((list: List) => list._id === route.params.id)
+
+  if (currentList) {
+    listsStore.setCurrentList(currentList)
+  }
 })
 
 if (!listsStore.currentList) {
@@ -26,7 +39,7 @@ watch(listsStore.currentList.todos, (todos) => {
 </script>
 
 <template>
-  <div style="width: 100%;height: 100%;">
+  <v-row class="fill-height" no-gutters>
     <ListHeader />
     <div v-if="listsStore.currentList.name && isMobile" class="pa-2 d-flex justify-center text-capitalize" align-content="center">
       <v-btn :active="false" class="font-weight-bold text-h5 text-capitalize mx-auto" :to="`/list/${listsStore.currentList._id}`" :text="listsStore.currentList.name" />
@@ -40,28 +53,24 @@ watch(listsStore.currentList.todos, (todos) => {
     </v-row>
 
     <div v-if="$device.isMobile">
-      <ListSimple v-if="listsStore.currentList.listType === 'simple'" />
-      <ListTable v-else />
+      <v-col>
+        <ListTable />
+      </v-col>
     </div>
-    <v-col v-else>
-      <v-card cols="12" style="width: 100%; height: 100%;">
-        <ListSimple v-if="listsStore.currentList.listType === 'simple'" />
-        <ListComplex v-else />
-        <!-- <ListComplex /> -->
-      </v-card>
-    </v-col>
+    <v-col v-else class="fill-height" cols="12">
 
-    <AppDialog page="todo" title="New Todo">
-      <TodoNew :save-todo="saveTodo" @add-todo="dialog.open = false; saveTodo = false" />
-      <template #buttons>
-        <v-btn
-          color="primary"
-          :disabled="listsStore.newTodo.name === ''"
-          @click.stop="saveTodo = true; dialog.open = false"
-        >
-          Save
-        </v-btn>
-      </template>
-    </AppDialog>
-  </div>
+      <v-tabs v-model="currentTab">
+        <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
+      </v-tabs>
+      <v-window v-model="currentTab" :touch="false" style="height: 100%;">
+        <v-window-item value="board" class="fill-height">
+          <Board />
+        </v-window-item>
+        <v-window-item value="list" class="fill-height">
+          <ListTable />
+        </v-window-item>
+      </v-window>
+
+    </v-col>
+  </v-row>
 </template>

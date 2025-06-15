@@ -7,13 +7,19 @@ function selectTodo(todo: Todo) {
   listsStore.setCurrentTodo(todo)
   navigateTo(`/todo/${todo._id}`)
 }
-function setClosed(todo: Todo) {
-  todo.status = 'Closed'
-  listsStore.updateTodo(todo)
+function setClosed(todo: Todo, el: any) {
+  el.target.checked = true
+  setTimeout(() => {
+    todo.status = 'Closed'
+    listsStore.updateTodo(todo)
+  }, 200)
 }
-function setOpen(todo: Todo) {
-  todo.status = 'Open'
-  listsStore.updateTodo(todo)
+function setOpen(todo: Todo, el: any) {
+  el.target.checked = false
+  setTimeout(() => {
+    todo.status = 'Open'
+    listsStore.updateTodo(todo)
+  }, 200)
 }
 function formatDate(date: Date) {
   if (!date) {
@@ -50,10 +56,13 @@ const closedTodos = computed(() => {
           v-for="todo in openTodos"
           :key="todo._id"
           slim
+          nav
+          style="padding: 0 16px !important;"
+          class="pa-0"
           @click="selectTodo(todo)"
         >
           <template #prepend>
-            <v-checkbox @click.stop="setClosed(todo)" />
+            <v-checkbox @click.stop="(el: any) => setClosed(todo, el)" />
           </template>
           <v-list-item-title class="text-h6">
             {{ todo.name }}
@@ -85,7 +94,7 @@ const closedTodos = computed(() => {
           @click="selectTodo(todo)"
         >
           <template #prepend>
-            <v-checkbox :model-value="true" @click.stop="setOpen(todo)" />
+            <v-checkbox :model-value="true" @click.stop="(el: any) => setOpen(todo, el)" />
           </template>
           <v-list-item-title class="text-h6">
             {{ todo.name }}

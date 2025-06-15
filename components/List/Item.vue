@@ -20,13 +20,6 @@ function editTodo(todo: Todo, status: Status) {
     body: todo,
   })
 }
-
-// function deleteTodo(todo: Todo) {
-//   if (todo._id) {
-//     listsStore.deleteTodo(todo._id)
-//     emit('updateTodos')
-//   }
-// }
 </script>
 
 <template>

@@ -7,6 +7,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+.vscode
+
 # Runtime data
 pids
 *.pid
@@ -81,9 +83,6 @@ dist
 
 # IDE / Editor
 .idea
-
-# Service worker
-sw.*
 
 # macOS
 .DS_Store

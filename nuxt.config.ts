@@ -2,16 +2,18 @@ import vuetifyOptions from './config/vuetify'
 
 export default defineNuxtConfig({
   modules: [
+    '@vite-pwa/nuxt',
     'vuetify-nuxt-module',
     '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
     '@vueuse/nuxt',
     'nuxt-mongoose',
-    'nuxt-bugsnag',
+    // 'nuxt-bugsnag',
     '@sidebase/nuxt-auth',
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
     '@nuxtjs/device',
-    '@vite-pwa/nuxt',
+
   ],
 
   experimental: {
@@ -59,15 +61,15 @@ export default defineNuxtConfig({
     strict: false,
   },
 
-  bugsnag: {
-    baseUrl: process.env.NUXT_ENV_VERCEL_URL || 'http://localhost:3000',
-    publishRelease: true,
-    config: {
-      apiKey: process.env.BUGSNAG_API_KEY,
-      enabledReleaseStages: ['development', 'staging', 'production'],
-      releaseStage: process.env.NODE_ENV,
-    },
-  },
+  // bugsnag: {
+  //   baseUrl: process.env.NUXT_ENV_VERCEL_URL || 'http://localhost:3000',
+  //   publishRelease: true,
+  //   config: {
+  //     apiKey: process.env.BUGSNAG_API_KEY,
+  //     enabledReleaseStages: ['development', 'staging', 'production'],
+  //     releaseStage: process.env.NODE_ENV,
+  //   },
+  // },
 
   devtools: {
     enabled: true,
@@ -86,6 +88,10 @@ export default defineNuxtConfig({
     github: {
       clientId: process.env.NUXT_GITHUB_CLIENT_ID,
       clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET,
+      personal: process.env.NUXT_GITHUB_PERSONAL_ACCESS_TOKEN,
+    },
+    private: {  
+      vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
     },
     public: {
       github: process.env.NUXT_GITHUB_PERSONAL_ACCESS_TOKEN,
@@ -114,9 +120,6 @@ export default defineNuxtConfig({
   },
 
   pwa: {
-    strategies: 'generateSW',
-    srcDir: undefined,
-    filename: undefined,
     registerType: 'autoUpdate',
     manifest: {
       name: 'Tickup',
@@ -144,21 +147,24 @@ export default defineNuxtConfig({
     workbox: {
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
     },
-    injectManifest: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-    },
     client: {
       installPrompt: true,
-      // you don't need to include this: only for testing purposes
-      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
-      periodicSyncForUpdates: 20,
     },
     devOptions: {
       enabled: true,
-      suppressWarnings: true,
+      suppressWarnings: false,
       navigateFallback: '/',
       navigateFallbackAllowlist: [/^\/$/],
       type: 'module',
+    },
+    // add this to handle sw within the app
+    srcDir: 'service-worker',
+    filename: 'sw.ts',
+    // add this to handle push notifications
+    strategies: 'injectManifest',
+    injectManifest: {
+      injectionPoint: undefined,
+       rollupFormat: 'iife'
     },
   },
 

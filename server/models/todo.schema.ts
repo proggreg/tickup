@@ -37,7 +37,9 @@ export const TodoSchema = defineMongooseModel<Todo>({
     // @ts-ignore
     createdAt: {
       type: Date,
-      default: Date.now,
+      required: true,
+      default: () => Date.now(),
+
     },
 
     // @ts-ignore
@@ -47,6 +49,20 @@ export const TodoSchema = defineMongooseModel<Todo>({
     },
     githubBranchName: {
       type: 'string',
+    },
+    links: {
+      type: [{
+        title: {
+          type: String,
+          required: true,
+        },
+        url: {
+          type: String,
+          required: true,
+        },
+      }],
+      required: false,
+      default: () => [],
     },
   },
 })

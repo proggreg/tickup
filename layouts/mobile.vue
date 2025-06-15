@@ -1,17 +1,8 @@
 <script setup lang="ts">
 const { status } = useAuth()
 const colorMode = useColorMode()
-const listStore = useListsStore()
 const route = useRoute()
-const router = useRouter()
 const dialog = useDialog()
-
-router.beforeResolve((route) => {
-  console.log('before route', route)
-  if (route.name !== 'list-id' && route.name !== 'todo-id') {
-    listStore.currentList.name = ''
-  }
-})
 
 function addEventHandler() {
   if (route.name === 'lists') {
@@ -34,24 +25,14 @@ const showFab = computed(() => {
   <ColorScheme>
     <v-theme-provider with-background :theme="colorMode.preference">
       <v-app>
-        <v-layout>
-          <v-main>
-            <v-container class="align-start" fluid>
-              <NuxtPage />
-            </v-container>
-          </v-main>
-        </v-layout>
-        <div style="position: fixed; z-index: 99999; background-color: red; width: 100%; height: 0; bottom: 100px">
-          <v-fab
-            v-if="showFab"
-            position="static"
-            size="large"
-            style="position: absolute; right: 75px"
-            color="primary" icon="mdi-plus"
-            variant="elevated" @click="addEventHandler"
-          />
-        </div>
-
+        <v-main>
+          <v-container class="pa-0" fluid>
+            <NuxtPage />
+          </v-container>
+        </v-main>
+        <v-fab v-if="showFab" app size="small" position="relative" location="bottom end" style="bottom: 50px;"
+          elevation="12" color="primary" append-icon="mdi-plus" variant="elevated" extended text="New"
+          @click="addEventHandler" />
         <AppMobileNav v-if="status === 'authenticated'" />
       </v-app>
     </v-theme-provider>

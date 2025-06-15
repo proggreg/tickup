@@ -25,13 +25,7 @@ const unselectAll = () => {
   <div>
     <v-menu offset-y>
       <template #activator="{ props }">
-        <v-btn
-          class="pa-0"
-          v-bind="props"
-          icon="mdi-dots-horizontal"
-          variant="text"
-          size="small"
-        />
+        <v-btn class="pa-0" v-bind="props" :ripple="false" icon="mdi-dots-horizontal" variant="plain" size="small" />
       </template>
       <v-list>
         <v-list-item @click="selectAll">
@@ -44,7 +38,3 @@ const unselectAll = () => {
     </v-menu>
   </div>
 </template>
-
-<style>
-/* Add your custom styles here */
-</style>

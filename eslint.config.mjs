@@ -10,7 +10,9 @@ export default withNuxt(
       'vue/html-indent': 'off',
       '@stylistic/js/indent': 'off',
       'indent': ['error', 4],
-      '@stylistic/ts/indent': ['error', 4] 
-    },
+      '@stylistic/ts/indent': ['error', 4],
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@stylistic/indent': 'off',
+      'vue/html-indent': 'off',
   },
 )

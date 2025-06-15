@@ -12,7 +12,8 @@ const newTodo = ref<Todo>({
   status: '',
   edit: true,
   selected: false,
-  color: 'grey',
+  color: 'inherit',
+  links: [],
 })
 
 const groupedTodos = computed(() => {
@@ -30,6 +31,24 @@ const groupedTodos = computed(() => {
   })
 
   return []
+})
+
+const boardRef = ref<HTMLElement | null>(null)
+
+const cardHeight = computed(() => {
+  const boardElement = boardRef.value
+  const parentElement = boardElement?.parentElement
+  const parentHeight = parentElement ? parentElement.clientHeight : window.innerHeight
+  console.log(`Calculating card height based on window size parentHeight ${parentHeight}`)
+  return (parentHeight - 30) + 'px'
+})
+
+const cardWidth = computed(() => {
+  const boardElement = boardRef.value
+  const parentElement = boardElement?.parentElement
+  const parentWidth = parentElement ? parentElement.clientWidth : window.innerWidth
+  console.log(`Calculating card width based on window size parentWidth ${parentWidth}`)
+  return (parentWidth / groupedTodos.value.length) + 'px'
 })
 
 async function updateTodo(e: { added?: { element: Todo } }, status: Status) {
@@ -55,10 +74,11 @@ function getComponentData(statusName: string) {
 }
 
 async function addTodo(status: string) {
-  newTodo.value.status = status
-  await listStore.addTodo(newTodo.value)
-  newTodo.value.name = ''
-  newTodo.value.status = ''
+  if (newTodo.value.name) {
+    await listStore.addTodo(newTodo.value)
+    newTodo.value.name = ''
+    newTodo.value.status = ''
+  }
 }
 
 function gotoTodo(todo: Todo) {
@@ -67,13 +87,7 @@ function gotoTodo(todo: Todo) {
 }
 
 function toggleNewTodo(status: string) {
-  newTodo.value.status = status
-  if (newTodo.value.name) {
-    addTodo(status)
-  }
-  else {
-    showFooter.value = showFooter.value === status ? '' : status
-  }
+  newTodo.value.status = newTodo.value.status === status ? '' : status
 }
 
 watch(dragging, (isDragging) => {
@@ -87,55 +101,68 @@ watch(dragging, (isDragging) => {
 </script>
 
 <template>
-  <v-slide-group :show-arrows="true" class="fill-height">
+  <v-slide-group ref="boardRef" :show-arrows="true" class="font-weight-bold">
     <v-slide-group-item v-for="status in groupedTodos" :key="status.name" v-slot="{ toggle, selectedClass }">
-      <v-card
-        :class="['ma-2', selectedClass, '', 'flex-column']" width="300" variant="tonal" :title="status.name"
-        :color="status.color" @click="toggle"
-      >
-        <template #append>
-          <BoardOptions :status="status" />
+      <v-card :class="['ma-2 font-weight-bold', selectedClass, '', 'flex-column']" :height="cardHeight" width="100%"
+        max-width="400" variant="tonal" :color="status.color" @click="toggle">
+        <template #title>
+          <div class="d-flex align-center justify-space-between">
+            <div> 
+              {{ status.name }}
+              <v-btn :ripple="false" class="pa-0 ma-0" width="20" size="small" @click="toggleNewTodo(status.name)"
+                variant="plain" :color="status.color" icon="mdi-plus"></v-btn>
+            </div>
+            <BoardOptions :status="status" />
+
+          </div>
         </template>
-        <v-card-item class="flex-fill" style="overflow-y: auto; ">
-          <draggable
-            v-model="status.todos" item-key="_id" group="status"
-            :component-data="getComponentData(status.name)" auto-scroll @start="dragging = true" @end="dragging = false"
-            @change="(e: any) => updateTodo(e, status)"
-          >
+        <v-card-item class="flex-fill fill-height list">
+          <draggable v-model="status.todos" item-key="_id" group="status" @change="(e: any) => updateTodo(e, status)"
+            class="draggable-container">
+            @change="(e: any) => updateTodo(e, status)" style="min-height: 100% !important; overflow-y: auto;">
             <template #item="{ element }">
-              <v-card
-                class="mb-2" :color="status.color" style="cursor: pointer" :title="element.name"
-                @click="gotoTodo(element)"
-              >
-                <template #append>
-                  <v-checkbox v-model="element.selected" size="small" density="compact" hide-details @click.stop />
-                </template>
+              <v-card :id="element._id" class="mb-2 pa-0" :color="status.color" style="cursor: pointer;"
+                :max-width="cardWidth" @click="gotoTodo(element)">
+                <v-card-item class="py-2 px-4">
+                  <div class="d-flex align-center justify-space-between">
+                    <span class="text-truncate text-body-1 font-weight-bold">{{ element.name }}</span>
+                    <v-checkbox v-model="element.selected" size="small" density="compact" hide-details @click.stop />
+                  </div>
+                </v-card-item>
+
               </v-card>
             </template>
             <template v-if="status.addTodo" #footer>
-              <v-card class="px-4 ma-2">
+              <v-card class="px-4">
                 <v-card-item class="px-0">
-                  <v-text-field
-                    v-model="newTodo.name" placeholder="Add todo" hide-details class="ma-0 pa-0" autofocus
-                    variant="plain" @blur="newTodo.status = ''" @keyup.enter.stop="addTodo(status.name)"
-                  />
+                  <v-text-field v-model="newTodo.name" placeholder="Add todo" hide-details class="ma-0 pa-0" autofocus
+                    variant="plain" @blur="newTodo.status = ''" @keyup.enter.stop="addTodo(status.name)" />
                 </v-card-item>
               </v-card>
             </template>
           </draggable>
         </v-card-item>
-        <v-card-actions class="mt-auto">
-          <v-btn class="px-4 mb-2" block append-icon="mdi-plus" variant="tonal" @click="toggleNewTodo(status.name)">
-            Add
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </v-slide-group-item>
   </v-slide-group>
 </template>
 
-<style>
+<style scoped>
 .ghost {
   opacity: 0.5;
+  background-color: inherit;
+}
+
+:deep(.v-card-title) {
+  font-weight: bold !important;
+}
+
+.list :deep(.v-card-item__content:first-child) {
+  height: 100% !important;
+
+  .draggable-container {
+    min-height: 100%;
+    overflow-y: auto;
+  }
 }
 </style>

@@ -17,6 +17,7 @@ async function createTodo(status: string) {
       userId: data?.value?.user?.sub,
       color: 'grey',
       edit: false,
+      links: [],
     }
     await store.addTodo(newTodo)
     newTodoTitle.value = ''
@@ -31,7 +32,7 @@ async function createTodo(status: string) {
   <tr>
     <td v-if="openNewTodo === '' || openNewTodo !== groupItem.value" colspan="5">
       <v-btn
-        :variant="newTodoVariant" size="x-small" elevation="0" @click="openNewTodo = groupItem.value"
+        elevation="0" @click="openNewTodo = groupItem.value"
         @mouseover="newTodoVariant = 'outlined'" @mouseleave="newTodoVariant = 'text'"
       >
         Add Todo

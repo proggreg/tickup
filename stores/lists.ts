@@ -1,6 +1,7 @@
 interface listsState {
   lists: List[]
   currentList: List
+  newList: List
   currentTodo: Todo
   todos?: Todo[]
   todaysTodos: Todo[]
@@ -29,13 +30,7 @@ export const useListsStore = defineStore('lists', {
     lists: [],
     currentList: newListDefaults,
     view: 'list',
-    currentTodo: {
-      name: '',
-      status: 'Open',
-      desc: '',
-      edit: false,
-      color: '#87909e',
-    },
+    lists: [],
     todos: [],
     todaysTodos: [],
     overdueTodos: [],
@@ -58,6 +53,7 @@ export const useListsStore = defineStore('lists', {
         return newList
       }
     },
+    async updateList(list?: List) {
     async updateList(list?: List) {
       console.time('updateList')
       const listToUpdate = list || this.currentList
@@ -89,8 +85,16 @@ export const useListsStore = defineStore('lists', {
         const data = await $fetch<List>(`/api/list/${listId}`, {
           method: 'DELETE',
         })
-        console.log('list deleted', data)
+        if (data) {
+          console.log(`list ${listId} deleted`)
+        }
       }
+      catch (err) {
+        console.error(err)
+      }
+    },
+    setLists(lists: Array<List>) {
+      this.lists = lists
     },
     setLists(lists: Array<List>) {
       this.lists = lists
@@ -158,12 +162,24 @@ export const useListsStore = defineStore('lists', {
         body: newTodo,
       })
 
+      if (!todo) {
+        console.error('Failed to add todo')
+        return
+      }
+
+      // update the added todo with the server-generated ID
+      this.currentList.todos = this.currentList.todos.map(t =>
+        t._id === newTodoTempId ? { ...t, _id: todo._id } : t,
+      )
+      
+
       this.newTodo = {
         name: '',
         status: 'Open',
         desc: '',
         edit: false,
         color: '#87909e',
+        links: [],
       }
 
       if (isHomepage) {
@@ -176,7 +192,11 @@ export const useListsStore = defineStore('lists', {
       this.updateList()
       return todo
     },
-    async updateTodo(todo: Todo) {
+    async updateTodo(todo?: Todo) {
+      if (!todo) {
+        todo = this.currentTodo
+      }
+
       const updatedTodo = await $fetch<Todo>(`/api/todo/${todo._id}`, {
         method: 'PUT',
         body: todo,
@@ -221,9 +241,6 @@ export const useListsStore = defineStore('lists', {
       console.log('set current list', list)
       if (list) {
         this.currentList = list
-        if (!this.currentList.todos) {
-          this.currentList.todos = []
-        }
       }
     },
     setCurrentListName(name: string) {
@@ -266,12 +283,12 @@ export const useListsStore = defineStore('lists', {
       }
     },
     async getOverdueTodos(id: string) {
-      const { data } = await useFetch<Todo[]>('/api/todos', {
+      const todos = await $fetch<Todo[]>('/api/todos', {
         query: { overdue: true, id },
       })
 
-      if (data.value) {
-        this.overdueTodos = data.value
+      if (todos) {
+        this.overdueTodos = todos
       }
     },
     sortByDate(newDirection: string) {
@@ -293,5 +310,30 @@ export const useListsStore = defineStore('lists', {
         return newDirection === 'ascending' ? result : -result
       })
     },
+
+    newReset() {
+      console.log('newReset')
+      this.newTodo = {
+        name: '',
+        status: 'Open',
+        desc: '',
+        edit: false,
+        color: '#87909e',
+        links: [],
+      }
+      this.newList = {
+        name: '',
+        todos: [],
+        icon: 'mdi-format-list-bulleted',
+      }
+    },
   },
+  // persist: {
+  //   debug: true,
+  //   storage: piniaPluginPersistedstate.sessionStorage(),
+  // },
 })
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useListsStore, import.meta.hot))
+}

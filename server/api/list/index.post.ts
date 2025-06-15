@@ -5,6 +5,10 @@ export default defineEventHandler(async (event) => {
   try {
     const token = await getToken({ event })
 
+    if (body.userId) {
+      console.log('userid being sent from frontend please stop', body.userId)
+    }
+
     if (!body.userId && token) {
       body.userId = token.sub
     }

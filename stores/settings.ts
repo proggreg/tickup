@@ -54,3 +54,6 @@ export const useSettingsStore = defineStore('settings', () => {
 
   return { darkMode, statuses, getUserSettings, userStatuses, pusherAppId, pusherKey, pusherSecret, pusherCluster }
 })
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useSettingsStore, import.meta.hot))
+}
