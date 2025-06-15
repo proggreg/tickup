@@ -4,7 +4,7 @@ import { defineEventHandler, setHeader, sendStream } from 'h3'
 
 export default defineEventHandler(async (event) => {
   if (!process.env.GEMINI_API_KEY) {
-    console.error('Geminie API Key is required')
+    console.error('Gemini API Key is required')
     throw Error('Gemini API key is missing')
   }
 
