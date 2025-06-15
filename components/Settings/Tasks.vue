@@ -104,7 +104,6 @@ Pusher.logToConsole = true
 </script>
 
 <template>
-    <v-container class="py-6" max-width="600">
         <v-card elevation="2">
             <v-toolbar color="transparent">
                 <v-toolbar-title class="text-h5" text="Scheduled Tasks" />
@@ -146,5 +145,4 @@ Pusher.logToConsole = true
                 </v-list>
             </v-card-text>
         </v-card>
-    </v-container>
 </template>

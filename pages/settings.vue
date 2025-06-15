@@ -115,57 +115,63 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-row>
-    <v-col cols="12">
-      <h2 class="text-center">Settings</h2>
-      <v-card variant="flat" class="pa-4">
-        <v-list variant="tonal">
-          <v-list-item v-for="status in store.statuses" :key="status.name" class="my-2" :base-color="status.color">
-            <template #prepend>
-              <v-menu :close-on-content-click="false">
-                <template #activator="{ props }">
-                  <v-btn v-bind="props" min-width="20" size="small" :color="status.color" />
-                </template>
-                <v-color-picker v-model="status.color" class="ma-4" show-swatches />
-              </v-menu>
-            </template>
-            <v-text-field v-if="status.Edit" v-model="status.name" class="mx-2" autofocus />
-            <v-list-item-title v-else class="mx-2">
-              {{ status.name }}
-            </v-list-item-title>
-            <template #append>
-              <v-menu>
-                <template #activator="{ props }">
-                  <v-btn class="pa-0" v-bind="props" icon="mdi-dots-horizontal" variant="text" />
-                </template>
-                <v-list class="px-2">
-                  <v-list-item v-for="(option, index) in options" :key="index" :value="option.name"
-                    :append-icon="option.icon" :class="option.destructive ? 'text-red' : ''"
-                    @click.passive="option.handler(status)">
-                    <v-list-item-title class="text-body-2">
-                      {{ option.name }}
-                    </v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </template>
-          </v-list-item>
-          <v-list-item width="200" variant="plain">
-            <v-btn @click="addStatus">
-              Add Status
-            </v-btn>
-          </v-list-item>
-        </v-list>
-        <v-btn color="secondary" @click="cancel">
-          Cancel
-        </v-btn>
-        <v-btn color="primary" @click="save">
-          Save
-        </v-btn>
-        <v-btn class="text-body-2 py-0 ma-2" append-icon="mdi-logout" @click="signOut()">
-          Sign Out
-        </v-btn>
-      </v-card>
-    </v-col>
-  </v-row>
+  <v-container>
+    <v-row class="mb-4">
+      <v-col cols="12">
+        <h2 class="text-center">Settings</h2>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <!-- Profile Settings -->
+      <v-col cols="12" md="6">
+        <v-card title="Profile Settings" class="pa-4 mb-4">
+          <v-card-text>
+            <p><strong>Name:</strong> {{ data?.user?.name }}</p>
+            <v-btn color="error" @click="signOut()">Sign out</v-btn>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <!-- Notification Settings -->
+      <v-col cols="12" md="6">
+        <SettingsTasks/>
+      </v-col>
+
+      <!-- Status Management -->
+      <v-col cols="12">
+        <v-card title="Status Management" class="pa-4 mb-4">
+          <v-card-text>
+            <v-row v-for="(status, i) in store.statuses" :key="i" align="center">
+              <v-col cols="1">
+                <v-icon :color="status.color">mdi-circle</v-icon>
+              </v-col>
+              <v-col cols="7">
+                <v-text-field
+                  v-model="status.name"
+                  label="Status Name"
+                  :readonly="!status.Edit"
+                  variant="underlined"
+                  @update:model-value="save"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-menu>
+                  <template #activator="{ props }">
+                    <v-btn icon="mdi-dots-vertical" v-bind="props" variant="text"></v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item v-for="(option, index) in options" :key="index" @click="option.handler(status)">
+                      <v-list-item-title>{{ option.name }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-col>
+            </v-row>
+            <v-btn prepend-icon="mdi-plus" @click="addStatus">Add Status</v-btn>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>

@@ -15,7 +15,8 @@ const newListDefaults: List = {
   todos: [],
   _id: '',
   image: '',
-  listType: '',
+  listType: 'simple',
+  icon: ''
 }
 
 export const useListsStore = defineStore('lists', {
@@ -26,14 +27,25 @@ export const useListsStore = defineStore('lists', {
       desc: '',
       edit: false,
       color: '#87909e',
+      order: 0,
+      links: [],
     },
     lists: [],
     currentList: newListDefaults,
     view: 'list',
-    lists: [],
     todos: [],
     todaysTodos: [],
     overdueTodos: [],
+    newList: newListDefaults,
+    currentTodo: {
+      name: '',
+      status: 'Open',
+      desc: '',
+      edit: false,
+      color: '#87909e',
+      order: 0,
+      links: [],
+    },
   }),
   actions: {
     // =====================
@@ -53,7 +65,6 @@ export const useListsStore = defineStore('lists', {
         return newList
       }
     },
-    async updateList(list?: List) {
     async updateList(list?: List) {
       console.time('updateList')
       const listToUpdate = list || this.currentList
@@ -80,21 +91,20 @@ export const useListsStore = defineStore('lists', {
       console.timeEnd('updateList')
     },
     async deleteList(listId: string) {
-      if (listId) {
-        this.lists = this.lists.filter(list => list._id !== listId)
-        const data = await $fetch<List>(`/api/list/${listId}`, {
-          method: 'DELETE',
-        })
-        if (data) {
-          console.log(`list ${listId} deleted`)
+      try {
+        if (listId) {
+          this.lists = this.lists.filter(list => list._id !== listId)
+          const data = await $fetch<List>(`/api/list/${listId}`, {
+            method: 'DELETE',
+          })
+          if (data) {
+            console.log(`list ${listId} deleted`)
+          }
         }
       }
       catch (err) {
         console.error(err)
       }
-    },
-    setLists(lists: Array<List>) {
-      this.lists = lists
     },
     setLists(lists: Array<List>) {
       this.lists = lists
@@ -168,9 +178,12 @@ export const useListsStore = defineStore('lists', {
       }
 
       // update the added todo with the server-generated ID
-      this.currentList.todos = this.currentList.todos.map(t =>
-        t._id === newTodoTempId ? { ...t, _id: todo._id } : t,
-      )
+      if (isHomepage) {
+        this.todaysTodos[this.todaysTodos.length - 1]._id = todo._id
+      }
+      else {
+        this.currentList.todos[this.currentList.todos.length - 1]._id = todo._id
+      }
       
 
       this.newTodo = {
@@ -180,13 +193,7 @@ export const useListsStore = defineStore('lists', {
         edit: false,
         color: '#87909e',
         links: [],
-      }
-
-      if (isHomepage) {
-        this.todaysTodos[this.todaysTodos.length - 1]._id = todo._id
-      }
-      else {
-        this.currentList.todos[this.currentList.todos.length - 1]._id = todo._id
+        order: 0,
       }
 
       this.updateList()
@@ -320,11 +327,15 @@ export const useListsStore = defineStore('lists', {
         edit: false,
         color: '#87909e',
         links: [],
+        order: 0,
       }
       this.newList = {
         name: '',
         todos: [],
         icon: 'mdi-format-list-bulleted',
+        listType: 'simple',
+        _id: '',
+        image: '',
       }
     },
   },

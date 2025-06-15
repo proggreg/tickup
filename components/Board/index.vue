@@ -14,6 +14,7 @@ const newTodo = ref<Todo>({
   selected: false,
   color: 'inherit',
   links: [],
+  order: 0, // Added missing required property
 })
 
 const groupedTodos = computed(() => {

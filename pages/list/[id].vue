@@ -7,30 +7,10 @@ const on = useToolbar()
 const saveTodo = ref(false)
 const dialog = useDialog()
 const { isMobile } = useDevice()
+const { data: user } = useAuth()
 onMounted(async () => {
   listsStore.getList(route.params.id as string)
-const { data: user } = useAuth()
-
-onBeforeMount(async () => {
-  if (user?.value?.user._id) {
-    await listsStore.getLists(user?.value?.user._id)
-  }
-  const currentList = listsStore.lists.find((list: List) => list._id === route.params.id)
-
-  if (currentList) {
-    listsStore.setCurrentList(currentList)
-  }
 })
-
-if (!listsStore.currentList) {
-  navigateTo('/')
-}
-
-if (listsStore.currentList) {
-  useHead({
-    title: `TickUp:${listsStore.currentList.name}`,
-  })
-}
 
 watch(listsStore.currentList.todos, (todos) => {
   if (!todos) return
