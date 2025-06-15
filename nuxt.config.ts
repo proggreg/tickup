@@ -93,6 +93,7 @@ export default defineNuxtConfig({
       hotjarId: process.env.HOTJAR_ID,
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
+      VAPID_KEY: process.env.VAPID_PUBLIC_KEY
     },
     appSecret: process.env.APP_SECRET,
   },

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Pusher from 'pusher-js'
+import * as PusherPushNotifications from '@pusher/push-notifications-web'
 const router = useRouter()
 const taskName = ref('')
 const cron = ref('*/10 * * * * *')
@@ -20,7 +21,20 @@ onMounted(() => {
 
   const channel = pusher.subscribe('my-channel')
   channel.bind('prompt', function (data: any) {
-    alert(JSON.stringify(data))
+    // alert(JSON.stringify(data))
+  })
+
+  window.navigator.serviceWorker.ready.then((serviceWorkerRegistration) => {
+    const beamsClient = new PusherPushNotifications.Client({
+      instanceId: process.env.PUSHER_INSTANCE_ID as string,
+      serviceWorkerRegistration: serviceWorkerRegistration,
+    })
+
+    console.log('here')
+    beamsClient.start()
+    .then(() => beamsClient.addDeviceInterest('hello'))
+    .then(() => console.log('Successfully registered and subscribed!'))
+    .catch(console.error);
   })
 })
 

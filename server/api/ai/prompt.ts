@@ -1,6 +1,10 @@
 import { Readable } from 'node:stream'
 import { GoogleGenAI } from '@google/genai'
 import { defineEventHandler, setHeader, sendStream } from 'h3'
+import Pusher from 'pusher'
+import PushNotifications from "@pusher/push-notifications-server";
+import { SettingsSchema } from '~/server/models/settings.schema'
+import type { Settings } from '~'
 
 export default defineEventHandler(async (event) => {
   if (!process.env.GEMINI_API_KEY) {
@@ -12,10 +16,21 @@ export default defineEventHandler(async (event) => {
   setHeader(event, 'Cache-Control', 'no-cache')
   setHeader(event, 'Connection', 'keep-alive')
 
-  const { prompt } = await getQuery(event)
+  const { prompt, userId } = await getQuery(event)
 
   if (!prompt) {
     throw Error('A prompt must be given')
+  }
+
+  if (!userId) {
+    throw Error('User ID is required')
+  }
+
+  const settings = (await SettingsSchema.findOne({ userId })) as Settings
+
+  if (!settings || !settings.pusherAppId || !settings.pusherKey || !settings.pusherSecret || !settings.pusherCluster) {
+    console.error('Pusher credentials are not set in user settings');
+    throw Error('Pusher credentials are not set in user settings');
   }
 
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) // Use non-null assertion as you likely have it configured
@@ -54,12 +69,35 @@ export default defineEventHandler(async (event) => {
       },
     })
 
+
+    console.log(`PUSHER_INSTANCE_ID ${process.env.PUSHER_INSTANCE_ID}`)
+    let beamsClient = new PushNotifications({
+      instanceId: process.env.PUSHER_INSTANCE_ID as string,
+      secretKey: process.env.PUSHER_SECRET as string,
+    });
+    
+    beamsClient
+      .publishToInterests(["hello"], {
+        web: {
+          notification: {
+            title: "Hello",
+            body: "Hello, world!",
+            deep_link: "https://www.pusher.com",
+          },
+        },
+      })
+      .then((publishResponse) => {
+        console.log("Just published:", publishResponse.publishId);
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
     return sendStream(event, readableStream)
   }
   catch (error) {
     console.error('Error streaming from Gemini:', error)
     // Optionally send an error event to the client
-    const errorStream = Readable.from([`event: error\ndata: ${JSON.stringify({ message: error.message })}\n\n`])
+    const errorStream = Readable.from([`event: error\ndata: ${JSON.stringify({ message: (error as Error).message })}\n\n`])
     return sendStream(event, errorStream)
   }
 })
