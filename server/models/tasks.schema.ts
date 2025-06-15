@@ -15,5 +15,9 @@ export const TasksSchema = defineMongooseModel<Task>({
       type: 'string',
       required: true,
     },
+    userId: {
+      type: 'string',
+      required: true,
+    },
   },
 })

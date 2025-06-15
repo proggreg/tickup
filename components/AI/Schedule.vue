@@ -3,19 +3,19 @@ import Pusher from 'pusher-js'
 const router = useRouter()
 const taskName = ref('')
 const cron = ref('*/10 * * * * *')
-const runtimeConfig = useRuntimeConfig()
+const settingsStore = useSettingsStore()
 
 const error = ref('')
 const prompt = ref('what are the most popular things to watch, get your information from rotten tomatoes. Only list the films and tv shows')
 onMounted(() => {
   Pusher.logToConsole = true
 
-  if (!runtimeConfig.public.PUSHER_KEY) {
-    console.warn('PUSHER_KEY not set')
+  if (!settingsStore.pusherKey) {
+    console.warn('Pusher Key not set')
     return
   }
-  const pusher = new Pusher(runtimeConfig.public.PUSHER_KEY, {
-    cluster: 'eu',
+  const pusher = new Pusher(settingsStore.pusherKey, {
+    cluster: settingsStore.pusherCluster || '',
   })
 
   const channel = pusher.subscribe('my-channel')
@@ -24,14 +24,12 @@ onMounted(() => {
   })
 })
 
-
-
-
-
 const saveSchedule = async () => {
   if (!cron.value) {
     throw Error('schedule required')
   }
+
+  const { data } = useAuth()
 
   try {
     const response = await $fetch<Task | {error: string}>('/api/tasks/save', {
@@ -40,6 +38,7 @@ const saveSchedule = async () => {
         name: taskName.value,
         cron: cron.value,
         prompt: prompt.value,
+        userId: data.value?.user?.sub,
       },
     })
 

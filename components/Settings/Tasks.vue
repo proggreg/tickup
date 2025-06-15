@@ -3,7 +3,8 @@ import Pusher from 'pusher-js'
 import type { ObjectId } from 'mongoose'
 const running = ref(false)
 const error = ref('')
-const runtimeConfig = useRuntimeConfig()
+const settingsStore = useSettingsStore()
+const {data} = useAuth()
 
 
 const { data: tasks, refresh } = await useFetch('/api/tasks', {
@@ -31,6 +32,7 @@ const runTask = async (task: Task) => {
       body: {
         task: task,
         start: true,
+        userId: data.value?.user?.sub,
       },
     })
 
@@ -80,12 +82,12 @@ onMounted(() => {
     }
 Pusher.logToConsole = true
 
-  if (!runtimeConfig.public.PUSHER_KEY) {
-    console.warn('PUSHER_KEY not set')
+  if (!settingsStore.pusherKey) {
+    console.warn('Pusher Key not set')
     return
   }
-  const pusher = new Pusher(runtimeConfig.public.PUSHER_KEY, {
-    cluster: 'eu',
+  const pusher = new Pusher(settingsStore.pusherKey, {
+    cluster: settingsStore.pusherCluster || '',
   })
 
   const channel = pusher.subscribe('my-channel')

@@ -1,5 +1,7 @@
 import { Cron } from 'croner'
 import Pusher from 'pusher'
+import { SettingsSchema } from '~/server/models/settings.schema'
+import type { Settings } from '~'
 
 let job: Cron | null = null
 export default defineTask({
@@ -7,24 +9,23 @@ export default defineTask({
     name: 'prompt',
     description: 'Run AI prompt',
   },
-  run({ payload, context }) {
+  async run({ payload, context }) {
     console.log('Running AI prompt task...', payload)
-    const { stop, start, task }: { task?: Task, start?: boolean, stop?: boolean } = payload
+    const { stop, start, task, userId }: { task?: Task, start?: boolean, stop?: boolean, userId?: string } = payload
     if (!task) {
       console.error('No task provided')
       return { error: 'No task provided' }
     }
     const { cron, prompt } = task || {}
 
-    const appId = process.env.PUSHER_APP_ID || '';
-    const key = process.env.PUSHER_KEY || '';
-    const secret = process.env.PUSHER_SECRET || '';
-    const cluster = process.env.PUSHER_CLUSTER || '';
+    const settings = (await SettingsSchema.findOne({ userId: userId })) as Settings
 
-    if (!appId || !key || !secret || !cluster) {
-      console.error('Pusher environment variables are not set');
-      return {  error: 'Pusher environment variables are not set' };
+    if (!settings || !settings.pusherAppId || !settings.pusherKey || !settings.pusherSecret || !settings.pusherCluster) {
+      console.error('Pusher credentials are not set in user settings');
+      return { error: 'Pusher credentials are not set in user settings' };
     }
+
+    const { pusherAppId, pusherKey, pusherSecret, pusherCluster } = settings;
 
     if (start && !prompt || !cron) {
       console.error(`Missing prompt or cron for starting job prompt ${prompt} cron ${cron}`);
@@ -37,10 +38,10 @@ export default defineTask({
               console.log('run job')
 
               const pusher = new Pusher({
-                appId,
-                key,
-                secret,
-                cluster,
+                appId: pusherAppId,
+                key: pusherKey,
+                secret: pusherSecret,
+                cluster: pusherCluster,
                 useTLS: true,
               })
 

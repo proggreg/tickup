@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event) as { cron: string, prompt: string, start?: boolean, stop?: boolean }
+  const body = await readBody(event) as { task: Task, start?: boolean, stop?: boolean, userId?: string }
   const payload = { ...body }
   console.log('body', body)
   try {

@@ -1,6 +1,6 @@
 import type { ObjectId } from 'mongoose'
 
-export { Todo, Status, List }
+export { Todo, Status, List, Settings }
 declare global {
   interface Todo {
     userId?: string
@@ -62,5 +62,6 @@ declare global {
     prompt: string
     cron: string
     _id: ObjectId
+    userId?: string
   }
 }
