@@ -38,6 +38,10 @@ declare global {
 
   interface Settings {
     statuses: Status[]
+    pusherAppId?: string
+    pusherKey?: string
+    pusherSecret?: string
+    pusherCluster?: string
   }
 
   type View = 'list' | 'board'

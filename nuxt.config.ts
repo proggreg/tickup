@@ -94,6 +94,7 @@ export default defineNuxtConfig({
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
     },
+    appSecret: process.env.APP_SECRET,
   },
 
   auth: {

@@ -61,6 +61,7 @@
     "croner": "^9.0.0",
     "mongodb": "^6.3.0",
     "mongoose": "^7.5.0",
+    "mongoose-field-encryption": "^7.0.1",
     "next-auth": "4.21.1",
     "nuxt-bugsnag": "^7.2.3",
     "nuxt-mongoose": "^1.0.2",

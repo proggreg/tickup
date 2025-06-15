@@ -15,6 +15,9 @@ await useAsyncData(() => store.getUserSettings().then(() => true))
       <v-col cols="4">
         <SettingsTasks />
       </v-col>
+      <v-col cols="4">
+        <SettingsPusher />
+      </v-col>
     </v-row>
   </v-container>
 </template>

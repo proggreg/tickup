@@ -1,5 +1,9 @@
 export const useSettingsStore = defineStore('settings', () => {
   const darkMode = ref(false)
+  const pusherAppId = ref('')
+  const pusherKey = ref('')
+  const pusherSecret = ref('')
+  const pusherCluster = ref('')
   const { getSession } = useAuth()
 
   const userStatuses = ref<Status[]>([])
@@ -34,7 +38,19 @@ export const useSettingsStore = defineStore('settings', () => {
     if (settings.statuses.length) {
       userStatuses.value = settings.statuses
     }
+    if (settings.pusherAppId) {
+      pusherAppId.value = settings.pusherAppId
+    }
+    if (settings.pusherKey) {
+      pusherKey.value = settings.pusherKey
+    }
+    if (settings.pusherSecret) {
+      pusherSecret.value = settings.pusherSecret
+    }
+    if (settings.pusherCluster) {
+      pusherCluster.value = settings.pusherCluster
+    }
   }
 
-  return { darkMode, statuses, getUserSettings, userStatuses }
+  return { darkMode, statuses, getUserSettings, userStatuses, pusherAppId, pusherKey, pusherSecret, pusherCluster }
 })

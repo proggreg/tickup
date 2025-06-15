@@ -56,6 +56,9 @@ importers:
       mongoose:
         specifier: ^7.5.0
         version: 7.8.3
+      mongoose-field-encryption:
+        specifier: ^7.0.1
+        version: 7.0.1(mongoose@7.8.3)
       next-auth:
         specifier: 4.21.1
         version: 4.21.1(next@13.5.8(@babel/core@7.27.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5878,6 +5881,11 @@ packages:
         optional: true
       socks:
         optional: true
+
+  mongoose-field-encryption@7.0.1:
+    resolution: {integrity: sha512-PWNn1EkmtF8Sjguioe/TpW+6CWmNQwcQpKD3UAUVM1JtPmb4jOA7WqIQVJZCsnQuOqhBfCcpVvOJdOTvB6Q9dQ==}
+    peerDependencies:
+      mongoose: '>=7.4.0'
 
   mongoose@7.8.3:
     resolution: {integrity: sha512-eFnbkKgyVrICoHB6tVJ4uLanS7d5AIo/xHkEbQeOv6g2sD7gh/1biRwvFifsmbtkIddQVNr3ROqHik6gkknN3g==}
@@ -15923,6 +15931,10 @@ snapshots:
       mongodb-connection-string-url: 3.0.1
     optionalDependencies:
       socks: 2.8.3
+
+  mongoose-field-encryption@7.0.1(mongoose@7.8.3):
+    dependencies:
+      mongoose: 7.8.3
 
   mongoose@7.8.3:
     dependencies:
