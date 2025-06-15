@@ -3,9 +3,9 @@ declare const self: ServiceWorkerGlobalScope & {
   __WB_MANIFEST: string[];
 };
 
-import { precacheAndRoute } from 'workbox-precaching'
+// import { precacheAndRoute } from 'workbox-precaching'
 
-precacheAndRoute(self.__WB_MANIFEST)
+// precacheAndRoute(self.__WB_MANIFEST)
 
 console.log('Service Worker Loaded');
 
