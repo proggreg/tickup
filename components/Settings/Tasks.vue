@@ -31,8 +31,7 @@ const runTask = async (task: Task) => {
       method: 'POST',
       body: {
         task: task,
-        start: true,
-        userId: data.value?.user?.sub,
+        start: true
       },
     })
 

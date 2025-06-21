@@ -1,13 +1,19 @@
 import webpush from 'web-push'
 import { readBody } from 'h3'
+import { Subscriptions } from '~/server/models/subscriptions.schema'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
+  const { subscription, userId } = body
 
-  const subscription = body.subscription
-
-  console.log('subscription', subscription)
-  console.log('NUXT_ENV_VAPID_PUBLIC_KEY', process.env.VAPID_PUBLIC_KEY)
+  // Save subscription to DB (upsert by userId)
+  if (userId && subscription) {
+    await Subscriptions.updateOne(
+      { userId },
+      { $set: { subscription } },
+      { upsert: true }
+    )
+  }
 
   const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY
 

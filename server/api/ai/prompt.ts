@@ -11,7 +11,6 @@ export default defineEventHandler(async (event) => {
     console.error('Gemini API Key is required')
     throw Error('Gemini API key is missing')
   }
-
   setHeader(event, 'Content-Type', 'text/event-stream')
   setHeader(event, 'Cache-Control', 'no-cache')
   setHeader(event, 'Connection', 'keep-alive')

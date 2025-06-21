@@ -2,6 +2,12 @@ import { Cron } from 'croner'
 import Pusher from 'pusher'
 import { SettingsSchema } from '~/server/models/settings.schema'
 import type { Settings } from '~'
+import webpush from 'web-push'
+import { Subscriptions } from '~/server/models/subscriptions.schema'
+
+import PushNotifications from '@pusher/push-notifications-server';
+
+
 
 let job: Cron | null = null
 export default defineTask({
@@ -46,7 +52,7 @@ export default defineTask({
               })
 
               const response = await $fetch('/api/ai/prompt', {
-                query: { prompt },
+                params: { prompt, userId },
               })
 
               console.log('prompt response', response)
@@ -54,6 +60,36 @@ export default defineTask({
               pusher.trigger('my-channel', 'prompt', {
                 message: response,
               })
+
+              // Send push notification if subscription exists
+              const userSubscription = await Subscriptions.findOne({ userId })
+              if (userSubscription) {
+                const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY
+                if (!vapidPrivateKey) {
+                  console.error('VAPID private key is not defined in environment variables.')
+                } else {
+                  webpush.setVapidDetails(
+                    'mailto:greg.field1992@gmail.com',
+                    process.env.VAPID_PUBLIC_KEY || '',
+                    vapidPrivateKey
+                  )
+                  try {
+                    await webpush.sendNotification(
+                      userSubscription.subscription,
+                      JSON.stringify({
+                        title: 'AI Prompt Result',
+                        message: typeof response === 'string' ? response : JSON.stringify(response),
+                      })
+                    )
+                  } catch (err) {
+                    console.error('Error sending push notification:', err)
+                  }
+                }
+              }
+              let pushNotifications = new PushNotifications({
+                instanceId: '4e4f4d01-c58c-495e-962b-bdc3d9a752c3',
+                secretKey: 'C675309668106C7E4C2E272C43666C81157112F61D719C9931806F26F5AEE085'
+              });
             })
           
     }

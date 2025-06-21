@@ -1,9 +1,16 @@
+import { getServerSession } from "#auth"
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event) as { task: Task, start?: boolean, stop?: boolean, userId?: string }
+  const session = await getServerSession(event)
   const payload = { ...body }
   console.log('body', body)
   try {
-    const { result} = await runTask('prompt', { payload })
+    const userId = session.user.sub
+    payload.userId = userId
+
+    
+    const { result } = await runTask('prompt', { payload })
 
     if (!result) {
       throw new Error('Could not run task')
