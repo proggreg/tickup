@@ -2,24 +2,40 @@
 
 This guide explains how to set up automated testing for your TickUp project using GitHub Actions.
 
+## Prerequisites
+
+### 1. MongoDB URI Secret
+
+Before the CI can run tests, you need to add your MongoDB connection string as a GitHub secret:
+
+1. **Go to your repository Settings**
+2. **Click "Secrets and variables" → "Actions"**
+3. **Click "New repository secret"**
+4. **Name:** `MONGODB_URI`
+5. **Value:** Your MongoDB connection string (e.g., `mongodb://localhost:27017/tickup` or your Atlas URI)
+
+**Important:** Use a test database, not your production database!
+
+### 2. Test Database Setup
+
+For CI testing, you should use:
+- **Local MongoDB** for development
+- **MongoDB Atlas** with a test cluster for CI
+- **Docker MongoDB** for isolated testing
+
 ## Workflows Created
 
-### 1. `test.yml` - Comprehensive Test Suite
+### 1. `test.yml` - Main Test Suite
 - **Triggers:** Push to main/master, Pull Requests
-- **Runs:** Unit tests, linting, and E2E tests
-- **Features:** Parallel execution, caching, artifact upload
+- **Runs:** Unit tests, linting, and E2E tests against dev server
+- **Features:** Single job execution, MongoDB connection, artifact upload
 
-### 2. `playwright.yml` - Playwright Tests (Production Build)
-- **Triggers:** Push to main/master, Pull Requests  
-- **Runs:** Playwright tests against built application
-- **Features:** Builds the app, runs tests, uploads results
-
-### 3. `playwright-dev.yml` - Playwright Tests (Dev Server)
+### 2. `playwright-dev.yml` - Alternative Dev Testing
 - **Triggers:** Push to main/master, Pull Requests
 - **Runs:** Playwright tests against dev server
 - **Features:** Faster startup, dev environment testing
 
-### 4. `pr-checks.yml` - Pull Request Specific
+### 3. `pr-checks.yml` - Pull Request Specific
 - **Triggers:** Pull Requests only
 - **Runs:** All tests + PR comments with results
 - **Features:** Automatic PR comments with test status
@@ -42,9 +58,8 @@ To ensure tests must pass before merging:
 - ✅ **Require status checks to pass before merging**
 - ✅ **Require branches to be up to date before merging**
 - In the search box, find and select:
-  - `test / Unit Tests`
-  - `test / E2E Tests`
-  - `Pull Request Checks / Run Tests`
+  - `test / Run All Tests`
+  - `Pull Request Checks / Run Tests (Dev Mode)`
 
 #### Additional Settings (Recommended)
 - ✅ **Require pull request reviews before merging**
@@ -59,15 +74,35 @@ To ensure tests must pass before merging:
 
 ### On Push to Main/Master
 1. Unit tests run first
-2. If unit tests pass, E2E tests run
-3. Test results are uploaded as artifacts
-4. Build status is reported to GitHub
+2. Dev server starts with MongoDB connection
+3. E2E tests run against the dev server
+4. Test results are uploaded as artifacts
+5. Build status is reported to GitHub
 
 ### On Pull Request
 1. All tests run in parallel
 2. PR is blocked from merging until tests pass
 3. Test results are commented on the PR
 4. Detailed reports are available as artifacts
+
+## Environment Variables
+
+The workflows use these environment variables:
+
+```yaml
+env:
+  MONGODB_URI: ${{ secrets.MONGODB_URI }}
+  OXC_PARSER_SKIP_NATIVE: true
+  NODE_OPTIONS: "--max-old-space-size=4096 --no-warnings"
+```
+
+### Required Secrets
+- **`MONGODB_URI`** - Your MongoDB connection string
+
+### Optional Secrets (if needed)
+- **`AUTH_SECRET`** - For authentication (if not using default)
+- **`GITHUB_CLIENT_ID`** - For GitHub OAuth (if using)
+- **`GITHUB_CLIENT_SECRET`** - For GitHub OAuth (if using)
 
 ## Test Artifacts
 
@@ -83,37 +118,26 @@ After each test run, you can download:
 4. Download the `playwright-report` artifact
 5. Extract and open `index.html` in your browser
 
-## Environment Variables
-
-If your tests require environment variables (like database connections), add them in:
-
-1. Go to **Settings** → **Secrets and variables** → **Actions**
-2. Add repository secrets for sensitive data
-3. Update the workflow files to use them:
-
-```yaml
-- name: Run tests with env vars
-  run: pnpm exec playwright test
-  env:
-    DATABASE_URL: ${{ secrets.DATABASE_URL }}
-    API_KEY: ${{ secrets.API_KEY }}
-```
-
 ## Troubleshooting
 
 ### Common Issues
 
 1. **Tests fail in CI but pass locally**
-   - Check if you're using the same Node.js version
-   - Ensure all dependencies are properly installed
-   - Verify environment variables are set
+   - Check if MongoDB URI is set correctly
+   - Ensure you're using the same Node.js version
+   - Verify all dependencies are properly installed
 
 2. **Dev server not starting**
    - Check if the port (3000) is available
    - Verify the `--host` flag is set in dev script
-   - Increase the timeout in the workflow
+   - Check server logs for MongoDB connection errors
 
-3. **Playwright browsers not installing**
+3. **MongoDB connection issues**
+   - Verify the MongoDB URI secret is set
+   - Check if the database is accessible from CI
+   - Ensure the database has the required collections
+
+4. **Playwright browsers not installing**
    - The workflow includes `--with-deps` flag
    - Check if you have sufficient disk space
    - Verify network connectivity
@@ -123,16 +147,8 @@ If your tests require environment variables (like database connections), add the
 To debug CI issues:
 1. Check the **Actions** tab for detailed logs
 2. Download test artifacts to see screenshots/videos
-3. Add debug steps to workflows:
-
-```yaml
-- name: Debug info
-  run: |
-    echo "Node version: $(node --version)"
-    echo "pnpm version: $(pnpm --version)"
-    echo "Current directory: $(pwd)"
-    echo "Files in directory: $(ls -la)"
-```
+3. Check server logs for startup issues
+4. Verify MongoDB connection in the logs
 
 ## Customization
 
@@ -162,10 +178,11 @@ To run tests in parallel:
 
 ## Next Steps
 
-1. **Push these workflow files** to your repository
-2. **Set up branch protection rules** as described above
-3. **Test the workflows** by creating a test PR
-4. **Monitor the first few runs** to ensure everything works
-5. **Customize** the workflows based on your specific needs
+1. **Add the MongoDB URI secret** as described above
+2. **Push these workflow files** to your repository
+3. **Set up branch protection rules** as described above
+4. **Test the workflows** by creating a test PR
+5. **Monitor the first few runs** to ensure everything works
+6. **Customize** the workflows based on your specific needs
 
 The workflows will automatically start running on your next push or pull request! 

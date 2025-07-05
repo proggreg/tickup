@@ -57,6 +57,7 @@ jobs:
         # Set environment variables for dev server
         export OXC_PARSER_SKIP_NATIVE=true
         export NODE_OPTIONS="--max-old-space-size=4096 --no-warnings"
+        export MONGODB_URI="${{ secrets.MONGODB_URI }}"
         
         # Start the dev server in background with better error handling
         nohup pnpm run dev > server.log 2>&1 &
@@ -103,6 +104,8 @@ jobs:
         
     - name: Run Playwright tests
       run: pnpm exec playwright test
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
       
     - name: Upload test results
       uses: actions/upload-artifact@v4
