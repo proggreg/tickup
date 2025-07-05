@@ -15,7 +15,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: 20
         
     - name: Setup pnpm
       uses: pnpm/action-setup@v2
@@ -42,10 +42,11 @@ jobs:
           
     - name: Install dependencies
       run: |
-        # Remove problematic packages that use oxc-parser
-        pnpm remove @nuxt/eslint @nuxt/eslint-config || true
+        # Set environment variables to handle oxc-parser issues
+        export OXC_PARSER_SKIP_NATIVE=true
+        export NODE_OPTIONS="--max-old-space-size=4096 --no-warnings"
         
-        # Install dependencies without running postinstall scripts
+        # Install dependencies
         pnpm install --no-frozen-lockfile --ignore-scripts
       
     - name: Install Playwright Browsers
