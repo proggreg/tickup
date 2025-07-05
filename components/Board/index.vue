@@ -44,7 +44,6 @@ const cardHeight = computed(() => {
   const boardElement = boardRef.value
   const parentElement = boardElement?.parentElement
   const parentHeight = parentElement ? parentElement.clientHeight : window.innerHeight
-  console.log(`Calculating card height based on window size parentHeight ${parentHeight}`)
   return (parentHeight - 30) + 'px'
 })
 
@@ -55,7 +54,6 @@ const cardWidth = computed(() => {
   const boardElement = boardRef.value
   const parentElement = boardElement?.parentElement
   const parentWidth = parentElement ? parentElement.clientWidth : window.innerWidth
-  console.log(`Calculating card width based on window size parentWidth ${parentWidth}`)
   return (parentWidth / groupedTodos.value.length) + 'px'
 })
 

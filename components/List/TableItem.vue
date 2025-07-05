@@ -1,31 +1,60 @@
 <script setup lang="ts">
-const { groupItem, columns } = defineProps(['groupItem', 'columns'])
-const store = useListsStore()
-const { xs } = useDisplay()
-interface TableTodo {
-  raw: Todo
+import { useListsStore } from '~/stores/lists'
+import ListStatus from './Status.vue'
+import AppDeleteButton from '../App/DeleteButton.vue'
+
+interface Column {
+  key: string
+  label?: string
 }
 
-function showModal(todo: TableTodo) {
-  store.setCurrentTodo(todo.raw)
-  navigateTo(`/todo/${todo.raw._id}`)
+// Use the global Todo interface as defined in index.d.ts
+// No need to redefine it here, just reference it
+type TodoType = Todo;
+
+interface TableItem {
+  key: string
+  raw: TodoType
+  columns: Record<string, any>
 }
+
+interface GroupItem {
+  items: TableItem[]
+}
+
+const props = defineProps<{
+  groupItem: GroupItem
+  columns: Column[]
+}>()
+
+const store = useListsStore()
+const { xs } = useDisplay()
+
+function showModal(item: TableItem) {
+  store.setCurrentTodo(item.raw)
+  navigateTo(`/todo/${item.raw._id}`)
+}
+
 function formatDate(date: Date) {
-  if (!date) {
-    return ''
-  }
+  if (!date) return ''
   return new Date(date).toLocaleDateString('en-GB')
 }
 </script>
 
 <template>
-  <tr v-for="item in groupItem.items" :key="item.key" style="cursor: pointer" @click="showModal(item)">
-    <td colspan="1" style="width: 10px">
+  <tr
+    v-for="item in props.groupItem.items"
+    :key="item.key"
+    class="table-row"
+    tabindex="0"
+    @click="showModal(item)"
+  >
+    <td class="status-cell">
       <ListStatus :todo="item.raw" />
     </td>
-    <template v-for="column in columns" :key="column.key">
+    <template v-for="column in props.columns" :key="column.key">
       <template v-if="column.key !== 'data-table-group'">
-        <td v-if="column.key === 'name' " colspan="6" class="text-h6">
+        <td v-if="column.key === 'name'" colspan="6" class="text-h6">
           {{ item.columns[column.key] }}
         </td>
         <td v-else-if="column.key === 'dueDate' && !xs" colspan="2" class="text-h6">
@@ -34,7 +63,11 @@ function formatDate(date: Date) {
         <td v-else-if="column.key === 'actions' && !xs" colspan="4" class="text-h6">
           <div class="d-flex justify-end">
             <v-checkbox
-              v-model="item.raw.selected" size="small" density="compact" hide-details @click.stop
+              v-model="item.raw.selected"
+              size="small"
+              density="compact"
+              hide-details
+              @click.stop
             />
             <AppDeleteButton :todo="item.raw" />
           </div>
@@ -43,3 +76,12 @@ function formatDate(date: Date) {
     </template>
   </tr>
 </template>
+
+<style scoped>
+.table-row {
+  cursor: pointer;
+}
+.status-cell {
+  width: 10px;
+}
+</style>

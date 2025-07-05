@@ -16,30 +16,20 @@ const tableGroupFns = ref<{
 
 // Handle initial expansion
 onMounted(() => {
-  console.log('Table mounted, expanded state:', expanded.value)
   nextTick(() => {
     const { toggleGroup, isGroupOpen } = tableGroupFns.value
-    console.log('Table functions available:', { hasToggleGroup: !!toggleGroup, hasIsGroupOpen: !!isGroupOpen })
-
     const openGroup = { key: 'status', value: 'Open' }
-    console.log('Checking if Open group is expanded:', openGroup)
 
     if (toggleGroup && isGroupOpen) {
       const isOpen = isGroupOpen(openGroup)
-      console.log('Is Open group already expanded?', isOpen)
 
       if (!isOpen) {
-        console.log('Expanding Open group...')
         toggleGroup(openGroup)
       }
     }
   })
 })
 
-// Watch for changes to expanded state
-watch(expanded, (newVal) => {
-  console.log('Expanded state changed:', newVal)
-})
 
 const headers = reactive([
   { title: 'Title', key: 'name', sortable: true },
