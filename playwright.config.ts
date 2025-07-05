@@ -15,6 +15,8 @@ export default defineConfig({
   testDir: './e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
+  /* Global setup and teardown */
+  globalSetup: './e2e/setup-user-journey.ts',
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -30,6 +32,12 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    
+    /* Record video for all tests */
+    video: 'on',
+    
+    /* Take screenshot on failure */
+    screenshot: 'only-on-failure',
   },
 
   /* Configure projects for major browsers */
