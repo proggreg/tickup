@@ -35,7 +35,6 @@ watch(listName, (newName) => {
 })
 
 function validateListName(value: string) {
-  console.log('validateListName', value)
   if (!value) {
     return 'Please enter a list name'
   }
@@ -80,7 +79,7 @@ function removeImage() {
       <div :class="[store.currentList.image ? 'tint ma-n4 py-4 px-4' : '']">
         <v-row>
           <v-col cols="6" :class="['text-capitalize', (aiImage || store.currentList.image) ? 'text-white' : '']">
-            <v-text-field ref="listNameRef" v-model="store.currentList.name" validate-on="blur eager"
+            <v-text-field class="px-2" ref="listNameRef" v-model="store.currentList.name" validate-on="blur eager"
               :rules="[validateListName]" placeholder="My List" variant="plain" :readonly="!rename"
               style=" font-weight: bold; " auto @click="rename = !rename"
               @keyup.enter="store.currentList.name ? rename = false : null"
@@ -91,7 +90,7 @@ function removeImage() {
           </v-col>
         </v-row>
 
-        <v-card-actions class="pa-0" :class="['text-capitalize', store.currentList.image ? 'text-white' : '']">
+        <v-card-actions class="px-2" :class="['text-capitalize', store.currentList.image ? 'text-white' : '']">
           <v-btn size="small" class="mr-2" :disabled="imageGenerating" @click="generateImage">
             <v-icon start>mdi-creation </v-icon><v-icon start>mdi-image </v-icon>
           </v-btn>
@@ -109,7 +108,7 @@ function removeImage() {
     font-size: 2.5rem;
   }
 
-  font-size: 1.5rem;
+  font-size: 2rem;
   text-transform: capitalize;
   font-weight: bold;
 }

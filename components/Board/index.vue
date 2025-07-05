@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const statusStore = useSettingsStore()
+const { $device } = useNuxtApp()
 const dragging = ref(false)
 const { data } = useAuth()
 const route = useRoute()
@@ -48,6 +49,9 @@ const cardHeight = computed(() => {
 })
 
 const cardWidth = computed(() => {
+  if ($device.isMobile) {
+    return '100%'
+  }
   const boardElement = boardRef.value
   const parentElement = boardElement?.parentElement
   const parentWidth = parentElement ? parentElement.clientWidth : window.innerWidth
@@ -107,8 +111,8 @@ watch(dragging, (isDragging) => {
 <template>
   <v-slide-group ref="boardRef" :show-arrows="true" class="font-weight-bold">
     <v-slide-group-item v-for="status in groupedTodos" :key="status.name" v-slot="{ toggle, selectedClass }">
-      <v-card :class="['ma-2 font-weight-bold', selectedClass, '', 'flex-column']" :height="cardHeight" width="100%"
-        max-width="400" variant="tonal" :color="status.color" @click="toggle">
+              <v-card :class="['ma-2 font-weight-bold', selectedClass, '', 'flex-column']" :height="cardHeight" width="100%"
+        :max-width="$device.isMobile ? '100%' : '400'" variant="tonal" :color="status.color" @click="toggle">
         <template #title>
           <div class="d-flex align-center justify-space-between">
             <div> 
@@ -126,11 +130,11 @@ watch(dragging, (isDragging) => {
             @change="(e: any) => updateTodo(e, status)" style="min-height: 100% !important; overflow-y: auto;">
             <template #item="{ element }">
               <v-card :id="element._id" class="mb-2 pa-0" :color="status.color" style="cursor: pointer;"
-                :max-width="cardWidth" @click="gotoTodo(element)">
+                :max-width="$device.isMobile ? '100%' : cardWidth" @click="gotoTodo(element)">
                 <v-card-item class="py-2 px-4">
                   <div class="d-flex align-center justify-space-between">
-                    <span class="text-truncate text-body-1 font-weight-bold">{{ element.name }}</span>
-                    <v-checkbox v-model="element.selected" size="small" density="compact" hide-details @click.stop />
+                    <span class="text-truncate text-body-1 font-weight-bold flex-grow-1 mr-2">{{ element.name }}</span>
+                    <v-checkbox v-model="element.selected" size="small" density="compact" hide-details @click.stop class="flex-shrink-0" />
                   </div>
                 </v-card-item>
 
@@ -167,6 +171,23 @@ watch(dragging, (isDragging) => {
   .draggable-container {
     min-height: 100%;
     overflow-y: auto;
+  }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  :deep(.v-card) {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  
+  :deep(.v-card-item) {
+    padding: 8px 12px !important;
+  }
+  
+  :deep(.text-truncate) {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 }
 </style>

@@ -40,12 +40,12 @@ watch(listsStore.currentList.todos, (todos) => {
 
 <template>
   <v-row class="fill-height" no-gutters>
-    <ListHeader />
-    <div v-if="$device.isMobile">
+    <ListHeader />    
+    <v-col v-if="$device.isMobile">
       <v-col>
         <ListTable />
       </v-col>
-    </div>
+    </v-col>
     <v-col v-else class="fill-height" cols="12">
 
       <v-tabs v-model="currentTab">
