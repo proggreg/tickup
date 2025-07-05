@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Playwright Tests (Dev Server)
 on:
   push:
     branches: [ main, master ]
@@ -41,15 +41,12 @@ jobs:
     - name: Install Playwright Browsers
       run: pnpm exec playwright install --with-deps
       
-    - name: Build the application
-      run: pnpm run build
+    - name: Start the dev server
+      run: pnpm run dev &
       
-    - name: Start the application
-      run: pnpm run preview &
-      
-    - name: Wait for application to be ready
+    - name: Wait for dev server to be ready
       run: |
-        timeout 30 bash -c 'until curl -f http://localhost:3000; do sleep 1; done'
+        timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 2; done'
         
     - name: Run Playwright tests
       run: pnpm exec playwright test
@@ -62,4 +59,4 @@ jobs:
         path: |
           playwright-report/
           test-results/
-        retention-days: 30
+        retention-days: 30 
