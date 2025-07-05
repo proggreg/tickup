@@ -31,31 +31,44 @@ test.describe('User Journey: Login and Create List', () => {
       // Click the login button
       await page.click('button:has-text("Login")')
       
-      // Wait for navigation to complete
-      await page.waitForURL('**/', { timeout: 10000 })
+      // Wait for authentication to complete - this may take time
+      await page.waitForTimeout(5000)
+      
+      // Check if login was successful by looking for authenticated user elements
+      // First, check if we're still on login page (which would indicate failure)
+      const currentUrl = page.url()
+      if (currentUrl.includes('/login')) {
+        // Login failed, check for error message
+        await expect(page.locator('text=Incorrect Credentials')).toBeVisible({ timeout: 5000 })
+        throw new Error('Login failed - incorrect credentials')
+      }
+      
+      // If we're not on login page, login was successful
+      // Wait a bit more for the page to fully load
+      await page.waitForTimeout(2000)
       
       // Verify we're logged in by checking for authenticated user elements
       // Look for the plus button in the navigation
-      await expect(page.locator('button').filter({ hasText: '+' })).toBeVisible()
+      await expect(page.locator('[data-testid="new-list-button"]')).toBeVisible({ timeout: 10000 })
     })
 
     // Step 3: Create a new list
     await test.step('Create a new list', async () => {
       // Click the plus button to open the new list dialog
-      await page.click('button').filter({ hasText: '+' }).first()
+      await page.locator('[data-testid="new-list-button"]').click()
       
       // Wait for the dialog to appear
-      await expect(page.locator('text=New List')).toBeVisible()
+      await expect(page.locator('[data-testid="dialog-title"]')).toBeVisible()
       
       // Fill in the list name
       const listName = `Test List ${Date.now()}`
-      await page.fill('input[placeholder="New List"]', listName)
+      await page.locator('[data-testid="new-list-input"] input').fill(listName)
       
       // Click save button
-      await page.click('button:has-text("Save")')
+      await page.click('[data-testid="new-list-save"]')
       
       // Wait for dialog to close
-      await expect(page.locator('text=New List')).not.toBeVisible()
+      await expect(page.locator('[data-testid="dialog-title"]')).not.toBeVisible()
       
       // Verify the list was created by checking if it appears in the navigation
       await expect(page.locator(`text=${listName}`)).toBeVisible()
@@ -66,7 +79,13 @@ test.describe('User Journey: Login and Create List', () => {
       const listName = `Test List ${Date.now()}`
       
       // Click on the list in the navigation to open it
-      await page.click(`text=${listName}`)
+      const listLocator = page.locator(`text=${listName}`)
+      if (!(await listLocator.isVisible({ timeout: 5000 }))) {
+        const html = await page.content()
+        console.log('DEBUG: List not found. Page HTML:', html)
+        throw new Error('List not found in navigation')
+      }
+      await listLocator.click()
       
       // Wait for the list page to load
       await page.waitForURL(`**/list/**`, { timeout: 10000 })
@@ -110,8 +129,10 @@ test.describe('User Journey: Login and Create List', () => {
     // Click login
     await page.click('button:has-text("Login")')
     
-    // Verify error message appears
-    await expect(page.locator('text=Incorrect Credentials')).toBeVisible()
+    // Wait for error message or snackbar after failed login
+    await page.waitForTimeout(2000)
+    // Check for field validation error message
+    await expect(page.locator('.v-messages__message')).toContainText('Oops! Username required to login', { timeout: 5000 })
   })
 
   test('Create list with empty name shows validation error', async ({ page }) => {
@@ -120,17 +141,31 @@ test.describe('User Journey: Login and Create List', () => {
     await page.locator('input').nth(0).fill(TEST_USER.username)
     await page.locator('input').nth(1).fill(TEST_USER.password)
     await page.click('button:has-text("Login")')
-    await page.waitForURL('**/', { timeout: 10000 })
+    
+    // Wait for authentication to complete
+    await page.waitForTimeout(5000)
+    
+    // Check if login was successful
+    const currentUrl = page.url()
+    if (currentUrl.includes('/login')) {
+      await expect(page.locator('text=Incorrect Credentials')).toBeVisible({ timeout: 5000 })
+      throw new Error('Login failed - cannot proceed with test')
+    }
+    
+    // Wait for page to load after successful login
+    await page.waitForTimeout(2000)
     
     // Try to create list with empty name
-    await page.click('button').filter({ hasText: '+' }).first()
-    await expect(page.locator('text=New List')).toBeVisible()
+    await page.locator('[data-testid="new-list-button"]').click()
+    await expect(page.locator('[data-testid="dialog-title"]')).toBeVisible()
     
     // Try to save without entering a name
-    await page.click('button:has-text("Save")')
+    // await page.click('[data-testid="new-list-save"]')
+    // Verify the save button is disabled
+    await expect(page.locator('[data-testid="new-list-save"]')).toBeDisabled()
     
-    // Verify the save button is disabled or validation error appears
-    await expect(page.locator('button:has-text("Save"):disabled')).toBeVisible()
+    // Wait for validation error message
+    await expect(page.locator('.v-messages__message')).toContainText('Oops! Name required to create a list', { timeout: 5000 })
   })
 
   test('User can logout after creating list', async ({ page }) => {
@@ -139,16 +174,28 @@ test.describe('User Journey: Login and Create List', () => {
     await page.locator('input').nth(0).fill(TEST_USER.username)
     await page.locator('input').nth(1).fill(TEST_USER.password)
     await page.click('button:has-text("Login")')
-    await page.waitForURL('**/', { timeout: 10000 })
+    
+    // Wait for authentication to complete
+    await page.waitForTimeout(5000)
+    
+    // Check if login was successful
+    const currentUrl = page.url()
+    if (currentUrl.includes('/login')) {
+      await expect(page.locator('text=Incorrect Credentials')).toBeVisible({ timeout: 5000 })
+      throw new Error('Login failed - cannot proceed with test')
+    }
+    
+    // Wait for page to load after successful login
+    await page.waitForTimeout(2000)
     
     // Create a list
-    await page.click('button').filter({ hasText: '+' }).first()
+    await page.locator('[data-testid="new-list-button"]').click()
     const listName = `Test List ${Date.now()}`
-    await page.fill('input[placeholder="New List"]', listName)
-    await page.click('button:has-text("Save")')
+    await page.locator('[data-testid="new-list-input"] input').fill(listName)
+    await page.click('[data-testid="new-list-save"]')
     
     // Logout
-    await page.click('button').filter({ hasText: 'Settings' }).first()
+    await page.click('button:has-text("Settings")')
     await page.waitForURL('**/settings', { timeout: 10000 })
     
     // Find and click logout button (might be in a menu)

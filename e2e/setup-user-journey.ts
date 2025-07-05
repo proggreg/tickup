@@ -17,6 +17,16 @@ async function globalSetup() {
     'x-test-mode': 'true'
   })
 
+  // First, try to delete the existing test user if it exists
+  try {
+    const deleteResponse = await page.request.delete(`${BASE_URL}/api/auth/user?username=${TEST_USER.username}`)
+    if (deleteResponse.status() === 200) {
+      console.log('Existing test user deleted')
+    }
+  } catch (error) {
+    console.log('No existing test user to delete or delete endpoint not available')
+  }
+
   // Create test user via API
   const response = await page.request.post(`${BASE_URL}/api/auth/user`, {
     data: {

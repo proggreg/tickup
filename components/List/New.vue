@@ -31,6 +31,7 @@ async function createNewList() {
         v-model="listsStore.newList.name"
         autofocus
         placeholder="New List"
+        data-testid="new-list-input"
         @keyup.enter="createNewList"
       />
     </v-container>
@@ -39,6 +40,7 @@ async function createNewList() {
         :disabled="!listsStore.newList.name.length"
         color="primary"
         variant="tonal"
+        data-testid="new-list-save"
         @click="createNewList"
       >
         Save

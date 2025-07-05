@@ -39,7 +39,7 @@ function deleteList() {
           </v-btn>
           <v-btn variant="plain" icon="mdi-home" to="/" />
           <v-btn variant="plain" icon="mdi-cog" to="/settings" />
-          <v-btn variant="plain" icon="mdi-plus" @click="dialog.page = 'list';dialog.open = true;" />
+          <v-btn variant="plain" icon="mdi-plus" data-testid="new-list-button" @click="dialog.page = 'list';dialog.open = true;" />
         </div>
       </template>
 

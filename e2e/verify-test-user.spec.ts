@@ -23,21 +23,24 @@ test.describe('Verify Test User', () => {
       }
     })
 
-    console.log('Response status:', response.status())
     const body = await response.text()
-    console.log('Response body:', body)
 
     if (response.status() === 200) {
-      console.log('User created successfully')
+      // User created successfully
     } else if (response.status() === 400 && body.includes('username taken')) {
-      console.log('User already exists')
+      // User already exists
     } else {
-      console.log('Unexpected response:', body)
+      // Unexpected response
     }
   })
 
   test('Try to login with test user', async ({ page }) => {
+
     await page.goto('/')
+    
+    // Wait for page to load and inputs to be available
+    await page.waitForLoadState('networkidle')
+    await expect(page.locator('input')).toHaveCount(2)
     
     // Fill in the login form
     const inputs = await page.locator('input').all()
@@ -50,14 +53,12 @@ test.describe('Verify Test User', () => {
     // Wait for response
     await page.waitForTimeout(3000)
     
-    console.log('Current URL after login attempt:', page.url())
-    
     // Check if there's an error message
     const errorMessage = page.locator('text=Incorrect Credentials')
     if (await errorMessage.isVisible()) {
-      console.log('Error message is visible')
+      // Error message is visible
     } else {
-      console.log('No error message found')
+      // No error message found
     }
     
     // Take a screenshot

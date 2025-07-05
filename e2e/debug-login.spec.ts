@@ -6,64 +6,139 @@ const TEST_USER = {
   email: 'test@example.com'
 }
 
-test.describe('Debug Login', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.setExtraHTTPHeaders({
-      'x-test-mode': 'true'
-    })
-  })
+test('Debug login flow', async ({ page }) => {
+  // Step 1: Check if test user exists via API
+  const response = await page.request.get('http://localhost:3000/api/auth/user?username=testuser')
+  console.log('User check response:', response.status())
+  
+  // Step 2: Try to login
+  await page.goto('/')
+  console.log('Current URL:', page.url())
+  
+  // Fill login form
+  await page.locator('input').nth(0).fill(TEST_USER.username)
+  await page.locator('input').nth(1).fill(TEST_USER.password)
+  
+  // Click login
+  await page.click('button:has-text("Login")')
+  
+  // Wait a bit and check URL
+  await page.waitForTimeout(3000)
+  console.log('URL after login attempt:', page.url())
+  
+  // Check if we're still on login page
+  const currentUrl = page.url()
+  if (currentUrl.includes('/login')) {
+    console.log('Still on login page - login failed')
+    // Check for error message
+    const errorElement = page.locator('text=Incorrect Credentials')
+    if (await errorElement.isVisible()) {
+      console.log('Error message is visible')
+    } else {
+      console.log('No error message found')
+    }
+    
+    // Wait a bit more for error message to appear
+    await page.waitForTimeout(2000)
+    if (await errorElement.isVisible()) {
+      console.log('Error message appeared after waiting')
+    } else {
+      console.log('Error message still not visible')
+    }
+  } else {
+    console.log('Login successful - redirected to:', currentUrl)
+  }
+})
 
-  test('Debug login page elements', async ({ page }) => {
-    await page.goto('/')
-    
-    // Wait for page to load
-    await page.waitForLoadState('networkidle')
-    
-    // Take a screenshot to see what's on the page
-    await page.screenshot({ path: 'debug-login-page.png' })
-    
-    // Check what inputs are available
-    const inputs = await page.locator('input').all()
-    console.log(`Found ${inputs.length} input elements`)
-    
-    for (let i = 0; i < inputs.length; i++) {
-      const input = inputs[i]
-      const placeholder = await input.getAttribute('placeholder')
-      const type = await input.getAttribute('type')
-      const label = await input.getAttribute('label')
-      console.log(`Input ${i}: placeholder="${placeholder}", type="${type}", label="${label}"`)
-    }
-    
-    // Check what buttons are available
-    const buttons = await page.locator('button').all()
-    console.log(`Found ${buttons.length} button elements`)
-    
-    for (let i = 0; i < buttons.length; i++) {
-      const button = buttons[i]
-      const text = await button.textContent()
-      const icon = await button.getAttribute('icon')
-      console.log(`Button ${i}: text="${text?.trim()}", icon="${icon}"`)
-    }
-    
-    // Try to fill the first two inputs (username and password)
-    if (inputs.length >= 2) {
-      await inputs[0].fill(TEST_USER.username)
-      await inputs[1].fill(TEST_USER.password)
-      
-      // Find and click the login button
-      const loginButton = page.locator('button:has-text("Login")')
-      if (await loginButton.isVisible()) {
-        await loginButton.click()
-        
-        // Wait a bit and take another screenshot
-        await page.waitForTimeout(2000)
-        await page.screenshot({ path: 'debug-after-login.png' })
-        
-        // Check if we're still on the login page or if we got redirected
-        console.log('Current URL:', page.url())
-      } else {
-        console.log('Login button not found')
-      }
+test('Create user and login immediately', async ({ page }) => {
+  const uniqueUser = {
+    username: `testuser_${Date.now()}`,
+    password: 'testpassword123',
+    email: `test_${Date.now()}@example.com`
+  }
+  
+  // Create a new user
+  const createResponse = await page.request.post('http://localhost:3000/api/auth/user', {
+    data: uniqueUser
+  })
+  console.log('Create user response:', createResponse.status())
+  
+  // Try to login with the new user
+  await page.goto('/')
+  await page.locator('input').nth(0).fill(uniqueUser.username)
+  await page.locator('input').nth(1).fill(uniqueUser.password)
+  await page.click('button:has-text("Login")')
+  
+  // Wait for navigation
+  await page.waitForTimeout(3000)
+  console.log('URL after login with new user:', page.url())
+  
+  if (page.url().includes('/login')) {
+    console.log('Login failed with new user')
+  } else {
+    console.log('Login successful with new user')
+  }
+})
+
+test('Debug form submission', async ({ page }) => {
+  await page.goto('/')
+  
+  // Listen for network requests
+  const requests: string[] = []
+  page.on('request', request => {
+    if (request.url().includes('/api/auth')) {
+      requests.push(`${request.method()} ${request.url()}`)
+      console.log(`Request: ${request.method()} ${request.url()}`)
     }
   })
+  
+  page.on('response', response => {
+    if (response.url().includes('/api/auth')) {
+      console.log(`Response: ${response.status()} ${response.url()}`)
+    }
+  })
+  
+  // Fill and submit form
+  await page.locator('input').nth(0).fill('test')
+  await page.locator('input').nth(1).fill('password')
+  await page.click('button:has-text("Login")')
+  
+  // Wait for requests to complete
+  await page.waitForTimeout(5000)
+  console.log('All auth requests:', requests)
+})
+
+test('Debug form validation', async ({ page }) => {
+  await page.goto('/')
+  
+  // Check if form validation is working
+  console.log('Checking form validation...')
+  
+  // Try to submit empty form
+  await page.click('button:has-text("Login")')
+  await page.waitForTimeout(1000)
+  
+  // Check for validation errors
+  const validationErrors = await page.locator('.v-messages__message').all()
+  console.log('Validation errors found:', validationErrors.length)
+  
+  for (let i = 0; i < validationErrors.length; i++) {
+    const error = validationErrors[i]
+    const text = await error.textContent()
+    console.log(`Validation error ${i}:`, text)
+  }
+  
+  // Now fill the form properly
+  await page.locator('input').nth(0).fill('testuser')
+  await page.locator('input').nth(1).fill('testpassword123')
+  
+  // Check if login button is enabled
+  const loginButton = page.locator('button:has-text("Login")')
+  const isDisabled = await loginButton.isDisabled()
+  console.log('Login button disabled:', isDisabled)
+  
+  // Try to submit again
+  await page.click('button:has-text("Login")')
+  await page.waitForTimeout(3000)
+  console.log('URL after form submission:', page.url())
 }) 

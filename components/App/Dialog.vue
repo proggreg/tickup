@@ -25,12 +25,12 @@ function resetState() {
 
     <v-card append-icon="mdi-close">
       <template #prepend>
-        <v-card-title class="font-weight-bold">
+        <v-card-title class="font-weight-bold" data-testid="dialog-title">
           <span class="headline">{{ title }}</span>
         </v-card-title>
       </template>
       <template #append>
-        <v-icon @click="dialog.open = false">mdi-close</v-icon>
+        <v-icon data-testid="dialog-close" @click="dialog.open = false">mdi-close</v-icon>
       </template>
       <v-card-item>
         <slot />
