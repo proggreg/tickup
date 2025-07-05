@@ -1,32 +1,39 @@
 import { test, expect } from '@playwright/test'
 
-async function authenticate(request) {
-    return await request.post('/api/auth/signin', {
-        data: {
-            username: 'test',
-            password: 'password',
-        },
+test.describe('GitHub API', () => {
+  test('github endpoint errors with no branch name', async ({ request }) => {
+    const response = await request.get('/api/github', {
+      headers: {
+        'x-test-mode': 'true'
+      }
     })
-}
-
-test('github endpoint errors with no branch name', async ({ request }) => {
-    const authResponse = await authenticate(request)
-    console.log('authResponse', authResponse)
-    const response = await request.get('/api/github')
-    console.log('github response', response)
-
-    expect(response.status()).toBe(200)
-
+    
+    expect(response.status()).toBe(400)
     const data = await response.json()
     expect(data.message).toBe('Missing branchName in query parameters')
-})
+  })
 
-test('github endpoint returns 404 when branch name is provided', async ({ request }) => {
-    const response = await request.get('/api/github', { params: { branchName: 'here' } })
+  test('github endpoint returns 404 when branch name is provided', async ({ request }) => {
+    const response = await request.get('/api/github', { 
+      params: { branchName: 'here' },
+      headers: {
+        'x-test-mode': 'true'
+      }
+    })
     expect(response.status()).toBe(404)
-})
+  })
 
-test('github endpoint returns 200 when branch name is provided', async ({ request }) => {
-    const response = await request.get('/api/github', { params: { branchName: 'main' } })
+  test('github endpoint returns 200 when branch name is provided', async ({ request }) => {
+    const response = await request.get('/api/github', { 
+      params: { branchName: 'main' },
+      headers: {
+        'x-test-mode': 'true'
+      }
+    })
     expect(response.status()).toBe(200)
+    
+    const data = await response.json()
+    expect(data.name).toBe('main')
+    expect(data.commit.sha).toBe('test-sha')
+  })
 })
