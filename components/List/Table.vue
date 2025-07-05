@@ -54,9 +54,18 @@ const group = ref([
 
 <template>
   <v-data-table
-    v-model:expanded="expanded" :headers="headers" :items="listsStore.currentList.todos"
-    style="border-radius: 25px; margin-top: 1rem;" height="100%" hover :group-by="group" multi-sort show-expand item-value="_id" items-per-page="-1"
-    :opened="opened" :default-expanded="['Open']"
+    v-model:expanded="expanded"
+    :headers="headers"
+    :items="listsStore.currentList.todos"
+    hover
+    :group-by="group"
+    multi-sort
+    show-expand
+    item-value="_id"
+    items-per-page="-1"
+    :opened="opened"
+    :default-expanded="['Open']"
+    variant="plain"
   >
     <template #headers="{}" />
     <template #body="{ columns, groupedItems, toggleGroup, isGroupOpen, sortBy, toggleSort }">
