@@ -65,6 +65,7 @@ jobs:
       run: pnpm test
       env:
         MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        NUXT_NEXTAUTH_SECRET: ${{ secrets.NUXT_NEXTAUTH_SECRET || 'test-secret-key-for-ci' }}
       
     - name: Install Playwright Browsers
       run: pnpm exec playwright install --with-deps
@@ -73,6 +74,7 @@ jobs:
       run: pnpm exec playwright test
       env:
         MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        NUXT_NEXTAUTH_SECRET: ${{ secrets.NUXT_NEXTAUTH_SECRET || 'test-secret-key-for-ci' }}
         NODE_ENV: test
         OXC_PARSER_SKIP_NATIVE: true
         NODE_OPTIONS: "--max-old-space-size=4096 --no-warnings"

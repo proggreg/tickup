@@ -89,18 +89,36 @@ To ensure tests must pass before merging:
 
 The workflows use these environment variables:
 
+### Setting up NUXT_NEXTAUTH_SECRET
+
+1. **For Production:** Generate a secure random string (32+ characters)
+   ```bash
+   openssl rand -base64 32
+   ```
+
+2. **For Testing:** The workflows will use a default test key if not provided
+   - You can add `NUXT_NEXTAUTH_SECRET` to your repository secrets
+   - Or let the CI use the default test key: `test-secret-key-for-ci`
+
+3. **Add to GitHub Secrets:**
+   - Go to your repository → Settings → Secrets and variables → Actions
+   - Click "New repository secret"
+   - Name: `NUXT_NEXTAUTH_SECRET`
+   - Value: Your generated secret (or leave empty to use test key)
+
 ```yaml
 env:
   MONGODB_URI: ${{ secrets.MONGODB_URI }}
+  NUXT_NEXTAUTH_SECRET: ${{ secrets.NUXT_NEXTAUTH_SECRET || 'test-secret-key-for-ci' }}
   OXC_PARSER_SKIP_NATIVE: true
   NODE_OPTIONS: "--max-old-space-size=4096 --no-warnings"
 ```
 
 ### Required Secrets
 - **`MONGODB_URI`** - Your MongoDB connection string
+- **`NUXT_NEXTAUTH_SECRET`** - Secret key for NextAuth.js (or use default test key)
 
 ### Optional Secrets (if needed)
-- **`AUTH_SECRET`** - For authentication (if not using default)
 - **`GITHUB_CLIENT_ID`** - For GitHub OAuth (if using)
 - **`GITHUB_CLIENT_SECRET`** - For GitHub OAuth (if using)
 
