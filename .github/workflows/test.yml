@@ -42,9 +42,11 @@ jobs:
           
     - name: Install dependencies
       run: |
-        # Install dependencies without running postinstall scripts that use oxc-parser
+        # Remove problematic packages that use oxc-parser
+        pnpm remove @nuxt/eslint @nuxt/eslint-config || true
+        
+        # Install dependencies without running postinstall scripts
         pnpm install --no-frozen-lockfile --ignore-scripts
-        pnpm rebuild
         
     - name: Run nuxt prepare manually
       run: |
@@ -96,9 +98,11 @@ jobs:
           
     - name: Install dependencies
       run: |
-        # Install dependencies without running postinstall scripts that use oxc-parser
+        # Remove problematic packages that use oxc-parser
+        pnpm remove @nuxt/eslint @nuxt/eslint-config || true
+        
+        # Install dependencies without running postinstall scripts
         pnpm install --no-frozen-lockfile --ignore-scripts
-        pnpm rebuild
         
     - name: Run nuxt prepare manually
       run: |
