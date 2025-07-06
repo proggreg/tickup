@@ -13,6 +13,8 @@ export const TodoSchema = defineMongooseModel<{
   githubBranchName: string
   links: Array<{ title: string, url: string, _id: string }>
   subtasks: Array<{ name: string, status: string, _id: string }>
+  notificationDateTime?: Date
+  notificationSent?: boolean
 }>({
   name: 'Todo',
   schema: {
@@ -74,6 +76,14 @@ export const TodoSchema = defineMongooseModel<{
       }],
       required: false,
       default: () => [],
+    },
+    notificationDateTime: {
+      type: Date,
+      required: false,
+    },
+    notificationSent: {
+      type: Boolean,
+      default: false,
     },
   },
 })

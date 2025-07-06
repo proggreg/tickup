@@ -1,11 +1,137 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { useAuth, useRuntimeConfig } from '#imports'
 const listsStore = useListsStore()
 const hasGithub = await useHasGithub()
 
 console.log('hasGithub', hasGithub)
 
 const newSubtaskName = ref('')
+
+// Notification control state
+const notificationEnabled = ref(false)
+const notificationSending = ref(false)
+const notificationMessage = ref('')
+// New: Notification date/time
+const notificationDateTime = ref('')
+
+// Push subscription management
+const pushSupported = ref(false)
+const pushSubscribed = ref(false)
+const pushError = ref('')
+
+const { data: authData } = useAuth()
+const username = computed(() => {
+  if (!authData.value?.user) return ''
+  const user = authData.value.user as any
+  if (user.username) return user.username
+  if (user._doc && user._doc.username) return user._doc.username
+  if (user.name) return user.name
+  return ''
+})
+
+const config = useRuntimeConfig()
+
+onMounted(() => {
+  pushSupported.value = 'serviceWorker' in navigator && 'PushManager' in window
+  pushSubscribed.value = !!window.localStorage.getItem('push-subscription')
+})
+
+async function subscribeToPush() {
+  pushError.value = ''
+  try {
+    if (!('serviceWorker' in navigator)) {
+      pushError.value = 'Service workers are not supported.'
+      return
+    }
+    const vapidKey = config.public.VAPID_KEY
+    if (!vapidKey) {
+      pushError.value = 'VAPID public key is not set. Please set VAPID_PUBLIC_KEY in your .env.'
+      return
+    }
+    const reg = await navigator.serviceWorker.ready
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(vapidKey)
+    })
+    window.localStorage.setItem('push-subscription', JSON.stringify(sub))
+    pushSubscribed.value = true
+    if (username.value) {
+      await fetch('/api/auth/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username.value, pushSubscription: sub })
+      })
+    }
+  } catch (e) {
+    pushError.value = 'Failed to subscribe to push.'
+  }
+}
+
+async function unsubscribeFromPush() {
+  pushError.value = ''
+  try {
+    const reg = await navigator.serviceWorker.ready
+    const sub = await reg.pushManager.getSubscription()
+    if (sub) {
+      await sub.unsubscribe()
+      window.localStorage.removeItem('push-subscription')
+      pushSubscribed.value = false
+      if (username.value) {
+        await fetch('/api/auth/user', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: username.value, pushSubscription: sub })
+        })
+      }
+    }
+  } catch (e) {
+    pushError.value = 'Failed to unsubscribe.'
+  }
+}
+
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const rawData = atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
+}
+
+async function sendPushNotification() {
+  notificationSending.value = true
+  notificationMessage.value = ''
+  try {
+    // This should be replaced with the user's real push subscription
+    const subscription = window.localStorage.getItem('push-subscription')
+    if (!subscription) {
+      notificationMessage.value = 'No push subscription found.'
+      notificationSending.value = false
+      return
+    }
+    const res = await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        subscription: JSON.parse(subscription),
+        notificationDateTime: notificationDateTime.value,
+        username: username.value,
+        todoId: listsStore.currentTodo._id
+      })
+    })
+    if (res.ok) {
+      notificationMessage.value = 'Push notification scheduled!'
+    } else {
+      notificationMessage.value = 'Failed to schedule notification.'
+    }
+  } catch (e) {
+    notificationMessage.value = 'Error scheduling notification.'
+  }
+  notificationSending.value = false
+}
 
 function updateDueDate(newDate: Date) {
   listsStore.currentTodo.dueDate = newDate
@@ -115,6 +241,33 @@ function addSubtask() {
       <AppDeleteButton :todo="listsStore.currentTodo" />
       <AppGithubButton v-if="hasGithub" :todo="listsStore.currentTodo" />
       <v-spacer />
+      <!-- Push Subscription Management -->
+      <div class="d-flex flex-column align-end mr-4">
+        <v-alert v-if="pushError" type="error" class="mb-2">{{ pushError }}</v-alert>
+        <v-chip v-if="pushSubscribed" color="success" class="mb-2">Push Subscribed</v-chip>
+        <v-chip v-else color="grey" class="mb-2">Not Subscribed</v-chip>
+        <v-btn v-if="pushSupported && !pushSubscribed" color="primary" @click="subscribeToPush">Subscribe to Push</v-btn>
+        <v-btn v-if="pushSupported && pushSubscribed" color="secondary" @click="unsubscribeFromPush">Unsubscribe</v-btn>
+      </div>
+      <!-- Notification Control -->
+      <v-switch v-model="notificationEnabled" label="Enable Push Notification" class="mr-4" />
+      <v-menu v-if="notificationEnabled">
+        <template #activator="{ props }">
+          <v-text-field
+            v-bind="props"
+            v-model="notificationDateTime"
+            label="Notification Date & Time"
+            type="datetime-local"
+            style="max-width: 220px;"
+            class="mr-2"
+          />
+        </template>
+        <!-- You can add a custom date-time picker here if you want a more advanced UI -->
+      </v-menu>
+      <v-btn :loading="notificationSending" :disabled="!notificationEnabled || !notificationDateTime" color="primary" @click="sendPushNotification">
+        Schedule Notification
+      </v-btn>
+      <span v-if="notificationMessage" class="ml-2">{{ notificationMessage }}</span>
       <v-file-input label="File input" variant="solo-inverted" density="compact" hide-details disabled class="rounded-lg" />
     </v-card-actions>
   </v-card>
