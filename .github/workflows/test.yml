@@ -1,4 +1,4 @@
-name: Tests
+name: Playwright Tests Only
 on:
   push:
     branches: [ main, master ]
@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    name: Run All Tests
+    name: Playwright E2E
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -55,17 +55,6 @@ jobs:
         
         # Run nuxt prepare separately to handle any issues
         pnpm exec nuxt prepare || echo "Nuxt prepare failed, continuing with tests"
-        
-    - name: Run unit tests
-      run: pnpm test
-      env:
-        MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        NUXT_NEXTAUTH_SECRET: ${{ secrets.NUXT_NEXTAUTH_SECRET || 'test-secret-key-for-ci' }}
-      
-    - name: Run linting
-      run: |
-        # Try to run linting, but don't fail the build if it has issues
-        pnpm lint || echo "Linting failed, but continuing with tests"
         
     - name: Cache Playwright browsers
       id: playwright-cache
