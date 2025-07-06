@@ -1,6 +1,14 @@
 export default {
   vuetifyOptions: {
     labComponents: false,
+    icons: {
+      defaultSet: 'mdi',
+      sets: {
+        mdi: {
+          component: 'VIcon',
+        },
+      },
+    },
     defaults: {
       VAppBar: {
         elevation: 0,
