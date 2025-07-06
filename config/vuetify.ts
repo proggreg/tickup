@@ -3,11 +3,12 @@ export default {
     labComponents: false,
     icons: {
       defaultSet: 'mdi',
-      sets: {
-        mdi: {
+      sets: [
+        {
+          name: 'mdi',
           component: 'VIcon',
         },
-      },
+      ],
     },
     defaults: {
       VAppBar: {
