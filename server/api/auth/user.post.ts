@@ -20,5 +20,13 @@ export default defineEventHandler(async (event) => {
 
   const newUser = await new UserSchema(body).save()
 
-  return newUser
+  // Return a plain object instead of Mongoose document
+  return {
+    _id: newUser._id.toString(),
+    username: newUser.username,
+    email: newUser.email,
+    password: newUser.password, // This should be the hashed password
+    settings: newUser.settings,
+    hasGithub: newUser.hasGithub
+  }
 })
