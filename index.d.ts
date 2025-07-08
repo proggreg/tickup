@@ -21,6 +21,8 @@ declare global {
       status: string
       _id: string
     }[]
+    notificationDateTime?: string | Date
+    notificationSent?: boolean
   }
 
   interface Status {

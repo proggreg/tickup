@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useAuth, useRuntimeConfig } from '#imports'
 const listsStore = useListsStore()
 const hasGithub = await useHasGithub()
@@ -9,9 +9,7 @@ console.log('hasGithub', hasGithub)
 const newSubtaskName = ref('')
 
 // Notification control state
-const notificationEnabled = ref(false)
 const notificationSending = ref(false)
-const notificationMessage = ref('')
 // New: Notification date/time
 const notificationDateTime = ref('')
 
@@ -103,13 +101,10 @@ function urlBase64ToUint8Array(base64String: string) {
 
 async function sendPushNotification() {
   notificationSending.value = true
-  notificationMessage.value = ''
   try {
     // This should be replaced with the user's real push subscription
     const subscription = window.localStorage.getItem('push-subscription')
     if (!subscription) {
-      notificationMessage.value = 'No push subscription found.'
-      notificationSending.value = false
       return
     }
     const res = await fetch('/api/subscribe', {
@@ -123,12 +118,12 @@ async function sendPushNotification() {
       })
     })
     if (res.ok) {
-      notificationMessage.value = 'Push notification scheduled!'
+      // No UI feedback for successful scheduling
     } else {
-      notificationMessage.value = 'Failed to schedule notification.'
+      // No UI feedback for failed scheduling
     }
   } catch (e) {
-    notificationMessage.value = 'Error scheduling notification.'
+    // No UI feedback for error scheduling
   }
   notificationSending.value = false
 }
@@ -155,6 +150,31 @@ function addSubtask() {
   newSubtaskName.value = ''
   listsStore.updateTodo(listsStore.currentTodo)
 }
+
+// Only schedule notification when the date/time field loses focus
+function onNotificationDateTimeBlur() {
+  if (notificationDateTime.value) {
+    sendPushNotification()
+  }
+}
+
+// Sync notificationDateTime with currentTodo.notificationDateTime on load/change
+watch(
+  () => listsStore.currentTodo && listsStore.currentTodo._id,
+  () => {
+    const dt = listsStore.currentTodo?.notificationDateTime
+    if (dt) {
+      // Format as 'YYYY-MM-DDTHH:mm' for datetime-local input
+      const date = new Date(dt)
+      const pad = (n: number) => n.toString().padStart(2, '0')
+      const formatted = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+      notificationDateTime.value = formatted
+    } else {
+      notificationDateTime.value = ''
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -244,14 +264,11 @@ function addSubtask() {
       <!-- Push Subscription Management -->
       <div class="d-flex flex-column align-end mr-4">
         <v-alert v-if="pushError" type="error" class="mb-2">{{ pushError }}</v-alert>
-        <v-chip v-if="pushSubscribed" color="success" class="mb-2">Push Subscribed</v-chip>
-        <v-chip v-else color="grey" class="mb-2">Not Subscribed</v-chip>
         <v-btn v-if="pushSupported && !pushSubscribed" color="primary" @click="subscribeToPush">Subscribe to Push</v-btn>
         <v-btn v-if="pushSupported && pushSubscribed" color="secondary" @click="unsubscribeFromPush">Unsubscribe</v-btn>
       </div>
-      <!-- Notification Control -->
-      <v-switch v-model="notificationEnabled" label="Enable Push Notification" class="mr-4" />
-      <v-menu v-if="notificationEnabled">
+      <!-- Notification Date/Time Picker: show if push is supported and subscribed -->
+      <v-menu v-if="pushSupported && pushSubscribed">
         <template #activator="{ props }">
           <v-text-field
             v-bind="props"
@@ -260,14 +277,12 @@ function addSubtask() {
             type="datetime-local"
             style="max-width: 220px;"
             class="mr-2"
+            @blur="onNotificationDateTimeBlur"
           />
         </template>
         <!-- You can add a custom date-time picker here if you want a more advanced UI -->
       </v-menu>
-      <v-btn :loading="notificationSending" :disabled="!notificationEnabled || !notificationDateTime" color="primary" @click="sendPushNotification">
-        Schedule Notification
-      </v-btn>
-      <span v-if="notificationMessage" class="ml-2">{{ notificationMessage }}</span>
+      <!-- Removed manual Schedule Notification button -->
       <v-file-input label="File input" variant="solo-inverted" density="compact" hide-details disabled class="rounded-lg" />
     </v-card-actions>
   </v-card>
