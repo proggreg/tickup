@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
 import { useAuth, useRuntimeConfig } from '#imports'
+import { useDisplay } from '#imports'
 const listsStore = useListsStore()
 const hasGithub = await useHasGithub()
 
@@ -29,6 +30,8 @@ const username = computed(() => {
 })
 
 const config = useRuntimeConfig()
+const { smAndDown } = useDisplay()
+const notificationDialog = ref(false)
 
 onMounted(() => {
   pushSupported.value = 'serviceWorker' in navigator && 'PushManager' in window
@@ -273,38 +276,49 @@ watch(
       <TodoLinks />
     </v-card-item>
 
-    <v-card-actions class="py-6 px-6">
-      <AppDeleteButton :todo="listsStore.currentTodo" />
-      <AppGithubButton v-if="hasGithub" :todo="listsStore.currentTodo" />
-      <v-spacer />
-      <!-- Push Subscription Management -->
-      <div class="d-flex flex-column align-end mr-4">
-        <v-alert v-if="pushError" type="error" class="mb-2">{{ pushError }}</v-alert>
+    <v-card-actions class="py-6 px-6 d-flex flex-wrap gap-4 align-center justify-space-between">
+      <!-- Left: Destructive & Integrations -->
+      <div class="d-flex align-center gap-2 flex-wrap">
+        <AppDeleteButton :todo="listsStore.currentTodo" />
+        <AppGithubButton v-if="hasGithub" :todo="listsStore.currentTodo" />
+      </div>
+      <!-- Right: Push & Notification Controls -->
+      <div class="d-flex align-center gap-2 flex-wrap">
+        <v-alert v-if="pushError" type="error" class="mb-0 mr-2" style="min-width: 200px;">{{ pushError }}</v-alert>
         <v-btn v-if="pushSupported && !pushSubscribed" color="primary" @click="subscribeToPush">Subscribe to Push</v-btn>
         <v-btn v-if="pushSupported && pushSubscribed" color="secondary" @click="unsubscribeFromPush">Unsubscribe</v-btn>
-      </div>
-      <!-- Notification Date/Time Picker: show if push is supported and subscribed -->
-      <v-menu v-if="pushSupported && pushSubscribed">
-        <template #activator="{ props }">
-          <div class="d-flex align-center">
+        <v-menu v-if="pushSupported && pushSubscribed && !smAndDown">
+          <template #activator="{ props }">
             <v-text-field
               v-bind="props"
               v-model="notificationDateTime"
               label="Notification Date & Time"
               type="datetime-local"
-              style="max-width: 220px;"
               class="mr-2"
               @blur="onNotificationDateTimeBlur"
+              style="max-width: 220px;"
             />
-            <v-btn size="small" color="primary" variant="tonal" class="ml-2" @click="sendTestPushNotification">
-              Test Notification
-            </v-btn>
-          </div>
-        </template>
-        <!-- You can add a custom date-time picker here if you want a more advanced UI -->
-      </v-menu>
-      <!-- Removed manual Schedule Notification button -->
-      <v-file-input label="File input" variant="solo-inverted" density="compact" hide-details disabled class="rounded-lg" />
+          </template>
+        </v-menu>
+        <v-btn v-if="pushSupported && pushSubscribed && smAndDown" icon="mdi-calendar" color="primary" @click="notificationDialog = true" />
+        <v-dialog v-model="notificationDialog" max-width="320">
+          <v-card>
+            <v-card-title>Set Notification Date & Time</v-card-title>
+            <v-card-text>
+              <v-text-field
+                v-model="notificationDateTime"
+                label="Notification Date & Time"
+                type="datetime-local"
+                @blur="onNotificationDateTimeBlur"
+              />
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn color="primary" @click="notificationDialog = false; onNotificationDateTimeBlur()">OK</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
     </v-card-actions>
   </v-card>
 </template>
