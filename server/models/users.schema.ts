@@ -7,6 +7,7 @@ export const UserSchema = defineMongooseModel<{
     statuses: string[]
   }
   hasGithub: boolean
+  pushSubscriptions?: any[]
 }>({
   name: 'User',
   schema: {
@@ -29,6 +30,10 @@ export const UserSchema = defineMongooseModel<{
     hasGithub: {
       type: 'boolean',
       default: false,
+    },
+    pushSubscriptions: {
+      type: [{}],
+      default: [],
     },
   },
 })

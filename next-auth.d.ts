@@ -14,3 +14,5 @@ declare module 'next-auth' {
     }
   }
 }
+
+declare module 'web-push';

@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import { UserSchema } from '../../models/users.schema'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -11,6 +12,15 @@ export default defineEventHandler(async (event) => {
 
   if (user.length) {
     return 'username taken'
+  }
+
+  // If pushSubscription is provided, add it to the user's pushSubscriptions
+  if (body.pushSubscription && body.username) {
+    return await UserSchema.findOneAndUpdate(
+      { username: body.username },
+      { $addToSet: { pushSubscriptions: body.pushSubscription } },
+      { new: true, upsert: true }
+    )
   }
 
   const saltRounds = 6

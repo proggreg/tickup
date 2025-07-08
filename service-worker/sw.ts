@@ -14,10 +14,16 @@ self.addEventListener('install', () => {
 });
 
 self.addEventListener('push', (event: PushEvent) => {
-  const data = event.data
-  console.log('Push Recieved... changed', data);
-  self.registration.showNotification('hello', {
-    body: 'greg',
+  let data: any = {};
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch (e) {
+      data = { body: event.data.text() };
+    }
+  }
+  self.registration.showNotification(data.title || 'Tickup', {
+    body: data.body || '',
     icon: 'img/icons/android-chrome-192x192.png',
   });
 });
