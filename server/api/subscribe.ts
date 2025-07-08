@@ -45,9 +45,18 @@ export default defineEventHandler(async (event) => {
   try {
     // Only send a test notification if not scheduling
     if (!notificationDateTime) {
+      let testTitle = 'Tickup Push Test';
+      let testMessage = 'Push notifications are working! You will get reminders for your todos.';
+      if (todoId) {
+        const todo = await TodoSchema.findById(todoId);
+        if (todo && todo.name) {
+          testTitle = todo.name;
+          testMessage = `This is a test notification for your todo: ${todo.name}`;
+        }
+      }
       await webpush.sendNotification(subscription, JSON.stringify({
-        title: 'Hello Push!',
-        message: 'Your push notification is working!',
+        title: testTitle,
+        message: testMessage,
       }))
       console.log('Push notification sent successfully!')
       return { success: true }
