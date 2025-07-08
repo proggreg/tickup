@@ -51,12 +51,14 @@ export default defineEventHandler(async (event) => {
         const todo = await TodoSchema.findById(todoId);
         if (todo && todo.name) {
           testTitle = todo.name;
-          testMessage = `This is a test notification for your todo: ${todo.name}`;
+          let desc = todo.desc ? `\nDescription: ${todo.desc}` : '';
+          let due = todo.dueDate ? `\nDue: ${new Date(todo.dueDate).toLocaleString()}` : '';
+          testMessage = `Test notification for: ${todo.name}${desc}${due}`;
         }
       }
       await webpush.sendNotification(subscription, JSON.stringify({
         title: testTitle,
-        message: testMessage,
+        body: testMessage,
       }))
       console.log('Push notification sent successfully!')
       return { success: true }

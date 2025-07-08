@@ -128,6 +128,22 @@ async function sendPushNotification() {
   notificationSending.value = false
 }
 
+// Send a test push notification for the current todo
+async function sendTestPushNotification() {
+  const subscription = window.localStorage.getItem('push-subscription')
+  if (!subscription) return
+  await fetch('/api/subscribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      subscription: JSON.parse(subscription),
+      username: username.value,
+      todoId: listsStore.currentTodo._id
+      // No notificationDateTime triggers test notification
+    })
+  })
+}
+
 function updateDueDate(newDate: Date) {
   listsStore.currentTodo.dueDate = newDate
   listsStore.updateTodo(listsStore.currentTodo)
@@ -270,15 +286,20 @@ watch(
       <!-- Notification Date/Time Picker: show if push is supported and subscribed -->
       <v-menu v-if="pushSupported && pushSubscribed">
         <template #activator="{ props }">
-          <v-text-field
-            v-bind="props"
-            v-model="notificationDateTime"
-            label="Notification Date & Time"
-            type="datetime-local"
-            style="max-width: 220px;"
-            class="mr-2"
-            @blur="onNotificationDateTimeBlur"
-          />
+          <div class="d-flex align-center">
+            <v-text-field
+              v-bind="props"
+              v-model="notificationDateTime"
+              label="Notification Date & Time"
+              type="datetime-local"
+              style="max-width: 220px;"
+              class="mr-2"
+              @blur="onNotificationDateTimeBlur"
+            />
+            <v-btn size="small" color="primary" variant="tonal" class="ml-2" @click="sendTestPushNotification">
+              Test Notification
+            </v-btn>
+          </div>
         </template>
         <!-- You can add a custom date-time picker here if you want a more advanced UI -->
       </v-menu>
