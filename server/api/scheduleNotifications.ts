@@ -1,5 +1,3 @@
-import { defineEventHandler, getHeader } from 'h3'
-import mongoose from 'mongoose'
 import webpush from 'web-push'
 
 export default defineEventHandler(async (event) => {
@@ -10,23 +8,8 @@ export default defineEventHandler(async (event) => {
   }
 
   const config = useRuntimeConfig()
-  const MONGODB_URI = config.mongoose.uri
   const VAPID_PUBLIC_KEY = config.public.VAPID_KEY
   const VAPID_PRIVATE_KEY = config.private.vapidPrivateKey
-
-  // Define User and Todo schemas for direct use
-  const userSchema = new mongoose.Schema({
-    username: String,
-    pushSubscriptions: { type: [mongoose.Schema.Types.Mixed], default: [] },
-  })
-  const todoSchema = new mongoose.Schema({
-    userId: String,
-    name: String,
-    notificationDateTime: Date,
-    notificationSent: Boolean,
-  })
-  const User = mongoose.models.User || mongoose.model('User', userSchema)
-  const Todo = mongoose.models.Todo || mongoose.model('Todo', todoSchema)
 
   webpush.setVapidDetails(
     'mailto:greg.field1992@gmail.com',
@@ -34,11 +17,9 @@ export default defineEventHandler(async (event) => {
     VAPID_PRIVATE_KEY
   )
 
-  await mongoose.connect(MONGODB_URI)
-
   // Find todos with a notificationDateTime in the past and not yet notified
   const now = new Date()
-  const todos = await Todo.find({
+  const todos = await TodoSchema.find({
     notificationDateTime: { $lte: now },
     notificationSent: { $ne: true }
   })
@@ -46,7 +27,7 @@ export default defineEventHandler(async (event) => {
   let sent = 0
   for (const todo of todos) {
     // Find the user
-    const user = await User.findOne({ _id: todo.userId })
+    const user = await UserSchema.findOne({ _id: todo.userId })
     if (!user || !user.pushSubscriptions || user.pushSubscriptions.length === 0) continue
 
     // Send notification to all subscriptions
@@ -66,6 +47,5 @@ export default defineEventHandler(async (event) => {
     await todo.save()
   }
 
-  await mongoose.disconnect()
   return { sent, checked: todos.length }
 }) 
