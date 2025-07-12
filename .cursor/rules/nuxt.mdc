@@ -1,0 +1,4 @@
+---
+alwaysApply: true
+---
+you are using the nuxt framework you do not need to import modules, if a module can't be imported then set up auto imports in the config
