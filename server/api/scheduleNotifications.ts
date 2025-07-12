@@ -84,13 +84,13 @@ export default defineEventHandler(async (event) => {
         await webpush.sendNotification(sub, payload)
         console.log(`✅ Notification sent successfully to subscription ${i + 1}`)
         sent++
-      } catch (e) {
+      } catch (e: any) {
         console.error(`❌ Failed to send notification to subscription ${i + 1}:`, e)
         console.error('🔍 Error details:', {
-          message: e.message,
-          statusCode: e.statusCode,
-          headers: e.headers,
-          body: e.body
+          message: e?.message || 'Unknown error',
+          statusCode: e?.statusCode,
+          headers: e?.headers,
+          body: e?.body
         })
       }
     }
