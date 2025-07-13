@@ -104,7 +104,6 @@ export default defineEventHandler(async (event) => {
     await todo.save()
     console.log(`✅ Todo ${todo._id} marked as notified`)
   }
-  console.log('🔄 todos checked', todos)
   console.log(`\n📊 Summary: ${sent} notifications sent out of ${todos.length} todos processed`)
   return { sent, checked: todos.length, todos }
 }) 
