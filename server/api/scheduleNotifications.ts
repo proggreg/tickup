@@ -51,6 +51,7 @@ export default defineEventHandler(async (event) => {
   }
 
   let sent = 0
+  const userSubscriptions = []
   for (const todo of todos) {
     console.log(`\n🔄 Processing todo: ${todo.name} (ID: ${todo._id})`)
     
@@ -67,6 +68,7 @@ export default defineEventHandler(async (event) => {
       console.log(`❌ No push subscriptions found for user ${user.username}`)
       continue
     }
+    userSubscriptions.push(user)
     
     console.log(`📱 User ${user.username} has ${user.pushSubscriptions.length} push subscriptions`)
 
@@ -104,6 +106,7 @@ export default defineEventHandler(async (event) => {
     await todo.save()
     console.log(`✅ Todo ${todo._id} marked as notified`)
   }
+  console.log(`userSubscriptions ${userSubscriptions}`)
   console.log(`\n📊 Summary: ${sent} notifications sent out of ${todos.length} todos processed`)
   return { sent, checked: todos.length, todos }
 }) 
