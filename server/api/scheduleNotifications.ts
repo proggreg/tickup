@@ -5,11 +5,14 @@ export default defineEventHandler(async (event) => {
   
   // Security: require a secret token in the header
   const token = getHeader(event, 'x-cron-secret')
+  console.log('token', token)
+
+  console.log('process.env.SCHEDULER_SECRET', process.env.SCHEDULER_SECRET)
   if (token !== process.env.SCHEDULER_SECRET) {
     console.log('❌ Unauthorized access attempt - invalid token')
     return { error: 'Unauthorized' }
   }
-  console.log('✅ Authorization successful')
+  console.log('✅ Authorization successful here')
 
   const config = useRuntimeConfig()
   const VAPID_PUBLIC_KEY = config.public.VAPID_KEY
@@ -103,5 +106,5 @@ export default defineEventHandler(async (event) => {
   }
   console.log('🔄 todos checked', todos)
   console.log(`\n📊 Summary: ${sent} notifications sent out of ${todos.length} todos processed`)
-  return { sent, checked: todos.length }
+  return { sent, checked: todos.length, todos }
 }) 
