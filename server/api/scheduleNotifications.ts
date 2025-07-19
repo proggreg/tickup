@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
   console.log('⏰ Current time:', now.toISOString())
   
   const todos = await TodoSchema.find({
-    notificationDateTime: { $lte: now },
+    notificationDateTime: { $lte: new Date() },
     notificationSent: { $ne: true }
   })
   

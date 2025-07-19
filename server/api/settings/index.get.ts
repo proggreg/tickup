@@ -1,8 +1,15 @@
 export default defineEventHandler(async (event) => {
   try {
     const query = getQuery(event)
-
-    return await SettingsSchema.find({ userId: query.userId })
+    const settings = await SettingsSchema.findOne({ userId: query.userId })
+    if (!settings) {
+      return {
+        userId: query.userId,
+        statuses: [],
+        browserNotifications: false,
+      }
+    }
+    return settings
   }
   catch (error) {
     return error

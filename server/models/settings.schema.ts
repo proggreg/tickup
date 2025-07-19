@@ -1,19 +1,29 @@
 import { defineMongooseModel } from '#nuxt/mongoose'
+import { Schema, Types } from 'mongoose'
 
-export const SettingsSchema = defineMongooseModel({
+export const SettingsSchema = defineMongooseModel<{
+  browserNotifications: boolean,
+  userId: Types.ObjectId,
+  statuses: Status[]
+}>({
   name: 'settings',
   schema: {
     userId: {
-      type: 'string',
+      type: Schema.Types.ObjectId,
       required: true,
     },
     statuses: {
       type: [{
-        name: 'string',
-        color: 'string',
-        index: 'number',
+        name: String,
+        color: String,
+        Edit: Schema.Types.Boolean
       }],
       required: true,
+    },
+    browserNotifications: {
+      type: Schema.Types.Boolean,
+      required: true,
+      default: false
     },
   },
 })

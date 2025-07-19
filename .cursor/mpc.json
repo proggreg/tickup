@@ -1,0 +1,15 @@
+{
+    "mcpServers": {
+      "MongoDB": {
+          "command": "npx",
+          "args": [
+            "-y",
+            "mongodb-mcp-server",
+            "--connectionString",
+            "mongodb+srv://greg:ocaVlSv7Wusjd43k@cluster0.sw7y0.mongodb.net/Tickup-DEV?retryWrites=true&w=majority",
+            "--readOnly"
+          ]
+        }
+
+  }
+}
