@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
   
   const todos = await TodoSchema.find({
     notificationDateTime: { $lte: new Date() },
-    notificationSent: { $ne: true }
+    notificationSent: { $ne: false }
   })
   
   console.log(`📋 Found ${todos.length} todos that need notifications`)
@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
     }
     userSubscriptions.push(user)
     
-    console.log(`📱 User ${user.username} has ${user.pushSubscriptions.length} push subscriptions`)
+    console.log(`📱 i ${user.username} has ${user.pushSubscriptions.length} push subscriptions`)
 
     // Send notification to all subscriptions
     for (let i = 0; i < user.pushSubscriptions.length; i++) {
@@ -107,6 +107,6 @@ export default defineEventHandler(async (event) => {
     console.log(`✅ Todo ${todo._id} marked as notified`)
   }
   console.log(`userSubscriptions ${userSubscriptions}`)
-  console.log(`\n📊 Summary: ${sent} notifications sent out of ${todos.length} todos processed`)
+  console.log(`\n📊 Summary: ${sent} notifications sent out of ${todos.length} todos processed user ${user}`)
   return { sent, checked: todos.length, todos }
 }) 
