@@ -103,8 +103,9 @@ export default defineEventHandler(async (event) => {
     // Mark todo as notified
     console.log(`💾 Marking todo ${todo._id} as notified`)
     todo.notificationSent = true
+    todo.notificationSentAt = new Date()
     await todo.save()
-    console.log(`✅ Todo ${todo._id} marked as notified`)
+    console.log(`✅ Todo ${todo._id} marked as notified at ${todo.notificationSentAt}`)
   }
   console.log(`userSubscriptions ${userSubscriptions}`)
   console.log(`\n📊 Summary: ${sent} notifications sent out of ${todos.length} todos processed user ${user}`)

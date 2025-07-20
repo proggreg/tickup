@@ -15,6 +15,7 @@ export const TodoSchema = defineMongooseModel<{
   subtasks: Array<{ name: string, status: string, _id: string }>
   notificationDateTime?: Date
   notificationSent?: boolean
+  notificationSentAt?: Date
 }>({
   name: 'Todo',
   schema: {
@@ -84,6 +85,10 @@ export const TodoSchema = defineMongooseModel<{
     notificationSent: {
       type: Boolean,
       default: false,
+    },
+    notificationSentAt: {
+      type: Date,
+      required: false,
     },
   },
 })
