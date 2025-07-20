@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
   
   const todos = await TodoSchema.find({
     notificationDateTime: { $lte: new Date() },
-    notificationSent: { $ne: false }
+    notificationSent: { $ne: true }
   })
   
   console.log(`📋 Found ${todos.length} todos that need notifications`)
