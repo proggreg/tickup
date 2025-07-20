@@ -44,9 +44,7 @@ export default defineEventHandler(async (event) => {
     console.log('📝 Todos requiring notifications:', todos.map(t => ({
       id: t._id,
       name: t.name,
-      userId: t.userId,
-      notificationDateTime: t.notificationDateTime,
-      notificationSent: t.notificationSent
+      userId: t.userId
     })))
   }
 
