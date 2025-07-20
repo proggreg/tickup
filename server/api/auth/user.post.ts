@@ -14,6 +14,15 @@ export default defineEventHandler(async (event) => {
     return 'username taken'
   }
 
+  // If pushSubscription is provided, add it to the user's pushSubscriptions
+  if (body.pushSubscription && body.username) {
+    return await UserSchema.findOneAndUpdate(
+      { username: body.username },
+      { $addToSet: { pushSubscriptions: body.pushSubscription } },
+      { new: true, upsert: true }
+    )
+  }
+
   const saltRounds = 6
   const salt = bcrypt.genSaltSync(saltRounds)
   const hash = bcrypt.hashSync(body.password, salt)

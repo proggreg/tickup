@@ -43,11 +43,13 @@ export const TodoSchema = defineMongooseModel<{
     },
     createdAt: {
       type: Date,
-      default: Date.now(),
+      required: true,
+      default: () => Date.now(),
+
     },
     updatedAt: {
       type: Date,
-      default: Date.now(),
+      default: Date.now,
     },
     githubBranchName: {
       type: 'string',

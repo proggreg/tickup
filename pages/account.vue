@@ -16,7 +16,7 @@ const { signOut, data } = useAuth()
       </div>
     </v-col>
     <v-col class="d-flex justify-center" cols="12">
-      <h4>Username: {{ data?.user.name }}</h4>
+      <h4>{{ data?.user.name }}</h4>
     </v-col>
 
     <v-col class="d-flex flex-column-reverse py-6" cols="12">

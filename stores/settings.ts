@@ -1,11 +1,8 @@
-import { ref, computed } from 'vue'
-
 export const useSettingsStore = defineStore('settings', () => {
   const darkMode = ref(false)
   const { getSession } = useAuth()
 
   const userStatuses = ref<Status[]>([])
-  const settings = ref<any>(null)
 
   const defaultStatuses: Status[] = [
     {
@@ -32,25 +29,14 @@ export const useSettingsStore = defineStore('settings', () => {
   async function getUserSettings() {
     const session = await getSession()
     const userId = session?.user?.sub
-    const result = await $fetch<Settings>('/api/settings', { query: { userId } })
-    settings.value = result
-    if (result.statuses && result.statuses.length) {
-      userStatuses.value = result.statuses
+    const settings = await $fetch<Settings>('/api/settings', { query: { userId } })
+    console.debug('get user settings', settings)
+    if (settings.statuses.length) {
+      userStatuses.value = settings.statuses
     }
   }
 
-  async function updateSettings(newSettings: any) {
-    const session = await getSession()
-    const userId = session?.user?.sub
-    const updated = await $fetch('/api/settings', {
-      method: 'PUT',
-      body: { userId, ...newSettings },
-    })
-    await getUserSettings()
-    return updated
-  }
-
-  return { darkMode, statuses, getUserSettings, userStatuses, settings, updateSettings }
+  return { darkMode, statuses, getUserSettings, userStatuses }
 })
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useSettingsStore, import.meta.hot))
