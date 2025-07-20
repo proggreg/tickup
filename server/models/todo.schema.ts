@@ -13,7 +13,6 @@ export const TodoSchema = defineMongooseModel<{
   githubBranchName: string
   links: Array<{ title: string, url: string, _id: string }>
   subtasks: Array<{ name: string, status: string, _id: string }>
-  notificationDateTime?: Date
   notificationSent?: boolean
   notificationSentAt?: Date
 }>({
@@ -42,16 +41,7 @@ export const TodoSchema = defineMongooseModel<{
     order: {
       type: Number,
     },
-    createdAt: {
-      type: Date,
-      required: true,
-      default: () => Date.now(),
-
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
+    // removed createdAt and updatedAt fields, handled by timestamps
     githubBranchName: {
       type: 'string',
     },
@@ -78,10 +68,6 @@ export const TodoSchema = defineMongooseModel<{
       required: false,
       default: () => [],
     },
-    notificationDateTime: {
-      type: Date,
-      required: false,
-    },
     notificationSent: {
       type: Boolean,
       default: false,
@@ -90,5 +76,8 @@ export const TodoSchema = defineMongooseModel<{
       type: Date,
       required: false,
     },
+  },
+  options: {
+    timestamps: true,
   },
 })
