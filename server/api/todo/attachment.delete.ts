@@ -1,7 +1,5 @@
 import { TodoSchema } from '~/server/models/todo.schema'
-import { unlink } from 'fs/promises'
-import { join } from 'path'
-import { existsSync } from 'fs'
+import { AttachmentSchema } from '~/server/models/attachment.schema'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -15,7 +13,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Find todo and attachment
+    // Find todo and attachment reference
     const todo = await TodoSchema.findById(todoId)
     if (!todo) {
       throw createError({
@@ -24,22 +22,19 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const attachment = todo.attachments?.find(a => a._id === attachmentId)
-    if (!attachment) {
+    const attachmentRef = todo.attachments?.find(a => a.attachmentId === attachmentId)
+    if (!attachmentRef) {
       throw createError({
         statusCode: 404,
         message: 'Attachment not found',
       })
     }
 
-    // Delete file from filesystem
-    const filepath = join(process.cwd(), 'public', attachment.filename)
-    if (existsSync(filepath)) {
-      await unlink(filepath)
-    }
+    // Delete attachment from MongoDB
+    await AttachmentSchema.findByIdAndDelete(attachmentId)
 
-    // Remove attachment from todo
-    todo.attachments = todo.attachments.filter(a => a._id !== attachmentId)
+    // Remove attachment reference from todo
+    todo.attachments = todo.attachments.filter(a => a.attachmentId !== attachmentId)
     await todo.save()
 
     return {

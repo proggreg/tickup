@@ -1,7 +1,5 @@
 import { TodoSchema } from '~/server/models/todo.schema'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
-import { existsSync } from 'fs'
+import { AttachmentSchema } from '~/server/models/attachment.schema'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -47,35 +45,39 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'public', 'uploads')
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true })
-    }
-
     // Generate unique filename
     const timestamp = Date.now()
     const randomId = Math.random().toString(36).substring(2, 15)
     const fileExtension = file.name.split('.').pop()
     const filename = `${timestamp}-${randomId}.${fileExtension}`
-    const filepath = join(uploadsDir, filename)
 
-    // Save file
+    // Convert file to buffer
     const buffer = Buffer.from(await file.arrayBuffer())
-    await writeFile(filepath, buffer)
 
-    // Create attachment object
-    const attachment = {
+    // Save attachment to MongoDB
+    const attachment = new AttachmentSchema({
+      todoId,
       filename,
       originalName: file.name,
       mimeType: file.type,
       size: file.size,
-      url: `/uploads/${filename}`,
-      _id: crypto.randomUUID(),
+      data: buffer,
+      uploadedAt: new Date(),
+    })
+
+    const savedAttachment = await attachment.save()
+
+    // Create attachment reference for todo
+    const attachmentRef = {
+      attachmentId: savedAttachment._id.toString(),
+      filename,
+      originalName: file.name,
+      mimeType: file.type,
+      size: file.size,
       uploadedAt: new Date(),
     }
 
-    // Update todo with new attachment
+    // Update todo with new attachment reference
     const todo = await TodoSchema.findById(todoId)
     if (!todo) {
       throw createError({
@@ -87,12 +89,12 @@ export default defineEventHandler(async (event) => {
     if (!todo.attachments) {
       todo.attachments = []
     }
-    todo.attachments.push(attachment)
+    todo.attachments.push(attachmentRef)
     await todo.save()
 
     return {
       success: true,
-      attachment,
+      attachment: attachmentRef,
     }
   } catch (error) {
     console.error('Error uploading file:', error)

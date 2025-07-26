@@ -126,7 +126,7 @@ async function deleteAttachment(attachmentId: string) {
 }
 
 function openFile(attachment: any) {
-  window.open(attachment.url, '_blank')
+  window.open(`/api/attachment/${attachment.attachmentId}`, '_blank')
 }
 </script>
 
@@ -189,7 +189,7 @@ function openFile(attachment: any) {
                 size="small"
                 variant="text"
                 color="error"
-                @click="deleteAttachment(attachment._id)"
+                @click="deleteAttachment(attachment.attachmentId)"
               />
             </div>
           </template>

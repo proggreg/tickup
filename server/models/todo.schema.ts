@@ -14,12 +14,11 @@ export const TodoSchema = defineMongooseModel<{
   links: Array<{ title: string, url: string, _id: string }>
   subtasks: Array<{ name: string, status: string, _id: string }>
   attachments: Array<{ 
+    attachmentId: string,
     filename: string, 
     originalName: string, 
     mimeType: string, 
     size: number, 
-    url: string, 
-    _id: string,
     uploadedAt: Date 
   }>
   notificationDateTime?: Date
@@ -88,12 +87,11 @@ export const TodoSchema = defineMongooseModel<{
     },
     attachments: {
       type: [{
+        attachmentId: { type: String, required: true },
         filename: { type: String, required: true },
         originalName: { type: String, required: true },
         mimeType: { type: String, required: true },
         size: { type: Number, required: true },
-        url: { type: String, required: true },
-        _id: { type: String, required: true },
         uploadedAt: { type: Date, required: true, default: () => Date.now() },
       }],
       required: false,

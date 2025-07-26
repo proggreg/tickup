@@ -22,12 +22,11 @@ declare global {
       _id: string
     }[]
     attachments?: {
+      attachmentId: string
       filename: string
       originalName: string
       mimeType: string
       size: number
-      url: string
-      _id: string
       uploadedAt: Date
     }[]
     notificationDateTime?: string | Date
