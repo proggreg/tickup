@@ -1,4 +1,5 @@
 export { Todo, Status, List }
+import {ObjectID} from 'mongodb'
 declare global {
   interface Todo {
     userId?: string
@@ -22,6 +23,7 @@ declare global {
       _id: string
     }[]
     attachments?: {
+      _id: ObjectId,
       attachmentId: string
       filename: string
       originalName: string

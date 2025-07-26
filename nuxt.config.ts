@@ -50,6 +50,7 @@ export default defineNuxtConfig({
     storesDirs: ['./stores/**'],
   },
 
+  //@ts-ignore TODO fix
   vuetify: vuetifyOptions,
 
   typescript: {

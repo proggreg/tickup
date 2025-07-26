@@ -67,7 +67,10 @@ async function handleFileUpload(event: Event) {
   try {
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('todoId', listsStore.currentTodo._id)
+    if (listsStore.currentTodo._id) {
+      formData.append('todoId', listsStore.currentTodo._id)
+    }
+    
 
     const response = await fetch('/api/todo/upload', {
       method: 'POST',
@@ -117,7 +120,7 @@ async function deleteAttachment(attachmentId: string) {
     }
 
     // Remove attachment from local state
-    listsStore.currentTodo.attachments = listsStore.currentTodo.attachments.filter(
+    listsStore.currentTodo.attachments = listsStore.currentTodo.attachments?.filter(
       a => a._id !== attachmentId
     )
     await listsStore.updateTodo(listsStore.currentTodo)
