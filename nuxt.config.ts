@@ -1,3 +1,4 @@
+import { defineNuxtConfig } from 'nuxt/config'
 import vuetifyOptions from './config/vuetify'
 
 export default defineNuxtConfig({
@@ -8,11 +9,11 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     '@vueuse/nuxt',
     'nuxt-mongoose',
-    // 'nuxt-bugsnag',
     '@sidebase/nuxt-auth',
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
     '@nuxtjs/device',
+    '@nuxt/test-utils/module'
 
   ],
 
