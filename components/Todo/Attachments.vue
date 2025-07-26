@@ -6,6 +6,7 @@ const listsStore = useListsStore()
 const fileInput = ref<HTMLInputElement>()
 const uploading = ref(false)
 const uploadError = ref('')
+const selectedFile = ref<File | null>(null)
 
 const attachments = computed(() => listsStore.currentTodo.attachments || [])
 
@@ -138,7 +139,7 @@ function openFile(attachment: any) {
     <div class="mb-4">
       <v-file-input
         ref="fileInput"
-        v-model="null"
+        v-model="selectedFile"
         label="Add attachment"
         accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv"
         prepend-icon="mdi-paperclip"
