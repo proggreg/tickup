@@ -109,3 +109,5 @@ sw.*
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Uploaded files are now stored in MongoDB

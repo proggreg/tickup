@@ -1,4 +1,5 @@
 export { Todo, Status, List }
+import {ObjectID} from 'mongodb'
 declare global {
   interface Todo {
     userId?: string
@@ -20,6 +21,15 @@ declare global {
       name: string
       status: string
       _id: string
+    }[]
+    attachments?: {
+      _id: ObjectId,
+      attachmentId: string
+      filename: string
+      originalName: string
+      mimeType: string
+      size: number
+      uploadedAt: Date
     }[]
     notificationDateTime?: string | Date
     notificationSent?: boolean

@@ -17,6 +17,7 @@ const newTodoState = {
   edit: false,
   color: '#87909e',
   links: [],
+  attachments: [],
 }
 
 const newListState = {
@@ -141,6 +142,7 @@ export const useListsStore = defineStore('lists', {
         edit: false,
         color: '#87909e',
         links: [],
+        attachments: [],
       }
 
       this.currentList.todos[this.currentList.todos.length - 1]._id = todo._id
@@ -283,6 +285,7 @@ export const useListsStore = defineStore('lists', {
         edit: false,
         color: '#87909e',
         links: [],
+        attachments: [],
       }
       this.newList = {
         name: '',
