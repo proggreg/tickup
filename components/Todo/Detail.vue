@@ -276,6 +276,10 @@ watch(
       <TodoLinks />
     </v-card-item>
 
+    <v-card-item class="px-6 pt-0 pb-2">
+      <TodoAttachments />
+    </v-card-item>
+
     <v-card-actions class="py-6 px-6 d-flex flex-wrap gap-4 align-center justify-space-between">
       <!-- Left: Destructive & Integrations -->
       <div class="d-flex align-center gap-2 flex-wrap">

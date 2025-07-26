@@ -13,6 +13,15 @@ export const TodoSchema = defineMongooseModel<{
   githubBranchName: string
   links: Array<{ title: string, url: string, _id: string }>
   subtasks: Array<{ name: string, status: string, _id: string }>
+  attachments: Array<{ 
+    filename: string, 
+    originalName: string, 
+    mimeType: string, 
+    size: number, 
+    url: string, 
+    _id: string,
+    uploadedAt: Date 
+  }>
   notificationDateTime?: Date
   notificationSent?: boolean
 }>({
@@ -73,6 +82,19 @@ export const TodoSchema = defineMongooseModel<{
         name: { type: String, required: true },
         status: { type: String, required: true },
         _id: { type: String, required: true },
+      }],
+      required: false,
+      default: () => [],
+    },
+    attachments: {
+      type: [{
+        filename: { type: String, required: true },
+        originalName: { type: String, required: true },
+        mimeType: { type: String, required: true },
+        size: { type: Number, required: true },
+        url: { type: String, required: true },
+        _id: { type: String, required: true },
+        uploadedAt: { type: Date, required: true, default: () => Date.now() },
       }],
       required: false,
       default: () => [],

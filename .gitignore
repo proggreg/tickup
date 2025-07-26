@@ -109,3 +109,6 @@ sw.*
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Uploaded files
+public/uploads/

@@ -21,6 +21,15 @@ declare global {
       status: string
       _id: string
     }[]
+    attachments?: {
+      filename: string
+      originalName: string
+      mimeType: string
+      size: number
+      url: string
+      _id: string
+      uploadedAt: Date
+    }[]
     notificationDateTime?: string | Date
     notificationSent?: boolean
   }
