@@ -7,6 +7,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+*.png
 .vscode
 
 # Runtime data
@@ -110,4 +111,5 @@ sw.*
 /blob-report/
 /playwright/.cache/
 
+/playwright/.auth
 # Uploaded files are now stored in MongoDB
