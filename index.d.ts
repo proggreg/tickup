@@ -1,6 +1,10 @@
 export { Todo, Status, List }
 import {ObjectID} from 'mongodb'
 declare global {
+
+  type ViewType = 'list' | 'board'
+  type ListType = 'simple' | 'table'
+
   interface Todo {
     userId?: string
     name: string
@@ -48,15 +52,17 @@ declare global {
     todos: Todo[]
     _id?: string
     image?: string
-    listType: string
+    listType: ListType
     icon: string
   }
+
+  
 
   interface Settings {
     statuses: Status[]
   }
 
-  type View = 'list' | 'board'
+  
 
   export interface PwaInjection {
     /**
