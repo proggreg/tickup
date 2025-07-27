@@ -50,8 +50,8 @@ export default {
         rounded: 'lg',
       },
       VSelect: {
-        rounded: 'xl',
-        hideDetails: true,
+        rounded: 'lg',
+        hideDetails: true
       },
     },
     theme: {

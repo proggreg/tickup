@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import { ListSimple } from '#components'
+
 const route = useRoute()
 const listsStore = useListsStore()
-const tabs = ref<View[]>(['board', 'list'])
-const currentTab = ref<View>('board')
+const tabs = ref<ViewType[]>(['board', 'list'])
+const currentTab = ref<ViewType>('list')
 const on = useToolbar()
 const saveTodo = ref(false)
 const dialog = useDialog()
 const { data: user } = useAuth()
 
 onBeforeMount(async () => {
+  console.log('on before mount')
   if (user?.value?.user._id) {
     await listsStore.getLists(user?.value?.user._id)
   }
@@ -29,7 +32,7 @@ if (listsStore.currentList) {
   })
 }
 
-watch(listsStore.currentList.todos, (todos) => {
+watch(listsStore.currentList.todos, (todos: Todo[]) => {
   if (!todos) return
   on.value = todos.filter((todo: Todo) => todo.selected).length > 0
 })
@@ -53,7 +56,19 @@ watch(listsStore.currentList.todos, (todos) => {
           <Board />
         </v-window-item>
         <v-window-item value="list" class="fill-height">
-          <ListTable />
+          <v-container>
+          <v-row>
+            <v-col>
+              <TodoNew />
+            </v-col>
+            <v-col cols="2">
+              <ListType />
+            </v-col>  
+          </v-row>
+        </v-container>
+          
+          <ListTable v-if="listsStore.currentList.listType === 'table'"  />
+          <ListSimple v-else />
         </v-window-item>
       </v-window>
 

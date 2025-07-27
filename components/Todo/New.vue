@@ -42,3 +42,9 @@ async function addTodo() {
     </template>
   </v-text-field>
 </template>
+
+<style>
+  input {
+    height: 100%;
+  }
+</style>

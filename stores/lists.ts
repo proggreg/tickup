@@ -6,19 +6,11 @@ interface listsState {
   todos?: Todo[]
   todaysTodos: Todo[]
   overdueTodos: Todo[]
-  view: View
+  view: ViewType
   newTodo: Todo
 }
 
-const newListDefaults: List = {
-  name: '',
-  todos: [],
-  _id: '',
-  image: '',
-  listType: '',
-}
-
-const newTodoState = {
+const newTodoState: Todo = {
   name: '',
   status: 'Open',
   desc: '',
@@ -28,11 +20,14 @@ const newTodoState = {
   attachments: [],
 }
 
-const newListState = {
+const newListState: List = {
   name: '',
   todos: [],
   icon: 'mdi-format-list-bulleted',
+  listType: 'simple',
+
 }
+
 export const useListsStore = defineStore('lists', {
   state: (): listsState => ({
     newTodo: newTodoState,
@@ -64,27 +59,17 @@ export const useListsStore = defineStore('lists', {
       }
     },
     async updateList(listToUpdate?: List) {
-      console.time('updateList')
 
       if (!listToUpdate) {
         listToUpdate = this.currentList
       }
 
-      if (!listToUpdate || !listToUpdate.name) return
+      if (!listToUpdate || !listToUpdate.name || !listToUpdate._id) return
 
-      const updatedList = await $fetch<List>(`/api/list/${listToUpdate._id}`, {
+      await $fetch<List>(`/api/list/${listToUpdate._id}`, {
         method: 'PUT',
         body: listToUpdate,
       })
-
-      this.setLists(
-        this.lists.map((l: List) => (l._id === updatedList._id ? updatedList : l)),
-      )
-      // Optionally update currentList if it was the one updated
-      if (this.currentList && this.currentList._id === updatedList._id) {
-        this.currentList = updatedList
-      }
-      console.timeEnd('updateList')
     },
     setLists(lists: Array<List>) {
       this.lists = lists
@@ -95,8 +80,7 @@ export const useListsStore = defineStore('lists', {
       }
 
       try {
-        console.log(`delete list ${listId}`)
-        this.lists = this.lists.filter(list => list._id !== listId)
+        this.lists = this.lists.filter((list: List) => list._id !== listId)
         const data = await $fetch<List>(`/api/list/${listId}`, {
           method: 'DELETE',
         })
@@ -190,11 +174,11 @@ export const useListsStore = defineStore('lists', {
       await $fetch(`/api/todo/${id}`, { method: 'DELETE' })
 
       this.currentList.todos = this.currentList.todos.filter(
-        todo => todo._id !== id,
+        (todo: Todo) => todo._id !== id,
       )
 
       if (this.todaysTodos.length) {
-        this.todaysTodos = this.todaysTodos.filter(todo => todo._id !== id)
+        this.todaysTodos = this.todaysTodos.filter((todo: Todo) => todo._id !== id)
       }
     },
     async getTodo(id: string) {
@@ -215,10 +199,6 @@ export const useListsStore = defineStore('lists', {
         this.todos = data.value
       }
     },
-
-    // =====================
-    // 3. Current State Setters
-    // =====================
     setCurrentList(list: List) {
       console.log('set current list', list)
       if (list) {

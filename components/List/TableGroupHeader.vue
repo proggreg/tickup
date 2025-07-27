@@ -12,11 +12,7 @@ const { statuses } = useSettingsStore()
 const headerColumns = ref(columns)
 const { mdAndUp } = useDisplay()
 
-// Log when component mounts
 onMounted(() => {
-  console.log('TableGroupHeader mounted for group:', groupItem)
-  console.log('Is group open?', isGroupOpen(groupItem))
-  console.log('expanded', expanded)
   if (!isGroupOpen(groupItem) && groupItem.key === 'status' && groupItem.value === 'Open') {
     console.log('Group is open:', groupItem)
     toggleGroup(groupItem)
@@ -25,7 +21,7 @@ onMounted(() => {
 
 // TODO fix exapanded keep state
 function getStatusColor(todoStatus: string) {
-  const status = statuses.filter(status => status.name === todoStatus)
+  const status = statuses.filter((status: Status) => status.name === todoStatus)
   if (status.length > 0) {
     return status[0].color
   }

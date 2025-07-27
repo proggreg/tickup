@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { onMounted, nextTick, watch } from 'vue'
 
 const settingsStore = useSettingsStore()
 const listsStore = useListsStore()
@@ -83,9 +82,6 @@ const group = ref([
         </template>
       </template>
       <template v-else>
-        <div class="pa-4">
-          <TodoNew :save-todo="false" />
-        </div>
         <AppEmptyState />
       </template>
     </template>
@@ -94,7 +90,7 @@ const group = ref([
 </template>
 
 <style scoped>
-.table-header {
-  padding: 0 !important;
-}
+  .table-header {
+    padding: 0 !important;
+  }
 </style>
