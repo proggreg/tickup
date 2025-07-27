@@ -37,12 +37,11 @@ const closedTodos = computed(() => {
     variant="flat"
   >
     <v-list :opened="opened" variant="plain">
-      <v-list-group value="Open">
+      <v-list-group value="Open" fluid>
         <template #activator="{ props }">
           <v-list-item
             v-bind="props"
-            prepend-icon="mdi mdi-border-all-variant"
-            title="Open"
+            :title="`Open (${openTodos.length})`"
           />
         </template>
 
@@ -55,7 +54,7 @@ const closedTodos = computed(() => {
           <template #prepend>
             <v-checkbox @click.stop="setClosed(todo)" />
           </template>
-          <v-list-item-title class="text-h6">
+          <v-list-item-title>
             {{ todo.name }}
           </v-list-item-title>
 
@@ -69,12 +68,11 @@ const closedTodos = computed(() => {
         </v-list-item>
       </v-list-group>
 
-      <v-list-group value="Closed">
+      <v-list-group value="Closed" fluid>
         <template #activator="{ props }">
           <v-list-item
             v-bind="props"
-            prepend-icon="mdi mdi-check-all"
-            title="Closed"
+            :title="`Closed (${closedTodos.length})`"
           />
         </template>
 
@@ -87,7 +85,7 @@ const closedTodos = computed(() => {
           <template #prepend>
             <v-checkbox :model-value="true" @click.stop="setOpen(todo)" />
           </template>
-          <v-list-item-title class="text-h6">
+          <v-list-item-title>
             {{ todo.name }}
           </v-list-item-title>
 
