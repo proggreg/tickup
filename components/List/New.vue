@@ -35,7 +35,7 @@ async function createNewList() {
         @keyup.enter="createNewList"
       >
         <template #append>
-          <div style="min-width: 150px">
+          <div v-if="!smAndDown" style="min-width: 150px">
             <ListType />
           </div>
         </template>
