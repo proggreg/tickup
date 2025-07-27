@@ -1,6 +1,15 @@
 export default {
   vuetifyOptions: {
     labComponents: false,
+    icons: {
+      defaultSet: 'mdi',
+      sets: [
+        {
+          name: 'mdi',
+          component: 'VIcon',
+        },
+      ],
+    },
     defaults: {
       VAppBar: {
         elevation: 0,
@@ -9,37 +18,36 @@ export default {
         elevation: 10,
         width: 300,
         class: 'pa-4',
-        rounded: 'xl',
       },
       VBtn: {
-        rounded: 'xl',
+        rounded: 'lg',
         elevation: 0,
+        variant: 'plain',
+        ripple: false,
       },
       VTextField: {
-        rounded: 'xl',
+        rounded: 'lg',
         variant: 'outlined',
         density: 'compact',
         hideDetails: 'auto',
       },
       VCheckbox: {
-        rounded: 'xl',
+        rounded: 'lg',
         hideDetails: 'auto',
       },
       VTextarea: {
-        rounded: 'xl',
+        rounded: 'lg',
         variant: 'outlined',
       },
-      VListItem: {
-        rounded: 'xl',
-      },
       VMenu: {
-        rounded: 'xl',
+        // rounded: 'lg',
       },
       VCard: {
-        rounded: 'xl',
+        rounded: 'lg',
+        ripple: false,
       },
       VFab: {
-        rounded: 'circle',
+        rounded: 'lg',
       },
       VSelect: {
         rounded: 'xl',
@@ -55,7 +63,13 @@ export default {
         },
         dark: {
           colors: {
+            primary: '#FFFFFF',
             secondary: '#000000',
+            surface: '#000000',
+            background: '#000000',
+            'surface-variant': '#1E1E1E',
+            'on-surface': '#FFFFFF',
+            'on-background': '#FFFFFF',
           },
         },
       },

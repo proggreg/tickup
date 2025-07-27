@@ -1,17 +1,20 @@
+import { defineNuxtConfig } from 'nuxt/config'
 import vuetifyOptions from './config/vuetify'
 
 export default defineNuxtConfig({
   modules: [
+    '@vite-pwa/nuxt',
     'vuetify-nuxt-module',
     '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
     '@vueuse/nuxt',
     'nuxt-mongoose',
-    'nuxt-bugsnag',
     '@sidebase/nuxt-auth',
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
     '@nuxtjs/device',
-    '@vite-pwa/nuxt',
+    '@nuxt/test-utils/module'
+
   ],
 
   experimental: {
@@ -47,21 +50,22 @@ export default defineNuxtConfig({
     storesDirs: ['./stores/**'],
   },
 
+  //@ts-ignore TODO fix
   vuetify: vuetifyOptions,
 
   typescript: {
     strict: true,
   },
 
-  bugsnag: {
-    baseUrl: process.env.NUXT_ENV_VERCEL_URL || 'http://localhost:3000',
-    publishRelease: true,
-    config: {
-      apiKey: process.env.BUGSNAG_API_KEY,
-      enabledReleaseStages: ['development', 'staging', 'production'],
-      releaseStage: process.env.NODE_ENV,
-    },
-  },
+  // bugsnag: {
+  //   baseUrl: process.env.NUXT_ENV_VERCEL_URL || 'http://localhost:3000',
+  //   publishRelease: true,
+  //   config: {
+  //     apiKey: process.env.BUGSNAG_API_KEY,
+  //     enabledReleaseStages: ['development', 'staging', 'production'],
+  //     releaseStage: process.env.NODE_ENV,
+  //   },
+  // },
 
   devtools: {
     enabled: true,
@@ -80,13 +84,16 @@ export default defineNuxtConfig({
     github: {
       clientId: process.env.NUXT_GITHUB_CLIENT_ID,
       clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET,
+      personal: process.env.NUXT_GITHUB_PERSONAL_ACCESS_TOKEN,
+    },
+    private: {  
+      vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
     },
     public: {
-      github: process.env.NUXT_GITHUB_PERSONAL_ACCESS_TOKEN,
-
       hotjarId: process.env.HOTJAR_ID,
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
+      VAPID_KEY: process.env.VAPID_PUBLIC_KEY,
     },
   },
 
@@ -106,9 +113,6 @@ export default defineNuxtConfig({
   },
 
   pwa: {
-    strategies: 'generateSW',
-    srcDir: undefined,
-    filename: undefined,
     registerType: 'autoUpdate',
     manifest: {
       name: 'Tickup',
@@ -136,21 +140,24 @@ export default defineNuxtConfig({
     workbox: {
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
     },
-    injectManifest: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-    },
     client: {
       installPrompt: true,
-      // you don't need to include this: only for testing purposes
-      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
-      periodicSyncForUpdates: 20,
     },
     devOptions: {
       enabled: true,
-      suppressWarnings: true,
+      suppressWarnings: false,
       navigateFallback: '/',
       navigateFallbackAllowlist: [/^\/$/],
       type: 'module',
+    },
+    // add this to handle sw within the app
+    srcDir: 'service-worker',
+    filename: 'sw.ts',
+    // add this to handle push notifications
+    strategies: 'injectManifest',
+    injectManifest: {
+      injectionPoint: undefined,
+       rollupFormat: 'iife'
     },
   },
 

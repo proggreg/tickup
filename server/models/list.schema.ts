@@ -22,8 +22,11 @@ export const ListSchema = defineMongooseModel({
     name: {
       type: Schema.Types.String,
       required: true,
-    } as SchemaDefinitionProperty<string>,
-
+      validate: {
+        validator: v => v.trim() !== '',
+        message: 'Name cannot be empty',
+      },
+    },
     descriptions: {
       type: Schema.Types.String,
       required: false,

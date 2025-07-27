@@ -1,16 +1,27 @@
 <script setup lang="ts">
-const { groupItem, isGroupOpen, columns, toggleGroup, sortBy, toggleSort, expanded } = defineProps(
-  {
-    groupItem: { type: Object, required: true },
-    isGroupOpen: { type: Function, required: true },
-    columns: { type: Array, required: true },
-    toggleGroup: { type: Function, required: true },
-    sortBy: { type: Array, required: true },
-    toggleSort: { type: Function, required: true },
-    expanded: { type: Array, required: true },
-  })
+const { groupItem, isGroupOpen, columns, toggleGroup, sortBy, toggleSort, expanded } = defineProps<{
+  groupItem: any // Using any for now since Vuetify's internal types are complex
+  isGroupOpen: (item: any) => boolean
+  columns: any[] // Using any[] since Vuetify's internal header type is complex
+  toggleGroup: (item: any) => void
+  sortBy: any[] // Using any[] since Vuetify's internal sort type is complex
+  toggleSort: (column: any) => void
+  expanded: string[]
+}>()
 const { statuses } = useSettingsStore()
 const headerColumns = ref(columns)
+const { mdAndUp } = useDisplay()
+
+// Log when component mounts
+onMounted(() => {
+  console.log('TableGroupHeader mounted for group:', groupItem)
+  console.log('Is group open?', isGroupOpen(groupItem))
+  console.log('expanded', expanded)
+  if (!isGroupOpen(groupItem) && groupItem.key === 'status' && groupItem.value === 'Open') {
+    console.log('Group is open:', groupItem)
+    toggleGroup(groupItem)
+  }
+})
 
 // TODO fix exapanded keep state
 function getStatusColor(todoStatus: string) {
@@ -38,19 +49,21 @@ function isSortedIndex(sortBy: { key: string, order: string }[], column: { key: 
   <tr v-if="groupItem.key === 'status'">
     <th :colspan="2">
       <v-btn
-        class="mr-4" style="font-size: 1.2rem" variant="plain" :icon="isGroupOpen(groupItem) ? '$expand' : '$next'"
+        class="mr-4" style="font-size: 1.4rem" variant="text" :icon="isGroupOpen(groupItem) ? '$expand' : '$next'"
+        size="x-small"
         @click="toggleGroup(groupItem)"
       />
       <v-btn
         size="x-small" :color="getStatusColor(groupItem.value)" variant="tonal" :text="groupItem.value"
+        style="font-size: 1rem"
         @click="toggleGroup(groupItem)"
       />
     </th>
     <th colspan="8" />
   </tr>
   <template v-if="isGroupOpen(groupItem)">
-    <tr>
-      <th colspan="1">
+    <tr v-if="mdAndUp">
+      <th colspan="1" class="text-h6">
         Status
       </th>
 
@@ -66,7 +79,7 @@ function isSortedIndex(sortBy: { key: string, order: string }[], column: { key: 
         >
           <template #default="{ isHovering, props }">
             <th
-              :style="isHovering ? 'cursor: pointer' : ''" v-bind="props" colspan="1" class="table-header"
+              :style="isHovering ? 'cursor: pointer' : ''" v-bind="props" colspan="1" class="table-header text-h6"
               @click="toggleSort(column)"
             >
               <div style="display: flex;">

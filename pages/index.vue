@@ -15,16 +15,27 @@ const tab = ref('1')
 const saveTodo = ref(false)
 const dialog = useDialog()
 
-listsStore.setCurrentListName('')
-
 if (!loggedIn.value) {
   navigateTo('/login')
 }
 
+watch(tab as any, (newTab) => {
+  const sub = data?.value?.user?.sub
+
+  if (!sub) return
+
+  if (newTab === '1') {
+    listsStore.getTodaysTodos(sub)
+  }
+ else if (newTab === '0') {
+    listsStore.getOverdueTodos(sub)
+  }
+})
+
 onBeforeMount(() => {
-  const userId = data?.value?.user?.sub
-  if (userId) {
-    listsStore.getTodaysTodos(userId)
+  const sub = data?.value?.user?.sub
+  if (sub) {
+    listsStore.getTodaysTodos(sub)
   }
 })
 
@@ -70,7 +81,7 @@ function setOpen(todo: Todo) {
     </v-tabs>
     <v-window
       v-model="tab"
-      class="fill-height"
+      class="fill-height px-4"
     >
       <v-window-item
         value="overdue"
@@ -82,8 +93,8 @@ function setOpen(todo: Todo) {
         value="todo"
         class="fill-height"
       >
-        <div class="ma-4">
-          <TodoNew :save-todo="saveTodo" @add-todo="dialog = false; saveTodo = false" />
+        <div class="mb-4">
+          <TodoNew :save-todo="saveTodo" @add-todo="dialog.open = false; saveTodo = false" />
         </div>
         <HomePageToday />
       </v-window-item>
@@ -132,8 +143,8 @@ function setOpen(todo: Todo) {
       title="New Todo"
       page="todo"
     >
-      <TodoNew :save-todo="saveTodo" @add-todo="dialog = false; saveTodo = false" />
-      <TodoNew :save-todo="saveTodo" @add-todo="dialog = false; saveTodo = false" />
+      <TodoNew :save-todo="saveTodo" @add-todo="dialog.open = false; saveTodo = false" />
+      
       <template #buttons>
         <v-btn
           color="primary"

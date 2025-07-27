@@ -1,5 +1,5 @@
 <template>
-  <v-bottom-navigation grow>
+  <v-bottom-navigation grow app>
     <v-btn to="/" value="home">
       <v-icon>mdi-home</v-icon>
       <span>Home</span>

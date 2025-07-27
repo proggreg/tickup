@@ -2,9 +2,12 @@
 definePageMeta({
   layout: 'settings',
 })
+const { data, signOut } = useAuth()
 const store = useSettingsStore()
+const config = useRuntimeConfig()
+
 await useAsyncData(() => store.getUserSettings().then(() => true))
-const { data } = useAuth()
+
 const options = reactive([{
   name: 'Rename',
   handler: renameStatus,
@@ -53,7 +56,7 @@ async function save() {
     }
   }
 
-  const response = await $fetch('/api/settings', {
+  await $fetch('/api/settings', {
     method: 'PUT',
     body: { userId: data.value?.user?.sub, statuses: store.statuses },
   })
@@ -70,6 +73,52 @@ function deleteStatus(status: Status) {
 function cancel() {
   console.debug('cancel')
 }
+
+// const useRegisterSW = await import('virtual:pwa-register')
+// const { registerSW } = useRegisterSW({
+//   onRegistered(r) {
+//     r && setInterval(() => {
+//       r.update()
+//     }, 60 * 60 * 1000)
+//   }
+// })
+
+onMounted(() => {
+  const subscribePush = async () => {
+    if (!('serviceWorker' in navigator)) {
+      console.warn('Service workers are not supported by this browser')
+      return
+    }
+
+    const sw = await navigator.serviceWorker.ready
+    try {
+      // Check for existing subscription
+      const existingSubscription = await sw.pushManager.getSubscription()
+      if (existingSubscription) {
+        // Unsubscribe if it exists
+        await existingSubscription.unsubscribe()
+      }
+
+      // Now subscribe with the new key
+      const pushSubscription = await sw.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: config.public.VAPID_KEY,
+      })
+      console.log('pushSubscription', pushSubscription)
+
+      // Send pushSubscription to server
+      await $fetch('/api/subscribe', {
+        method: 'POST',
+        body: { subscription: pushSubscription },
+      })
+    }
+    catch (error) {
+      console.error('Could not subscribe to push', error)
+    }
+  }
+
+  subscribePush()
+})
 </script>
 
 <template>
@@ -78,10 +127,7 @@ function cancel() {
       <h2 class="text-center">Settings</h2>
       <v-card variant="flat" class="pa-4">
         <v-list variant="tonal">
-          <v-list-item
-            v-for="status in store.statuses" :key="status.name" class="my-2"
-            :base-color="status.color"
-          >
+          <v-list-item v-for="status in store.statuses" :key="status.name" class="my-2" :base-color="status.color">
             <template #prepend>
               <v-menu :close-on-content-click="false">
                 <template #activator="{ props }">
@@ -100,11 +146,9 @@ function cancel() {
                   <v-btn class="pa-0" v-bind="props" icon="mdi-dots-horizontal" variant="text" />
                 </template>
                 <v-list class="px-2">
-                  <v-list-item
-                    v-for="(option, index) in options" :key="index" :value="option.name"
+                  <v-list-item v-for="(option, index) in options" :key="index" :value="option.name"
                     :append-icon="option.icon" :class="option.destructive ? 'text-red' : ''"
-                    @click.passive="option.handler(status)"
-                  >
+                    @click.passive="option.handler(status)">
                     <v-list-item-title class="text-body-2">
                       {{ option.name }}
                     </v-list-item-title>
@@ -119,11 +163,14 @@ function cancel() {
             </v-btn>
           </v-list-item>
         </v-list>
-        <v-btn block color="secondary" @click="cancel">
+        <v-btn color="secondary" @click="cancel">
           Cancel
         </v-btn>
-        <v-btn block color="primary" @click="save">
+        <v-btn color="primary" @click="save">
           Save
+        </v-btn>
+        <v-btn class="text-body-2 py-0 ma-2" append-icon="mdi-logout" @click="signOut()">
+          Sign Out
         </v-btn>
       </v-card>
     </v-col>

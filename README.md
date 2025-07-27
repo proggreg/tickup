@@ -7,7 +7,9 @@ Tickup has been inspired by Clickup and Ticktick but aims to be a simpler and ea
 
 Built with Nuxt 3, Vuetify and MongoDB. 
 
-## Setup
+[![Playwright Tests](https://github.com/proggreg/tickup/actions/workflows/playwright.yml/badge.svg?branch=main)](https://github.com/proggreg/tickup/actions/workflows/playwright.yml)
+
+## Setup 
 
 Make sure to install the dependencies:
 

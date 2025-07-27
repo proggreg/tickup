@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import { UserSchema } from '../../models/users.schema'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -13,6 +14,15 @@ export default defineEventHandler(async (event) => {
     return 'username taken'
   }
 
+  // If pushSubscription is provided, add it to the user's pushSubscriptions
+  if (body.pushSubscription && body.username) {
+    return await UserSchema.findOneAndUpdate(
+      { username: body.username },
+      { $addToSet: { pushSubscriptions: body.pushSubscription } },
+      { new: true, upsert: true }
+    )
+  }
+
   const saltRounds = 6
   const salt = bcrypt.genSaltSync(saltRounds)
   const hash = bcrypt.hashSync(body.password, salt)
@@ -20,5 +30,13 @@ export default defineEventHandler(async (event) => {
 
   const newUser = await new UserSchema(body).save()
 
-  return newUser
+  // Return a plain object instead of Mongoose document
+  return {
+    _id: newUser._id.toString(),
+    username: newUser.username,
+    email: newUser.email,
+    password: newUser.password, // This should be the hashed password
+    settings: newUser.settings,
+    hasGithub: newUser.hasGithub
+  }
 })

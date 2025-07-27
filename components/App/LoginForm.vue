@@ -42,7 +42,6 @@ const loginUser = async () => {
   <v-form ref="loginForm" style="max-width: 400px" class="flex-1 mx-auto" validate-on="input lazy" @submit.prevent="loginUser">
     <v-text-field
       v-model="username" label="Username" :hide-details="false" :rules="userNameRules" required
-      class="error"
     />
 
     <v-text-field

@@ -28,14 +28,21 @@ function deleteList() {
 <template>
   <v-app-bar v-if="!smAndDown" extension-height="0">
     <template #prepend>
+      <v-img class="pa-6" src="/android-chrome-512x512.png" width="40" style="border-radius: 50%" />
+
       <template v-if="loggedIn">
-        <v-btn v-if="smAndDown" size="small" style="padding: 0;" elevation="0" @click="open = !open">
-          <v-icon class="text-h4" size="x-large">
-            mdi-menu
-          </v-icon>
-        </v-btn>
-        <AppMenu v-else />
+        <div class="ml-6" style="display: flex; justify-content: space-between;">
+          <v-btn v-if="smAndDown" size="small" style="padding: 0;" elevation="0" @click="open = !open">
+            <v-icon class="text-h4" size="x-large">
+              mdi-menu
+            </v-icon>
+          </v-btn>
+          <v-btn variant="plain" icon="mdi-home" to="/" />
+          <v-btn variant="plain" icon="mdi-cog" to="/settings" />
+          <v-btn variant="plain" icon="mdi-plus" data-testid="new-list-button" @click="dialog.page = 'list';dialog.open = true;" />
+        </div>
       </template>
+
       <template v-else>
         <v-img src="/android-chrome-512x512.png" width="50" style="border-radius: 50%" />
       </template>
@@ -51,34 +58,22 @@ function deleteList() {
     </template>
   </v-app-bar>
 
-  <v-navigation-drawer v-if="loggedIn" v-model="open" class="pa-2 font-weight-bold" :permanent="!smAndDown">
+  <v-navigation-drawer v-if="loggedIn" v-model="open" style="max-height: 100vh; overflow-y: hidden !important;" disable-resize-watcher class="font-weight-bold" :permanent="!smAndDown" height="100vh">
     <v-list nav>
-      <v-spacer />
-      <v-list-item>
-        <template #prepend>
-          Home
-        </template>
-        <template #append>
-          <v-btn icon="mdi-home" to="/" />
-        </template>
-      </v-list-item>
-      <v-list-item>
-        <div class="d-flex justify-space-between">
-          Lists
-        </div>
-        <template #prepend>
-          <ListNew :open="dialog" @close="dialog.open = false" />
-        </template>
-        <template #append>
-          <v-btn icon="mdi-plus" @click="dialog.page = 'list';dialog.open = true; console.log('clicked')" />
-        </template>
-      </v-list-item>
+      <!-- <v-spacer /> -->
+      <!-- <v-btn variant="plain" icon="mdi-home" to="/" />
+      <v-btn variant="plain" icon="mdi-plus" @click="dialog.page = 'list';dialog.open = true;" /> -->
+      <ListNew :open="dialog" @close="dialog.open = false" />
+      <!-- <v-list-item to="/" class="text-h5 text-sm-h6 text-capitalize  nav-item-title" prepend-icon="mdi-home" />
+      <v-list-item prepend-icon="mdi-plus" class="text-h5 text-sm-h6 text-capitalize  nav-item-title" @click="dialog.page = 'list';dialog.open = true;">
+        <ListNew :open="dialog" @close="dialog.open = false" />
+      </v-list-item> -->
+      <!-- <v-divider class="mb-1" /> -->
+      <AppNavItems @open="openContextMenu" />
     </v-list>
-    <v-divider />
-    <AppNavItems @open="openContextMenu" />
 
     <v-menu v-if="menuTarget" v-model="contextMenuOpen" :target="menuTarget" location-strategy="connected">
-      <v-list>
+      <v-list nav>
         <v-list-item>
           <v-btn variant="text" color="red" icon="mdi-trash-can" @click="deleteList" />
         </v-list-item>
@@ -95,3 +90,22 @@ function deleteList() {
     </template>
   </v-navigation-drawer>
 </template>
+
+<style scoped>
+.nav-item-title {
+  text-transform: capitalize !important;
+  font-weight: bold;
+  @media (min-width: 600px) {
+    font-size: 1rem !important;
+   }
+}
+
+:deep(.v-navigation-drawer__content) {
+  overflow-y: hidden !important;
+}
+
+:deep(.v-list-item-title) {
+  text-transform: capitalize !important;
+  font-weight: bold;
+}
+</style>

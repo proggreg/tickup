@@ -6,8 +6,9 @@ import {
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    console.log('generate image', body)
-    const prompt = body.prompt
+    console.log('generate image prompt', body.prompt)
+
+    const prompt = 'this a banner image for a todo list named' + body.prompt
     const client = new BedrockRuntimeClient({
       region: 'us-east-1',
     })
@@ -17,13 +18,12 @@ export default defineEventHandler(async (event) => {
       contentType: 'application/json',
       accept: 'application/json',
       body: JSON.stringify({
-        text_prompts: [{ text: prompt }],
-        width: 1024,
-        height: 256,
-        steps: 50,
-        seed: 10,
-        cfg_scale: 10,
-        style_preset: 'photographic',
+        text_prompts: [{ text: prompt, weight: 1 }, { text: 'remove text', weight: -1 }],
+        width: 1536,
+        height: 640,
+        steps: 10,
+        seed: 0,
+        cfg_scale: 30,
       }),
     })
 

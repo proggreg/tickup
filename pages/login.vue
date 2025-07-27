@@ -5,6 +5,7 @@ definePageMeta({
     navigateAuthenticatedTo: '/',
   },
 })
+useHead({ title: 'TickUp - Login' })
 </script>
 
 <template>

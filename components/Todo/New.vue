@@ -2,8 +2,7 @@
 const listsStore = useListsStore()
 const { data } = useAuth()
 const route = useRoute()
-const emit = defineEmits(['addTodo'])
-const { saveTodo } = defineProps<{ saveTodo: boolean }>()
+const emit = defineEmits(['save-todo'])
 
 async function addTodo() {
   if (!route.params.id) {
@@ -24,17 +23,10 @@ async function addTodo() {
     if (!route.params.id) {
       await listsStore.getTodaysTodos(data.value?.user.id || data.value?.user.sub || '')
     }
-    listsStore.newTodo.name = ''
-    listsStore.newTodo.dueDate = undefined
-    emit('addTodo')
+    listsStore.newReset()
+    emit('save-todo')
   }
 }
-
-watch(() => saveTodo, (newVal) => {
-  if (newVal) {
-    addTodo()
-  }
-})
 </script>
 
 <template>

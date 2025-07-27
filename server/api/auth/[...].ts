@@ -30,13 +30,22 @@ export default NuxtAuthHandler({
 
           if (credentials.password && user.password
             && bcrypt.compareSync(credentials.password, user.password)) {
-            return user
+            // Return a properly formatted user object for NextAuth.js
+            return {
+              id: user._id.toString(),
+              name: user.username,
+              email: user.email || `${user.username}@example.com`,
+              username: user.username,
+              _id: user._id.toString(),
+              sub: user._id.toString(),
+            }
           }
 
           return false
         }
         catch (error) {
           console.error(error)
+          return false
         }
       },
     }),
@@ -52,11 +61,17 @@ export default NuxtAuthHandler({
   },
 
   callbacks: {
-    async redirect({ url, baseUrl }) {
+    async redirect({ url }) {
       return url
     },
 
-    async jwt({ token }) {
+    async jwt({ token, user }) {
+      if (user) {
+        // When signing in, add user info to token
+        token.sub = user.id
+        token.username = user.username
+        token._id = user._id
+      }
       return token
     },
 

@@ -1,17 +1,15 @@
 <script setup lang="ts">
-const { smAndDown } = useDisplay()
 const store = useListsStore()
 const editListName = ref('')
 const emit = defineEmits(['open'])
+const { isMobile } = useDevice()
 
 function renameList(list: List) {
-  console.log('renameList', list)
   store.updateList(list)
   editListName.value = ''
 }
 
 function rename(list: List) {
-  console.log('rename', list)
   if (store.currentList._id === list._id) {
     store.currentList = list
   }
@@ -23,22 +21,58 @@ function openContextMenu(el: MouseEvent, list: List) {
 </script>
 
 <template>
-  <v-hover v-for="list in store.lists" :key="list._id">
-    <template #default="{ isHovering, props }">
-      <v-list-item
-        v-bind="props" :key="list._id" :variant="isHovering || smAndDown ? 'tonal' : 'text'" class="my-2 font-weight-bold"
-        style="cursor: pointer;" :to="`/list/${list._id}`"
-        @click.right.prevent="(el: any) => openContextMenu(el, list)"
-      >
-        <v-text-field
-          v-if="editListName === list._id" v-model="list.name" class="font-weight-bold text-body-2"
-          autofocus variant="plain" @input.stop="() => rename(list)" @keyup.enter="renameList(list)"
-          @blur="renameList(list)"
-        />
-        <v-list-item-title v-else class="font-weight-bold text-body-2 text-capitalize">
-          {{ list.name }}
-        </v-list-item-title>
-      </v-list-item>
+  <v-virtual-scroll
+    :item-size="1"
+    :items="store.lists"
+    class="pa-0 nav-items-scroll"
+    height="100%"
+  >
+    <template #default="{ item }">
+      <v-hover>
+        <template #default="{ props }">
+          <v-list-item
+            v-bind="props" :key="item._id"
+            class=""
+            style="cursor: pointer;"
+            @click.stop="() => $router.push(`/list/${item._id}`)"
+
+            @click.right.prevent="(el: any) => openContextMenu(el, item)"
+          >
+            <v-text-field
+              v-if="editListName === item._id" v-model="item.name" class="font-weight-bold "
+              autofocus variant="plain" @input.stop="() => rename(item)" @keyup.enter="renameList(item)"
+              @blur="renameList(item)"
+            />
+            <v-list-item-title v-else>
+              <span class="">{{ item.name }}</span>
+            </v-list-item-title>
+            <template #prepend>
+              <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
+              <v-icon v-else>mdi-format-list-bulleted</v-icon>
+            </template>
+            <template #append>
+              <list-settings-button :list-id="item._id" />
+            </template>
+          </v-list-item>
+          <v-divider v-if="isMobile" />
+        </template>
+      </v-hover>
     </template>
-  </v-hover>
+  </v-virtual-scroll>
 </template>
+
+<style scoped>
+.nav-items-scroll {
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.nav-item-title {
+  text-transform: capitalize !important;
+  font-weight: bold;
+  @media (min-width: 600px) {
+    font-size: 1rem !important;
+   }
+}
+</style>

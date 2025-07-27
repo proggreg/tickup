@@ -25,3 +25,7 @@ export const useSearchStore = defineStore('search', () => {
 
   return { results, search, debouncedSearch, searchQuery }
 })
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useSearchStore, import.meta.hot))
+}
