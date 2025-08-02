@@ -1,5 +1,5 @@
 import { defineNuxtConfig } from 'nuxt/config'
-import vuetifyOptions from './config/vuetify'
+import vuetify from './config/vuetify'
 
 export default defineNuxtConfig({
   modules: [
@@ -50,8 +50,7 @@ export default defineNuxtConfig({
     storesDirs: ['./stores/**'],
   },
 
-  //@ts-ignore TODO fix
-  vuetify: vuetifyOptions,
+  vuetify: vuetify,
 
   typescript: {
     strict: true,
