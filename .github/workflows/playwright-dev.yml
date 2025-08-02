@@ -1,9 +1,9 @@
 name: Playwright Tests (Dev Server)
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
 
 jobs:
   test:
@@ -63,6 +63,14 @@ jobs:
       run: pnpm exec playwright install --with-deps
       if: steps.playwright-cache.outputs.cache-hit != 'true'
       
+    - name: Create Playwright auth state file
+      env:
+        PLAYWRIGHT_AUTH_STATE_B64: ${{ secrets.PLAYWRIGHT_USER }}
+      run: |
+        echo "Creating storageState.json from secret..."
+        echo "$PLAYWRIGHT_AUTH_STATE_B64" | base64 --decode > user.json
+        echo "user.json created successfully."
+        
     - name: Run Playwright tests
       run: pnpm exec playwright test
       env:
@@ -79,4 +87,4 @@ jobs:
         path: |
           playwright-report/
           test-results/
-        retention-days: 30 
+        retention-days: 30
