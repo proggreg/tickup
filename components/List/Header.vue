@@ -105,10 +105,10 @@ function removeImage() {
 <style scoped>
   .v-text-field :deep(.v-field__input) {
     @media (min-width: 600px) {
-      /* font-size: 2.5rem; */
+      font-size: 2.5rem;
     }
 
-    /* font-size: 2rem; */
+    font-size: 1.75rem;
     text-transform: capitalize;
     font-weight: bold;
   }

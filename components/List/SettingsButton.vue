@@ -24,10 +24,7 @@ function deleteList() {
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
-        size="small"
         variant="plain"
-        color="primary"
-        base-color="transparent"
         icon="mdi-dots-vertical"
       />
     </template>
