@@ -17,6 +17,7 @@
     v-model="store.currentList.listType"
     :items="listTypeOptions"
     single-line
+    min-width="60"
     max-width="150"
     variant="outlined"
     flat

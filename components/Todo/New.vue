@@ -32,7 +32,8 @@ async function addTodo() {
 <template>
   <v-text-field
     v-if="listsStore.currentList" v-model="listsStore.newTodo.name"
-    min-width="300"
+    min-width="150"
+    width="100%"
     :placeholder="'Add todo to ' + listsStore.currentList.name" autofocus @keyup.enter="addTodo"
   >
     <template #append-inner>

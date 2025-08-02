@@ -39,7 +39,8 @@ watch(listsStore.currentList.todos, (todos: Todo[]) => {
 </script>
 
 <template>
-  <v-row class="fill-height" no-gutters>
+  <v-container fluid>
+  <v-row class="fill-height">
     <ListHeader />    
     <v-col v-if="$device.isMobile">
       <v-col>
@@ -51,27 +52,28 @@ watch(listsStore.currentList.todos, (todos: Todo[]) => {
       <v-tabs v-model="currentTab">
         <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
       </v-tabs>
-      <v-window v-model="currentTab" :touch="false" style="height: 100%;">
+      <v-window v-model="currentTab" :touch="false" class="mt-4" style="height: 100%;">
         <v-window-item value="board" class="fill-height">
           <Board />
         </v-window-item>
         <v-window-item value="list" class="fill-height">
-          <v-container>
           <v-row>
-            <v-col>
+            <v-col >
               <TodoNew />
             </v-col>
-            <v-col cols="2">
+            <v-col cols="auto" >
               <ListType />
             </v-col>  
           </v-row>
-        </v-container>
-          
-          <ListTable v-if="listsStore.currentList.listType === 'table'"  />
-          <ListSimple v-else />
+          <v-row>
+            <v-col>
+              <ListTable v-if="listsStore.currentList.listType === 'table'"  />
+              <ListSimple v-else />
+            </v-col>
+          </v-row>
         </v-window-item>
       </v-window>
-
     </v-col>
   </v-row>
+</v-container>
 </template>
