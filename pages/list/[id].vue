@@ -11,7 +11,6 @@ const dialog = useDialog()
 const { data: user } = useAuth()
 
 onBeforeMount(async () => {
-  console.log('on before mount')
   if (user?.value?.user._id) {
     await listsStore.getLists(user?.value?.user._id)
   }
@@ -42,13 +41,7 @@ watch(listsStore.currentList.todos, (todos: Todo[]) => {
   <v-container fluid>
   <v-row class="fill-height">
     <ListHeader />    
-    <v-col v-if="$device.isMobile">
-      <v-col>
-        <ListTable />
-      </v-col>
-    </v-col>
-    <v-col v-else class="fill-height" cols="12">
-
+    <v-col class="fill-height" cols="12">
       <v-tabs v-model="currentTab">
         <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
       </v-tabs>

@@ -66,7 +66,7 @@ function setOpen(todo: Todo) {
 <template>
   <v-col
     cols="12"
-    class="pa-0 fill-height"
+    class="fill-height"
   >
     <v-tabs
       v-model="tab"
