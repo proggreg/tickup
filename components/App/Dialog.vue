@@ -16,7 +16,7 @@ function resetState() {
   <v-dialog
     max-width="500" :model-value="dialog.open && dialog.page === page" transition="dialog-bottom-transition"
     location="top" @update:model-value="dialog.open = false"
-    data-test-id-="dialog"
+    data-testid-="dialog"
     @after-leave="resetState"
   >
     <template #activator>
