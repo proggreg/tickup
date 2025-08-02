@@ -5,12 +5,12 @@ const { listId } = defineProps<{
   listId?: string
 }>()
 function deleteList() {
-    if (listId) {
-        listsStore.deleteList(listId)
-        navigateTo('/')
-    }
-    listsStore.deleteList()
-  console.log('deleteList', listsStore.currentList)
+  if (listId) {
+    listsStore.deleteList(listId)
+    navigateTo('/')
+  }
+
+  listsStore.deleteList()
   let route = '/lists'
   if (!isMobile) {
     route = '/'
