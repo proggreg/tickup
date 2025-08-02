@@ -22,7 +22,6 @@ async function registerUser() {
 const userNameRules = [
   (username: string) => {
     if (username) {
-      console.log('validate username ', username)
       // Length requirements (typically 3-30 characters)
       if (username.length < 3 || username.length > 30) {
         return 'Username must be between 3 and 30 characters'

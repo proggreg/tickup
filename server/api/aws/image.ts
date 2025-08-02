@@ -6,8 +6,6 @@ import {
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    console.log('generate image prompt', body.prompt)
-
     const prompt = 'this a banner image for a todo list named' + body.prompt
     const client = new BedrockRuntimeClient({
       region: 'us-east-1',
@@ -28,9 +26,7 @@ export default defineEventHandler(async (event) => {
     })
 
     const response = await client.send(command)
-    console.log('model response', response)
     const responseBody = JSON.parse(new TextDecoder().decode(response.body))
-    console.log('responseBody', responseBody)
     const base64Image = responseBody.artifacts[0].base64
     return `data:image/png;base64,${base64Image}`
   }

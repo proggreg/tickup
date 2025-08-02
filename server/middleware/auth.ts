@@ -3,9 +3,6 @@ import { getToken, getServerSession } from '#auth'
 export default defineEventHandler(async (event) => {
   if (event.path.startsWith('/api/aws/')) {
     const token = await getToken({ event })
-    const session = await getServerSession(event)
-
-    console.log('session', session)
 
     if (!token) {
       throw createError({

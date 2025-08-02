@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     const response = await TodoSchema.findOneAndUpdate({
       githubBranchName: ref,
     }, { status: 'Closed' }, { new: true })
-    console.log('Updated todo: ' + ref, response)
+
     return response
   }
 
@@ -19,15 +19,13 @@ export default defineEventHandler(async (event) => {
     if (githubEvent === 'push') {
       try {
         const ref = body.ref.split('/').pop()
-        console.log('Received push event:', ref)
         const response = await TodoSchema.findOneAndUpdate({
           githubBranchName: ref,
         }, { status: 'In Progress' }, { new: true })
         if (!response) {
-          useBugsnag().notify(`Todo not found ref: ${ref}`)
+          // useBugsnag().notify(`Todo not found ref: ${ref}`)
           throw Error(`Todo not found ref: ${ref}`)
         }
-        console.log('Updated todo:', response)
       }
       catch (error) {
         console.error('Error:', error)
@@ -40,12 +38,11 @@ export default defineEventHandler(async (event) => {
     }
     else if (githubEvent === 'delete') {
       const ref = body.ref.split('/').pop()
-      console.log('Received delete event:', ref)
+
       try {
-        const response = await TodoSchema.findOneAndUpdate({
+        await TodoSchema.findOneAndUpdate({
           githubBranchName: ref,
         }, { status: 'Closed' }, { new: true })
-        console.log('Set todo to closed:', response)
       }
       catch (error) {
         console.error('Error:', error)

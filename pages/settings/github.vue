@@ -5,8 +5,6 @@ onMounted(() => {
     const url = new URL(window.location.href)
     const code = url.searchParams.get('code')
     if (code) {
-        console.log('code:', code)
-        exchangeCode(code)
     }
 })
 </script>

@@ -12,7 +12,6 @@ function addEventHandler() {
     dialog.value.page = 'todo'
   }
 
-  console.log('addEventHandler', dialog.value.page)
   dialog.value.open = true
 }
 

@@ -47,7 +47,6 @@ async function main() {
           title: 'Todo Reminder',
           message: `Reminder for todo: ${todo.name}`,
         }))
-        console.log('Notification sent for todo', todo._id)
       } catch (e) {
         console.error('Failed to send notification', e)
       }
