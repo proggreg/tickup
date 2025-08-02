@@ -54,7 +54,7 @@ const closedTodos = computed(() => {
           <template #prepend>
             <v-checkbox @click.stop="setClosed(todo)" />
           </template>
-          <v-list-item-title>
+          <v-list-item-title data-testid="todo-title" >
             {{ todo.name }}
           </v-list-item-title>
 

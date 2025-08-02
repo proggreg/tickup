@@ -225,7 +225,6 @@ watch(
       />
     </v-card-item>
 
-    <!-- Subtasks Checklist -->
     <v-card-item class="px-6 pt-0 pb-2">
       <div class="pa-4 rounded-lg">
         <div class="mb-2 text-subtitle-1 font-weight-bold">Subtasks</div>
@@ -270,7 +269,6 @@ watch(
         </div>
       </div>
     </v-card-item>
-    <!-- End Subtasks Checklist -->
 
     <v-card-item class="px-6 pt-0 pb-2">
       <TodoLinks />
@@ -281,12 +279,10 @@ watch(
     </v-card-item>
 
     <v-card-actions class="py-6 px-6 d-flex flex-wrap gap-4 align-center justify-space-between">
-      <!-- Left: Destructive & Integrations -->
       <div class="d-flex align-center gap-2 flex-wrap">
         <AppDeleteButton :todo="listsStore.currentTodo" />
         <AppGithubButton v-if="hasGithub" :todo="listsStore.currentTodo" />
       </div>
-      <!-- Right: Push & Notification Controls -->
       <div class="d-flex align-center gap-2 flex-wrap">
         <v-alert v-if="pushError" type="error" class="mb-0 mr-2" style="min-width: 200px;">{{ pushError }}</v-alert>
         <v-btn v-if="pushSupported && !pushSubscribed" color="primary" @click="subscribeToPush">Subscribe to Push</v-btn>

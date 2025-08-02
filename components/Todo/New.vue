@@ -5,6 +5,7 @@ const route = useRoute()
 const emit = defineEmits(['save-todo'])
 
 async function addTodo() {
+  console.log('add todo')
   if (!route.params.id) {
     listsStore.newTodo.dueDate = new Date()
   }

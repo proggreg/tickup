@@ -31,7 +31,7 @@ async function createNewList() {
         v-model="listsStore.newList.name"
         autofocus
         placeholder="New List"
-        data-testid="new-list-input"
+        data-test-id="new-list-input"
         @keyup.enter="createNewList"
       >
         <template #append>

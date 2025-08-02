@@ -5,18 +5,17 @@ const { smAndDown } = useDisplay()
 const { signOut, status } = useAuth()
 const loggedIn = computed(() => status.value === 'authenticated')
 const contextMenuOpen = ref(false)
-const menuTarget = ref([])
 const selectedList = ref<List>()
 const listsStore = useListsStore()
 function openContextMenu(event: MouseEvent, list: List) {
   contextMenuOpen.value = true
-  menuTarget.value = [event.clientX, event.clientY]
+  
   selectedList.value = list
 }
 
 function deleteList() {
   contextMenuOpen.value = false
-  menuTarget.value = []
+  
   if (!selectedList.value || !selectedList.value._id) {
     console.warn('No list selected')
     return
@@ -60,19 +59,12 @@ function deleteList() {
 
   <v-navigation-drawer v-if="loggedIn" v-model="open" style="max-height: 100vh; overflow-y: hidden !important;" disable-resize-watcher class="font-weight-bold" :permanent="!smAndDown" height="100vh">
     <v-list nav>
-      <!-- <v-spacer /> -->
-      <!-- <v-btn variant="plain" icon="mdi-home" to="/" />
-      <v-btn variant="plain" icon="mdi-plus" @click="dialog.page = 'list';dialog.open = true;" /> -->
       <ListNew :open="dialog" @close="dialog.open = false" />
-      <!-- <v-list-item to="/" class="text-h5 text-sm-h6 text-capitalize  nav-item-title" prepend-icon="mdi-home" />
-      <v-list-item prepend-icon="mdi-plus" class="text-h5 text-sm-h6 text-capitalize  nav-item-title" @click="dialog.page = 'list';dialog.open = true;">
-        <ListNew :open="dialog" @close="dialog.open = false" />
-      </v-list-item> -->
-      <!-- <v-divider class="mb-1" /> -->
+      
       <AppNavItems @open="openContextMenu" />
     </v-list>
 
-    <v-menu v-if="menuTarget" v-model="contextMenuOpen" :target="menuTarget" location-strategy="connected">
+    <v-menu v-model="contextMenuOpen" location-strategy="connected">
       <v-list nav>
         <v-list-item>
           <v-btn variant="text" color="red" icon="mdi-trash-can" @click="deleteList" />

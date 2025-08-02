@@ -8,7 +8,6 @@ const listsStore = useListsStore()
 function resetState() {
   dialog.value.open = false
   dialog.value.page = ''
-  console.log('dialog afterLeave')
   listsStore.newReset()
 }
 </script>
@@ -17,6 +16,7 @@ function resetState() {
   <v-dialog
     max-width="500" :model-value="dialog.open && dialog.page === page" transition="dialog-bottom-transition"
     location="top" @update:model-value="dialog.open = false"
+    data-test-id-="dialog"
     @after-leave="resetState"
   >
     <template #activator>
