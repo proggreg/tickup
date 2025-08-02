@@ -66,7 +66,7 @@ jobs:
         PLAYWRIGHT_AUTH_STATE_B64: ${{ secrets.PLAYWRIGHT_USER }}
       run: |
         echo "Creating storageState.json from secret..."
-        echo "$PLAYWRIGHT_AUTH_STATE_B64" | base64 --decode > user.json
+        echo "$PLAYWRIGHT_AUTH_STATE_B64" | base64 --decode > playwright/.auth/user.json
         echo "user.json created successfully."
         
     - name: Run Playwright tests
