@@ -113,4 +113,3 @@ sw.*
 
 /playwright/.auth
 *user.json
-# Uploaded files are now stored in MongoDB
