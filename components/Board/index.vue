@@ -18,24 +18,18 @@ const newTodo = ref<Todo>({
 })
 
 const groupedTodos = computed(() => {
-  if (statusStore.statuses) {
-    return statusStore.statuses.map((status) => {
-      if (!listStore.currentList || !listStore.currentList.todos) {
-        return {
-          ...status,
-          todos: [],
-          addTodo: false,
-        }
-      }
-      return {
-        ...status,
-        todos: listStore.currentList.todos
-          .filter(todo => todo.status === status.name),
-        addTodo: newTodo.value.status === status.name,
-      }
-    })
+  if (!statusStore.statuses || !listStore.currentList.todos || !listStore.currentList.todos.length) {
+    return []
   }
-  return []
+  
+  return statusStore.statuses.map((status: Status) => {
+    return {
+      ...status,
+      todos: listStore.currentList.todos
+        .filter((todo: Todo) => todo.status === status.name),
+      addTodo: newTodo.value.status === status.name,
+    }
+  })
 })
 
 const boardRef = ref<HTMLElement | null>(null)
@@ -72,14 +66,7 @@ async function updateTodo(e: { added?: { element: Todo } }, status: Status) {
   }
 }
 
-function getComponentData(statusName: string) {
-  return {
-    wrap: true,
-    name: statusName,
-  }
-}
-
-async function addTodo(status: string) {
+async function addTodo() {
   if (newTodo.value.name) {
     await listStore.addTodo(newTodo.value)
     newTodo.value.name = ''
@@ -96,7 +83,7 @@ function toggleNewTodo(status: string) {
   newTodo.value.status = newTodo.value.status === status ? '' : status
 }
 
-watch(dragging, (isDragging) => {
+watch(dragging, (isDragging: boolean) => {
   if (isDragging) {
     document.body.style.cursor = 'grabbing'
   }

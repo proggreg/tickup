@@ -33,7 +33,13 @@ async function createNewList() {
         placeholder="New List"
         data-testid="new-list-input"
         @keyup.enter="createNewList"
-      />
+      >
+        <template #append>
+          <div v-if="!smAndDown" style="min-width: 150px">
+            <ListType />
+          </div>
+        </template>
+      </v-text-field>
     </v-container>
     <template #buttons>
       <v-btn

@@ -32,8 +32,9 @@ async function addTodo() {
 <template>
   <v-text-field
     v-if="listsStore.currentList" v-model="listsStore.newTodo.name"
-    min-width="300"
-    :placeholder="'Add todo to ' + listsStore.currentList.name" @keyup.enter="addTodo"
+    min-width="150"
+    width="100%"
+    :placeholder="'Add todo to ' + listsStore.currentList.name" autofocus @keyup.enter="addTodo"
   >
     <template #append-inner>
       <AppDueDate :todo="listsStore.newTodo" :date="listsStore.newTodo.dueDate" @set-date="(newDate: Date) => listsStore.newTodo.dueDate = newDate" />
@@ -43,8 +44,8 @@ async function addTodo() {
   </v-text-field>
 </template>
 
-<style scoped>
-:deep(.v-field__field) {
-  align-items: center;
-}
+<style>
+  input {
+    height: 100%;
+  }
 </style>

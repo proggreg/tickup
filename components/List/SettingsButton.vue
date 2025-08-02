@@ -5,12 +5,12 @@ const { listId } = defineProps<{
   listId?: string
 }>()
 function deleteList() {
-    if (listId) {
-        listsStore.deleteList(listId)
-        navigateTo('/')
-    }
-    listsStore.deleteList()
-  console.log('deleteList', listsStore.currentList)
+  if (listId) {
+    listsStore.deleteList(listId)
+    navigateTo('/')
+  }
+
+  listsStore.deleteList()
   let route = '/lists'
   if (!isMobile) {
     route = '/'
@@ -24,10 +24,7 @@ function deleteList() {
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
-        size="small"
         variant="plain"
-        color="primary"
-        base-color="transparent"
         icon="mdi-dots-vertical"
       />
     </template>

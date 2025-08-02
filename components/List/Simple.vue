@@ -7,19 +7,13 @@ function selectTodo(todo: Todo) {
   listsStore.setCurrentTodo(todo)
   navigateTo(`/todo/${todo._id}`)
 }
-function setClosed(todo: Todo, el: any) {
-  el.target.checked = true
-  setTimeout(() => {
-    todo.status = 'Closed'
-    listsStore.updateTodo(todo)
-  }, 200)
+function setClosed(todo: Todo) {
+  todo.status = 'Closed'
+  listsStore.updateTodo(todo)
 }
-function setOpen(todo: Todo, el: any) {
-  el.target.checked = false
-  setTimeout(() => {
-    todo.status = 'Open'
-    listsStore.updateTodo(todo)
-  }, 200)
+function setOpen(todo: Todo) {
+  todo.status = 'Open'
+  listsStore.updateTodo(todo)
 }
 function formatDate(date: Date) {
   if (!date) {
@@ -43,12 +37,11 @@ const closedTodos = computed(() => {
     variant="flat"
   >
     <v-list :opened="opened" variant="plain">
-      <v-list-group value="Open">
+      <v-list-group value="Open" fluid>
         <template #activator="{ props }">
           <v-list-item
             v-bind="props"
-            prepend-icon="mdi mdi-border-all-variant"
-            title="Open"
+            :title="`Open (${openTodos.length})`"
           />
         </template>
 
@@ -56,15 +49,12 @@ const closedTodos = computed(() => {
           v-for="todo in openTodos"
           :key="todo._id"
           slim
-          nav
-          style="padding: 0 16px !important;"
-          class="pa-0"
           @click="selectTodo(todo)"
         >
           <template #prepend>
-            <v-checkbox @click.stop="(el: any) => setClosed(todo, el)" />
+            <v-checkbox @click.stop="setClosed(todo)" />
           </template>
-          <v-list-item-title class="text-h6">
+          <v-list-item-title>
             {{ todo.name }}
           </v-list-item-title>
 
@@ -78,12 +68,11 @@ const closedTodos = computed(() => {
         </v-list-item>
       </v-list-group>
 
-      <v-list-group value="Closed">
+      <v-list-group value="Closed" fluid>
         <template #activator="{ props }">
           <v-list-item
             v-bind="props"
-            prepend-icon="mdi mdi-check-all"
-            title="Closed"
+            :title="`Closed (${closedTodos.length})`"
           />
         </template>
 
@@ -94,9 +83,9 @@ const closedTodos = computed(() => {
           @click="selectTodo(todo)"
         >
           <template #prepend>
-            <v-checkbox :model-value="true" @click.stop="(el: any) => setOpen(todo, el)" />
+            <v-checkbox :model-value="true" @click.stop="setOpen(todo)" />
           </template>
-          <v-list-item-title class="text-h6">
+          <v-list-item-title>
             {{ todo.name }}
           </v-list-item-title>
 

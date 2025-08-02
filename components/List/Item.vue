@@ -1,25 +1,25 @@
 <script lang="ts" setup>
-const listsStore = useListsStore()
-const { statuses } = useSettingsStore()
-const { smAndDown } = useDisplay()
-const itemProps = defineProps<{
-  todos: Todo[]
-  status: string
-}>()
+  const listsStore = useListsStore()
+  const { statuses } = useSettingsStore()
+  const { smAndDown } = useDisplay()
+  const itemProps = defineProps<{
+    todos: Todo[]
+    status: string
+  }>()
 
-const emit = defineEmits(['TodoClicked', 'updateTodos'])
+  const emit = defineEmits(['TodoClicked', 'updateTodos'])
 
-function selectTodo(todo: Todo) {
-  listsStore.setCurrentTodo(todo)
-}
+  function selectTodo(todo: Todo) {
+    listsStore.setCurrentTodo(todo)
+  }
 
-function editTodo(todo: Todo, status: Status) {
-  todo.status = status.name
-  $fetch(`/api/todo/${todo._id}`, {
-    method: 'PUT',
-    body: todo,
-  })
-}
+  function editTodo(todo: Todo, status: Status) {
+    todo.status = status.name
+    $fetch(`/api/todo/${todo._id}`, {
+      method: 'PUT',
+      body: todo,
+    })
+  }
 </script>
 
 <template>

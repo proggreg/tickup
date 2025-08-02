@@ -9,7 +9,7 @@ const listName = computed(() => {
 const aiImage = ref('')
 const imageGenerating = ref(false)
 
-watch(rename, (newVal) => {
+watch(rename, (newVal: boolean) => {
   if (!newVal) {
     if (!store.currentList._id) {
       store.currentList._id = router.params.id as string
@@ -24,10 +24,10 @@ watch(rename, (newVal) => {
   }
 })
 
-watch(listName, (newName) => {
+watch(listName, (newName: string) => {
   if (!store.currentList.name) return
   if (store.lists.length && router.params.id && store.currentList.name.length > 0) {
-    const list = store.lists.find(list => list._id === store.currentList._id)
+    const list = store.lists.find((list: List) => list._id === store.currentList._id)
     if (list) {
       list.name = newName
     }
@@ -94,7 +94,7 @@ function removeImage() {
           <v-btn size="small" class="mr-2" :disabled="imageGenerating" @click="generateImage">
             <v-icon start>mdi-creation </v-icon><v-icon start>mdi-image </v-icon>
           </v-btn>
-
+         
           <v-btn v-if="store.currentList.image" class="" icon="mdi-trash-can" size="small" @click="removeImage" />
         </v-card-actions>
       </div>
@@ -103,19 +103,19 @@ function removeImage() {
 </template>
 
 <style scoped>
-.v-text-field :deep(.v-field__input) {
-  @media (min-width: 600px) {
-    font-size: 2.5rem;
+  .v-text-field :deep(.v-field__input) {
+    @media (min-width: 600px) {
+      font-size: 2.5rem;
+    }
+
+    font-size: 1.75rem;
+    text-transform: capitalize;
+    font-weight: bold;
   }
 
-  font-size: 2rem;
-  text-transform: capitalize;
-  font-weight: bold;
-}
-
-.tint {
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 0.5rem;
-  border-radius: 4px;
-}
+  .tint {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 0.5rem;
+    border-radius: 4px;
+  }
 </style>

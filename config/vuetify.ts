@@ -51,6 +51,7 @@ export default {
       },
       VSelect: {
         rounded: 'lg',
+        hideDetails: true
       },
     },
     theme: {
