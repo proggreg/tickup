@@ -51,8 +51,8 @@ export default defineConfig({
     },
 
     {
-      name: 'chromium_mobile',
-      use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/user.json', viewport: { width: 390, height: 844 }, },
+      name: 'pixel_7',
+      use: { ...devices['Pixel 7'], storageState: 'playwright/.auth/user.json' },
     },
 
   ],
