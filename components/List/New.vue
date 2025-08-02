@@ -6,6 +6,11 @@ const dialog = useDialog()
 
 async function createNewList() {
   const list = await listsStore.addList()
+  
+  if (list && list._id) {
+    navigateTo(`/list/${list._id}`)
+  }
+  
 
   if (list) {
     listsStore.newReset()

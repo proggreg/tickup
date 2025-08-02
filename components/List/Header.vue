@@ -82,6 +82,7 @@ function removeImage() {
             <v-text-field class="px-2" ref="listNameRef" v-model="store.currentList.name" validate-on="blur eager"
               :rules="[validateListName]" placeholder="My List" variant="plain" :readonly="!rename"
               style=" font-weight: bold; " auto @click="rename = !rename"
+              data-testid="list-title"
               @keyup.enter="store.currentList.name ? rename = false : null"
               @blur="store.currentList.name ? rename = false : null" />
           </v-col>

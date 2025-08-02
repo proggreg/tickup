@@ -42,8 +42,8 @@ function openContextMenu(el: MouseEvent, list: List) {
               autofocus variant="plain" @input.stop="() => rename(item)" @keyup.enter="renameList(item)"
               @blur="renameList(item)"
             />
-            <v-list-item-title v-else>
-              <span class="">{{ item.name }}</span>
+            <v-list-item-title data-test-id="nav-item-title" v-else>
+              {{ item.name }}
             </v-list-item-title>
             <template #prepend>
               <v-icon v-if="item.icon">{{ item.icon }}</v-icon>

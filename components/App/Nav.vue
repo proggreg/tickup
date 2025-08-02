@@ -1,27 +1,29 @@
 <script setup lang="ts">
-const open = useNav()
-const dialog = useDialog()
-const { smAndDown } = useDisplay()
-const { signOut, status } = useAuth()
-const loggedIn = computed(() => status.value === 'authenticated')
-const contextMenuOpen = ref(false)
-const selectedList = ref<List>()
-const listsStore = useListsStore()
-function openContextMenu(event: MouseEvent, list: List) {
-  contextMenuOpen.value = true
-  
-  selectedList.value = list
-}
+  const open = useNav()
+  const dialog = useDialog()
+  const { smAndDown } = useDisplay()
+  const { signOut, status } = useAuth()
 
-function deleteList() {
-  contextMenuOpen.value = false
-  
-  if (!selectedList.value || !selectedList.value._id) {
-    console.warn('No list selected')
-    return
+  const loggedIn = computed(() => status.value === 'authenticated')
+  const contextMenuOpen = ref(false)
+  const selectedList = ref<List>()
+  const listsStore = useListsStore()
+
+  function openContextMenu(event: MouseEvent, list: List) {
+    contextMenuOpen.value = true
+    
+    selectedList.value = list
   }
-  listsStore.deleteList(selectedList.value._id)
-}
+
+  function deleteList() {
+    contextMenuOpen.value = false
+    
+    if (!selectedList.value || !selectedList.value._id) {
+      console.warn('No list selected')
+      return
+    }
+    listsStore.deleteList(selectedList.value._id)
+  }
 </script>
 
 <template>
