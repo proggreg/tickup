@@ -2,10 +2,10 @@ export default {
   vuetifyOptions: {
     labComponents: false,
     icons: {
-      defaultSet: 'mdi',
+      defaultSet: 'mdi' as const,
       sets: [
         {
-          name: 'mdi',
+          name: 'mdi' as const,
           component: 'VIcon',
         },
       ],

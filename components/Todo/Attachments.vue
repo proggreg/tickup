@@ -138,7 +138,6 @@ function openFile(attachment: any) {
   <div class="pa-4 rounded-lg">
     <div class="mb-4 text-subtitle-1 font-weight-bold">Attachments</div>
     
-    <!-- File Upload -->
     <div class="mb-4">
       <v-file-input
         ref="fileInput"
@@ -158,7 +157,6 @@ function openFile(attachment: any) {
       </div>
     </div>
 
-    <!-- Attachments List -->
     <div v-if="attachments.length > 0">
       <v-list density="compact" class="pa-0">
         <v-list-item

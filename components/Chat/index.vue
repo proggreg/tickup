@@ -28,16 +28,15 @@ function sendMessage(message: string) {
   ollama.chat({
     model: selectedModel.value,
     messages: messages,
-    stream: true })
-    .then(async (response) => {
-      console.log('response', response)
+    stream: true 
+  }).then(async (response) => {
+      
       for await (const part of response) {
         chatResponse.value += part.message.content
         tmpchatResponse += part.message.content
       }
-      messages.push({ role: 'AI', content: tmpchatResponse })
 
-      console.log('now here')
+      messages.push({ role: 'AI', content: tmpchatResponse })
       chatMessages.push({ text: tmpchatResponse, sender: 'AI' })
       chatResponse.value = ''
       loading.value = false
@@ -75,13 +74,4 @@ function sendMessage(message: string) {
   </div>
 </template>
 
-<style scoped>
-/* input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-} */
-</style>
+<style scoped></style>

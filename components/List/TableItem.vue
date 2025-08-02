@@ -55,7 +55,7 @@ function formatDate(date: Date) {
     <template v-for="column in props.columns" :key="column.key">
       <template v-if="column.key !== 'data-table-group'">
         <td v-if="column.key === 'name'" colspan="6" class="text-h6">
-          <v-text class="text-h6 text-truncate" style="max-width: 250px; display: block;" lines="1">
+          <v-text class="text-h6 text-truncate" data-testid="todo-title" style="max-width: 250px; display: block;" lines="1">
             {{ item.columns[column.key] }}
           </v-text>
         </td>

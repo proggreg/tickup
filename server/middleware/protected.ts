@@ -3,10 +3,7 @@ import { getQuery } from 'h3'
 
 export default defineEventHandler(async (event) => {
   const isProtected = event.path.startsWith('/api/webhook/') || (event.path.startsWith('/api/github') && !event.path.startsWith('/api/github/check'))
-  if (isProtected) {
-    console.log(`[Webhook] Request received for path: ${event.path}`)
-  }
-
+ 
   if (isProtected) {
     // Allow test requests to bypass authentication
     const query = getQuery(event)

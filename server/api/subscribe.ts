@@ -5,15 +5,10 @@ import { TodoSchema } from '../models/todo.schema'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-
   const subscription = body.subscription
   const username = body.username
   const notificationDateTime = body.notificationDateTime
   const todoId = body.todoId
-
-  console.log('subscription', subscription)
-  console.log('NUXT_ENV_VAPID_PUBLIC_KEY', process.env.VAPID_PUBLIC_KEY)
-
   const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY
 
   if (!vapidPrivateKey) {
@@ -43,7 +38,6 @@ export default defineEventHandler(async (event) => {
   )
 
   try {
-    // Only send a test notification if not scheduling
     if (!notificationDateTime) {
       let testTitle = 'Tickup Push Test';
       let testMessage = 'Push notifications are working! You will get reminders for your todos.';
@@ -60,7 +54,7 @@ export default defineEventHandler(async (event) => {
         title: testTitle,
         body: testMessage,
       }))
-      console.log('Push notification sent successfully!')
+      
       return { success: true }
     }
     // If scheduling, just update the todo and return

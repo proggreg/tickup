@@ -14,7 +14,6 @@ const { mdAndUp } = useDisplay()
 
 onMounted(() => {
   if (!isGroupOpen(groupItem) && groupItem.key === 'status' && groupItem.value === 'Open') {
-    console.log('Group is open:', groupItem)
     toggleGroup(groupItem)
   }
 })

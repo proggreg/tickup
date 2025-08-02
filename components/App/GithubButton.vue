@@ -56,7 +56,7 @@ async function getBranch() {
     return
   }
   const branch = await $fetch('/api/github', { query: { branchName: githubBranchName.value } })
-  console.log(branch)
+
   if (branch && branch._links) {
     branchURL.value = branch._links.html
   }

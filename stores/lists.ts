@@ -81,12 +81,9 @@ export const useListsStore = defineStore('lists', {
 
       try {
         this.lists = this.lists.filter((list: List) => list._id !== listId)
-        const data = await $fetch<List>(`/api/list/${listId}`, {
+        await $fetch<List>(`/api/list/${listId}`, {
           method: 'DELETE',
         })
-        if (data) {
-          console.log(`list ${listId} deleted`)
-        }
       }
       catch (err) {
         console.error(err)
@@ -100,8 +97,6 @@ export const useListsStore = defineStore('lists', {
     },
     setListTodos(todos: Todo[]) {
       if (!todos || !todos.length) return
-
-      console.log('set list todos', todos)
       this.currentList.todos = todos
     },
     async getListTodos(listId: string): Promise<Todo[]> {
@@ -167,7 +162,7 @@ export const useListsStore = defineStore('lists', {
         method: 'PUT',
         body: todo,
       })
-      console.log('updatedTodo', updatedTodo)
+
       return updatedTodo
     },
     async deleteTodo(id: string) {
@@ -200,7 +195,6 @@ export const useListsStore = defineStore('lists', {
       }
     },
     setCurrentList(list: List) {
-      console.log('set current list', list)
       if (list) {
         this.currentList = list
       }
@@ -293,7 +287,6 @@ export const useListsStore = defineStore('lists', {
     },
 
     newReset() {
-      console.log('newReset')
       this.newTodo = {
         name: '',
         status: 'Open',

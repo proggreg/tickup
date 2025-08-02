@@ -70,7 +70,6 @@
           />
 
           <v-list-item-action end>
-            <!-- <AppDeleteButton /> -->
           </v-list-item-action>
         </template>
       </v-list-item>

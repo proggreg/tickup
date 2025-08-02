@@ -9,9 +9,7 @@ export default defineEventHandler(async (event) => {
       }
     }
     const listTodos = await TodoSchema.find({ listId: list._id }).sort({ order: 1 })
-    console.log('list', list)
-    console.log('listTodos', listTodos)
-    return list
+    
     return { list, listTodos }
   }
   catch (error) {

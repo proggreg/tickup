@@ -31,10 +31,8 @@ function getRandomHexColor() {
 function addStatus() {
   if (!store.statuses) {
     console.warn('no statuses')
-    console.log('store', store)
     return
   }
-  console.log('store.statuses', store.statuses)
 
   const top = store.statuses[store.statuses.length - 1]
   if (top.name === '') {
@@ -104,7 +102,6 @@ onMounted(() => {
         userVisibleOnly: true,
         applicationServerKey: config.public.VAPID_KEY,
       })
-      console.log('pushSubscription', pushSubscription)
 
       // Send pushSubscription to server
       await $fetch('/api/subscribe', {

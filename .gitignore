@@ -112,4 +112,4 @@ sw.*
 /playwright/.cache/
 
 /playwright/.auth
-# Uploaded files are now stored in MongoDB
+*user.json
