@@ -34,9 +34,8 @@ function openContextMenu(el: MouseEvent, list: List) {
             v-bind="props" :key="item._id"
             class=""
             style="cursor: pointer;"
-            @click.stop="() => $router.push(`/list/${item._id}`)"
-
-            @click.right.prevent="(el: any) => openContextMenu(el, item)"
+            data-test-id="nav-item"
+            :to="`/list/${item._id}`"
           >
             <v-text-field
               v-if="editListName === item._id" v-model="item.name" class="font-weight-bold "
