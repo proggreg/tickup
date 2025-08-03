@@ -6,32 +6,14 @@ import { createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching'
 import { NavigationRoute, registerRoute } from 'workbox-routing'
 import { StaleWhileRevalidate, CacheFirst } from 'workbox-strategies'
 
-// The URL to your fallback page. This page should be a simple HTML file that
-// is precached and provides a custom offline message to the user.
-const offlinePage = '/offline.html';
+// Precache build assets
+precacheAndRoute(self.__WB_MANIFEST)
 
-// Precache all assets, including your offline page
-precacheAndRoute(self.__WB_MANIFEST.concat([
-  { url: offlinePage, revision: null }
-]))
+registerRoute(({ url }) => url.pathname == '/' || url.pathname.startsWith('/list') || url.pathname.startsWith('/todo'), new StaleWhileRevalidate({
+  cacheName: "pages"
+}))
 
-// Use a navigation route to handle all navigations.
-// This is the crucial part that's missing from your original code.
-// It will serve a precached offline page if a navigation request fails.
-const navigationRoute = new NavigationRoute(
-  createHandlerBoundToURL(offlinePage),
-  {
-    // You can also define which paths should NOT be handled by this route.
-    // For example, if you have a special admin section that you don't want to cache.
-    // allowlist: [/^\/(list|todo)/],
-    // denylist: [ /^\/admin/ ]
-  }
-)
-registerRoute(navigationRoute)
-
-// Runtime cache for API requests. You might consider using a NetworkOnly strategy
-// with a fallback for API requests if you need to gracefully handle failed API calls.
-// For now, StaleWhileRevalidate is fine for online use.
+// Runtime cache for API requests
 registerRoute(
   ({ url }) => url.pathname.startsWith('/api/'),
   new StaleWhileRevalidate({
@@ -39,7 +21,8 @@ registerRoute(
   })
 )
 
-// Runtime cache for images
+
+// // Runtime cache for images
 registerRoute(
   ({ request }) => request.destination === 'image',
   new CacheFirst({
@@ -48,8 +31,37 @@ registerRoute(
   })
 )
 
-self.addEventListener('install', () => {
-  self.skipWaiting();
+
+// Function to request persistent storage
+async function requestPersistentStorage() {
+  if (navigator.storage && navigator.storage.persist) {
+    const isPersisted = await navigator.storage.persisted();
+    if (!isPersisted) {
+      const granted = await navigator.storage.persist();
+      if (granted) {
+        console.log('Persistent storage granted!');
+      } else {
+        console.log('Persistent storage not granted.');
+      }
+    } else {
+      console.log('Storage is already persistent.');
+    }
+  }
+}
+
+
+self.addEventListener('install', (event) => {
+  console.log('Service Worker installing...');
+  // Call the persistence function here, but don't await it.
+  // The 'install' event should complete quickly.
+  event.waitUntil(
+    (async () => {
+      // It's also a good idea to perform the persistence request here
+      // as part of the installation process.
+      await requestPersistentStorage();
+      self.skipWaiting();
+    })()
+  );
 });
 
 self.addEventListener('push', (event: PushEvent) => {
