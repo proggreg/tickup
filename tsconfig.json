@@ -4,6 +4,7 @@
   "compilerOptions": {
     "types": [
       "vite-plugin-pwa/client"
-    ]
+    ],
+    "lib": ["ESNext", "DOM", "WebWorker"]
   }
 }

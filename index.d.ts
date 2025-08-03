@@ -56,13 +56,21 @@ declare global {
     icon: string
   }
 
-  
+  interface listsState {
+    lists: List[]
+    currentList: List
+    newList: List
+    currentTodo: Todo
+    todos?: Todo[]
+    todaysTodos: Todo[]
+    overdueTodos: Todo[]
+    view: ViewType
+    newTodo: Todo
+  }
 
   interface Settings {
     statuses: Status[]
   }
-
-  
 
   export interface PwaInjection {
     /**
@@ -85,6 +93,35 @@ declare global {
     getSWRegistration: () => ServiceWorkerRegistration | undefined
   }
   
+  // types/offline.ts (or add to your existing types file)
+  export interface PendingChange {
+    id: string | number
+    action: string
+    endpoint: string
+    method: string
+    data: any
+    timestamp: number
+    synced: boolean
+    retryCount: number
+    syncedAt?: number
+    tempId?: string
+    listId?: string
+    todoId?: string
+    optimisticUpdate?: OptimisticUpdate
+  }
+
+  export interface OptimisticUpdate {
+    type: 'list' | 'todo' | 'delete_list' | 'delete_todo'
+    tempId?: string
+    id?: string
+    listId?: string
+    todoId?: string
+    list?: any
+    todo?: any
+    index?: number
+    updates?: any
+  }
+
   declare module '#app' {
     interface NuxtApp {
       $pwa: UnwrapNestedRefs<PwaInjection>

@@ -1,15 +1,3 @@
-interface listsState {
-  lists: List[]
-  currentList: List
-  newList: List
-  currentTodo: Todo
-  todos?: Todo[]
-  todaysTodos: Todo[]
-  overdueTodos: Todo[]
-  view: ViewType
-  newTodo: Todo
-}
-
 const newTodoState: Todo = {
   name: '',
   status: 'Open',
@@ -59,13 +47,17 @@ export const useListsStore = defineStore('lists', {
       }
     },
     async updateList(listToUpdate?: List) {
+      const { isOnline } = useOfflineSync()
 
       if (!listToUpdate) {
         listToUpdate = this.currentList
       }
 
       if (!listToUpdate || !listToUpdate.name || !listToUpdate._id) return
-
+      if (!isOnline) {
+        console.log('don\'t update not online')
+        return 
+      }
       await $fetch<List>(`/api/list/${listToUpdate._id}`, {
         method: 'PUT',
         body: listToUpdate,
@@ -104,12 +96,16 @@ export const useListsStore = defineStore('lists', {
       return todos || []
     },
     async addTodo(newTodo: Todo) {
-      // Check if we are on the homepage before adding a todo
       const route = useRoute()
       const isHomepage = route.path === '/' || route.name === 'index'
-
+      const { isOnline } = useOfflineSync()
       if (newTodo._id) {
         console.warn('todo already has an id', newTodo)
+        return
+      }
+
+      if (!isOnline.value) {
+        console.log('not online')
         return
       }
       if (!this.currentList.todos) this.currentList.todos = []
@@ -303,10 +299,10 @@ export const useListsStore = defineStore('lists', {
       }
     },
   },
-  // persist: {
-  //   debug: true,
-  //   storage: piniaPluginPersistedstate.sessionStorage(),
-  // },
+  persist: {
+    debug: true,
+    storage: piniaPluginPersistedstate.localStorage(),
+  },
 })
 
 if (import.meta.hot) {

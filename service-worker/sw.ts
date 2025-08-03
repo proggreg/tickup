@@ -3,13 +3,16 @@ declare const self: ServiceWorkerGlobalScope & {
   __WB_MANIFEST: string[];
 };
 
-import { precacheAndRoute } from 'workbox-precaching'
-import { registerRoute } from 'workbox-routing'
+import { createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching'
+import { NavigationRoute, registerRoute } from 'workbox-routing'
 import { StaleWhileRevalidate, CacheFirst } from 'workbox-strategies'
 
-// console.log('self.__WB_MANIFEST', self.__WB_MANIFEST)
 // Precache build assets
 precacheAndRoute(self.__WB_MANIFEST)
+
+registerRoute(({ url }) => url.pathname == '/' || url.pathname.startsWith('/list') || url.pathname.startsWith('/todo'), new StaleWhileRevalidate({
+  cacheName: "pages"
+}))
 
 // Runtime cache for API requests
 registerRoute(
@@ -18,6 +21,7 @@ registerRoute(
     cacheName: 'api-cache',
   })
 )
+
 
 // // Runtime cache for images
 registerRoute(
@@ -28,7 +32,6 @@ registerRoute(
   })
 )
 
-console.log('Service Worker Loaded');
 
 self.addEventListener('install', () => {
   self.skipWaiting();
