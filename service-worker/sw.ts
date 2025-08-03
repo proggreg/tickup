@@ -9,9 +9,13 @@ import { StaleWhileRevalidate, CacheFirst } from 'workbox-strategies'
 // Precache build assets
 precacheAndRoute(self.__WB_MANIFEST)
 
-registerRoute(({ url }) => url.pathname == '/' || url.pathname.startsWith('/list') || url.pathname.startsWith('/todo'), new StaleWhileRevalidate({
-  cacheName: "pages"
-}))
+registerRoute(({ url }) => url.pathname == '/' || 
+  url.pathname.startsWith('/list') || 
+  url.pathname.startsWith('/todo'), 
+  new StaleWhileRevalidate({
+    cacheName: "pages"
+  })
+)
 
 // Runtime cache for API requests
 registerRoute(
