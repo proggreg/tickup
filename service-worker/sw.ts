@@ -3,9 +3,30 @@ declare const self: ServiceWorkerGlobalScope & {
   __WB_MANIFEST: string[];
 };
 
-// import { precacheAndRoute } from 'workbox-precaching'
+import { precacheAndRoute } from 'workbox-precaching'
+import { registerRoute } from 'workbox-routing'
+import { StaleWhileRevalidate, CacheFirst } from 'workbox-strategies'
 
-// precacheAndRoute(self.__WB_MANIFEST)
+// console.log('self.__WB_MANIFEST', self.__WB_MANIFEST)
+// Precache build assets
+precacheAndRoute(self.__WB_MANIFEST)
+
+// Runtime cache for API requests
+registerRoute(
+  ({ url }) => url.pathname.startsWith('/api/'),
+  new StaleWhileRevalidate({
+    cacheName: 'api-cache',
+  })
+)
+
+// // Runtime cache for images
+registerRoute(
+  ({ request }) => request.destination === 'image',
+  new CacheFirst({
+    cacheName: 'image-cache',
+    // You can add plugins here for expiration, etc.
+  })
+)
 
 console.log('Service Worker Loaded');
 

@@ -77,6 +77,7 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    authOrigin: 'http://localhost:3000',
     auth: {
       secret: process.env.NUXT_NEXTAUTH_SECRET,
     },
@@ -93,15 +94,20 @@ export default defineNuxtConfig({
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
       VAPID_KEY: process.env.VAPID_PUBLIC_KEY,
+      auth: {
+        origin: 'http://localhost:3000',
+      }
     },
   },
 
   auth: {
-    enabled: false,
+    
+    origin: process.env.NUXT_AUTH_ORIGIN || 'http://localhost:3000', 
+    enabled: true,
     provider: {
       type: 'authjs',
     },
-    baseURL: process.env.VERCEL_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/auth` : undefined,
+    baseURL: process.env.VERCEL_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/auth` : 'http://localhost:3000',
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: true,
   },
@@ -155,7 +161,6 @@ export default defineNuxtConfig({
     // add this to handle push notifications
     strategies: 'injectManifest',
     injectManifest: {
-      injectionPoint: undefined,
        rollupFormat: 'iife'
     },
   },

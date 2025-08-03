@@ -9,6 +9,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "lhci": "lhci autorun",
     "lhci:mobile": "lhci autorun",
     "lhci:desktop": "lhci autorun --collect.settings.preset=desktop",
     "changelog": "npx changelogen@latest",
@@ -46,7 +47,9 @@
     "vite-plugin-pwa": "^1.0.2",
     "vitest": "^3.2.4",
     "vuetify-nuxt-module": "^0.14.1",
-    "workbox-precaching": "^7.3.0"
+    "workbox-precaching": "^7.3.0",
+    "workbox-routing": "^7.3.0",
+    "workbox-strategies": "^7.3.0"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^2.3.3",
