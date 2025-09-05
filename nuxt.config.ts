@@ -121,7 +121,7 @@ export default defineNuxtConfig({
   },
 
   pwa: {
-    disable: true,
+    disable: false,
     registerType: 'autoUpdate',
     manifest: {
       name: 'Tickup',
