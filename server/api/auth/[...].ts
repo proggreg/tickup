@@ -1,9 +1,8 @@
 import GithubProvider from 'next-auth/providers/github'
-import CredentialsProvider from 'next-auth/providers/credentials'
-import { MongoDBAdapter } from '@auth/mongodb-adapter'
+import CredentialsProvider from 'next-auth/providers/credentials'import { MongoDBAdapter } from '@auth/mongodb-adapter'
 import bcrypt from 'bcrypt'
 import { UserSchema } from '../../models/users.schema'
-import clientPromise from './lib/mongodb'
+
 import { NuxtAuthHandler } from '#auth'
 
 export default NuxtAuthHandler({
@@ -96,7 +95,5 @@ export default NuxtAuthHandler({
       }
       return false
     },
-  },
-  // @ts-expect-error
-  adapter: MongoDBAdapter(clientPromise),
+  }
 })
