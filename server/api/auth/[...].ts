@@ -1,5 +1,5 @@
 import GithubProvider from 'next-auth/providers/github'
-import CredentialsProvider from 'next-auth/providers/credentials'import { MongoDBAdapter } from '@auth/mongodb-adapter'
+import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcrypt'
 import { UserSchema } from '../../models/users.schema'
 
