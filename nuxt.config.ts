@@ -105,7 +105,9 @@ export default defineNuxtConfig({
     },
     baseURL: `https://tickup.gregfield.dev/api/auth`,
     secret: process.env.NUXT_NEXTAUTH_SECRET,
-    globalAppMiddleware: true,
+    globalAppMiddleware: {
+      isEnabled: true
+    },
     sessionRefresh: {
       enablePeriodically: false,
       enableOnWindowFocus: false,
