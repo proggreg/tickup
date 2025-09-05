@@ -1,7 +1,9 @@
 import GithubProvider from 'next-auth/providers/github'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import { MongoDBAdapter } from '@auth/mongodb-adapter'
 import bcrypt from 'bcrypt'
 import { UserSchema } from '../../models/users.schema'
+import clientPromise from './lib/mongodb'
 import { NuxtAuthHandler } from '#auth'
 
 export default NuxtAuthHandler({
@@ -60,98 +62,41 @@ export default NuxtAuthHandler({
 
   callbacks: {
     async redirect({ url }) {
-        return url
+      return url
     },
 
-    async jwt({ token, user, account, profile }) {
-      console.log('jwt', { token, user, account, profile })
-      
-      // Initial sign in
+    async jwt({ token, user }) {
       if (user) {
-        // Handle different providers
-        if (account?.provider === 'github') {
-          // For GitHub, we need to create or find the user in our database
-          // and map the GitHub profile to our user structure
-          token.sub = user.id
-          token.username = user.login || user.name || user.email?.split('@')[0] || 'github-user'
-          token._id = user.id
-          token.email = user.email
-          token.name = user.name
-          token.image = user.image
-        } else if (account?.provider === 'credentials') {
-          // For credentials provider, user object already has the right structure
-          token.sub = user.id
-          token.username = user.username
-          token._id = user._id
-          token.email = user.email
-          token.name = user.name
-        }
+        // When signing in, add user info to token
+        token.sub = user.id
+        token.username = user.username
+        token._id = user._id
       }
-      
       return token
     },
 
     async session({ session, token }) {
-
-    //  if (session.user && !session.user.name) {
-    //     try {
-    //       const user = await UserSchema.findById(token.sub)
-    //       if (user) {
-    //         session.user.name = user.username
-    //       }
-    //     } catch (error) {
-    //       console.error('Error finding user:', error)
-    //     }
-    //   }
-
-    //   session.user = {
-    //     ...token,
-    //     ...session.user,
-    //   }
-      console.log('session', session)
-      return session
-    },
-
-    async signIn({ user, account, profile }) {
-      console.log('signIn', { user, account, profile })
-      
-      // For GitHub provider, you might want to create/update user in your database
-      if (account?.provider === 'github') {
-        try {
-          // Check if user exists in your database
-          const existingUser = await UserSchema.findOne({ 
-            $or: [
-              { email: user.email },
-              { githubId: user.id }
-            ]
-          })
-          
-          if (!existingUser) {
-            // Create new user from GitHub profile
-            const newUser = new UserSchema({
-              username: user.login || user.name || user.email?.split('@')[0] || 'github-user',
-              email: user.email,
-              name: user.name,
-              image: user.image,
-              githubId: user.id,
-              hasGithub: true
-            })
-            await newUser.save()
-          } else {
-            // Update existing user with GitHub info
-            await UserSchema.findByIdAndUpdate(existingUser._id, {
-              githubId: user.id,
-              hasGithub: true,
-              image: user.image
-            })
-          }
-        } catch (error) {
-          console.error('Error handling GitHub sign-in:', error)
-          return false
+      if (session.user && !session.user.name) {
+        const user = await UserSchema.findById(token.sub)
+        if (user) {
+          session.user.name = user.username
         }
       }
-      
-      return true
+
+      session.user = {
+        ...token,
+        ...session.user,
+      }
+
+      return session
     },
-  }
+    async signIn({ user }) {
+      if (user) {
+        return true
+      }
+      return false
+    },
+  },
+  // @ts-expect-error
+  adapter: MongoDBAdapter(clientPromise),
 })
