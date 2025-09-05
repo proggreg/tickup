@@ -66,6 +66,7 @@ export default NuxtAuthHandler({
     },
 
     async jwt({ token, user }) {
+      console.log('jwt', token, user)
       if (user) {
         // When signing in, add user info to token
         token.sub = user.id
