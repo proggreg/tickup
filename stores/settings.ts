@@ -30,7 +30,7 @@ export const useSettingsStore = defineStore('settings', () => {
     const session = await getSession()
     const userId = session?.user?.sub
     const settings = await $fetch<Settings>('/api/settings', { query: { userId } })
-    console.debug('get user settings', settings)
+
     if (settings.statuses.length) {
       userStatuses.value = settings.statuses
     }
