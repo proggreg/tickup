@@ -76,6 +76,7 @@ export default NuxtAuthHandler({
     },
 
     async session({ session, token }) {
+      console.log('session', session)
       if (session.user && !session.user.name) {
         const user = await UserSchema.findById(token.sub)
         if (user) {
