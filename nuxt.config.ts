@@ -83,6 +83,7 @@ export default defineNuxtConfig({
       vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
     },
     public: {
+      apiBase: '/api',
       hotjarId: process.env.HOTJAR_ID,
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
