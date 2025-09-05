@@ -5,15 +5,10 @@ definePageMeta({
 useHead({ title: 'TickUp:Home' })
 
 const { status, data } = useAuth()
-const loggedIn = computed(() => status.value === 'authenticated')
 const listsStore = useListsStore()
 const tab = ref('1')
 const saveTodo = ref(false)
 const dialog = useDialog()
-
-// if (!loggedIn.value) {
-//   navigateTo('/login')
-// }
 
 watch(tab as any, (newTab) => {
   const sub = data?.value?.user?.sub

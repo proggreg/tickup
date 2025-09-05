@@ -104,7 +104,7 @@ export default defineNuxtConfig({
     provider: {
       type: 'authjs',
     },
-    baseURL: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/auth` : undefined,
+    baseURL: `https://tickp.gregfield.dev/api/auth`,
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: true,
     sessionRefresh: {
