@@ -1,5 +1,8 @@
 <script setup lang="ts">
-useHead({ title: 'TickUp - Login' })
+  useHead({ title: 'TickUp - Login' })
+  definePageMeta({
+    auth: { unauthenticatedOnly: true, navigateAuthenticatedTo: '/' }
+  })
 </script>
 
 <template>

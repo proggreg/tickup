@@ -104,15 +104,22 @@ export default defineNuxtConfig({
   },
 
   auth: {
-    
     origin: process.env.NUXT_AUTH_ORIGIN || 'http://localhost:3000', 
     enabled: true,
+    isEnabled: true,
     provider: {
       type: 'authjs',
     },
     baseURL: process.env.VERCEL_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/auth` : 'http://localhost:3000',
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: true,
+    sessionRefresh: {
+      enablePeriodically: true,
+      enableOnWindowFocus: true,
+    },
+    pages: {
+      signIn: '/login',
+    },
   },
 
   mongoose: {
@@ -121,6 +128,7 @@ export default defineNuxtConfig({
   },
 
   pwa: {
+    disable: true,
     registerType: 'autoUpdate',
     manifest: {
       name: 'Tickup',

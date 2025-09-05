@@ -1,10 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'default',
-  auth: {
-    unauthenticatedOnly: false,
-    navigateUnauthenticatedTo: '/login',
-  },
+  layout: 'default'
 })
 useHead({ title: 'TickUp:Home' })
 
@@ -15,9 +11,9 @@ const tab = ref('1')
 const saveTodo = ref(false)
 const dialog = useDialog()
 
-if (!loggedIn.value) {
-  navigateTo('/login')
-}
+// if (!loggedIn.value) {
+//   navigateTo('/login')
+// }
 
 watch(tab as any, (newTab) => {
   const sub = data?.value?.user?.sub

@@ -60,7 +60,7 @@ export default NuxtAuthHandler({
 
   callbacks: {
     async redirect({ url }) {
-      return url
+        return url
     },
 
     async jwt({ token, user, account, profile }) {
