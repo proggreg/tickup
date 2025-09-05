@@ -87,6 +87,7 @@ export default defineNuxtConfig({
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
       VAPID_KEY: process.env.VAPID_PUBLIC_KEY,
+      authOrigin: process.env.AUTH_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev' : 'http://localhost:3000'),
       bugsnag: {
         apiKey: process.env.BUGSNAG_API_KEY,
       }
@@ -95,11 +96,12 @@ export default defineNuxtConfig({
 
   auth: {
     isEnabled: true,
-    origin: process.env.NUXT_AUTH_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev' : 'http://localhost:3000'),
+    originEnvKey: 'AUTH_ORIGIN',
+    origin: process.env.AUTH_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev' : 'http://localhost:3000'),
     provider: {
       type: 'authjs',
     },
-    baseURL: process.env.NUXT_AUTH_ORIGIN ? `${process.env.NUXT_AUTH_ORIGIN}/api/auth` : (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : 'http://localhost:3000/api/auth'),
+    baseURL: process.env.AUTH_ORIGIN ? `${process.env.AUTH_ORIGIN}/api/auth` : (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : 'http://localhost:3000/api/auth'),
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: {
       isEnabled: true
