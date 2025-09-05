@@ -75,7 +75,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     auth: {
-      secret: process.env.NUXT_NEXTAUTH_SECRET
+      secret: process.env.NUXT_NEXTAUTH_SECRET,
+      yourOrigin: 'tickup.gregfield.dev'
     },
     github: {
       clientId: process.env.NUXT_GITHUB_CLIENT_ID,
@@ -99,6 +100,7 @@ export default defineNuxtConfig({
   auth: {
     origin: process.env.NUXT_AUTH_ORIGIN || 'http://localhost:3000', 
     isEnabled: true,
+    originEnvKey: 'NUXT_YOUR_ORIGIN',
     provider: {
       type: 'authjs',
     },
