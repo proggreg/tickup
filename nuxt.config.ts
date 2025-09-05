@@ -97,7 +97,6 @@ export default defineNuxtConfig({
   },
 
   auth: {
-    origin: process.env.AUTH_ORIGIN || 'http://localhost:3000', 
     enabled: true,
     isEnabled: true,
     provider: {
