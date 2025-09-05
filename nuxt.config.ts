@@ -96,9 +96,6 @@ export default defineNuxtConfig({
       VAPID_KEY: process.env.VAPID_PUBLIC_KEY,
       bugsnag: {
         apiKey: process.env.BUGSNAG_API_KEY,
-      },
-      auth: {
-        origin:  process.env.AUTH_ORIGIN || 'http://localhost:3000',
       }
     },
   },
