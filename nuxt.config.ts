@@ -98,7 +98,7 @@ export default defineNuxtConfig({
   auth: {
     isEnabled: true,
     originEnvKey: 'AUTH_ORIGIN',
-    origin: process.env.AUTH_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev' : 'http://localhost:3000'),
+    origin: process.env.AUTH_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : 'http://localhost:3000'),
     provider: {
       type: 'authjs',
     },
