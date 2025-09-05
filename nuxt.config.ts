@@ -1,6 +1,8 @@
 import { defineNuxtConfig } from 'nuxt/config'
 import vuetify from './config/vuetify'
 
+console.log("NUXT_AUTH_ORIGIN", process.env.NUXT_AUTH_ORIGIN)
+
 export default defineNuxtConfig({
   modules: [
     // '@vite-pwa/nuxt',
@@ -74,9 +76,6 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    auth: {
-      secret: process.env.NUXT_NEXTAUTH_SECRET
-    },
     github: {
       clientId: process.env.NUXT_GITHUB_CLIENT_ID,
       clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET,
