@@ -1,8 +1,6 @@
 import { defineNuxtConfig } from 'nuxt/config'
 import vuetify from './config/vuetify'
 
-console.log("NUXT_AUTH_ORIGIN", process.env.NUXT_AUTH_ORIGIN)
-
 export default defineNuxtConfig({
   modules: [
     // '@vite-pwa/nuxt',
@@ -76,6 +74,9 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    auth: {
+      secret: process.env.NUXT_NEXTAUTH_SECRET
+    },
     github: {
       clientId: process.env.NUXT_GITHUB_CLIENT_ID,
       clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET,
@@ -96,13 +97,13 @@ export default defineNuxtConfig({
   },
 
   auth: {
-    origin: process.env.NUXT_AUTH_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev' : 'http://localhost:3000'), 
+    origin: process.env.NUXT_AUTH_ORIGIN || 'http://localhost:3000', 
     enabled: true,
     isEnabled: true,
     provider: {
       type: 'authjs',
     },
-    baseURL: process.env.NUXT_AUTH_ORIGIN ? `https://${process.env.NUXT_AUTH_ORIGIN}/api/auth` : (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : 'http://localhost:3000/api/auth'),
+    baseURL: `https://tickup.gregfield.dev/api/auth`,
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: true,
     sessionRefresh: {
