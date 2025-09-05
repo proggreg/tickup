@@ -114,8 +114,8 @@ export default defineNuxtConfig({
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: false,
     sessionRefresh: {
-      enablePeriodically: true,
-      enableOnWindowFocus: true,
+      enablePeriodically: false,
+      enableOnWindowFocus: false,
     },
     pages: {
       signIn: '/login',
