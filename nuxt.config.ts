@@ -88,7 +88,7 @@ export default defineNuxtConfig({
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
       VAPID_KEY: process.env.VAPID_PUBLIC_KEY,
-      authOrigin: process.env.AUTH_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev' : 'http://localhost:3000'),
+      authOrigin: process.env.AUTH_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : 'http://localhost:3000'),
       bugsnag: {
         apiKey: process.env.BUGSNAG_API_KEY,
       }
