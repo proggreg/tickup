@@ -65,42 +65,85 @@ export default NuxtAuthHandler({
       return url
     },
 
-    async jwt({ token, user }) {
-      console.log('jwt', token, user)
+    async jwt({ token, user, account, profile }) {
+      console.log('jwt', { token, user, account, profile })
+      
+      // Initial sign in
       if (user) {
-        // When signing in, add user info to token
-        token.sub = user.id
-        token.username = user.username
-        token._id = user._id
+        // Handle different providers
+        if (account?.provider === 'github') {
+          // For GitHub, we need to create or find the user in our database
+          // and map the GitHub profile to our user structure
+          token.sub = user.id
+          token.username = user.login || user.name || user.email?.split('@')[0] || 'github-user'
+          token._id = user.id
+          token.email = user.email
+          token.name = user.name
+          token.image = user.image
+        } else if (account?.provider === 'credentials') {
+          // For credentials provider, user object already has the right structure
+          token.sub = user.id
+          token.username = user.username
+          token._id = user._id
+          token.email = user.email
+          token.name = user.name
+        }
       }
+      
       return token
     },
 
     async session({ session, token }) {
-
-      // if (session.user && !session.user.name) {
-      //   const user = await UserSchema.findById(token.sub)
-      //   if (user) {
-      //     session.user.name = user.username
-      //   }
-      // }
-
+      // Transfer token properties to session
       session.user = {
-        ...token,
         ...session.user,
+        ...token,
       }
 
       console.log('session', session)
-
       return session
     },
-    async signIn({ user }) {
-      console.log('signIn', user)
-      if (user) {
-        return true
+
+    async signIn({ user, account, profile }) {
+      console.log('signIn', { user, account, profile })
+      
+      // For GitHub provider, you might want to create/update user in your database
+      if (account?.provider === 'github') {
+        try {
+          // Check if user exists in your database
+          const existingUser = await UserSchema.findOne({ 
+            $or: [
+              { email: user.email },
+              { githubId: user.id }
+            ]
+          })
+          
+          if (!existingUser) {
+            // Create new user from GitHub profile
+            const newUser = new UserSchema({
+              username: user.login || user.name || user.email?.split('@')[0] || 'github-user',
+              email: user.email,
+              name: user.name,
+              image: user.image,
+              githubId: user.id,
+              hasGithub: true
+            })
+            await newUser.save()
+          } else {
+            // Update existing user with GitHub info
+            await UserSchema.findByIdAndUpdate(existingUser._id, {
+              githubId: user.id,
+              hasGithub: true,
+              image: user.image
+            })
+          }
+        } catch (error) {
+          console.error('Error handling GitHub sign-in:', error)
+          return false
+        }
       }
-      console.log('signIn user false')
-      return false
+      
+      return true
     },
   },
   // @ts-expect-error
