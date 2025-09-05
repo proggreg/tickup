@@ -92,12 +92,18 @@ export default NuxtAuthHandler({
     },
 
     async session({ session, token }) {
-      // Transfer token properties to session
-      // session.user = {
-      //   ...session.user,
-      //   ...token,
-      // }
 
+     if (session.user && !session.user.name) {
+        const user = await UserSchema.findById(token.sub)
+        if (user) {
+          session.user.name = user.username
+        }
+      }
+
+      session.user = {
+        ...token,
+        ...session.user,
+      }
       console.log('session', session)
       return session
     },
