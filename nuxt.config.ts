@@ -74,7 +74,6 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    authOrigin: 'http://localhost:3000',
     auth: {
       secret: process.env.NUXT_NEXTAUTH_SECRET
     },
