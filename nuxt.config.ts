@@ -98,7 +98,7 @@ export default defineNuxtConfig({
         apiKey: process.env.BUGSNAG_API_KEY,
       },
       auth: {
-        origin: 'http://localhost:3000',
+        origin:  process.env.NUXT_AUTH_ORIGIN || 'http://localhost:3000',
       }
     },
   },
