@@ -96,13 +96,13 @@ export default defineNuxtConfig({
   },
 
   auth: {
-    origin: process.env.NUXT_AUTH_ORIGIN, 
+    origin: process.env.NUXT_AUTH_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev' : 'http://localhost:3000'), 
     enabled: true,
     isEnabled: true,
     provider: {
       type: 'authjs',
     },
-    baseURL: `https://tickup.gregfield.dev/api/auth`,
+    baseURL: process.env.NUXT_AUTH_ORIGIN ? `https://${process.env.NUXT_AUTH_ORIGIN}/api/auth` : (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : 'http://localhost:3000/api/auth'),
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: true,
     sessionRefresh: {
