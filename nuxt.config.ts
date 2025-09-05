@@ -76,7 +76,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     auth: {
       secret: process.env.NUXT_NEXTAUTH_SECRET,
-      yourOrigin: 'https://tickup.gregfield.dev'
+      yourOrigin: 'https://tickup.gregfield.dev/api/auth'
     },
     github: {
       clientId: process.env.NUXT_GITHUB_CLIENT_ID,
