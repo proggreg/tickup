@@ -93,21 +93,21 @@ export default NuxtAuthHandler({
 
     async session({ session, token }) {
 
-     if (session.user && !session.user.name) {
-        try {
-          const user = await UserSchema.findById(token.sub)
-          if (user) {
-            session.user.name = user.username
-          }
-        } catch (error) {
-          console.error('Error finding user:', error)
-        }
-      }
+    //  if (session.user && !session.user.name) {
+    //     try {
+    //       const user = await UserSchema.findById(token.sub)
+    //       if (user) {
+    //         session.user.name = user.username
+    //       }
+    //     } catch (error) {
+    //       console.error('Error finding user:', error)
+    //     }
+    //   }
 
-      session.user = {
-        ...token,
-        ...session.user,
-      }
+    //   session.user = {
+    //     ...token,
+    //     ...session.user,
+    //   }
       console.log('session', session)
       return session
     },
