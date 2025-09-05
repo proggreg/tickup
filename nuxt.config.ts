@@ -112,7 +112,7 @@ export default defineNuxtConfig({
     },
     baseURL: process.env.VERCEL_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/auth` : 'http://localhost:3000',
     secret: process.env.NUXT_NEXTAUTH_SECRET,
-    globalAppMiddleware: false,
+    globalAppMiddleware: true,
     sessionRefresh: {
       enablePeriodically: false,
       enableOnWindowFocus: false,
