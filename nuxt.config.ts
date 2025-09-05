@@ -76,7 +76,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     authOrigin: 'http://localhost:3000',
     auth: {
-      secret: process.env.NUXT_NEXTAUTH_SECRET,
+      secret: process.env.NUXT_NEXTAUTH_SECRET
     },
     github: {
       clientId: process.env.NUXT_GITHUB_CLIENT_ID,
@@ -104,7 +104,7 @@ export default defineNuxtConfig({
     provider: {
       type: 'authjs',
     },
-    baseURL: `https://tickp.gregfield.dev/api/auth`,
+    baseURL: `https://tickup.gregfield.dev/api/auth`,
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: true,
     sessionRefresh: {
