@@ -93,10 +93,10 @@ export default NuxtAuthHandler({
 
     async session({ session, token }) {
       // Transfer token properties to session
-      session.user = {
-        ...session.user,
-        ...token,
-      }
+      // session.user = {
+      //   ...session.user,
+      //   ...token,
+      // }
 
       console.log('session', session)
       return session

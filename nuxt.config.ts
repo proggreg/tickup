@@ -3,7 +3,7 @@ import vuetify from './config/vuetify'
 
 export default defineNuxtConfig({
   modules: [
-    '@vite-pwa/nuxt',
+    // '@vite-pwa/nuxt',
     'vuetify-nuxt-module',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
