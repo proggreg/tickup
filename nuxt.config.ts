@@ -91,6 +91,9 @@ export default defineNuxtConfig({
       authOrigin: process.env.AUTH_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : 'http://localhost:3000'),
       bugsnag: {
         apiKey: process.env.BUGSNAG_API_KEY,
+      },
+      auth: {
+        secret: process.env.NUXT_NEXTAUTH_SECRET
       }
     },
   },
