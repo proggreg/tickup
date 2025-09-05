@@ -97,6 +97,7 @@ export default defineNuxtConfig({
   },
 
   auth: {
+    origin: process.env.NUXT_AUTH_ORIGIN, 
     enabled: true,
     isEnabled: true,
     provider: {
