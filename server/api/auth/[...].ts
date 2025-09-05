@@ -95,9 +95,11 @@ export default NuxtAuthHandler({
       return session
     },
     async signIn({ user }) {
+      console.log('signIn', user)
       if (user) {
         return true
       }
+      console.log('signIn user false')
       return false
     },
   },
