@@ -79,6 +79,9 @@ export default defineNuxtConfig({
       clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET,
       personal: process.env.NUXT_GITHUB_PERSONAL_ACCESS_TOKEN,
     },
+    auth: {
+      secret: process.env.NUXT_NEXTAUTH_SECRET
+    },
     private: {  
       vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
     },
@@ -91,9 +94,6 @@ export default defineNuxtConfig({
       authOrigin: process.env.AUTH_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : 'http://localhost:3000'),
       bugsnag: {
         apiKey: process.env.BUGSNAG_API_KEY,
-      },
-      auth: {
-        secret: process.env.NUXT_NEXTAUTH_SECRET
       }
     },
   },
