@@ -13,8 +13,8 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
     '@nuxtjs/device',
-    '@nuxt/test-utils/module'
-
+    '@nuxt/test-utils/module',
+    'nuxt-bugsnag' 
   ],
 
   experimental: {
@@ -56,15 +56,15 @@ export default defineNuxtConfig({
     strict: true,
   },
 
-  // bugsnag: {
-  //   baseUrl: process.env.NUXT_ENV_VERCEL_URL || 'http://localhost:3000',
-  //   publishRelease: true,
-  //   config: {
-  //     apiKey: process.env.BUGSNAG_API_KEY,
-  //     enabledReleaseStages: ['development', 'staging', 'production'],
-  //     releaseStage: process.env.NODE_ENV,
-  //   },
-  // },
+  bugsnag: {
+    disabled: process.env.NODE_ENV === 'development', // Disable in development
+    publishRelease: true,
+    config: {
+      apiKey: process.env.BUGSNAG_API_KEY,
+      enabledReleaseStages: ['staging', 'production'],
+      releaseStage: process.env.NODE_ENV,
+    },
+  },
 
   devtools: {
     enabled: true,
@@ -94,6 +94,9 @@ export default defineNuxtConfig({
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
       VAPID_KEY: process.env.VAPID_PUBLIC_KEY,
+      bugsnag: {
+        apiKey: process.env.BUGSNAG_API_KEY,
+      },
       auth: {
         origin: 'http://localhost:3000',
       }
