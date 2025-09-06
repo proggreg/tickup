@@ -84,52 +84,27 @@ export default NuxtAuthHandler({
       return baseUrl
     },
 
-    async jwt({ token, user, account, profile }) {
-      console.log('JWT callback:', { token, user, account, profile })
-      
+    async jwt({ token, user }) {
       if (user) {
-        const extendedUser = user as ExtendedUser
-        if (account?.provider === 'github') {
-          token.username = extendedUser.login || extendedUser.name || extendedUser.email?.split('@')[0] || 'github-user'
-          token._id = extendedUser.id
-          token.email = extendedUser.email
-          token.name = extendedUser.name
-          token.image = extendedUser.image
-          const user = await UserSchema.findOne({ username: extendedUser.email })
-          console.log('user', user)
-          if (user) {
-            token.sub  = user._id.toString()
-          }
-          
-        } else if (account?.provider === 'credentials') {
-          token.username = extendedUser.username
-          token._id = extendedUser._id
-          token.email = extendedUser.email
-          token.name = extendedUser.name
-          const user = await UserSchema.findOne({ username: extendedUser.username })
-          if (user) {
-            token.sub  = user._id.toString()
-          }
-        }
+        // When signing in, add user info to token
+        token.sub = user.id
+        token.username = user.username
+        token._id = user._id
       }
-
-      console.log('JWT callback:', token)
-      
       return token
     },
 
     async session({ session, token }) {
-      console.log('Session callback:', { session, token })
-      
-      if (token) {
-        session.user.id = (token.sub || token._id) as string
-        session.user.username = token.username as string
-        session.user._id = token._id as string
-        session.user.sub = token.sub as string
-        
-        if (!session.user.name && token.name) {
-          session.user.name = token.name as string
+      if (session.user && !session.user.name) {
+        const user = await UserSchema.findById(token.sub)
+        if (user) {
+          session.user.name = user.username
         }
+      }
+
+      session.user = {
+        ...token,
+        ...session.user,
       }
 
       return session
