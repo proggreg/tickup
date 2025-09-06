@@ -90,7 +90,6 @@ export default NuxtAuthHandler({
       if (user) {
         const extendedUser = user as ExtendedUser
         if (account?.provider === 'github') {
-          token.sub = extendedUser.id
           token.username = extendedUser.login || extendedUser.name || extendedUser.email?.split('@')[0] || 'github-user'
           token._id = extendedUser.id
           token.email = extendedUser.email
