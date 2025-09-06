@@ -85,6 +85,7 @@ export default NuxtAuthHandler({
     },
 
     async jwt({ token, user }) {
+      console.log('jwt', {token, user })
       if (user) {
         // When signing in, add user info to token
         console.log('jwt user', user)
@@ -96,8 +97,10 @@ export default NuxtAuthHandler({
     },
 
     async session({ session, token }) {
+      console.log('session', {session, token })
       if (session.user && !session.user.name) {
         const user = await UserSchema.findById(token.sub)
+        console.log('session user', user)
         if (user) {
           session.user.name = user.username
         }
