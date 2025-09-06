@@ -111,6 +111,8 @@ export default NuxtAuthHandler({
           }
         }
       }
+
+      console.log('JWT callback:', token)
       
       return token
     },
