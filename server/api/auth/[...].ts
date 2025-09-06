@@ -95,12 +95,20 @@ export default NuxtAuthHandler({
           token.email = extendedUser.email
           token.name = extendedUser.name
           token.image = extendedUser.image
+          const user = await UserSchema.findOne({ username: extendedUser.email })
+          if (user) {
+            token.sub  = user._id.toString()
+          }
+          
         } else if (account?.provider === 'credentials') {
-          token.sub = extendedUser.id
           token.username = extendedUser.username
           token._id = extendedUser._id
           token.email = extendedUser.email
           token.name = extendedUser.name
+          const user = await UserSchema.findOne({ username: extendedUser.username })
+          if (user) {
+            token.sub  = user._id.toString()
+          }
         }
       }
       
