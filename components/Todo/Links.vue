@@ -60,7 +60,7 @@ watch(() => listsStore.currentTodo.desc, async () => {
     listsStore.updateTodo(listsStore.currentTodo)
   }
   catch (e) {
-    console.error(e)
+    logger.error(e as Error, { component: 'TodoLinks', function: 'watchDesc' })
   }
 })
 </script>

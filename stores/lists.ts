@@ -55,7 +55,7 @@ export const useListsStore = defineStore('lists', {
 
       if (!listToUpdate || !listToUpdate.name || !listToUpdate._id) return
       if (!isOnline) {
-        console.log('don\'t update not online')
+        logger.log('Skipping list update - offline')
         return 
       }
       await $fetch<List>(`/api/list/${listToUpdate._id}`, {
@@ -78,7 +78,7 @@ export const useListsStore = defineStore('lists', {
         })
       }
       catch (err) {
-        console.error(err)
+        logger.error(err as Error, { component: 'ListsStore', function: 'deleteList', listId })
       }
     },
     setListName(newName: string) {
@@ -100,12 +100,12 @@ export const useListsStore = defineStore('lists', {
       const isHomepage = route.path === '/' || route.name === 'index'
       const { isOnline } = useOfflineSync()
       if (newTodo._id) {
-        console.warn('todo already has an id', newTodo)
+        logger.warn('Todo already has an id, skipping add', { component: 'ListsStore', function: 'addTodo', todo: newTodo })
         return
       }
 
       if (!isOnline.value) {
-        console.log('not online')
+        logger.log('Skipping todo add - offline')
         return
       }
       if (!this.currentList.todos) this.currentList.todos = []
@@ -119,7 +119,7 @@ export const useListsStore = defineStore('lists', {
       })
 
       if (!todo) {
-        console.error('Failed to add todo')
+        logger.error(new Error('Failed to add todo'), { component: 'ListsStore', function: 'addTodo', todo: newTodo })
         return
       }
 

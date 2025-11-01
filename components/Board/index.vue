@@ -2,13 +2,13 @@
 const statusStore = useSettingsStore()
 const { $device } = useNuxtApp()
 const dragging = ref(false)
-const { data } = useAuth()
+const { userId } = useCurrentUser()
 const route = useRoute()
 const listStore = useListsStore()
 const showFooter = ref('')
 const newTodo = ref<Todo>({
   name: '',
-  userId: data.value?.user.id || data.value?.user?.sub,
+  userId: userId.value,
   listId: route.params.id as string,
   status: '',
   edit: true,

@@ -44,7 +44,7 @@ function validateListName(value: string) {
 
 async function generateImage() {
   if (!store.currentList.name) {
-    console.warn('no list name')
+    logger.warn('No list name provided for image generation', { component: 'ListHeader', function: 'generateImage' })
     alert('Please enter a list name')
     return
   }
@@ -57,7 +57,7 @@ async function generateImage() {
     },
   })
   if (!response) {
-    console.warn('couldn\'t generate image')
+    logger.warn('Failed to generate image', { component: 'ListHeader', function: 'generateImage', listName: store.currentList.name })
     return
   }
 

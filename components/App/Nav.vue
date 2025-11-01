@@ -17,7 +17,7 @@ function deleteList() {
   contextMenuOpen.value = false
   
   if (!selectedList.value || !selectedList.value._id) {
-    console.warn('No list selected')
+    logger.warn('No list selected for deletion', { component: 'Nav', function: 'deleteList' })
     return
   }
   listsStore.deleteList(selectedList.value._id)

@@ -1,20 +1,20 @@
 <script setup lang="ts">
   const listsStore = useListsStore()
   const settingsStore = useSettingsStore()
-  const { data, status } = useAuth()
+  const { status } = useAuth()
+  const { userId, isAuthenticated } = useCurrentUser()
   const config = useRuntimeConfig()
   const event = useRequestEvent()
   
   useShortcutKeys()
 
-if (status.value === 'authenticated') {
+if (isAuthenticated.value) {
   await useAsyncData(() => settingsStore.getUserSettings().then(() => true))
 
-  const userId = data?.value?.user?.sub
-  if (userId) {
-    listsStore.getLists(userId)
-    listsStore.getTodaysTodos(userId)
-    listsStore.getOverdueTodos(userId)
+  if (userId.value) {
+    listsStore.getLists(userId.value)
+    listsStore.getTodaysTodos(userId.value)
+    listsStore.getOverdueTodos(userId.value)
   }
 }
 else {
@@ -23,8 +23,8 @@ else {
     navigateTo('https://tickup.gregfield.dev/login', { external: true })
   }
 }
-if (data?.value?.user?.sub) {
-  await useAsyncData('lists', () => listsStore.getLists(data?.value?.user?.sub ? data?.value?.user?.sub : '').then(() => true))
+if (userId.value) {
+  await useAsyncData('lists', () => listsStore.getLists(userId.value).then(() => true))
 }
 
 </script>
