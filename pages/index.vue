@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
+  auth: { authenticatedOnly: true, navigateUnauthenticatedTo: '/login' }
 })
 useHead({ title: 'TickUp:Home' })
 
