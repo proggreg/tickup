@@ -1,25 +1,23 @@
 <script setup lang="ts">
-const { data } = useAuth()
+const { userId } = useCurrentUser()
 const listsStore = useListsStore()
 const modelValue = defineModel<string>({ default: 'todo' })
 
 watch(modelValue, (newTab) => {
-  const sub = data?.value?.user?.sub
-  if (!sub) return
+  if (!userId.value) return
 
   if (newTab === 'overdue') {
-    listsStore.getOverdueTodos(sub)
+    listsStore.getOverdueTodos(userId.value)
   } else if (newTab === 'todo') {
-    listsStore.getTodaysTodos(sub)
+    listsStore.getTodaysTodos(userId.value)
   } else if (newTab === 'done') {
-    listsStore.getTodaysTodos(sub)
+    listsStore.getTodaysTodos(userId.value)
   }
 })
 
 onBeforeMount(() => {
-  const sub = data?.value?.user?.sub
-  if (sub) {
-    listsStore.getTodaysTodos(sub)
+  if (userId.value) {
+    listsStore.getTodaysTodos(userId.value)
   }
 })
 </script>

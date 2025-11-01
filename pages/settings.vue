@@ -2,7 +2,8 @@
 definePageMeta({
   layout: 'settings',
 })
-const { data, signOut } = useAuth()
+const { signOut } = useAuth()
+const { userId } = useCurrentUser()
 const store = useSettingsStore()
 const config = useRuntimeConfig()
 
@@ -30,7 +31,7 @@ function getRandomHexColor() {
 
 function addStatus() {
   if (!store.statuses) {
-    console.warn('no statuses')
+    logger.warn('no statuses', { component: 'Settings', function: 'addStatus' })
     return
   }
 
@@ -56,12 +57,12 @@ async function save() {
 
   await $fetch('/api/settings', {
     method: 'PUT',
-    body: { userId: data.value?.user?.sub, statuses: store.statuses },
+    body: { userId: userId.value, statuses: store.statuses },
   })
 }
 
 function renameStatus() {
-  console.debug('rename')
+  logger.debug('rename')
 }
 function deleteStatus(status: Status) {
   store.statuses.splice(store.statuses.indexOf(status), 1)
@@ -69,7 +70,7 @@ function deleteStatus(status: Status) {
 }
 
 function cancel() {
-  console.debug('cancel')
+  logger.debug('cancel')
 }
 
 // const useRegisterSW = await import('virtual:pwa-register')
@@ -84,7 +85,7 @@ function cancel() {
 onMounted(() => {
   const subscribePush = async () => {
     if (!('serviceWorker' in navigator)) {
-      console.warn('Service workers are not supported by this browser')
+      logger.warn('Service workers are not supported by this browser', { component: 'Settings' })
       return
     }
 
@@ -110,7 +111,7 @@ onMounted(() => {
       })
     }
     catch (error) {
-      console.error('Could not subscribe to push', error)
+      logger.error(error as Error, { component: 'Settings', function: 'subscribePush' })
     }
   }
 

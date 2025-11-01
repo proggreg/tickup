@@ -125,7 +125,7 @@ async function deleteAttachment(attachmentId: string) {
     )
     await listsStore.updateTodo(listsStore.currentTodo)
   } catch (error) {
-    console.error('Error deleting attachment:', error)
+    logger.error(error as Error, { component: 'TodoAttachments', function: 'deleteAttachment' })
   }
 }
 

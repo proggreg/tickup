@@ -8,7 +8,7 @@ const buttonFocused = ref(false)
 
 async function deleteTodo() {
   if (!todo._id) {
-    console.error('No todo id', todo)
+    logger.error(new Error('No todo id provided'), { component: 'DeleteButton', todo })
     return
   }
   await listsStore.deleteTodo(todo._id)

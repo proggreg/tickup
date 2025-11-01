@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
-const { data } = useAuth()
+const { userId } = useCurrentUser()
 const route = useRoute()
 const emit = defineEmits(['save-todo'])
 
@@ -11,17 +11,12 @@ async function addTodo() {
   if (route.params.id) {
     listsStore.newTodo.listId = route.params.id as string
   }
-  if (data.value?.user?.id) {
-    listsStore.newTodo.userId = data.value?.user?.id
-  }
-  else if (data.value?.user?.sub) {
-    listsStore.newTodo.userId = data.value?.user?.sub
-  }
+  listsStore.newTodo.userId = userId.value
 
   if (listsStore.newTodo && listsStore.newTodo.name) {
     await listsStore.addTodo(listsStore.newTodo)
     if (!route.params.id) {
-      await listsStore.getTodaysTodos(data.value?.user.id || data.value?.user.sub || '')
+      await listsStore.getTodaysTodos(userId.value)
     }
     listsStore.newReset()
     emit('save-todo')

@@ -2,21 +2,15 @@ export const useSearchStore = defineStore('search', () => {
   const searchQuery = ref('')
   const results = reactive<Todo[]>([])
 
-  function getUserId() {
-    const { data: user } = useAuth()
-    const userId = user.value?.user?.sub
-    return userId
-  }
-
   function search() {
-    const userId = getUserId()
+    const { userId } = useCurrentUser()
 
-    $fetch<Todo[]>('/api/search/todo', { query: { q: searchQuery.value, id: userId } })
+    $fetch<Todo[]>('/api/search/todo', { query: { q: searchQuery.value, id: userId.value } })
       .then((res) => {
         results.splice(0, results.length, ...res)
       })
       .catch((err) => {
-        console.error(err)
+        logger.error(err as Error, { component: 'SearchStore', function: 'search', query: searchQuery.value })
       })
   }
   const debouncedSearch = useDebounceFn(search, 500)
