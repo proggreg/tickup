@@ -3,6 +3,8 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcrypt'
 import { UserSchema } from '../../models/users.schema'
 import { NuxtAuthHandler } from '#auth'
+import type { User as NextAuthUser } from 'next-auth'
+
 
 // Extend the User type to include our custom properties
 interface ExtendedUser {
@@ -10,8 +12,8 @@ interface ExtendedUser {
   name?: string
   email?: string
   image?: string
-  username?: string
-  _id?: string
+  username: string
+  _id: string
   login?: string
 }
 

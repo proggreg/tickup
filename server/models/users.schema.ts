@@ -3,6 +3,7 @@ import { defineMongooseModel } from '#nuxt/mongoose'
 export const UserSchema = defineMongooseModel<{
   username: string
   password: string
+  email: string
   settings: {
     statuses: string[]
   }
@@ -16,6 +17,10 @@ export const UserSchema = defineMongooseModel<{
       required: true,
     },
     password: {
+      type: 'string', 
+      required: true,
+    },
+    email: {
       type: 'string',
       required: true,
     },

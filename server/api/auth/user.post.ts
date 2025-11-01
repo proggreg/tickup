@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
     _id: newUser._id.toString(),
     username: newUser.username,
     email: newUser.email,
-    password: newUser.password, // This should be the hashed password
+    password: newUser.password, 
     settings: newUser.settings,
     hasGithub: newUser.hasGithub
   }

@@ -11,7 +11,13 @@ declare module 'next-auth' {
       id: string
       username: string
       image: string
+      username: string
     }
+  }
+  interface User extends ExtendedUser {
+    username: string
+    _id: string
+    email: string
   }
 }
 
