@@ -58,7 +58,7 @@
     "@aws-sdk/client-s3": "^3.717.0",
     "@bugsnag/js": "^8.4.0",
     "@pinia/nuxt": "^0.5.1",
-    "@sidebase/nuxt-auth": "^1.0.2",
+    "@sidebase/nuxt-auth": "^1.1.0",
     "@types/bcrypt": "^5.0.2",
     "@vite-pwa/nuxt": "^0.10.6",
     "@vuepic/vue-datepicker": "^7.0.0",
