@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'default',
+  middleware: ['sidebase-auth'],
   auth: { authenticatedOnly: true, navigateUnauthenticatedTo: '/login' }
 })
 useHead({ title: 'TickUp:Home' })
