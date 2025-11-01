@@ -116,20 +116,27 @@ export default NuxtAuthHandler({
       return session
     },
 
-    async signIn({ user, account, profile }) {
-      console.log('SignIn callback:', { user, account, profile })
+async signIn({ user, account, profile }) {
+      const signInStartTime = Date.now()
+      console.log(`[${new Date().toISOString()}] SignIn callback started.`, { user, account, profile })
       
       if (account?.provider === 'github') {
         try {
+          const githubSignInStartTime = Date.now()
+          console.log(`[${new Date().toISOString()}] GitHub sign-in flow started.`)
           const extendedUser = user as ExtendedUser
-          const existingUser = await UserSchema.findOne({ 
+
+          const findUserStartTime = Date.now()
+          const existingUser = await UserSchema.findOne({
             $or: [
               { email: extendedUser.email },
               { githubId: extendedUser.id }
             ]
           })
+          console.log(`[${new Date().toISOString()}] UserSchema.findOne completed in ${Date.now() - findUserStartTime}ms. Existing user: ${!!existingUser}`)
           
           if (!existingUser) {
+            console.log(`[${new Date().toISOString()}] Creating new user.`)
             const newUser = new UserSchema({
               username: extendedUser.login || extendedUser.name || extendedUser.email?.split('@')[0] || 'github-user',
               email: extendedUser.email,
@@ -138,20 +145,26 @@ export default NuxtAuthHandler({
               githubId: extendedUser.id,
               hasGithub: true
             })
+            const saveUserStartTime = Date.now()
             await newUser.save()
+            console.log(`[${new Date().toISOString()}] New user saved in ${Date.now() - saveUserStartTime}ms.`)
           } else {
+            console.log(`[${new Date().toISOString()}] Updating existing user.`)
+            const updateUserStartTime = Date.now()
             await UserSchema.findByIdAndUpdate(existingUser._id, {
               githubId: extendedUser.id,
               hasGithub: true,
               image: extendedUser.image
             })
+            console.log(`[${new Date().toISOString()}] Existing user updated in ${Date.now() - updateUserStartTime}ms.`)
           }
+          console.log(`[${new Date().toISOString()}] GitHub sign-in flow completed in ${Date.now() - githubSignInStartTime}ms.`)
         } catch (error) {
-          console.error('Error handling GitHub sign-in:', error)
+          console.error(`[${new Date().toISOString()}] Error handling GitHub sign-in:`, error)
           return false
         }
       }
-      
+      console.log(`[${new Date().toISOString()}] SignIn callback finished in ${Date.now() - signInStartTime}ms.`)
       return true
     },
   }
