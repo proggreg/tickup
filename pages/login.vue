@@ -2,7 +2,7 @@
   useHead({ title: 'TickUp - Login' })
   definePageMeta({
     layout: 'login',
-    auth: { unauthenticatedOnly: true, navigateAuthenticatedTo: '/' }
+    auth: false 
   })
 </script>
 
