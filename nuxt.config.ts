@@ -108,7 +108,7 @@ export default defineNuxtConfig({
     baseURL: process.env.AUTH_ORIGIN ? `${process.env.AUTH_ORIGIN}/api/auth` : (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : 'http://localhost:3000/api/auth'),
     secret: process.env.NUXT_NEXTAUTH_SECRET,
     globalAppMiddleware: {
-      isEnabled: true
+      isEnabled: false
     },
     sessionRefresh: {
       enablePeriodically: false,
