@@ -42,19 +42,30 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    { name: 'setup', testMatch: /.*\.setup\.ts/ },
+    // Setup project runs first to authenticate
+    { 
+      name: 'setup', 
+      testMatch: /.*\.setup\.ts/,
+    },
 
+    // All other projects depend on the setup project
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/user.json' },
-      
+      use: { 
+        ...devices['Desktop Chrome'], 
+        storageState: 'user.json',
+      },
+      dependencies: ['setup'],
     },
 
     {
       name: 'pixel_7',
-      use: { ...devices['Pixel 7'], storageState: 'playwright/.auth/user.json' },
+      use: { 
+        ...devices['Pixel 7'], 
+        storageState: 'user.json',
+      },
+      dependencies: ['setup'],
     },
-
   ],
 
   /* Run your local dev server before starting the tests */
