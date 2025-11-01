@@ -30,13 +30,7 @@ function setOpen(todo: Todo) {
         </v-list-item-title>
 
         <template #append>
-          <v-btn
-            icon
-            elevation="0"
-            @click="listsStore.deleteTodo(todo._id!)"
-          >
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
+          <AppDeleteButton :todo="todo" />
         </template>
       </v-list-item>
     </v-list>
