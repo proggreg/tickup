@@ -41,7 +41,7 @@ export const useListsStore = defineStore('lists', {
           body: newList,
         })
 
-        this.lists[this.lists.length - 1]._id = list._id
+        // this.lists[this.lists.length - 1]._id = list._id
 
         return newList
       }
@@ -138,12 +138,12 @@ export const useListsStore = defineStore('lists', {
         attachments: [],
       }
 
-      if (isHomepage) {
-        this.todaysTodos[this.todaysTodos.length - 1]._id = todo._id
-      }
-      else {
-        this.currentList.todos[this.currentList.todos.length - 1]._id = todo._id
-      }
+      // if (isHomepage) {
+      //   this.todaysTodos[this.todaysTodos.length - 1]._id = todo._id
+      // }
+      // else {
+      //   this.currentList.todos[this.currentList.todos.length - 1]._id = todo._id
+      // }
 
       this.updateList()
       return todo

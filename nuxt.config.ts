@@ -8,7 +8,6 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     // "pinia-plugin-persistedstate/nuxt",
     "@vueuse/nuxt",
-    "nuxt-mongoose",
     "@nuxtjs/color-mode", 
     "@nuxt/eslint",
     // "@nuxtjs/device",
@@ -95,12 +94,7 @@ export default defineNuxtConfig({
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
     },
-  },
-
-  mongoose: {
-    devtools: true,
-    uri: process.env.MONGODB_URI,
-  },
+  }
 
   // pwa: {
   //   disable: true,

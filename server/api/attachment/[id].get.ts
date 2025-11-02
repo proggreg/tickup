@@ -1,4 +1,4 @@
-import { AttachmentSchema } from '~/server/models/attachment.schema'
+// import { AttachmentSchema } from '~/server/models/attachment.schema'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -11,21 +11,21 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const attachment = await AttachmentSchema.findById(attachmentId)
-    if (!attachment) {
-      throw createError({
-        statusCode: 404,
-        message: 'Attachment not found',
-      })
-    }
+    // const attachment = await AttachmentSchema.findById(attachmentId)
+    // if (!attachment) {
+    //   throw createError({
+    //     statusCode: 404,
+    //     message: 'Attachment not found',
+    //   })
+    // }
 
     // Set appropriate headers
-    setHeader(event, 'Content-Type', attachment.mimeType)
-    setHeader(event, 'Content-Disposition', `inline; filename="${attachment.originalName}"`)
+    // setHeader(event, 'Content-Type', attachment.mimeType)
+    // setHeader(event, 'Content-Disposition', `inline; filename="${attachment.originalName}"`)
     // setHeader(event, 'Content-Length', attachment.size.toString())
 
     // Return the file data
-    return attachment.data
+    // return attachment.data
   }
  catch (error) {
     console.error('Error serving attachment:', error)

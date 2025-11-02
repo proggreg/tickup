@@ -1,7 +1,7 @@
 import webpush from 'web-push'
 import { readBody } from 'h3'
-import { UserSchema } from '../models/users.schema'
-import { TodoSchema } from '../models/todo.schema'
+// import { UserSchema } from '../models/users.schema'
+// import { TodoSchema } from '../models/todo.schema'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -16,19 +16,19 @@ export default defineEventHandler(async (event) => {
   }
 
   if (username && subscription) {
-    await UserSchema.findOneAndUpdate(
-      { username },
-      { $addToSet: { pushSubscriptions: subscription } },
-      { new: true, upsert: true },
-    )
+    // await UserSchema.findOneAndUpdate(
+    //   { username },
+    //   { $addToSet: { pushSubscriptions: subscription } },
+    //   { new: true, upsert: true },
+    // )
   }
 
   if (todoId && notificationDateTime) {
-    await TodoSchema.findOneAndUpdate(
-      { _id: todoId },
-      { notificationDateTime: new Date(notificationDateTime), notificationSent: false },
-      { new: true },
-    )
+    // await TodoSchema.findOneAndUpdate(
+    //   { _id: todoId },
+    //   { notificationDateTime: new Date(notificationDateTime), notificationSent: false },
+    //   { new: true },
+    // )
   }
 
   webpush.setVapidDetails(

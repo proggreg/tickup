@@ -1,5 +1,3 @@
-import { ObjectID } from 'mongodb'
-
 export { Todo, Status, List }
 declare global {
 

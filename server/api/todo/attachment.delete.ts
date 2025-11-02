@@ -1,5 +1,5 @@
-import { TodoSchema } from '~/server/models/todo.schema'
-import { AttachmentSchema } from '~/server/models/attachment.schema'
+// import { TodoSchema } from '~/server/models/todo.schema'
+// import { AttachmentSchema } from '~/server/models/attachment.schema'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -14,28 +14,28 @@ export default defineEventHandler(async (event) => {
     }
 
     // Find todo and attachment reference
-    const todo = await TodoSchema.findById(todoId)
-    if (!todo) {
-      throw createError({
-        statusCode: 404,
-        message: 'Todo not found',
-      })
-    }
+    // const todo = await TodoSchema.findById(todoId)
+    // if (!todo) {
+    //   throw createError({
+    //     statusCode: 404,
+    //     message: 'Todo not found',
+    //   })
+    // }
 
-    const attachmentRef = todo.attachments?.find(a => a.attachmentId === attachmentId)
-    if (!attachmentRef) {
-      throw createError({
-        statusCode: 404,
-        message: 'Attachment not found',
-      })
-    }
+    // const attachmentRef = todo.attachments?.find(a => a.attachmentId === attachmentId)
+    // if (!attachmentRef) {
+    //   throw createError({
+    //     statusCode: 404,
+    //     message: 'Attachment not found',
+    //   })
+    // }
 
     // Delete attachment from MongoDB
-    await AttachmentSchema.findByIdAndDelete(attachmentId)
+    // await AttachmentSchema.findByIdAndDelete(attachmentId)
 
-    // Remove attachment reference from todo
-    todo.attachments = todo.attachments.filter(a => a.attachmentId !== attachmentId)
-    await todo.save()
+    // // Remove attachment reference from todo
+    // todo.attachments = todo.attachments.filter(a => a.attachmentId !== attachmentId)
+    // await todo.save()
 
     return {
       success: true,

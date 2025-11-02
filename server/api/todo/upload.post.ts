@@ -1,5 +1,5 @@
-import { TodoSchema } from '~/server/models/todo.schema'
-import { AttachmentSchema } from '~/server/models/attachment.schema'
+// import { TodoSchema } from '~/server/models/todo.schema'
+// import { AttachmentSchema } from '~/server/models/attachment.schema'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -55,46 +55,46 @@ export default defineEventHandler(async (event) => {
     const buffer = Buffer.from(await file.arrayBuffer())
 
     // Save attachment to MongoDB
-    const attachment = new AttachmentSchema({
-      todoId,
-      filename,
-      originalName: file.name,
-      mimeType: file.type,
-      size: file.size,
-      data: buffer,
-      uploadedAt: new Date(),
-    })
+    // const attachment = new AttachmentSchema({
+    //   todoId,
+    //   filename,
+    //   originalName: file.name,
+    //   mimeType: file.type,
+    //   size: file.size,
+    //   data: buffer,
+    //   uploadedAt: new Date(),
+    // })
 
-    const savedAttachment = await attachment.save()
+    // const savedAttachment = await attachment.save()
 
-    // Create attachment reference for todo
-    const attachmentRef = {
-      attachmentId: savedAttachment._id.toString(),
-      filename,
-      originalName: file.name,
-      mimeType: file.type,
-      size: file.size,
-      uploadedAt: new Date(),
-    }
+    // // Create attachment reference for todo
+    // const attachmentRef = {
+    //   attachmentId: savedAttachment._id.toString(),
+    //   filename,
+    //   originalName: file.name,
+    //   mimeType: file.type,
+    //   size: file.size,
+    //   uploadedAt: new Date(),
+    // }
 
-    // Update todo with new attachment reference
-    const todo = await TodoSchema.findById(todoId)
-    if (!todo) {
-      throw createError({
-        statusCode: 404,
-        message: 'Todo not found',
-      })
-    }
+    // // Update todo with new attachment reference
+    // const todo = await TodoSchema.findById(todoId)
+    // if (!todo) {
+    //   throw createError({
+    //     statusCode: 404,
+    //     message: 'Todo not found',
+    //   })
+    // }
 
-    if (!todo.attachments) {
-      todo.attachments = []
-    }
-    todo.attachments.push(attachmentRef)
-    await todo.save()
+    // if (!todo.attachments) {
+    //   todo.attachments = []
+    // }
+    // todo.attachments.push(attachmentRef)
+    // await todo.save()
 
     return {
       success: true,
-      attachment: attachmentRef,
+      // attachment: attachmentRef,
     }
   }
  catch (error) {
