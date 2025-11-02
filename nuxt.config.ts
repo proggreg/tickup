@@ -87,6 +87,7 @@ export default defineNuxtConfig({
       hotjarId: process.env.HOTJAR_ID,
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
+      VERCEL_URL: process.env.VERCEL_URL,
       VAPID_KEY: process.env.VAPID_PUBLIC_KEY,
       bugsnag: {
         apiKey: process.env.BUGSNAG_API_KEY,
