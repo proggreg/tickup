@@ -10,11 +10,11 @@ const signInWithOtp = async () => {
 
     return
   }
-
+  const BASE_URL = process.env.VERCEL_URL ? process.env.VERCEL_URL : 'https://localhost:3000' 
   const { error } = await supabase.auth.signInWithOtp({
     email: email.value,
     options: {
-      emailRedirectTo: 'http://localhost:3000/confirm',
+      emailRedirectTo: `${BASE_URL}/confirm`,
     }
   })
   if (error) console.log(error)
