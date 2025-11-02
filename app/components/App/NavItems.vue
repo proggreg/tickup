@@ -1,23 +1,23 @@
 <script setup lang="ts">
-const store = useListsStore()
-const editListName = ref('')
-const emit = defineEmits(['open'])
-// const { isMobile } = useDevice()
+  const store = useListsStore()
+  const editListName = ref('')
+  const emit = defineEmits(['open'])
+  // const { isMobile } = useDevice()
 
-function renameList(list: List) {
-  store.updateList(list)
-  editListName.value = ''
-}
-
-function rename(list: List) {
-  if (store.currentList._id === list._id) {
-    store.currentList = list
+  function renameList(list: List) {
+    store.updateList(list)
+    editListName.value = ''
   }
-}
 
-function openContextMenu(el: MouseEvent, list: List) {
-  emit('open', el, list)
-}
+  function rename(list: List) {
+    if (store.currentList.id === list.id) {
+      store.currentList = list
+    }
+  }
+
+  function openContextMenu(el: MouseEvent, list: List) {
+    emit('open', el, list)
+  }
 </script>
 
 <template>
@@ -33,24 +33,27 @@ function openContextMenu(el: MouseEvent, list: List) {
           <v-list-item
             v-bind="props" :key="item._id"
             class=""
+            :disabled="!item.id"
             style="cursor: pointer;"
             data-test-id="nav-item"
-            :to="`/list/${item._id}`"
+            :to="`/list/${item.id}`"
           >
             <v-text-field
-              v-if="editListName === item._id" v-model="item.name" class="font-weight-bold "
+              v-if="editListName === item.id" v-model="item.name" class="font-weight-bold "
               autofocus variant="plain" @input.stop="() => rename(item)" @keyup.enter="renameList(item)"
               @blur="renameList(item)"
             />
             <v-list-item-title v-else>
-              <span class="">{{ item.name }}</span>
+              {{ item.name }}
             </v-list-item-title>
             <template #prepend>
               <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
               <v-icon v-else>mdi-format-list-bulleted</v-icon>
             </template>
             <template #append>
-              <list-settings-button :list-id="item._id" />
+              <div @click.stop>
+                <list-settings-button :list-id="item._id" />
+              </div>
             </template>
           </v-list-item>
           <!-- <v-divider v-if="isMobile" /> -->
@@ -61,17 +64,17 @@ function openContextMenu(el: MouseEvent, list: List) {
 </template>
 
 <style scoped>
-.nav-items-scroll {
-  height: 100%;
-  max-height: 100%;
-  overflow-y: auto;
-}
+  .nav-items-scroll {
+    height: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+  }
 
-.nav-item-title {
-  text-transform: capitalize !important;
-  font-weight: bold;
-  @media (min-width: 600px) {
-    font-size: 1rem !important;
-   }
-}
+  .nav-item-title {
+    text-transform: capitalize !important;
+    font-weight: bold;
+    @media (min-width: 600px) {
+      font-size: 1rem !important;
+    }
+  }
 </style>

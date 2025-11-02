@@ -102,7 +102,7 @@ export const useOfflineSyncStore = defineStore('offlineSync', () => {
     clearSyncedChanges,
   }
 }, {
-  persist: {
-    pick: ['pendingChanges', 'lastSyncTime'],
-  },
+  // persist: {
+  //   pick: ['pendingChanges', 'lastSyncTime'],
+  // },
 })

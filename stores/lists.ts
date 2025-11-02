@@ -1,4 +1,11 @@
-const newTodoState: Todo = {
+const createNewListState = (): List => ({
+  name: '',
+  todos: [],
+  icon: 'mdi-format-list-bulleted',
+  listType: 'simple',
+})
+
+const createNewTodoState = (): Todo => ({
   name: '',
   status: 'Open',
   desc: '',
@@ -6,22 +13,14 @@ const newTodoState: Todo = {
   color: '#87909e',
   links: [],
   attachments: [],
-}
-
-const newListState: List = {
-  name: '',
-  todos: [],
-  icon: 'mdi-format-list-bulleted',
-  listType: 'simple',
-
-}
+})
 
 export const useListsStore = defineStore('lists', {
   state: (): listsState => ({
-    newTodo: newTodoState,
-    currentTodo: newTodoState,
-    newList: newListState,
-    currentList: newListState,
+    newTodo: createNewTodoState(),
+    currentTodo: createNewTodoState(),
+    newList: createNewListState(),
+    currentList: createNewListState(),
     view: 'list',
     lists: [],
     todos: [],
@@ -30,18 +29,19 @@ export const useListsStore = defineStore('lists', {
   }),
   actions: {
     async addList(newList?: List) {
+      console.log('add list')
       if (!newList) {
         newList = this.newList
       }
       if (newList) {
         this.lists.push(newList)
-        this.currentList = newList
+
         const list = await $fetch<List>('/api/list', {
           method: 'POST',
           body: newList,
         })
 
-        // this.lists[this.lists.length - 1]._id = list._id
+        this.lists[this.lists.length - 1].id = list.id
 
         return newList
       }
@@ -52,13 +52,13 @@ export const useListsStore = defineStore('lists', {
       if (!listToUpdate) {
         listToUpdate = this.currentList
       }
-
-      if (!listToUpdate || !listToUpdate.name || !listToUpdate._id) return
+      
       if (!isOnline) {
-        logger.log('Skipping list update - offline')
+        // logger.log('Skipping list update - offline')
         return
       }
-      await $fetch<List>(`/api/list/${listToUpdate._id}`, {
+
+      await $fetch<List>(`/api/list/${listToUpdate.id}`, {
         method: 'PUT',
         body: listToUpdate,
       })
@@ -68,17 +68,18 @@ export const useListsStore = defineStore('lists', {
     },
     async deleteList(listId?: string) {
       if (!listId) {
-        listId = this.currentList._id
+        listId = this.currentList.id
       }
 
       try {
-        this.lists = this.lists.filter((list: List) => list._id !== listId)
+        this.lists = this.lists.filter((list: List) => list.id !== listId)
         await $fetch<List>(`/api/list/${listId}`, {
           method: 'DELETE',
         })
+        navigateTo('/')
       }
       catch (err) {
-        logger.error(err as Error, { component: 'ListsStore', function: 'deleteList', listId })
+        // logger.error(err as Error, { component: 'ListsStore', function: 'deleteList', listId })
       }
     },
     setListName(newName: string) {
@@ -98,17 +99,17 @@ export const useListsStore = defineStore('lists', {
     async addTodo(newTodo: Todo) {
       const route = useRoute()
       const isHomepage = route.path === '/' || route.name === 'index'
-      const { isOnline } = useOfflineSync()
+      // const { isOnline } = useOfflineSync()
       if (newTodo._id) {
-        logger.warn('Todo already has an id, skipping add', { component: 'ListsStore', function: 'addTodo', todo: newTodo })
+        // logger.warn('Todo already has an id, skipping add', { component: 'ListsStore', function: 'addTodo', todo: newTodo })
         return
       }
 
-      if (!isOnline.value) {
-        logger.log('Skipping todo add - offline')
-        return
-      }
-      if (!this.currentList.todos) this.currentList.todos = []
+      // if (!isOnline.value) {
+      //   // logger.log('Skipping todo add - offline')
+      //   return
+      // }
+      // if (!this.currentList.todos) this.currentList.todos = []
 
       const newTodoTempId = crypto.randomUUID()
       this.currentList.todos.push({ ...newTodo, _id: newTodoTempId })
@@ -119,7 +120,7 @@ export const useListsStore = defineStore('lists', {
       })
 
       if (!todo) {
-        logger.error(new Error('Failed to add todo'), { component: 'ListsStore', function: 'addTodo', todo: newTodo })
+        // logger.error(new Error('Failed to add todo'), { component: 'ListsStore', function: 'addTodo', todo: newTodo })
         return
       }
 
@@ -220,19 +221,10 @@ export const useListsStore = defineStore('lists', {
       }
       this.currentList.todos[index].name = name
     },
-    async getLists(userId: string) {
-      const lists = await $fetch<List[]>('/api/lists', { query: { id: userId } })
-      if (!lists) return
-
-      for (const list of lists) {
-        if (!list._id) continue
-        const todos = await this.getListTodos(list._id)
-        list.todos = todos
-      }
-
-      if (lists) {
-        this.setLists(lists)
-      }
+    async getLists() {
+      const lists = await $fetch<List[]>('/api/lists')
+      console.log('get lists', lists)
+      this.setLists(lists)      
     },
     async getList(id: string) {
       const { data } = await useFetch<List>(`/api/list/${id}`)
@@ -280,22 +272,9 @@ export const useListsStore = defineStore('lists', {
         return newDirection === 'ascending' ? result : -result
       })
     },
-
     newReset() {
-      this.newTodo = {
-        name: '',
-        status: 'Open',
-        desc: '',
-        edit: false,
-        color: '#87909e',
-        links: [],
-        attachments: [],
-      }
-      this.newList = {
-        name: '',
-        todos: [],
-        icon: 'mdi-format-list-bulleted',
-      }
+      this.newTodo = createNewTodoState()
+      this.newList = createNewListState()
     },
   },
   // persist: {

@@ -8,13 +8,10 @@ const currentTab = ref<ViewType>('list')
 const on = useToolbar()
 const saveTodo = ref(false)
 const dialog = useDialog()
-// const { data: user } = useAuth()
+
 
 onBeforeMount(async () => {
-  // if (user?.value?.user._id) {
-  //   await listsStore.getLists(user?.value?.user._id)
-  // }
-  const currentList = listsStore.lists.find((list: List) => list._id === route.params.id)
+  const currentList = listsStore.lists.find((list: List) => list.id == route.params.id)
 
   if (currentList) {
     listsStore.setCurrentList(currentList)
@@ -31,10 +28,10 @@ if (listsStore.currentList) {
   })
 }
 
-watch(listsStore.currentList.todos, (todos: Todo[]) => {
-  if (!todos) return
-  on.value = todos.filter((todo: Todo) => todo.selected).length > 0
-})
+// watch(listsStore.currentList.todos, (todos: Todo[]) => {
+//   if (!todos) return
+//   on.value = todos.filter((todo: Todo) => todo.selected).length > 0
+// })
 </script>
 
 <template>

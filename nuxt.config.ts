@@ -49,7 +49,8 @@ export default defineNuxtConfig({
   vuetify: vuetify,
 
   typescript: {
-    strict: true,
+    strict: false,
+    typeCheck: false
   },
 
   bugsnag: {

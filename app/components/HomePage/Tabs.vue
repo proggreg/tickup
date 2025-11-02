@@ -4,24 +4,24 @@ const listsStore = useListsStore()
 const modelValue = defineModel<string>({ default: 'todo' })
 
 watch(modelValue, (newTab) => {
-  if (!userId.value) return
+//   if (!userId.value) return
 
-  if (newTab === 'overdue') {
-    listsStore.getOverdueTodos(userId.value)
-  }
- else if (newTab === 'todo') {
-    listsStore.getTodaysTodos(userId.value)
-  }
- else if (newTab === 'done') {
-    listsStore.getTodaysTodos(userId.value)
-  }
+//   if (newTab === 'overdue') {
+//     listsStore.getOverdueTodos(userId.value)
+//   }
+//  else if (newTab === 'todo') {
+//     listsStore.getTodaysTodos(userId.value)
+//   }
+//  else if (newTab === 'done') {
+//     listsStore.getTodaysTodos(userId.value)
+//   }
 })
 
-onBeforeMount(() => {
-  if (userId.value) {
-    listsStore.getTodaysTodos(userId.value)
-  }
-})
+// onBeforeMount(() => {
+//   if (userId.value) {
+//     listsStore.getTodaysTodos(userId.value)
+//   }
+// })
 </script>
 
 <template>

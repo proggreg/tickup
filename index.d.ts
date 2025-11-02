@@ -49,7 +49,7 @@ declare global {
     userId?: string
     name: string
     todos: Todo[]
-    _id?: string
+    id?: string
     image?: string
     listType: ListType
     icon: string

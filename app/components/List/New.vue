@@ -10,6 +10,7 @@ async function createNewList() {
   if (list) {
     listsStore.newReset()
     dialog.value.open = false
+    
     if (smAndDown.value) {
       navOpen.value = false
     }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
   const colorMode = useColorMode()
   const show = ref(true)
-  const { isOnline, isSyncing, pendingCount, syncNow } = useOfflineSync()
+  // const { isOnline, isSyncing, pendingCount, syncNow } = useOfflineSync()
 </script>
 
 <template>

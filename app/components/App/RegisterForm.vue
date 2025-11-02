@@ -1,13 +1,24 @@
 <script setup lang="ts">
-const supabase = useSupabaseClient()
+const supabase = serverSupaBaseClient()
 const email = ref('')
 const password = ref('')
+const confirmPassword = ref('')
 const loading = ref(false)
 const error = ref('')
 
-const login = async () => {
-  if (!email.value || !password.value) {
-    error.value = 'Please enter email and password'
+const register = async () => {
+  if (!email.value || !password.value || !confirmPassword.value) {
+    error.value = 'Please fill in all fields'
+    return
+  }
+  
+  if (password.value !== confirmPassword.value) {
+    error.value = 'Passwords do not match'
+    return
+  }
+  
+  if (password.value.length < 6) {
+    error.value = 'Password must be at least 6 characters'
     return
   }
   
@@ -15,24 +26,24 @@ const login = async () => {
   error.value = ''
   
   try {
-    const { error: signInError } = await supabase.auth.signInWithPassword({
+    const { error: signUpError } = await supabase.auth.signUp({
       email: email.value,
       password: password.value,
     })
     
-    if (signInError) {
-      error.value = signInError.message
+    if (signUpError) {
+      error.value = signUpError.message
     } else {
       await navigateTo('/')
     }
   } catch (err) {
-    error.value = 'An error occurred during login'
+    error.value = 'An error occurred during registration'
   } finally {
     loading.value = false
   }
 }
 
-const loginWithGoogle = async () => {
+const registerWithGoogle = async () => {
   const { error: signInError } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
@@ -48,7 +59,7 @@ const loginWithGoogle = async () => {
 
 <template>
   <div style="max-width: 400px" class="flex-1 mx-auto">
-    <v-form @submit.prevent="login">
+    <v-form @submit.prevent="register">
       <v-text-field
         v-model="email"
         label="Email"
@@ -65,6 +76,14 @@ const loginWithGoogle = async () => {
         class="mb-3"
       />
       
+      <v-text-field
+        v-model="confirmPassword"
+        label="Confirm Password"
+        type="password"
+        required
+        class="mb-3"
+      />
+      
       <v-alert v-if="error" type="error" class="mb-3">
         {{ error }}
       </v-alert>
@@ -76,7 +95,7 @@ const loginWithGoogle = async () => {
         block 
         type="submit"
       >
-        Login
+        Register
       </v-btn>
       
       <v-btn 
@@ -84,15 +103,15 @@ const loginWithGoogle = async () => {
         color="secondary" 
         variant="outlined"
         block 
-        @click="loginWithGoogle"
+        @click="registerWithGoogle"
       >
-        Login with Google
+        Register with Google
       </v-btn>
     </v-form>
     
     <div class="text-center">
-      <span>Don't have an account? </span>
-      <NuxtLink to="/register">Register</NuxtLink>
+      <span>Already a user? </span>
+      <NuxtLink color="secondary" to="/login">Login</NuxtLink>
     </div>
   </div>
 </template>

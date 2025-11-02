@@ -1,44 +1,25 @@
 <script setup lang="ts">
-import AppDeleteButton from '../App/DeleteButton.vue'
-import ListStatus from './Status.vue'
-import { useListsStore } from '~/stores/lists'
+  import AppDeleteButton from '../App/DeleteButton.vue'
+  import ListStatus from './Status.vue'
+  import type { Column, GroupItem, TableItem } from '../../types/table-item.types'
+    
+  const store = useListsStore()
+  const { xs } = useDisplay()
+  const props = defineProps<{
+    groupItem: GroupItem
+    columns: Column[]
+  }>()
 
-interface Column {
-  key: string
-  label?: string
-}
+  
+  function showModal(item: TableItem) {
+    store.setCurrentTodo(item.raw)
+    navigateTo(`/todo/${item.raw._id}`)
+  }
 
-// Use the global Todo interface as defined in index.d.ts
-// No need to redefine it here, just reference it
-type TodoType = Todo
-
-interface TableItem {
-  key: string
-  raw: TodoType
-  columns: Record<string, any>
-}
-
-interface GroupItem {
-  items: TableItem[]
-}
-
-const props = defineProps<{
-  groupItem: GroupItem
-  columns: Column[]
-}>()
-
-const store = useListsStore()
-const { xs } = useDisplay()
-
-function showModal(item: TableItem) {
-  store.setCurrentTodo(item.raw)
-  navigateTo(`/todo/${item.raw._id}`)
-}
-
-function formatDate(date: Date) {
-  if (!date) return ''
-  return new Date(date).toLocaleDateString('en-GB')
-}
+  function formatDate(date: Date) {
+    if (!date) return ''
+    return new Date(date).toLocaleDateString('en-GB')
+  }
 </script>
 
 <template>

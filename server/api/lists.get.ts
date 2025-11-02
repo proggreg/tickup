@@ -1,8 +1,8 @@
+import { serverSupabaseClient } from '#supabase/server'
 export default defineEventHandler(async (event) => {
   try {
-    const query = getQuery(event)
-
-    return await ListSchema.find({ userId: query.id })
+    const client = await serverSupabaseClient(event);
+    return (await client.from('Lists').select('*')).data
   }
   catch (error) {
     return error

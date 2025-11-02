@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
-const { isMobile } = useDevice()
+// const { isMobile } = useDevice()
 const { listId } = defineProps<{
   listId?: string
 }>()
@@ -12,9 +12,9 @@ function deleteList() {
 
   listsStore.deleteList()
   let route = '/lists'
-  if (!isMobile) {
-    route = '/'
-  }
+  // if (!isMobile) {
+  //   route = '/'
+  // }
   navigateTo(route)
 }
 </script>
@@ -26,10 +26,11 @@ function deleteList() {
         v-bind="props"
         variant="plain"
         icon="mdi-dots-vertical"
+        @click.stop
       />
     </template>
     <v-list>
-      <v-list-item @click.prevent="deleteList">
+      <v-list-item @click.stop="deleteList">
         <v-list-item-title class="text-red">Delete List</v-list-item-title>
         <template #prepend>
           <v-icon color="red" icon="mdi-delete" />
