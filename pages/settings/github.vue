@@ -1,6 +1,4 @@
 <script setup lang="ts">
-
-
 onMounted(() => {
     const url = new URL(window.location.href)
     const code = url.searchParams.get('code')

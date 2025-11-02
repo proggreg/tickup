@@ -1,20 +1,20 @@
-import { defineNuxtConfig } from 'nuxt/config'
-import vuetify from './config/vuetify'
+import { defineNuxtConfig } from "nuxt/config";
+import vuetify from "./config/vuetify";
 
 export default defineNuxtConfig({
   modules: [
     // '@vite-pwa/nuxt',
-    'vuetify-nuxt-module',
-    '@pinia/nuxt',
-    'pinia-plugin-persistedstate/nuxt',
-    '@vueuse/nuxt',
-    'nuxt-mongoose',
-    '@sidebase/nuxt-auth',
-    '@nuxtjs/color-mode',
-    '@nuxt/eslint',
-    '@nuxtjs/device',
-    '@nuxt/test-utils/module',
-    'nuxt-bugsnag' 
+    "vuetify-nuxt-module",
+    "@pinia/nuxt",
+    // "pinia-plugin-persistedstate/nuxt",
+    "@vueuse/nuxt",
+    "nuxt-mongoose",
+    "@nuxtjs/color-mode", 
+    "@nuxt/eslint",
+    // "@nuxtjs/device",
+    "@nuxt/test-utils/module",
+    "nuxt-bugsnag",
+    "@nuxtjs/supabase",
   ],
 
   experimental: {
@@ -27,24 +27,24 @@ export default defineNuxtConfig({
   nitro: {
     esbuild: {
       options: {
-        target: 'esnext',
+        target: "esnext",
       },
-    }
+    },
   },
 
   imports: {
     autoImport: true,
-    dirs: ['./stores'],
+    dirs: ["./stores"],
     presets: [
       {
-        from: 'vuetify',
-        imports: ['useDisplay'],
+        from: "vuetify",
+        imports: ["useDisplay"],
       },
     ],
   },
 
   pinia: {
-    storesDirs: ['./stores/**'],
+    storesDirs: ["./stores/**"],
   },
 
   vuetify: vuetify,
@@ -54,11 +54,11 @@ export default defineNuxtConfig({
   },
 
   bugsnag: {
-    disabled: process.env.NODE_ENV === 'development', // Disable in development
+    disabled: process.env.NODE_ENV === "development", // Disable in development
     publishRelease: true,
     config: {
       apiKey: process.env.BUGSNAG_API_KEY,
-      enabledReleaseStages: ['staging', 'production'],
+      enabledReleaseStages: ["staging", "production"],
       releaseStage: process.env.NODE_ENV,
     },
   },
@@ -79,43 +79,20 @@ export default defineNuxtConfig({
       clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET,
       personal: process.env.NUXT_GITHUB_PERSONAL_ACCESS_TOKEN,
     },
-    auth: {
-      secret: process.env.NUXT_NEXTAUTH_SECRET
-    },
     private: {  
       vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
     },
     public: {
-      apiBase: '/api',
+      apiBase: "/api",
       hotjarId: process.env.HOTJAR_ID,
       ENV: process.env.NODE_ENV,
       VERCEL_ENV: process.env.VERCEL_ENV,
       VAPID_KEY: process.env.VAPID_PUBLIC_KEY,
-      authOrigin: process.env.AUTH_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : 'http://localhost:3000'),
       bugsnag: {
         apiKey: process.env.BUGSNAG_API_KEY,
-      }
-    },
-  },
-
-  auth: {
-    isEnabled: true,
-    originEnvKey: 'AUTH_ORIGIN',
-    origin: process.env.AUTH_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : 'http://localhost:3000'),
-    provider: {
-      type: 'authjs',
-    },
-    baseURL: process.env.AUTH_ORIGIN ? `${process.env.AUTH_ORIGIN}/api/auth` : (process.env.NODE_ENV === 'production' ? 'https://tickup.gregfield.dev/api/auth' : 'http://localhost:3000/api/auth'),
-    secret: process.env.NUXT_NEXTAUTH_SECRET,
-    globalAppMiddleware: {
-      isEnabled: true
-    },
-    sessionRefresh: {
-      enablePeriodically: false,
-      enableOnWindowFocus: false,
-    },
-    pages: {
-      signIn: '/login',
+      },
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
     },
   },
 
@@ -208,7 +185,4 @@ export default defineNuxtConfig({
   //      rollupFormat: 'iife'
   //   },
   // },
-
-  vite: {},
-  compatibilityDate: '2024-09-21',
-})
+});

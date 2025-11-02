@@ -1,6 +1,6 @@
 export const useSettingsStore = defineStore('settings', () => {
   const darkMode = ref(false)
-  const { getSession } = useAuth()
+  // const { getSession } = useAuth()
 
   const userStatuses = ref<Status[]>([])
 
@@ -27,13 +27,13 @@ export const useSettingsStore = defineStore('settings', () => {
   })
 
   async function getUserSettings() {
-    const session = await getSession()
-    const userId = session?.user?.sub
-    const settings = await $fetch<Settings>('/api/settings', { query: { userId } })
+    // const session = await getSession()
+    // const userId = session?.user?.sub
+    // const settings = await $fetch<Settings>('/api/settings', { query: { userId } })
 
-    if (settings.statuses.length) {
-      userStatuses.value = settings.statuses
-    }
+    // if (settings.statuses.length) {
+    //   userStatuses.value = settings.statuses
+    // }
   }
 
   return { darkMode, statuses, getUserSettings, userStatuses }

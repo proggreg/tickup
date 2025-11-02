@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useListsStore } from '~/stores/lists'
-import ListStatus from './Status.vue'
 import AppDeleteButton from '../App/DeleteButton.vue'
+import ListStatus from './Status.vue'
+import { useListsStore } from '~/stores/lists'
 
 interface Column {
   key: string
@@ -10,7 +10,7 @@ interface Column {
 
 // Use the global Todo interface as defined in index.d.ts
 // No need to redefine it here, just reference it
-type TodoType = Todo;
+type TodoType = Todo
 
 interface TableItem {
   key: string

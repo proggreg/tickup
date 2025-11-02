@@ -1,10 +1,13 @@
 <script setup lang="ts">
+const supabase = useSupabaseClient()
 definePageMeta({
   layout: 'default',
-  middleware: ['sidebase-auth'],
-  auth: { authenticatedOnly: true, navigateUnauthenticatedTo: '/login' }
 })
 useHead({ title: 'TickUp:Home' })
+
+const user = supabase.auth.getUser();
+
+console.log('user', user)
 
 const saveTodo = ref(false)
 const dialog = useDialog()

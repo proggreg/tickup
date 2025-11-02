@@ -42,4 +42,4 @@ export const AttachmentSchema = defineMongooseModel<{
       default: () => Date.now(),
     },
   },
-}) 
+})

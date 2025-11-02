@@ -2,12 +2,13 @@ import { defineMongooseModel } from '#nuxt/mongoose'
 
 export const UserSchema = defineMongooseModel<{
   username: string
-  password: string
   email: string
+  supabaseId: string
+  firstName?: string
+  lastName?: string
   settings: {
     statuses: string[]
   }
-  hasGithub: boolean
   pushSubscriptions?: any[]
 }>({
   name: 'User',
@@ -16,13 +17,21 @@ export const UserSchema = defineMongooseModel<{
       type: 'string',
       required: true,
     },
-    password: {
-      type: 'string', 
-      required: true,
-    },
     email: {
       type: 'string',
       required: true,
+    },
+    supabaseId: {
+      type: 'string',
+      required: true,
+      unique: true,
+      index: true,
+    },
+    firstName: {
+      type: 'string',
+    },
+    lastName: {
+      type: 'string',
     },
     settings: {
       type: {
@@ -31,10 +40,6 @@ export const UserSchema = defineMongooseModel<{
           default: ['todo', 'in-progress', 'done'],
         },
       },
-    },
-    hasGithub: {
-      type: 'boolean',
-      default: false,
     },
     pushSubscriptions: {
       type: [{}],

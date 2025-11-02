@@ -1,14 +1,14 @@
 export default defineEventHandler(async (event) => {
   try {
     const listId = event.context.params?._id
-    
+
     if (!listId) {
       throw createError({
         statusCode: 400,
         message: 'List ID is required',
       })
     }
-    
+
     const list = await ListSchema.findById(listId)
 
     if (!list) {
@@ -17,9 +17,9 @@ export default defineEventHandler(async (event) => {
         message: 'List not found',
       })
     }
-    
+
     const listTodos = await TodoSchema.find({ listId: list._id }).sort({ order: 1 })
-    
+
     // Return list with todos embedded for compatibility with existing frontend code
     return { ...list.toObject(), todos: listTodos }
   }
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
     if (error.statusCode) {
       throw error
     }
-    
+
     logger.error(error, { component: 'ListAPI', function: 'getList', listId: event.context.params?._id })
     throw createError({
       statusCode: 500,

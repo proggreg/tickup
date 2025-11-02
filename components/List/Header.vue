@@ -79,11 +79,13 @@ function removeImage() {
       <div :class="[store.currentList.image ? 'tint ma-n4 py-4 px-4' : '']">
         <v-row>
           <v-col cols="6" :class="['text-capitalize', (aiImage || store.currentList.image) ? 'text-white' : '']">
-            <v-text-field class="px-2" ref="listNameRef" v-model="store.currentList.name" validate-on="blur eager"
+            <v-text-field
+ref="listNameRef" v-model="store.currentList.name" class="px-2" validate-on="blur eager"
               :rules="[validateListName]" placeholder="My List" variant="plain" :readonly="!rename"
               style=" font-weight: bold; " auto @click="rename = !rename"
               @keyup.enter="store.currentList.name ? rename = false : null"
-              @blur="store.currentList.name ? rename = false : null" />
+              @blur="store.currentList.name ? rename = false : null"
+/>
           </v-col>
           <v-col class="text-right">
             <ListSettingsButton />
@@ -94,7 +96,7 @@ function removeImage() {
           <v-btn size="small" class="mr-2" :disabled="imageGenerating" @click="generateImage">
             <v-icon start>mdi-creation </v-icon><v-icon start>mdi-image </v-icon>
           </v-btn>
-         
+
           <v-btn v-if="store.currentList.image" class="" icon="mdi-trash-can" size="small" @click="removeImage" />
         </v-card-actions>
       </div>

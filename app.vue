@@ -1,11 +1,10 @@
 <script setup lang="ts">
   const listsStore = useListsStore()
   const settingsStore = useSettingsStore()
-  const { status } = useAuth()
   const { userId, isAuthenticated } = useCurrentUser()
   const config = useRuntimeConfig()
   const event = useRequestEvent()
-  
+
   useShortcutKeys()
 
 if (isAuthenticated.value) {
@@ -26,19 +25,18 @@ else {
 if (userId.value) {
   await useAsyncData('lists', () => listsStore.getLists(userId.value).then(() => true))
 }
-
 </script>
 
 <template>
   <div>
-    <NuxtPwaManifest />   
+    <!-- <NuxtPwaManifest /> -->
     <AppDialog page="todo" title="New Todo">
       <TodoNew />
       <template #buttons>
         <v-btn color="primary" :disabled="listsStore.newTodo.name === ''">
           Save
         </v-btn>
-      </template> 
+      </template>
     </AppDialog>
     <NuxtLayout :name="useAppLayout()">
       <NuxtPage />

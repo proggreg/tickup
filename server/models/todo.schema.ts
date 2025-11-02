@@ -13,13 +13,13 @@ export const TodoSchema = defineMongooseModel<{
   githubBranchName: string
   links: Array<{ title: string, url: string, _id: string }>
   subtasks: Array<{ name: string, status: string, _id: string }>
-  attachments: Array<{ 
-    attachmentId: string,
-    filename: string, 
-    originalName: string, 
-    mimeType: string, 
-    size: number, 
-    uploadedAt: Date 
+  attachments: Array<{
+    attachmentId: string
+    filename: string
+    originalName: string
+    mimeType: string
+    size: number
+    uploadedAt: Date
   }>
   notificationDateTime?: Date
   notificationSent?: boolean

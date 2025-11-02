@@ -22,7 +22,7 @@ const Todo = mongoose.model('Todo', TodoSchema)
 webpush.setVapidDetails(
   'mailto:greg.field1992@gmail.com',
   VAPID_PUBLIC_KEY,
-  VAPID_PRIVATE_KEY
+  VAPID_PRIVATE_KEY,
 )
 
 async function main() {
@@ -32,7 +32,7 @@ async function main() {
   const now = new Date()
   const todos = await Todo.find({
     notificationDateTime: { $lte: now },
-    notificationSent: { $ne: true }
+    notificationSent: { $ne: true },
   })
 
   for (const todo of todos) {
@@ -47,7 +47,8 @@ async function main() {
           title: 'Todo Reminder',
           message: `Reminder for todo: ${todo.name}`,
         }))
-      } catch (e) {
+      }
+ catch (e) {
         console.error('Failed to send notification', e)
       }
     }
@@ -59,4 +60,4 @@ async function main() {
   await mongoose.disconnect()
 }
 
-await main().then(() => process.exit(0)).catch(e => { console.error(e); process.exit(1) }) 
+await main().then(() => process.exit(0)).catch((e) => { console.error(e); process.exit(1) })

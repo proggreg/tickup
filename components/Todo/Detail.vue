@@ -1,8 +1,6 @@
 <script setup lang="ts">
-  import { ref, onMounted, computed, watch } from 'vue'
-  import { useAuth, useRuntimeConfig } from '#imports'
-  import { useDisplay } from '#imports'
-  const listsStore = useListsStore()
+  
+    const listsStore = useListsStore()
   const hasGithub = await useHasGithub()
   const newSubtaskName = ref('')
   const notificationSending = ref(false)
@@ -10,16 +8,16 @@
   const pushSupported = ref(false)
   const pushSubscribed = ref(false)
   const pushError = ref('')
-  const { data: authData } = useAuth()
+  
 
-  const username = computed(() => {
-    if (!authData.value?.user) return ''
-    const user = authData.value.user as any
-    if (user.username) return user.username
-    if (user._doc && user._doc.username) return user._doc.username
-    if (user.name) return user.name
-    return ''
-})
+//   const username = computed(() => {
+//     if (!authData.value?.user) return ''
+//     const user = authData.value.user as any
+//     if (user.username) return user.username
+//     if (user._doc && user._doc.username) return user._doc.username
+//     if (user.name) return user.name
+//     return ''
+// })
 
   const config = useRuntimeConfig()
   const { smAndDown } = useDisplay()
@@ -45,18 +43,19 @@
       const reg = await navigator.serviceWorker.ready
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidKey)
+        applicationServerKey: urlBase64ToUint8Array(vapidKey),
       })
       window.localStorage.setItem('push-subscription', JSON.stringify(sub))
       pushSubscribed.value = true
-      if (username.value) {
-        await fetch('/api/auth/user', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: username.value, pushSubscription: sub })
-        })
-      }
-    } catch (e) {
+      // if (username.value) {
+      //   await fetch('/api/auth/user', {
+      //     method: 'POST',
+      //     headers: { 'Content-Type': 'application/json' },
+      //     body: JSON.stringify({ username: username.value, pushSubscription: sub }),
+      //   })
+      // }
+    }
+ catch (e) {
       pushError.value = 'Failed to subscribe to push.'
     }
   }
@@ -70,15 +69,16 @@
         await sub.unsubscribe()
         window.localStorage.removeItem('push-subscription')
         pushSubscribed.value = false
-        if (username.value) {
-          await fetch('/api/auth/user', {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: username.value, pushSubscription: sub })
-          })
-        }
+        // if (username.value) {
+        //   await fetch('/api/auth/user', {
+        //     method: 'DELETE',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ username: username.value, pushSubscription: sub }),
+        //   })
+        // }
       }
-    } catch (e) {
+    }
+ catch (e) {
       pushError.value = 'Failed to unsubscribe.'
     }
   }
@@ -102,41 +102,43 @@
       if (!subscription) {
         return
       }
-      const res = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          subscription: JSON.parse(subscription),
-          notificationDateTime: notificationDateTime.value,
-          username: username.value,
-          todoId: listsStore.currentTodo._id
-        })
-      })
-      if (res.ok) {
-        // No UI feedback for successful scheduling
-      } else {
-        // No UI feedback for failed scheduling
-      }
-    } catch (e) {
+      // const res = await fetch('/api/subscribe', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({
+      //     subscription: JSON.parse(subscription),
+      //     notificationDateTime: notificationDateTime.value,
+      //     username: username.value,
+      //     todoId: listsStore.currentTodo._id,
+      //   }),
+      // })
+      // if (res.ok) {
+      //   // No UI feedback for successful scheduling
+      // }
+//  else {
+//         // No UI feedback for failed scheduling
+//       }
+    }
+ catch (e) {
       // No UI feedback for error scheduling
     }
     notificationSending.value = false
   }
 
-  async function sendTestPushNotification() {
-    const subscription = window.localStorage.getItem('push-subscription')
-    if (!subscription) return
-    await fetch('/api/subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        subscription: JSON.parse(subscription),
-        username: username.value,
-        todoId: listsStore.currentTodo._id
-        // No notificationDateTime triggers test notification
-      })
-    })
-  }
+  // async function sendTestPushNotification() {
+  //   const subscription = window.localStorage.getItem('push-subscription')
+  //   if (!subscription) return
+  //   await fetch('/api/subscribe', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({
+  //       subscription: JSON.parse(subscription),
+  //       username: username.value,
+  //       todoId: listsStore.currentTodo._id,
+  //       // No notificationDateTime triggers test notification
+  //     }),
+  //   })
+  // }
 
   function updateDueDate(newDate: Date) {
     listsStore.currentTodo.dueDate = newDate
@@ -176,11 +178,12 @@
         const pad = (n: number) => n.toString().padStart(2, '0')
         const formatted = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
         notificationDateTime.value = formatted
-      } else {
+      }
+ else {
         notificationDateTime.value = ''
       }
     },
-    { immediate: true }
+    { immediate: true },
   )
 </script>
 
@@ -216,16 +219,16 @@
     <v-card-item class="px-6 pt-0 pb-2">
       <div class="pa-4 rounded-lg">
         <div class="mb-2 text-subtitle-1 font-weight-bold">Subtasks</div>
-        <v-list density="compact" class="pa-0" v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length">
+        <v-list v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length" density="compact" class="pa-0">
           <v-list-item v-for="(subtask, idx) in listsStore.currentTodo.subtasks" :key="subtask._id" class="py-2 px-0 align-center">
             <template #prepend>
               <v-checkbox
                 v-model="listsStore.currentTodo.subtasks[idx].status"
                 :true-value="'done'"
                 :false-value="'open'"
-                @change="listsStore.updateTodo(listsStore.currentTodo)"
                 class="me-2"
                 density="compact"
+                @change="listsStore.updateTodo(listsStore.currentTodo)"
               />
             </template>
             <v-text-field
@@ -233,7 +236,7 @@
               hide-details
               variant="plain"
               :readonly="listsStore.currentTodo.subtasks[idx].status === 'done'"
-              :class="{'text-decoration-line-through text-disabled': listsStore.currentTodo.subtasks[idx].status === 'done'}"
+              :class="{ 'text-decoration-line-through text-disabled': listsStore.currentTodo.subtasks[idx].status === 'done' }"
               @blur="listsStore.updateTodo(listsStore.currentTodo)"
             />
             <template #append>
@@ -250,8 +253,8 @@
             hide-details
             variant="outlined"
             class="me-2 flex-grow-1"
-            @keyup.enter="addSubtask"
             style="min-width: 120px;"
+            @keyup.enter="addSubtask"
           />
           <v-btn icon="mdi-plus" size="small" variant="tonal" color="primary" :disabled="!newSubtaskName" @click="addSubtask" />
         </div>
@@ -283,8 +286,8 @@
               label="Notification Date & Time"
               type="datetime-local"
               class="mr-2"
-              @blur="onNotificationDateTimeBlur"
               style="max-width: 220px;"
+              @blur="onNotificationDateTimeBlur"
             />
           </template>
         </v-menu>

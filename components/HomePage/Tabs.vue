@@ -8,9 +8,11 @@ watch(modelValue, (newTab) => {
 
   if (newTab === 'overdue') {
     listsStore.getOverdueTodos(userId.value)
-  } else if (newTab === 'todo') {
+  }
+ else if (newTab === 'todo') {
     listsStore.getTodaysTodos(userId.value)
-  } else if (newTab === 'done') {
+  }
+ else if (newTab === 'done') {
     listsStore.getTodaysTodos(userId.value)
   }
 })
@@ -41,4 +43,3 @@ onBeforeMount(() => {
     </v-tab>
   </v-tabs>
 </template>
-

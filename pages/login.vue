@@ -1,18 +1,32 @@
 <script setup lang="ts">
-  useHead({ title: 'TickUp - Login' })
-  definePageMeta({
-    layout: 'login',
-    auth: false 
-  })
-</script>
+definePageMeta({
+  layout: 'login'
+})
+const supabase = useSupabaseClient()
+const email = ref('')
 
+const signInWithOtp = async () => {
+  if (!email.value) {
+
+    return
+  }
+
+  const { error } = await supabase.auth.signInWithOtp({
+    email: email.value,
+    options: {
+      emailRedirectTo: 'http://localhost:3000/confirm',
+    }
+  })
+  if (error) console.log(error)
+}
+</script>
 <template>
-  <v-row>
-    <v-col class="justify-center" cols="12">
-      <v-img class="mx-auto rounded-xl" width="100" src="/android-chrome-512x512.png" />
-    </v-col>
-    <v-col cols="12">
-      <AppLoginForm />
-    </v-col>
-  </v-row>
+  <div>
+    {{ email }}
+    <v-text-field v-model="email" />
+    <v-btn  @click="signInWithOtp">
+      Sign In with E-Mail
+    </v-btn>
+
+  </div>
 </template>

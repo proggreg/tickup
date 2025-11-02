@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { status } = useAuth()
+// const { status } = useAuth()
 const colorMode = useColorMode()
 const route = useRoute()
 const dialog = useDialog()
@@ -29,9 +29,11 @@ const showFab = computed(() => {
             <NuxtPage />
           </v-container>
         </v-main>
-        <v-fab v-if="showFab" app size="small" position="relative" location="bottom end" style="bottom: 50px;"
+        <v-fab
+v-if="showFab" app size="small" position="relative" location="bottom end" style="bottom: 50px;"
           elevation="12" color="primary" append-icon="mdi-plus" variant="elevated" extended text="New"
-          @click="addEventHandler" />
+          @click="addEventHandler"
+/>
         <AppMobileNav v-if="status === 'authenticated'" />
       </v-app>
     </v-theme-provider>

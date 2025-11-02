@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 const settingsStore = useSettingsStore()
 const listsStore = useListsStore()
 
@@ -28,7 +27,6 @@ onMounted(() => {
     }
   })
 })
-
 
 const headers = reactive([
   { title: 'Title', key: 'name', sortable: true },

@@ -1,27 +1,28 @@
 <script setup lang="ts">
-const open = useNav()
-const dialog = useDialog()
-const { smAndDown } = useDisplay()
-const { signOut, status } = useAuth()
-const loggedIn = computed(() => status.value === 'authenticated')
-const contextMenuOpen = ref(false)
-const selectedList = ref<List>()
-const listsStore = useListsStore()
-function openContextMenu(event: MouseEvent, list: List) {
-  contextMenuOpen.value = true
-  
-  selectedList.value = list
-}
+  const open = useNav()
+  const dialog = useDialog()
+  const { smAndDown } = useDisplay()
+  const user = useSupabaseUser()
+  const loggedIn = computed(() => !!user.value)
+  const contextMenuOpen = ref(false)
+  const selectedList = ref<List>()
+  const listsStore = useListsStore()
 
-function deleteList() {
-  contextMenuOpen.value = false
-  
-  if (!selectedList.value || !selectedList.value._id) {
-    logger.warn('No list selected for deletion', { component: 'Nav', function: 'deleteList' })
-    return
+  function openContextMenu(event: MouseEvent, list: List) {
+    contextMenuOpen.value = true
+    selectedList.value = list
   }
-  listsStore.deleteList(selectedList.value._id)
-}
+
+  function deleteList() {
+    contextMenuOpen.value = false
+
+    if (!selectedList.value || !selectedList.value._id) {
+      logger.warn('No list selected for deletion', { component: 'Nav', function: 'deleteList' })
+      return
+    }
+    
+    listsStore.deleteList(selectedList.value._id)
+  }
 </script>
 
 <template>
@@ -38,7 +39,8 @@ function deleteList() {
           </v-btn>
           <v-btn variant="plain" icon="mdi-home" to="/" />
           <v-btn variant="plain" icon="mdi-cog" to="/settings" />
-          <v-btn variant="plain" icon="mdi-plus" data-testid="new-list-button" @click="dialog.page = 'list';dialog.open = true;" />
+          <v-btn variant="plain" icon="mdi-plus" data-testid="new-list-button"
+            @click="dialog.page = 'list'; dialog.open = true;" />
         </div>
       </template>
 
@@ -57,10 +59,11 @@ function deleteList() {
     </template>
   </v-app-bar>
 
-  <v-navigation-drawer v-if="loggedIn" v-model="open" style="max-height: 100vh; overflow-y: hidden !important;" disable-resize-watcher class="font-weight-bold" :permanent="!smAndDown" height="100vh">
+  <v-navigation-drawer v-if="loggedIn" v-model="open" style="max-height: 100vh; overflow-y: hidden !important;"
+    disable-resize-watcher class="font-weight-bold" :permanent="!smAndDown" height="100vh">
     <v-list nav>
       <ListNew :open="dialog" @close="dialog.open = false" />
-      
+
       <AppNavItems @open="openContextMenu" />
     </v-list>
 
@@ -73,12 +76,7 @@ function deleteList() {
     </v-menu>
 
     <template #append>
-      <div v-if="smAndDown" class="pa-2 d-flex flex-column ga-2">
-        <v-btn v-if="loggedIn" size="small" style="padding: 0;" variant="elevated" height="36" block @click="signOut()">
-          Sign Out
-        </v-btn>
-        <AppMenu />
-      </div>
+      <AppMenu />
     </template>
   </v-navigation-drawer>
 </template>
@@ -87,9 +85,10 @@ function deleteList() {
 .nav-item-title {
   text-transform: capitalize !important;
   font-weight: bold;
+
   @media (min-width: 600px) {
     font-size: 1rem !important;
-   }
+  }
 }
 
 :deep(.v-navigation-drawer__content) {

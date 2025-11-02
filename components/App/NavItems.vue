@@ -2,7 +2,7 @@
 const store = useListsStore()
 const editListName = ref('')
 const emit = defineEmits(['open'])
-const { isMobile } = useDevice()
+// const { isMobile } = useDevice()
 
 function renameList(list: List) {
   store.updateList(list)
@@ -53,7 +53,7 @@ function openContextMenu(el: MouseEvent, list: List) {
               <list-settings-button :list-id="item._id" />
             </template>
           </v-list-item>
-          <v-divider v-if="isMobile" />
+          <!-- <v-divider v-if="isMobile" /> -->
         </template>
       </v-hover>
     </template>

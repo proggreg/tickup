@@ -32,10 +32,10 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    
+
     /* Record video for all tests */
     video: 'on',
-    
+
     /* Take screenshot on failure */
     screenshot: 'only-on-failure',
   },
@@ -43,16 +43,16 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     // Setup project runs first to authenticate
-    { 
-      name: 'setup', 
+    {
+      name: 'setup',
       testMatch: /.*\.setup\.ts/,
     },
 
     // All other projects depend on the setup project
     {
       name: 'chromium',
-      use: { 
-        ...devices['Desktop Chrome'], 
+      use: {
+        ...devices['Desktop Chrome'],
         storageState: 'user.json',
       },
       dependencies: ['setup'],
@@ -60,8 +60,8 @@ export default defineConfig({
 
     {
       name: 'pixel_7',
-      use: { 
-        ...devices['Pixel 7'], 
+      use: {
+        ...devices['Pixel 7'],
         storageState: 'user.json',
       },
       dependencies: ['setup'],

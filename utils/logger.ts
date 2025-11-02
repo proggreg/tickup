@@ -31,7 +31,7 @@ class Logger {
   warn(message: string, context?: LogContext, ...args: unknown[]): void {
     const formatted = this.formatMessage('warn', message, context)
     console.warn(formatted, ...args)
-    
+
     // In production, could send to error tracking service
     // if (!this.isDev) {
     //   // Send to Bugsnag or similar
@@ -41,9 +41,9 @@ class Logger {
   error(error: Error | unknown, context?: LogContext, ...args: unknown[]): void {
     const errorMessage = error instanceof Error ? error.message : String(error)
     const formatted = this.formatMessage('error', errorMessage, context)
-    
+
     console.error(formatted, error, ...args)
-    
+
     // In production, send to error tracking service
     if (!this.isDev && typeof window !== 'undefined') {
       // Could integrate with Bugsnag here
@@ -63,4 +63,3 @@ export const logger = new Logger()
 
 // Export type for use in other files
 export type { LogContext }
-

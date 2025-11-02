@@ -69,8 +69,7 @@
             :show-detail="!smAndDown"
           />
 
-          <v-list-item-action end>
-          </v-list-item-action>
+          <v-list-item-action end />
         </template>
       </v-list-item>
     </template>

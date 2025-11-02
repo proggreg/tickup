@@ -1,66 +1,98 @@
 <script setup lang="ts">
-const { signIn } = useAuth()
-const username = ref('')
+const supabase = useSupabaseClient()
+const email = ref('')
 const password = ref('')
-const loginForm = ref()
-const correctCredentials = ref(false)
-const loggingIn = ref(false)
-const userNameRules = [
-  (value: string) => {
-    if (value) return true
-    return 'Oops! Username required to login. 😊'
-  },
-  () => {
-    return true
-  },
-]
-const passwordRules = [
-  (value: string) => {
-    if (value) return true
-    return 'Oops! Password required to login. 😊'
-  },
-]
+const loading = ref(false)
+const error = ref('')
 
-onMounted(() => {
-  if (window.location.href.includes('error=CredentialsSignin')) {
-    correctCredentials.value = true
+const login = async () => {
+  if (!email.value || !password.value) {
+    error.value = 'Please enter email and password'
+    return
   }
-})
-
-const loginUser = async () => {
-  loggingIn.value = true
-  const { valid } = await loginForm.value.validate()
-
-  if (valid) {
-    await signIn('credentials', { username: username.value, password: password.value })
+  
+  loading.value = true
+  error.value = ''
+  
+  try {
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: email.value,
+      password: password.value,
+    })
+    
+    if (signInError) {
+      error.value = signInError.message
+    } else {
+      await navigateTo('/')
+    }
+  } catch (err) {
+    error.value = 'An error occurred during login'
+  } finally {
+    loading.value = false
   }
-  loggingIn.value = false
+}
+
+const loginWithGoogle = async () => {
+  const { error: signInError } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${window.location.origin}/`
+    }
+  })
+  
+  if (signInError) {
+    error.value = signInError.message
+  }
 }
 </script>
 
 <template>
-  <v-form ref="loginForm" style="max-width: 400px" class="flex-1 mx-auto" validate-on="input lazy" @submit.prevent="loginUser">
-    <v-text-field
-      v-model="username" label="Username" :hide-details="false" :rules="userNameRules" required
-    />
-
-    <v-text-field
-      v-model="password" label="Password" :hide-details="false" :rules="passwordRules" type="password"
-      required
-    />
-    <v-btn :disabled="loggingIn" class="mb-4" color="primary" block type="submit">
-      Login
-    </v-btn>
-    <v-btn :disabled="loggingIn" color="primary" append-icon="mdi-github" class="mb-4" block @click="signIn(`github`)">
-      Github Sign In
-    </v-btn>
+  <div style="max-width: 400px" class="flex-1 mx-auto">
+    <v-form @submit.prevent="login">
+      <v-text-field
+        v-model="email"
+        label="Email"
+        type="email"
+        required
+        class="mb-3"
+      />
+      
+      <v-text-field
+        v-model="password"
+        label="Password"
+        type="password"
+        required
+        class="mb-3"
+      />
+      
+      <v-alert v-if="error" type="error" class="mb-3">
+        {{ error }}
+      </v-alert>
+      
+      <v-btn 
+        :loading="loading"
+        class="mb-3" 
+        color="primary" 
+        block 
+        type="submit"
+      >
+        Login
+      </v-btn>
+      
+      <v-btn 
+        class="mb-4" 
+        color="secondary" 
+        variant="outlined"
+        block 
+        @click="loginWithGoogle"
+      >
+        Login with Google
+      </v-btn>
+    </v-form>
+    
     <div class="text-center">
-      <span>Don't have an account </span>
-      <NuxtLink color="secondary" to="/register">Register
-      </NuxtLink>
+      <span>Don't have an account? </span>
+      <NuxtLink to="/register">Register</NuxtLink>
     </div>
-    <v-snackbar v-model="correctCredentials" color="danger">
-      Incorrect Credentials
-    </v-snackbar>
-  </v-form>
+  </div>
 </template>

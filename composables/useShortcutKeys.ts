@@ -1,12 +1,7 @@
 import { onKeyDown } from '@vueuse/core'
-import { useAuth } from '#imports'
-
-
 export function useShortcutKeys() {
-  const { status } = useAuth()
-  const dialog = useDialog()
   
-  if (status.value === 'authenticated') {
+  const dialog = useDialog()
     onKeyDown(['t', 'l'], (event) => {
       const activeElement = document.activeElement
 
@@ -25,4 +20,3 @@ export function useShortcutKeys() {
       }
     })
   }
-}

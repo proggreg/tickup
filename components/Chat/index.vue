@@ -28,9 +28,8 @@ function sendMessage(message: string) {
   ollama.chat({
     model: selectedModel.value,
     messages: messages,
-    stream: true 
+    stream: true,
   }).then(async (response) => {
-      
       for await (const part of response) {
         chatResponse.value += part.message.content
         tmpchatResponse += part.message.content

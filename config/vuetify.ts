@@ -51,7 +51,7 @@ export default {
       },
       VSelect: {
         rounded: 'lg',
-        hideDetails: true
+        hideDetails: true,
       },
     },
     theme: {
@@ -63,10 +63,10 @@ export default {
         },
         dark: {
           colors: {
-            primary: '#FFFFFF',
-            secondary: '#000000',
-            surface: '#000000',
-            background: '#000000',
+            'primary': '#FFFFFF',
+            'secondary': '#000000',
+            'surface': '#000000',
+            'background': '#000000',
             'surface-variant': '#1E1E1E',
             'on-surface': '#FFFFFF',
             'on-background': '#FFFFFF',

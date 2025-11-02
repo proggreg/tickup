@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<Props>(), {
   emptyState: true,
 })
 
-const { isMobile } = useDevice()
+// const { isMobile } = useDevice()
 const { selectTodo, setClosed, setOpen, formatDate } = useTodoActions()
 const opened = ref(['Open'])
 
@@ -162,9 +162,8 @@ const handleSetOpenSimple = (todo: Todo) => {
   <v-card
     v-else-if="emptyState"
     variant="flat"
-    :class="['d-flex flex-column justify-center align-center', !isMobile ? 'fill-height' : '']"
+    :class="['d-flex flex-column justify-center align-center']"
   >
     <AppEmptyState height="100%" />
   </v-card>
 </template>
-

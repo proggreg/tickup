@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { data } = useAuth()
+// const { data } = useAuth()
 const newTodoVariant = ref<'text' | 'outlined'>('text')
 const openNewTodo = ref('')
 const newTodoTitle = ref('')
@@ -14,7 +14,7 @@ async function createTodo(status: string) {
       status,
       desc: '',
       listId: params.id as string,
-      userId: data?.value?.user?.sub,
+      // userId: userId.value,
       color: 'grey',
       edit: false,
       links: [],

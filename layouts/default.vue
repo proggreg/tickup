@@ -1,18 +1,17 @@
 <script setup lang="ts">
   const colorMode = useColorMode()
   const show = ref(true)
-  const { isOnline, isSyncing, pendingCount, syncNow} = useOfflineSync()
+  const { isOnline, isSyncing, pendingCount, syncNow } = useOfflineSync()
 </script>
 
 <template>
   <ColorScheme>
     <v-theme-provider with-background :theme="colorMode.preference" class="overflow-auto">
-      
-      <v-app full-height>
+<v-app full-height>
         <AppToolbar />
         <AppNav />
         <v-main>
-          <v-snackbar location="bottom right" v-model="show" timeout="-1">isOnline {{isOnline}}</v-snackbar>
+          <!-- <v-snackbar width="10" v-model="show" location="bottom right" timeout="-1">isOnline {{ isOnline }}</v-snackbar> -->
           <v-container fluid class="pa-0" style="height: 100%;">
             <AppSettings />
             <NuxtPage />

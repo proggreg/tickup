@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
       'application/vnd.ms-excel',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'text/plain',
-      'text/csv'
+      'text/csv',
     ]
 
     if (!allowedTypes.includes(file.type)) {
@@ -96,11 +96,12 @@ export default defineEventHandler(async (event) => {
       success: true,
       attachment: attachmentRef,
     }
-  } catch (error) {
+  }
+ catch (error) {
     console.error('Error uploading file:', error)
     throw createError({
       statusCode: 500,
       message: 'Failed to upload file',
     })
   }
-}) 
+})

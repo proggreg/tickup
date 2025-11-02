@@ -3,7 +3,8 @@ const route = useRoute()
 const notificationData = computed(() => {
   try {
     return JSON.parse(decodeURIComponent(route.query.data as string))
-  } catch {
+  }
+ catch {
     return route.query.data
   }
 })
@@ -25,4 +26,4 @@ const notificationData = computed(() => {
       </v-card-text>
     </v-card>
   </v-container>
-</template> 
+</template>

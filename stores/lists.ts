@@ -56,7 +56,7 @@ export const useListsStore = defineStore('lists', {
       if (!listToUpdate || !listToUpdate.name || !listToUpdate._id) return
       if (!isOnline) {
         logger.log('Skipping list update - offline')
-        return 
+        return
       }
       await $fetch<List>(`/api/list/${listToUpdate._id}`, {
         method: 'PUT',
@@ -109,9 +109,9 @@ export const useListsStore = defineStore('lists', {
         return
       }
       if (!this.currentList.todos) this.currentList.todos = []
-      
+
       const newTodoTempId = crypto.randomUUID()
-      this.currentList.todos.push({...newTodo, _id: newTodoTempId })
+      this.currentList.todos.push({ ...newTodo, _id: newTodoTempId })
 
       const todo = await $fetch<Todo>('/api/todo', {
         method: 'POST',
@@ -127,7 +127,6 @@ export const useListsStore = defineStore('lists', {
       this.currentList.todos = this.currentList.todos.map(t =>
         t._id === newTodoTempId ? { ...t, _id: todo._id } : t,
       )
-      
 
       this.newTodo = {
         name: '',
@@ -299,10 +298,10 @@ export const useListsStore = defineStore('lists', {
       }
     },
   },
-  persist: {
-    debug: true,
-    storage: piniaPluginPersistedstate.localStorage(),
-  },
+  // persist: {
+  //   debug: true,
+  //   storage: piniaPluginPersistedstate.localStorage(),
+  // },
 })
 
 if (import.meta.hot) {

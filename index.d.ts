@@ -1,5 +1,6 @@
+import { ObjectID } from 'mongodb'
+
 export { Todo, Status, List }
-import {ObjectID} from 'mongodb'
 declare global {
 
   type ViewType = 'list' | 'board'
@@ -27,7 +28,7 @@ declare global {
       _id: string
     }[]
     attachments?: {
-      _id: ObjectId,
+      _id: ObjectId
       attachmentId: string
       filename: string
       originalName: string
@@ -78,8 +79,8 @@ declare global {
      */
     isInstalled: boolean
     /**
-     * From version v0.3.5+. 
-     */  
+     * From version v0.3.5+.
+     */
     isPWAInstalled: Ref<boolean>
     showInstallPrompt: Ref<boolean>
     cancelInstall: () => void
@@ -92,7 +93,7 @@ declare global {
     cancelPrompt: () => Promise<void>
     getSWRegistration: () => ServiceWorkerRegistration | undefined
   }
-  
+
   // types/offline.ts (or add to your existing types file)
   export interface PendingChange {
     id: string | number

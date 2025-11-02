@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const listsStore = useListsStore()
-const { isMobile } = useDevice()
+// const { isMobile } = useDevice()
 const opened = ref(['Open'])
 
 function selectTodo(todo: Todo) {
@@ -54,7 +54,7 @@ const closedTodos = computed(() => {
           <template #prepend>
             <v-checkbox @click.stop="setClosed(todo)" />
           </template>
-          <v-list-item-title data-testid="todo-title" >
+          <v-list-item-title data-testid="todo-title">
             {{ todo.name }}
           </v-list-item-title>
 
@@ -103,7 +103,7 @@ const closedTodos = computed(() => {
   <v-card
     v-else
     variant="flat"
-    :class="['d-flex flex-column justify-center align-center', !isMobile ? 'fill-height' : '']"
+    :class="['d-flex flex-column justify-center align-center']"
   >
     <AppEmptyState height="100%" />
   </v-card>

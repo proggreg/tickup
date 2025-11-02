@@ -35,11 +35,10 @@ export default defineEventHandler(async (event): Promise<{ title: string, url: s
       throw new Error('No URLs provided')
     }
 
-
     for (const url of parsedUrls) {
       const title = await getTitle(url)
       if (!title) continue
-      
+
       titles.push({ title, url })
     }
 

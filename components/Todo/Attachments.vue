@@ -12,7 +12,7 @@ const attachments = computed(() => listsStore.currentTodo.attachments || [])
 
 const allowedTypes = [
   'image/jpeg',
-  'image/png', 
+  'image/png',
   'image/gif',
   'image/webp',
   'application/pdf',
@@ -21,7 +21,7 @@ const allowedTypes = [
   'application/vnd.ms-excel',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   'text/plain',
-  'text/csv'
+  'text/csv',
 ]
 
 const maxFileSize = 10 * 1024 * 1024 // 10MB
@@ -46,7 +46,7 @@ function getFileIcon(mimeType: string): string {
 async function handleFileUpload(event: Event) {
   const target = event.target as HTMLInputElement
   const file = target.files?.[0]
-  
+
   if (!file) return
 
   // Validate file size
@@ -70,7 +70,6 @@ async function handleFileUpload(event: Event) {
     if (listsStore.currentTodo._id) {
       formData.append('todoId', listsStore.currentTodo._id)
     }
-    
 
     const response = await fetch('/api/todo/upload', {
       method: 'POST',
@@ -83,7 +82,7 @@ async function handleFileUpload(event: Event) {
     }
 
     const result = await response.json()
-    
+
     // Update the todo with the new attachment
     if (!listsStore.currentTodo.attachments) {
       listsStore.currentTodo.attachments = []
@@ -95,9 +94,11 @@ async function handleFileUpload(event: Event) {
     if (fileInput.value) {
       fileInput.value.value = ''
     }
-  } catch (error) {
+  }
+ catch (error) {
     uploadError.value = error instanceof Error ? error.message : 'Upload failed'
-  } finally {
+  }
+ finally {
     uploading.value = false
   }
 }
@@ -121,10 +122,11 @@ async function deleteAttachment(attachmentId: string) {
 
     // Remove attachment from local state
     listsStore.currentTodo.attachments = listsStore.currentTodo.attachments?.filter(
-      a => a._id !== attachmentId
+      a => a._id !== attachmentId,
     )
     await listsStore.updateTodo(listsStore.currentTodo)
-  } catch (error) {
+  }
+ catch (error) {
     logger.error(error as Error, { component: 'TodoAttachments', function: 'deleteAttachment' })
   }
 }
@@ -137,7 +139,7 @@ function openFile(attachment: any) {
 <template>
   <div class="pa-4 rounded-lg">
     <div class="mb-4 text-subtitle-1 font-weight-bold">Attachments</div>
-    
+
     <div class="mb-4">
       <v-file-input
         ref="fileInput"
@@ -148,9 +150,9 @@ function openFile(attachment: any) {
         variant="outlined"
         :loading="uploading"
         :error-messages="uploadError"
-        @change="handleFileUpload"
         hide-details
         class="mb-2"
+        @change="handleFileUpload"
       />
       <div class="text-caption text-grey">
         Supported: Images, PDF, Word, Excel, Text files (max 10MB)
@@ -167,13 +169,13 @@ function openFile(attachment: any) {
           <template #prepend>
             <v-icon :icon="getFileIcon(attachment.mimeType)" class="me-3" />
           </template>
-          
+
           <v-list-item-title class="text-body-2">
             {{ attachment.originalName }}
           </v-list-item-title>
-          
+
           <v-list-item-subtitle class="text-caption">
-            {{ formatFileSize(attachment.size) }} • 
+            {{ formatFileSize(attachment.size) }} •
             {{ new Date(attachment.uploadedAt).toLocaleDateString() }}
           </v-list-item-subtitle>
 
@@ -183,8 +185,8 @@ function openFile(attachment: any) {
                 icon="mdi-eye"
                 size="small"
                 variant="text"
-                @click="openFile(attachment)"
                 class="me-1"
+                @click="openFile(attachment)"
               />
               <v-btn
                 icon="mdi-delete"
@@ -198,7 +200,7 @@ function openFile(attachment: any) {
         </v-list-item>
       </v-list>
     </div>
-    
+
     <div v-else class="text-grey text-body-2 pa-2">
       No attachments yet. Add files above!
     </div>
@@ -213,4 +215,4 @@ function openFile(attachment: any) {
 :deep(.v-file-input .v-input__control) {
   display: none;
 }
-</style> 
+</style>
