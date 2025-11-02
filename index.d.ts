@@ -7,7 +7,7 @@ declare global {
   interface Todo {
     userId?: string
     name: string
-    _id?: string
+    id?: string
     dueDate?: Date
     listId?: string
     status: string

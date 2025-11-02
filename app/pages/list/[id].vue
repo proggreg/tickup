@@ -16,6 +16,8 @@ onBeforeMount(async () => {
   if (currentList) {
     listsStore.setCurrentList(currentList)
   }
+
+  listsStore.getListTodos()
 })
 
 if (!listsStore.currentList) {
@@ -28,10 +30,10 @@ if (listsStore.currentList) {
   })
 }
 
-// watch(listsStore.currentList.todos, (todos: Todo[]) => {
-//   if (!todos) return
-//   on.value = todos.filter((todo: Todo) => todo.selected).length > 0
-// })
+watch(listsStore.currentList.todos, (todos: Todo[]) => {
+  if (!todos) return
+  on.value = todos.filter((todo: Todo) => todo.selected).length > 0
+})
 </script>
 
 <template>

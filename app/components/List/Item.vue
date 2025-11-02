@@ -15,7 +15,7 @@
 
   function editTodo(todo: Todo, status: Status) {
     todo.status = status.name
-    $fetch(`/api/todo/${todo._id}`, {
+    $fetch(`/api/todo/${todo.id}`, {
       method: 'PUT',
       body: todo,
     })

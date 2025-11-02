@@ -8,7 +8,7 @@ const emit = defineEmits<{
 <template>
   <v-virtual-scroll :items="store.results" height="100%" item-height="50">
     <template #default="{ item }">
-      <v-list-item link :to="`/todo/${item._id}`">
+      <v-list-item link :to="`/todo/${item.id}`">
         <template #prepend>
           <ListStatus :todo="item" />
         </template>
@@ -21,7 +21,7 @@ const emit = defineEmits<{
           {{ new Date(item.updatedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) }}
         </v-list-item-subtitle>
         <template #append>
-          <v-btn :to="`/todo/${item._id}`" icon="mdi-open-in-new" variant="text" />
+          <v-btn :to="`/todo/${item.id}`" icon="mdi-open-in-new" variant="text" />
         </template>
       </v-list-item>
     </template>

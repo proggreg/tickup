@@ -13,7 +13,7 @@
   
   function showModal(item: TableItem) {
     store.setCurrentTodo(item.raw)
-    navigateTo(`/todo/${item.raw._id}`)
+    navigateTo(`/todo/${item.raw.id}`)
   }
 
   function formatDate(date: Date) {

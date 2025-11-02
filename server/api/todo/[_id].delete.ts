@@ -1,8 +1,43 @@
+import { serverSupabaseClient } from '#supabase/server'
+
 export default defineEventHandler(async (event) => {
-  try {
-    return await TodoSchema.findOneAndDelete({ _id: event.context.params?._id })
+  if (!event.context.params || !event.context.params._id) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Todo ID is required'
+    })
   }
-  catch (e) {
-    return e
+
+  const supabase = await serverSupabaseClient(event)
+  const { data, error } = await supabase
+    .from('Todos')
+    .delete()
+    .eq('id', event.context.params._id)
+    .select()
+    .single()
+
+  if (error) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: error.message
+    })
   }
+
+  // Transform snake_case fields back to camelCase for API response
+  if (data) {
+    return {
+      ...data,
+      dueDate: data.due_date,
+      completedDate: data.completed_date,
+      userId: data.user_id,
+      listId: data.list_id,
+      githubBranchName: data.github_branch_name,
+      notificationDateTime: data.notification_date_time,
+      notificationSent: data.notification_sent,
+      createdAt: data.created_at,
+      updatedAt: data.updated_at
+    }
+  }
+
+  return data
 })

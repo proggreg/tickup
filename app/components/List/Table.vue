@@ -1,52 +1,52 @@
 <script setup lang="ts">
-const settingsStore = useSettingsStore()
-const listsStore = useListsStore()
+  const settingsStore = useSettingsStore()
+  const listsStore = useListsStore()
 
-// Track expanded groups
-const expanded = ref<string[]>(['Open'])
-const opened = ref<string[]>([])
+  // Track expanded groups
+  const expanded = ref<string[]>(['Open'])
+  const opened = ref<string[]>([])
 
-// Store table functions
-const tableGroupFns = ref<{
-  toggleGroup?: (item: any) => void
-  isGroupOpen?: (item: any) => boolean
-}>({})
+  // Store table functions
+  const tableGroupFns = ref<{
+    toggleGroup?: (item: any) => void
+    isGroupOpen?: (item: any) => boolean
+  }>({})
 
-// Handle initial expansion
-onMounted(() => {
-  nextTick(() => {
-    const { toggleGroup, isGroupOpen } = tableGroupFns.value
-    const openGroup = { key: 'status', value: 'Open' }
+  // Handle initial expansion
+  onMounted(() => {
+    nextTick(() => {
+      const { toggleGroup, isGroupOpen } = tableGroupFns.value
+      const openGroup = { key: 'status', value: 'Open' }
 
-    if (toggleGroup && isGroupOpen) {
-      const isOpen = isGroupOpen(openGroup)
+      if (toggleGroup && isGroupOpen) {
+        const isOpen = isGroupOpen(openGroup)
 
-      if (!isOpen) {
-        toggleGroup(openGroup)
+        if (!isOpen) {
+          toggleGroup(openGroup)
+        }
       }
-    }
+    })
   })
-})
 
-const headers = reactive([
-  { title: 'Title', key: 'name', sortable: true },
-  { title: 'Description', key: 'desc', sortable: true },
-  { title: 'Date', key: 'dueDate', sortable: true },
-  { title: '', key: 'actions', sortable: false },
-  {
-    title: 'Status', key: 'status', sortable: true, sort: (a: string, b: string) => {
-      return settingsStore.statuses.findIndex(status => status.name === a) - settingsStore.statuses.findIndex(status => status.name === b)
+  const headers = reactive([
+    { title: 'Title', key: 'name', sortable: true },
+    { title: 'Description', key: 'desc', sortable: true },
+    { title: 'Date', key: 'dueDate', sortable: true },
+    { title: '', key: 'actions', sortable: false },
+    {
+      title: 'Status', key: 'status', sortable: true, sort: (a: string, b: string) => {
+        return settingsStore.statuses.findIndex(status => status.name === a) - settingsStore.statuses.findIndex(status => status.name === b)
+      },
     },
-  },
-])
+  ])
 
-const group = ref([
-  {
-    key: 'status',
-    order: true,
-    title: 'Status',
-  },
-])
+  const group = ref([
+    {
+      key: 'status',
+      order: true,
+      title: 'Status',
+    },
+  ])
 </script>
 
 <template>

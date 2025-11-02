@@ -76,7 +76,7 @@ async function addTodo() {
 
 function gotoTodo(todo: Todo) {
   listStore.setCurrentTodo(todo)
-  navigateTo(`/todo/${todo._id}`)
+  navigateTo(`/todo/${todo.id}`)
 }
 
 function toggleNewTodo(status: string) {

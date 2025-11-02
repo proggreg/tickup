@@ -13,8 +13,20 @@
   console.log('public', config.public)
   console.log('redirect to', `https://${BASE_URL}/confirm`)
 
-  watchEffect(() => {
+  watchEffect(async () => {
     if (user.value) {
+      try {
+        // Ensure user exists in our Users table
+        await $fetch('/api/user/create', {
+          method: 'POST',
+          body: {
+            username: user.value.email?.split('@')[0] || 'user'
+          }
+        })
+      } catch (error) {
+        console.warn('User creation failed or user already exists:', error)
+      }
+      
       return navigateTo('/')
     }
   })

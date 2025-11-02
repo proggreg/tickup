@@ -5,7 +5,7 @@ const opened = ref(['Open'])
 
 function selectTodo(todo: Todo) {
   listsStore.setCurrentTodo(todo)
-  navigateTo(`/todo/${todo._id}`)
+  navigateTo(`/todo/${todo.id}`)
 }
 function setClosed(todo: Todo) {
   todo.status = 'Closed'

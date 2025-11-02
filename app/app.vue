@@ -11,7 +11,7 @@
     await useAsyncData(() => settingsStore.getUserSettings().then(() => true))
 
     if (userId.value) {
-      // listsStore.getLists()
+      listsStore.getLists()
       // listsStore.getTodaysTodos(userId.value)
       // listsStore.getOverdueTodos(userId.value)
     }

@@ -1,43 +1,43 @@
 <script setup lang="ts">
-const { groupItem, isGroupOpen, columns, toggleGroup, sortBy, toggleSort, expanded } = defineProps<{
-  groupItem: any // Using any for now since Vuetify's internal types are complex
-  isGroupOpen: (item: any) => boolean
-  columns: any[] // Using any[] since Vuetify's internal header type is complex
-  toggleGroup: (item: any) => void
-  sortBy: any[] // Using any[] since Vuetify's internal sort type is complex
-  toggleSort: (column: any) => void
-  expanded: string[]
-}>()
-const { statuses } = useSettingsStore()
-const headerColumns = ref(columns)
-const { mdAndUp } = useDisplay()
+  const { groupItem, isGroupOpen, columns, toggleGroup, sortBy, toggleSort, expanded } = defineProps<{
+    groupItem: any // Using any for now since Vuetify's internal types are complex
+    isGroupOpen: (item: any) => boolean
+    columns: any[] // Using any[] since Vuetify's internal header type is complex
+    toggleGroup: (item: any) => void
+    sortBy: any[] // Using any[] since Vuetify's internal sort type is complex
+    toggleSort: (column: any) => void
+    expanded: string[]
+  }>()
+  const { statuses } = useSettingsStore()
+  const headerColumns = ref(columns)
+  const { mdAndUp } = useDisplay()
 
-onMounted(() => {
-  if (!isGroupOpen(groupItem) && groupItem.key === 'status' && groupItem.value === 'Open') {
-    toggleGroup(groupItem)
+  onMounted(() => {
+    if (!isGroupOpen(groupItem) && groupItem.key === 'status' && groupItem.value === 'Open') {
+      toggleGroup(groupItem)
+    }
+  })
+
+  // TODO fix exapanded keep state
+  function getStatusColor(todoStatus: string) {
+    const status = statuses.filter((status: Status) => status.name === todoStatus)
+    if (status.length > 0) {
+      return status[0].color
+    }
   }
-})
 
-// TODO fix exapanded keep state
-function getStatusColor(todoStatus: string) {
-  const status = statuses.filter((status: Status) => status.name === todoStatus)
-  if (status.length > 0) {
-    return status[0].color
+  function isSorted(sortBy: { key: string }[], column: { key: string }) {
+    return sortBy.some(item => item.key === column.key)
   }
-}
 
-function isSorted(sortBy: { key: string }[], column: { key: string }) {
-  return sortBy.some(item => item.key === column.key)
-}
-
-function isSortedIndex(sortBy: { key: string, order: string }[], column: { key: string }) {
-  let index = sortBy.findIndex(item => item.key === column.key)
-  index++
-  if (index > 0) {
-    return index
+  function isSortedIndex(sortBy: { key: string, order: string }[], column: { key: string }) {
+    let index = sortBy.findIndex(item => item.key === column.key)
+    index++
+    if (index > 0) {
+      return index
+    }
+    return false
   }
-  return false
-}
 </script>
 
 <template>

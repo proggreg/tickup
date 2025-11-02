@@ -16,19 +16,15 @@ export default defineEventHandler(async (event) => {
   }
 
   if (username && subscription) {
-    // await UserSchema.findOneAndUpdate(
-    //   { username },
-    //   { $addToSet: { pushSubscriptions: subscription } },
-    //   { new: true, upsert: true },
-    // )
+    // Note: User subscription management would need to be implemented in Supabase
+    // This requires creating a Users table and handling push subscriptions
+    console.log('User subscription update needed for:', username)
   }
 
   if (todoId && notificationDateTime) {
-    // await TodoSchema.findOneAndUpdate(
-    //   { _id: todoId },
-    //   { notificationDateTime: new Date(notificationDateTime), notificationSent: false },
-    //   { new: true },
-    // )
+    // Note: Todo notification scheduling would need to be implemented in Supabase
+    // This requires updating the Todos table
+    console.log('Todo notification scheduling needed for:', todoId)
   }
 
   webpush.setVapidDetails(
@@ -42,13 +38,10 @@ export default defineEventHandler(async (event) => {
       let testTitle = 'Tickup Push Test'
       let testMessage = 'Push notifications are working! You will get reminders for your todos.'
       if (todoId) {
-        const todo = await TodoSchema.findById(todoId)
-        if (todo && todo.name) {
-          testTitle = todo.name
-          const desc = todo.desc ? `\nDescription: ${todo.desc}` : ''
-          const due = todo.dueDate ? `\nDue: ${new Date(todo.dueDate).toLocaleString()}` : ''
-          testMessage = `Test notification for: ${todo.name}${desc}${due}`
-        }
+        // Note: Todo lookup would need to be implemented with Supabase
+        console.log('Todo lookup needed for test notification:', todoId)
+        testTitle = 'Test Todo Notification'
+        testMessage = 'Test notification for todo (Supabase migration needed)'
       }
       await webpush.sendNotification(subscription, JSON.stringify({
         title: testTitle,

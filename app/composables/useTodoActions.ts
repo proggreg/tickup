@@ -7,7 +7,7 @@ export const useTodoActions = () => {
 
   const selectTodo = (todo: Todo) => {
     listsStore.setCurrentTodo(todo)
-    navigateTo(`/todo/${todo._id}`)
+    navigateTo(`/todo/${todo.id}`)
   }
 
   const setTodoStatus = async (todo: Todo, status: 'Open' | 'Closed', delay = 0) => {

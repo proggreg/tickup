@@ -30,15 +30,28 @@ export const useListsStore = defineStore('lists', {
   actions: {
     async addList(newList?: List) {
       console.log('add list')
+      const user = useSupabaseUser()
+      
+      if (!user.value?.id) {
+        console.error('User not authenticated')
+        return
+      }
+      
       if (!newList) {
         newList = this.newList
       }
       if (newList) {
         this.lists.push(newList)
 
+        // Prepare list data with user ID
+        const listData = {
+          ...newList,
+          userId: user.value.id,
+        }
+
         const list = await $fetch<List>('/api/list', {
           method: 'POST',
-          body: newList,
+          body: listData,
         })
 
         this.lists[this.lists.length - 1].id = list.id
@@ -92,61 +105,31 @@ export const useListsStore = defineStore('lists', {
       if (!todos || !todos.length) return
       this.currentList.todos = todos
     },
-    async getListTodos(listId: string): Promise<Todo[]> {
+    async getListTodos(listId?: string): Promise<Todo[]> {
+      if (!listId) {
+        listId = this.currentList.id
+      }
       const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { listId } })
+      this.currentList.todos = todos
       return todos || []
     },
     async addTodo(newTodo: Todo) {
-      const route = useRoute()
-      const isHomepage = route.path === '/' || route.name === 'index'
-      // const { isOnline } = useOfflineSync()
-      if (newTodo._id) {
-        // logger.warn('Todo already has an id, skipping add', { component: 'ListsStore', function: 'addTodo', todo: newTodo })
-        return
-      }
+      if (!this.currentList.todos) this.currentList.todos = []
 
-      // if (!isOnline.value) {
-      //   // logger.log('Skipping todo add - offline')
-      //   return
-      // }
-      // if (!this.currentList.todos) this.currentList.todos = []
-
-      const newTodoTempId = crypto.randomUUID()
-      this.currentList.todos.push({ ...newTodo, _id: newTodoTempId })
+      
+      this.currentList.todos.push(newTodo)
 
       const todo = await $fetch<Todo>('/api/todo', {
         method: 'POST',
         body: newTodo,
       })
 
-      if (!todo) {
-        // logger.error(new Error('Failed to add todo'), { component: 'ListsStore', function: 'addTodo', todo: newTodo })
-        return
-      }
+      console.log('add todo', todo)
 
-      // update the added todo with the server-generated ID
-      this.currentList.todos = this.currentList.todos.map(t =>
-        t._id === newTodoTempId ? { ...t, _id: todo._id } : t,
-      )
+      this.currentList.todos[this.currentList.todos.length - 1].id = todo.id;
 
-      this.newTodo = {
-        name: '',
-        status: 'Open',
-        desc: '',
-        edit: false,
-        color: '#87909e',
-        links: [],
-        attachments: [],
-      }
+      this.resetTodo()
 
-      // if (isHomepage) {
-      //   this.todaysTodos[this.todaysTodos.length - 1]._id = todo._id
-      // }
-      // else {
-      //   this.currentList.todos[this.currentList.todos.length - 1]._id = todo._id
-      // }
-
-      this.updateList()
       return todo
     },
     async updateTodo(todo?: Todo) {
@@ -154,7 +137,7 @@ export const useListsStore = defineStore('lists', {
         todo = this.currentTodo
       }
 
-      const updatedTodo = await $fetch<Todo>(`/api/todo/${todo._id}`, {
+      const updatedTodo = await $fetch<Todo>(`/api/todo/${todo.id}`, {
         method: 'PUT',
         body: todo,
       })
@@ -165,12 +148,8 @@ export const useListsStore = defineStore('lists', {
       await $fetch(`/api/todo/${id}`, { method: 'DELETE' })
 
       this.currentList.todos = this.currentList.todos.filter(
-        (todo: Todo) => todo._id !== id,
+        (todo: Todo) => todo.id !== id,
       )
-
-      if (this.todaysTodos.length) {
-        this.todaysTodos = this.todaysTodos.filter((todo: Todo) => todo._id !== id)
-      }
     },
     async getTodo(id: string) {
       const { data } = await useFetch<Todo>(`/api/todo/${id}`)
@@ -181,10 +160,8 @@ export const useListsStore = defineStore('lists', {
 
       return data
     },
-    async getTodos(userId: string) {
-      const { data } = await useFetch<Todo[]>('/api/todos', {
-        query: { userId },
-      })
+    async getTodos() {
+      const { data } = await useFetch<Todo[]>('/api/todos')
 
       if (data.value) {
         this.todos = data.value
@@ -235,18 +212,34 @@ export const useListsStore = defineStore('lists', {
       }
     },
 
-    async getTodaysTodos(id: string) {
+    async getTodaysTodos(id?: string) {
+      const user = useSupabaseUser()
+      const actualUserId = id || user.value?.id
+      
+      if (!actualUserId) {
+        console.error('User ID not available')
+        return
+      }
+      
       const { data } = await useFetch<Todo[]>('/api/todos', {
-        query: { today: true, id },
+        query: { today: true, id: actualUserId },
       })
 
       if (data.value) {
         this.todaysTodos = data.value
       }
     },
-    async getOverdueTodos(id: string) {
+    async getOverdueTodos(id?: string) {
+      const user = useSupabaseUser()
+      const actualUserId = id || user.value?.id
+      
+      if (!actualUserId) {
+        console.error('User ID not available')
+        return
+      }
+      
       const todos = await $fetch<Todo[]>('/api/todos', {
-        query: { overdue: true, id },
+        query: { overdue: true, id: actualUserId },
       })
 
       if (todos) {
@@ -272,10 +265,17 @@ export const useListsStore = defineStore('lists', {
         return newDirection === 'ascending' ? result : -result
       })
     },
-    newReset() {
-      this.newTodo = createNewTodoState()
-      this.newList = createNewListState()
+    newResetAll() {
+      this.resetList()
+      this.resetTodo()
     },
+    resetTodo() {
+      this.newTodo = createNewTodoState()
+    },
+    resetList() {
+      this.newList = createNewListState()
+    }
+
   },
   // persist: {
   //   debug: true,
