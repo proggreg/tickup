@@ -5,10 +5,10 @@
   const config = useRuntimeConfig()
   const supabase = useSupabaseClient()
   const email = ref('')
-  const BASE_URL = config.public.VERCEL_URL ?? 'https://localhost:3000' 
+  const BASE_URL = config.public.VERCEL_URL ?? 'localhost:3000' 
   console.log('Base url', BASE_URL)
   console.log('public', config.public)
-  console.log('redirect to', `${BASE_URL}/confirm`)
+  console.log('redirect to', `https://${BASE_URL}/confirm`)
 
   const signInWithOtp = async () => {
     const { error } = await supabase.auth.signInWithOtp({
