@@ -16,7 +16,7 @@ if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.he
 
 <template>
     <div>
-        <!-- <NuxtPwaManifest /> -->
+        <NuxtPwaManifest />
         <AppDialog
             page="todo"
             title="New Todo"
