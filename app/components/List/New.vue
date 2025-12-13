@@ -5,10 +5,10 @@ const { smAndDown } = useDisplay();
 const dialog = useDialog();
 
 async function createNewList() {
+    if (!listsStore.newList.name.length) return;
     const list = await listsStore.addList();
 
     if (list) {
-        listsStore.newReset();
         dialog.value.open = false;
 
         if (smAndDown.value) {

@@ -32,11 +32,6 @@ export const useListsStore = defineStore('lists', {
             console.log('add list');
             const user = useSupabaseUser();
 
-            if (!user.value?.id) {
-                console.error('User not authenticated');
-                return;
-            }
-
             if (!newList) {
                 newList = this.newList;
             }
@@ -56,6 +51,7 @@ export const useListsStore = defineStore('lists', {
 
                 this.lists[this.lists.length - 1].id = list.id;
 
+                this.resetList();
                 return newList;
             }
         },
