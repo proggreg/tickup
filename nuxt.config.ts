@@ -177,7 +177,7 @@ export default defineNuxtConfig({
             type: 'module',
         },
         // add this to handle sw within the app
-        srcDir: 'service-worker',
+        srcDir: './service-worker',
         filename: 'sw.ts',
         // add this to handle push notifications
         strategies: 'injectManifest',
