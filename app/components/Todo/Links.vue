@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { Meta } from '~/types/link.types';
+import { logger } from '../../../utils/logger';
+
 const listsStore = useListsStore();
 const editLinks = ref([]);
 async function removeLink(link) {
@@ -11,7 +14,7 @@ async function removeLink(link) {
     listsStore.updateTodo(listsStore.currentTodo);
 }
 
-async function fetchUrlsTitles(): Promise<[] || Meta[]> {
+async function fetchUrlsTitles(): Promise<Meta[]> {
     if (!listsStore.currentTodo.desc) return;
     const urlPattern = /(https?:\/\/[^\s]+)/g;
 
