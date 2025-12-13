@@ -1,31 +1,32 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
-let supabase: SupabaseClient
+// eslint-disable-next-line import/no-mutable-exports
+let supabase: SupabaseClient;
 
 export default defineNuxtPlugin(() => {
-  const config = useRuntimeConfig()
-  
-  if (!config.public.supabaseUrl || !config.public.supabaseAnonKey) {
-    console.warn('Supabase configuration missing. Please set SUPABASE_URL and SUPABASE_ANON_KEY environment variables.')
-    return
-  }
+    const config = useRuntimeConfig();
 
-  supabase = createClient(
-    config.public.supabaseUrl,
-    config.public.supabaseAnonKey,
-    {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-      },
+    if (!config.public.supabaseUrl || !config.public.supabaseAnonKey) {
+        console.warn('Supabase configuration missing. Please set SUPABASE_URL and SUPABASE_ANON_KEY environment variables.');
+        return;
     }
-  )
 
-  return {
-    provide: {
-      supabase,
-    },
-  }
-})
+    supabase = createClient(
+        config.public.supabaseUrl,
+        config.public.supabaseAnonKey,
+        {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+            },
+        },
+    );
 
-export { supabase }
+    return {
+        provide: {
+            supabase,
+        },
+    };
+});
+
+export { supabase };

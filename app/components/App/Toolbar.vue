@@ -1,36 +1,39 @@
 <script setup lang="ts">
-const on = useToolbar()
-const store = useListsStore()
+const on = useToolbar();
+const store = useListsStore();
 
 const toolbarOn = computed(() => {
-  if (!store.currentList.todos || store.currentList.todos.length === 0) return false
-  return store.currentList.todos.some(todo => todo.selected)
-})
+    if (!store.currentList.todos || store.currentList.todos.length === 0) return false;
+    return store.currentList.todos.some(todo => todo.selected);
+});
 
 function deleteSelected() {
-  // TODO use delete many
-  const deleteTodos = store.currentList.todos.filter(todo => todo.selected)
-  for (const todo of deleteTodos) {
-    if (!todo._id) continue
-    store.deleteTodo(todo._id)
-  }
-  store.currentList.todos = store.currentList.todos.filter(todo => !todo.selected)
+    // TODO use delete many
+    const deleteTodos = store.currentList.todos.filter(todo => todo.selected);
+    for (const todo of deleteTodos) {
+        if (!todo.id) continue;
+        store.deleteTodo(todo.id);
+    }
+    store.currentList.todos = store.currentList.todos.filter(todo => !todo.selected);
 
-  on.value = false
+    on.value = false;
 }
 </script>
 
 <template>
-  <v-snackbar v-model="toolbarOn" timeout="-1">
-    <template #text>
-      <v-btn @click="on = false">
-        Dismiss
-      </v-btn>
-    </template>
-    <template #actions>
-      <v-btn @click="deleteSelected">
-        Delete
-      </v-btn>
-    </template>
-  </v-snackbar>
+    <v-snackbar
+        v-model="toolbarOn"
+        timeout="-1"
+    >
+        <template #text>
+            <v-btn @click="on = false">
+                Dismiss
+            </v-btn>
+        </template>
+        <template #actions>
+            <v-btn @click="deleteSelected">
+                Delete
+            </v-btn>
+        </template>
+    </v-snackbar>
 </template>

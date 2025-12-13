@@ -1,70 +1,109 @@
 <script setup lang="ts">
-  definePageMeta({
-    layout: 'login'
-  })
-  const config = useRuntimeConfig()
-  const supabase = useSupabaseClient()
-  const user = useSupabaseUser()
+definePageMeta({
+    layout: 'login-register',
+});
 
-  const email = ref('')
-  const password = ref('')
-  const BASE_URL = config.public.VERCEL_URL ?? 'localhost:3000' 
-  console.log('Base url', BASE_URL)
-  console.log('public', config.public)
-  console.log('redirect to', `https://${BASE_URL}/confirm`)
+const supabase = useSupabaseClient();
+const user = useSupabaseUser();
+const email = ref('');
+const password = ref('');
 
-  watchEffect(async () => {
+watchEffect(async () => {
     if (user.value) {
-      try {
-        // Ensure user exists in our Users table
-        await $fetch('/api/user/create', {
-          method: 'POST',
-          body: {
-            username: user.value.email?.split('@')[0] || 'user'
-          }
-        })
-      } catch (error) {
-        console.warn('User creation failed or user already exists:', error)
-      }
-      
-      return navigateTo('/')
+        return navigateTo('/');
     }
-  })
+});
 
-  const signInWithOtp = async () => {
-    const { error } = await supabase.auth.signInWithOtp({
-      email: email.value,
-      options: {
-        emailRedirectTo: `${BASE_URL}/confirm`,
-      }
-    })
-    if (error) console.log(error)
-  }
-
-  function signInWithPassword() {
+function signInWithPassword() {
     supabase.auth.signInWithPassword({
-      email: email.value,
-      password: password.value
-    })
-  }
+        email: email.value,
+        password: password.value,
+    });
+}
 
-  function signUpWithPassword() {
+function signUpWithPassword() {
     supabase.auth.signUp({
-      email: email.value,
-      password: password.value
-    })
-  }
+        email: email.value,
+        password: password.value,
+    });
+}
 </script>
-<template>
-  <div>
-    <v-text-field v-model="email" placeholder="email" />
-    <v-text-field v-model="password" type="password" placeholder="password" />
-    <v-btn  @click="signInWithPassword">
-      Sign In with E-Mail
-    </v-btn>
-    <v-btn  @click="signUpWithPassword">
-      Sign Up with E-Mail
-    </v-btn>
 
-  </div>
+<template>
+    <v-row
+        width="100%"
+        align="center"
+        justify="center"
+        class="fill-height"
+    >
+        <v-col
+            cols="12"
+            sm="8"
+            md="6"
+            lg="4"
+            xl="3"
+        >
+            <v-card
+                class="pa-8"
+                elevation="2"
+                width="100%"
+            >
+                <v-card-title class="text-center pa-6">
+                    <h2 class="text-h4 font-weight-bold">
+                        Welcome
+                    </h2>
+                    <p class="text-subtitle-1 text-medium-emphasis mt-4">
+                        Sign in to your account
+                    </p>
+                </v-card-title>
+
+                <v-card-text class="pt-0">
+                    <v-form>
+                        <v-text-field
+                            v-model="email"
+                            label="Email"
+                            type="email"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-email"
+                            class="mb-6"
+                            required
+                        />
+
+                        <v-text-field
+                            v-model="password"
+                            label="Password"
+                            type="password"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-lock"
+                            class="mb-8"
+                            required
+                        />
+
+                        <v-btn
+                            color="primary"
+                            variant="flat"
+                            size="large"
+                            block
+                            class="mb-4"
+                            :disabled="!email || !password"
+                            @click="signInWithPassword"
+                        >
+                            Sign In
+                        </v-btn>
+
+                        <v-btn
+                            color="secondary"
+                            variant="outlined"
+                            size="large"
+                            block
+                            :disabled="!email || !password"
+                            @click="signUpWithPassword"
+                        >
+                            Create Account
+                        </v-btn>
+                    </v-form>
+                </v-card-text>
+            </v-card>
+        </v-col>
+    </v-row>
 </template>

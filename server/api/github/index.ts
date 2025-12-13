@@ -1,116 +1,116 @@
-import { defineEventHandler, getQuery, readBody, createError } from 'h3'
-import { Octokit } from 'octokit'
+import { defineEventHandler, getQuery, readBody, createError } from 'h3';
+import { Octokit } from 'octokit';
 
 export default defineEventHandler(async (event) => {
-  // Check if this is a test request
-  const isTestRequest = event.headers.get('x-test-mode') === 'true'
-    || getQuery(event).test === 'true'
-    || process.env.NODE_ENV === 'test'
+    // Check if this is a test request
+    const isTestRequest = event.headers.get('x-test-mode') === 'true'
+        || getQuery(event).test === 'true'
+        || process.env.NODE_ENV === 'test';
 
-  if (isTestRequest) {
+    if (isTestRequest) {
     // Handle test requests with mock responses
+        if (event.method === 'GET') {
+            const query = getQuery(event);
+            const branchName = query.branchName as string;
+
+            if (!branchName) {
+                return createError({ statusCode: 400, message: 'Missing branchName in query parameters' });
+            }
+
+            // Mock responses for tests
+            if (branchName === 'here') {
+                return createError({ statusCode: 404, message: 'Branch not found' });
+            }
+
+            if (branchName === 'main') {
+                return { name: 'main', commit: { sha: 'test-sha' } };
+            }
+
+            return { name: branchName, commit: { sha: 'test-sha' } };
+        }
+
+        return createError({ statusCode: 405, message: 'Method Not Allowed' });
+    }
+
+    // For now, skip server-side auth validation to avoid cookie parsing issues
+    // Authentication will be handled by client-side middleware
+    console.debug('GitHub API: Server-side auth validation temporarily disabled');
+
+    const config = useRuntimeConfig();
+    const octokit = new Octokit({ auth: config.github.personal });
+    const githubOwner = 'proggreg'; // TODO: Ideally get this from config or env
+    const githubRepo = 'tickup'; // TODO: Ideally get this from config or env
+
     if (event.method === 'GET') {
-      const query = getQuery(event)
-      const branchName = query.branchName as string
+        const query = getQuery(event);
+        const branchName = query.branchName as string;
 
-      if (!branchName) {
-        return createError({ statusCode: 400, message: 'Missing branchName in query parameters' })
-      }
+        if (!branchName) {
+            return createError({ statusCode: 400, message: 'Missing branchName in query parameters' });
+        }
 
-      // Mock responses for tests
-      if (branchName === 'here') {
-        return createError({ statusCode: 404, message: 'Branch not found' })
-      }
-
-      if (branchName === 'main') {
-        return { name: 'main', commit: { sha: 'test-sha' } }
-      }
-
-      return { name: branchName, commit: { sha: 'test-sha' } }
+        try {
+            const branch = await octokit.rest.repos.getBranch({
+                owner: githubOwner,
+                repo: githubRepo,
+                branch: branchName,
+            });
+            return branch.data;
+        }
+        catch (error: any) {
+            console.error('Error fetching branch:', error);
+            //   return createError({ statusCode: error.status || 500, message: error.message || 'Failed to fetch branch' })
+        }
     }
+    else if (event.method === 'POST') {
+        const body = await readBody(event);
+        const branchName = body.branchName as string;
+        let sha = body.sha as string;
 
-    return createError({ statusCode: 405, message: 'Method Not Allowed' })
-  }
+        if (!branchName) {
+            return createError({ statusCode: 400, message: 'Missing branchName request body' });
+        }
 
-  // For now, skip server-side auth validation to avoid cookie parsing issues
-  // Authentication will be handled by client-side middleware
-  console.debug('GitHub API: Server-side auth validation temporarily disabled')
+        try {
+            const ref = `refs/heads/${branchName}`;
+            if (!sha) {
+                sha = await octokit.rest.repos.getBranch({
+                    owner: githubOwner,
+                    repo: githubRepo,
+                    branch: 'main',
+                }).then(({ data }) => {
+                    return data.commit.sha;
+                });
+            }
 
-  const config = useRuntimeConfig()
-  const octokit = new Octokit({ auth: config.github.personal })
-  const githubOwner = 'proggreg' // TODO: Ideally get this from config or env
-  const githubRepo = 'tickup' // TODO: Ideally get this from config or env
+            if (!sha) {
+                return createError({ statusCode: 400, message: 'SHA Cannot be found' });
+            }
+            const _newRef = {
+                owner: githubOwner,
+                repo: githubRepo,
+                ref,
+                sha,
+            };
 
-  if (event.method === 'GET') {
-    const query = getQuery(event)
-    const branchName = query.branchName as string
+            const newBranch = await octokit.request(`POST /repos/${githubOwner}/${githubRepo}/git/refs`, {
+                owner: githubOwner,
+                repo: githubRepo,
+                ref: ref,
+                sha: sha,
+                headers: {
+                    'X-GitHub-Api-Version': '2022-11-28',
+                },
+            });
 
-    if (!branchName) {
-      return createError({ statusCode: 400, message: 'Missing branchName in query parameters' })
+            return newBranch.data;
+        }
+        catch (error: any) {
+            console.error('Error creating branch:', error);
+            return createError({ statusCode: error.status || 500, message: error.message || 'Failed to create branch' });
+        }
     }
-
-    try {
-      const branch = await octokit.rest.repos.getBranch({
-        owner: githubOwner,
-        repo: githubRepo,
-        branch: branchName,
-      })
-      return branch.data
+    else {
+        return createError({ statusCode: 405, message: 'Method Not Allowed' });
     }
-    catch (error: any) {
-      console.error('Error fetching branch:', error)
-      //   return createError({ statusCode: error.status || 500, message: error.message || 'Failed to fetch branch' })
-    }
-  }
-  else if (event.method === 'POST') {
-    const body = await readBody(event)
-    const branchName = body.branchName as string
-    let sha = body.sha as string
-
-    if (!branchName) {
-      return createError({ statusCode: 400, message: 'Missing branchName request body' })
-    }
-
-    try {
-      const ref = `refs/heads/${branchName}`
-      if (!sha) {
-        sha = await octokit.rest.repos.getBranch({
-          owner: githubOwner,
-          repo: githubRepo,
-          branch: 'main',
-        }).then(({ data }) => {
-          return data.commit.sha
-        })
-      }
-
-      if (!sha) {
-        return createError({ statusCode: 400, message: 'SHA Cannot be found' })
-      }
-      const newRef = {
-        owner: githubOwner,
-        repo: githubRepo,
-        ref,
-        sha,
-      }
-
-      const newBranch = await octokit.request(`POST /repos/${githubOwner}/${githubRepo}/git/refs`, {
-        owner: githubOwner,
-        repo: githubRepo,
-        ref: ref,
-        sha: sha,
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      })
-
-      return newBranch.data
-    }
-    catch (error: any) {
-      console.error('Error creating branch:', error)
-      return createError({ statusCode: error.status || 500, message: error.message || 'Failed to create branch' })
-    }
-  }
-  else {
-    return createError({ statusCode: 405, message: 'Method Not Allowed' })
-  }
-})
+});

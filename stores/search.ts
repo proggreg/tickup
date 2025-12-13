@@ -1,8 +1,8 @@
 export const useSearchStore = defineStore('search', () => {
-  const searchQuery = ref('')
-  const results = reactive<Todo[]>([])
+    const searchQuery = ref('');
+    const results = reactive<Todo[]>([]);
 
-  function search() {
+    function search() {
     // const { userId } = useCurrentUser()
 
     // $fetch<Todo[]>('/api/search/todo', { query: { q: searchQuery.value, id: userId.value } })
@@ -12,12 +12,12 @@ export const useSearchStore = defineStore('search', () => {
     //   .catch((err) => {
     //     logger.error(err as Error, { component: 'SearchStore', function: 'search', query: searchQuery.value })
     //   })
-  }
-  const debouncedSearch = useDebounceFn(search, 500)
+    }
+    const debouncedSearch = useDebounceFn(search, 500);
 
-  return { results, search, debouncedSearch, searchQuery }
-})
+    return { results, search, debouncedSearch, searchQuery };
+});
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useSearchStore, import.meta.hot))
+    import.meta.hot.accept(acceptHMRUpdate(useSearchStore, import.meta.hot));
 }

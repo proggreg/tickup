@@ -1,3 +1,3 @@
 export const useHasGithub = async () => {
-  return await $fetch('/api/github/check')
-}
+    return await $fetch('/api/github/check');
+};

@@ -1,1 +1,1 @@
-export const useNav = () => useState<boolean>('useNav', () => false)
+export const useNav = () => useState<boolean>('useNav', () => false);
