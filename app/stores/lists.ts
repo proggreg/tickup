@@ -32,11 +32,6 @@ export const useListsStore = defineStore('lists', {
             console.log('add list');
             const user = useSupabaseUser();
 
-            if (!user.value?.id) {
-                console.error('User not authenticated');
-                return;
-            }
-
             if (!newList) {
                 newList = this.newList;
             }
@@ -56,6 +51,7 @@ export const useListsStore = defineStore('lists', {
 
                 this.lists[this.lists.length - 1].id = list.id;
 
+                this.resetList();
                 return newList;
             }
         },
@@ -211,21 +207,13 @@ export const useListsStore = defineStore('lists', {
             }
         },
 
-        async getTodaysTodos(id?: string) {
-            const user = useSupabaseUser();
-            const actualUserId = id || user.value?.id;
-
-            if (!actualUserId) {
-                console.error('User ID not available');
-                return;
-            }
-
-            const { data } = await useFetch<Todo[]>('/api/todos', {
-                query: { today: true, id: actualUserId },
+        async getTodaysTodos() {
+            const todos = await $fetch<Todo[]>('/api/todos', {
+                query: { today: true },
             });
 
-            if (data.value) {
-                this.todaysTodos = data.value;
+            if (todos) {
+                this.todaysTodos = todos;
             }
         },
         async getOverdueTodos(id?: string) {
@@ -282,6 +270,6 @@ export const useListsStore = defineStore('lists', {
     // },
 });
 
-if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useListsStore, import.meta.hot));
-}
+// if (import.meta.hot) {
+//     import.meta.hot.accept(acceptHMRUpdate(useListsStore, import.meta.hot));
+// }

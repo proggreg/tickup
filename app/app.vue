@@ -5,9 +5,6 @@ const config = useRuntimeConfig();
 const event = useRequestEvent();
 
 useShortcutKeys();
-
-listsStore.getLists();
-
 if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.headers.get('host')
     && !event?.headers.get('host')?.includes('tickup.gregfield.dev')) {
     navigateTo('https://tickup.gregfield.dev/login', { external: true });
@@ -31,7 +28,7 @@ if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.he
                 </v-btn>
             </template>
         </AppDialog>
-        <NuxtLayout>
+        <NuxtLayout :name="useAppLayout()">
             <NuxtPage />
         </NuxtLayout>
     </div>

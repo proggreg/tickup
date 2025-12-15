@@ -1,3 +1,5 @@
+import { defineStore } from 'pinia';
+
 export const useSettingsStore = defineStore('settings', () => {
     const darkMode = ref(false);
     const userStatuses = ref<Status[]>([]);
@@ -24,6 +26,7 @@ export const useSettingsStore = defineStore('settings', () => {
     });
 
     async function getUserSettings() {
+        // TODO get the users settings
     // const session = await getSession()
     // const userId = session?.user?.sub
     // const settings = await $fetch<Settings>('/api/settings', { query: { userId } })

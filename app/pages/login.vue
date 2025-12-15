@@ -58,7 +58,7 @@ function signUpWithPassword() {
                 </v-card-title>
 
                 <v-card-text class="pt-0">
-                    <v-form>
+                    <v-form @submit.prevent="signInWithPassword">
                         <v-text-field
                             v-model="email"
                             label="Email"
@@ -80,6 +80,7 @@ function signUpWithPassword() {
                         />
 
                         <v-btn
+                            type="submit"
                             color="primary"
                             variant="flat"
                             size="large"

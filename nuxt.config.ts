@@ -10,7 +10,7 @@ export default defineNuxtConfig({
         '@vueuse/nuxt',
         '@nuxtjs/color-mode',
         '@nuxt/eslint',
-        // "@nuxtjs/device",
+        '@nuxtjs/device',
         '@nuxt/test-utils/module',
         'nuxt-bugsnag',
         '@nuxtjs/supabase',
@@ -97,9 +97,7 @@ export default defineNuxtConfig({
         },
     },
 
-    pinia: {
-        storesDirs: ['./stores/**'],
-    },
+    pinia: {},
 
     pwa: {
         disable: false,
@@ -139,7 +137,7 @@ export default defineNuxtConfig({
                             {
                                 // This plugin will ensure that if a navigation request fails,
                                 // it falls back to the offline.html page.
-                                cacheWillUpdate: async ({ request, response }) => {
+                                cacheWillUpdate: async ({ response }) => {
                                     if (!response || response.status === 404) {
                                         return caches.match('/offline.html');
                                     }

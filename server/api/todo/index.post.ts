@@ -4,28 +4,24 @@ export default defineEventHandler(async (event) => {
     const body = await readBody<Todo>(event);
     const supabase = await serverSupabaseClient(event);
 
+    delete body.edit;
+    delete body.userId;
+
+    const todo = {
+        list_id: body.listId,
+        name: body.name,
+        desc: body.desc,
+        status: body.status,
+        links: body.links,
+        attachments: body.attachments,
+        color: body.color,
+        due_date: body.dueDate,
+
+    };
     try {
     // Transform camelCase fields to snake_case for database
-        const todoData: any = {
-            name: body.name,
-            desc: body.desc,
-            status: body.status || 'To Do',
-            attachments: body.attachments || [],
-        };
 
-        // Only include defined fields
-        if (body.priority !== undefined) todoData.priority = body.priority;
-        if (body.type !== undefined) todoData.type = body.type;
-        if (body.dueDate !== undefined) todoData.due_date = body.dueDate;
-        if (body.completedDate !== undefined) todoData.completed_date = body.completedDate;
-        if (body.order !== undefined) todoData.order = body.order;
-        if (body.userId !== undefined) todoData.user_id = body.userId;
-        if (body.listId !== undefined) todoData.list_id = body.listId;
-        if (body.githubBranchName !== undefined) todoData.github_branch_name = body.githubBranchName;
-        if (body.notificationDateTime !== undefined) todoData.notification_date_time = body.notificationDateTime;
-        if (body.notificationSent !== undefined) todoData.notification_sent = body.notificationSent;
-
-        const { data, error } = await supabase.from('Todos').insert([todoData]).select();
+        const { data, error } = await supabase.from('Todos').insert([todo]).select();
 
         if (error) {
             console.error('Supabase error:', error);

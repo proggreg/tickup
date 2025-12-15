@@ -1,3 +1,5 @@
+import { defineStore } from 'pinia';
+
 export const useOfflineSyncStore = defineStore('offlineSync', () => {
     const pendingChanges = ref<PendingChange[]>([]);
     const isOnline = ref<boolean>(true);

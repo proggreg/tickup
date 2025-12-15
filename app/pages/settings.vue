@@ -2,7 +2,7 @@
 definePageMeta({
     layout: 'settings',
 });
-const supaebase = useSupabaseClient();
+const supabase = useSupabaseClient();
 const { userId } = useCurrentUser();
 const store = useSettingsStore();
 const config = useRuntimeConfig();
@@ -67,6 +67,15 @@ function deleteStatus(status: Status) {
 
 function cancel() {
 
+}
+
+async function signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+        console.error(error);
+        return;
+    }
+    navigateTo('login');
 }
 
 onMounted(() => {
@@ -202,7 +211,7 @@ onMounted(() => {
                 <v-btn
                     class="text-body-2 py-0 ma-2"
                     append-icon="mdi-logout"
-                    @click="supaebase.auth.signOut()"
+                    @click="signOut"
                 >
                     Sign Out
                 </v-btn>
