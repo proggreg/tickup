@@ -14,7 +14,6 @@ export default defineEventHandler(async (event) => {
             const { data, error } = await supabase
                 .from('Todos')
                 .select('*')
-                .eq('user_id', query.id)
                 .gte('due_date', start.toISOString())
                 .lt('due_date', end.toISOString());
 
