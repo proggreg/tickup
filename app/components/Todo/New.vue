@@ -27,7 +27,6 @@ async function addTodo() {
         min-width="150"
         width="100%"
         :placeholder="'Add todo to ' + listsStore.currentList.name"
-        autofocus
         @keyup.enter="addTodo"
     >
         <template #append-inner>
