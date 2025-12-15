@@ -97,12 +97,10 @@ export default defineNuxtConfig({
         },
     },
 
-    pinia: {
-        // storesDirs: ['./stores/**'],
-    },
+    pinia: {},
 
     pwa: {
-        disable: true,
+        disable: false,
         registerType: 'autoUpdate',
         manifest: {
             name: 'Tickup',
