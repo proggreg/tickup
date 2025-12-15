@@ -12,6 +12,10 @@ function rename(list: List) {
         store.currentList = list;
     }
 }
+
+onBeforeMount(() => {
+    store.getLists();
+});
 </script>
 
 <template>
@@ -60,7 +64,7 @@ function rename(list: List) {
                             </div>
                         </template>
                     </v-list-item>
-                    <!-- <v-divider v-if="isMobile" /> -->
+                    <v-divider v-if="isMobile" />
                 </template>
             </v-hover>
         </template>

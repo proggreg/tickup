@@ -15,6 +15,7 @@ export default defineEventHandler(async (event) => {
         links: body.links,
         attachments: body.attachments,
         color: body.color,
+        due_date: body.dueDate,
 
     };
     try {
