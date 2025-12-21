@@ -13,6 +13,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
     testDir: './e2e',
+
     /* Run tests in files in parallel */
     fullyParallel: true,
     /* Global setup and teardown */
@@ -38,14 +39,20 @@ export default defineConfig({
 
         /* Take screenshot on failure */
         screenshot: 'only-on-failure',
+
+        headless: false,
     },
 
     /* Configure projects for major browsers */
     projects: [
     // Setup project runs first to authenticate
         {
-            name: 'setup',
-            testMatch: /.*\.setup\.ts/,
+            name: 'setup db',
+            testMatch: /global\.setup\.ts/,
+        },
+        {
+            name: 'cleanup db',
+            testMatch: /global\.teardown\.ts/,
         },
 
         // All other projects depend on the setup project
@@ -55,7 +62,7 @@ export default defineConfig({
                 ...devices['Desktop Chrome'],
                 storageState: 'user.json',
             },
-            dependencies: ['setup'],
+            dependencies: ['setup db'],
         },
 
         {
@@ -64,7 +71,7 @@ export default defineConfig({
                 ...devices['Pixel 7'],
                 storageState: 'user.json',
             },
-            dependencies: ['setup'],
+            dependencies: ['setup db'],
         },
     ],
 
