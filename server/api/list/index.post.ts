@@ -8,10 +8,6 @@ export default defineEventHandler(async (event) => {
             name: body.name,
         };
 
-        // Handle user_id if provided
-        if (body.userId !== undefined) listData.user_id = body.userId;
-        if (body.user_id !== undefined) listData.user_id = body.user_id;
-
         const { data, error } = await supabase.from('Lists').insert([listData]).select();
 
         if (error) {

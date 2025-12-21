@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const store = useListsStore();
 const editListName = ref('');
+const { isMobile } = useDevice();
 
 function renameList(list: List) {
     store.updateList(list);
@@ -30,11 +31,10 @@ onBeforeMount(() => {
                 <template #default="{ props }">
                     <v-list-item
                         v-bind="props"
-                        :key="item._id"
-                        class=""
+                        :key="item.id"
                         :disabled="!item.id"
                         style="cursor: pointer;"
-                        data-test-id="nav-item"
+                        :data-test-id="item.name"
                         :to="`/list/${item.id}`"
                     >
                         <v-text-field
@@ -60,7 +60,7 @@ onBeforeMount(() => {
                         </template>
                         <template #append>
                             <div @click.stop>
-                                <list-settings-button :list-id="item._id" />
+                                <list-settings-button :list-id="item.id" />
                             </div>
                         </template>
                     </v-list-item>

@@ -28,31 +28,35 @@ export const useListsStore = defineStore('lists', {
         overdueTodos: [],
     }),
     actions: {
-        async addList(newList?: List) {
+        async addList(): Promise<List> {
             console.log('add list');
-            const user = useSupabaseUser();
 
-            if (!newList) {
-                newList = this.newList;
-            }
-            if (newList) {
-                this.lists.push(newList);
+            if (this.newList) {
+                try {
+                    this.lists.push(this.newList);
 
-                // Prepare list data with user ID
-                const listData = {
-                    ...newList,
-                    userId: user.value.id,
-                };
+                    const list = await $fetch<List>('/api/list', {
+                        method: 'POST',
+                        body: this.newList,
+                    });
 
-                const list = await $fetch<List>('/api/list', {
-                    method: 'POST',
-                    body: listData,
-                });
+                    this.lists[this.lists.length - 1].id = list.id;
 
-                this.lists[this.lists.length - 1].id = list.id;
+                    this.resetList();
+                    return list;
+                }
+                catch (error: any) {
+                    // Remove the list from the optimistic update
+                    this.lists.pop();
 
-                this.resetList();
-                return newList;
+                    // Set error using showError to trigger useError()
+                    const errorMessage = error?.data?.message || error?.message || 'Failed to create list';
+                    showError({
+                        statusCode: error?.statusCode || 500,
+                        statusMessage: errorMessage,
+                    });
+                    throw error;
+                }
             }
         },
         async updateList(listToUpdate?: List) {

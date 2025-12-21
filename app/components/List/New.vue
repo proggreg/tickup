@@ -6,14 +6,20 @@ const dialog = useDialog();
 
 async function createNewList() {
     if (!listsStore.newList.name.length) return;
-    const list = await listsStore.addList();
+    try {
+        const list = await listsStore.addList();
 
-    if (list) {
-        dialog.value.open = false;
+        if (list) {
+            dialog.value.open = false;
 
-        if (smAndDown.value) {
-            navOpen.value = false;
+            if (smAndDown.value) {
+                navOpen.value = false;
+            }
         }
+    }
+    catch {
+        // Error is already handled by showError() in the store
+        // The toast will be shown automatically via useError()
     }
 }
 </script>
