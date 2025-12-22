@@ -28,6 +28,8 @@ test.describe('a user can create a list', () => {
         await page.keyboard.press('Enter');
         await requestPromise;
 
+        await page.waitForTimeout(500);
+
         const newListDialogTitle = await page.locator('div').filter({ hasText: 'New List' }).nth(4);
         expect(newListDialogTitle).toBeHidden();
         const newListNavItem = await page.locator(`[data-test-id="${listName}"]`);

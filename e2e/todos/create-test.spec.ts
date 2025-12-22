@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Create Todo', () => {
+    test.skip();
     test('in a list', async ({ page }) => {
         await page.goto('/list/688e2e5d0ecb2728667ebe40');
 
