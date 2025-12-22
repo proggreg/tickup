@@ -47,7 +47,7 @@ jobs:
         pnpm install --no-frozen-lockfile --ignore-scripts
       env:
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-        SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         
     - name: Run nuxt prepare manually
       run: |
@@ -58,7 +58,7 @@ jobs:
         pnpm exec nuxt prepare || echo "Nuxt prepare failed, continuing with tests"
       env:
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-        SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         
     - name: Cache Playwright browsers
       id: playwright-cache
@@ -81,7 +81,7 @@ jobs:
         MONGODB_URI: ${{ secrets.MONGODB_URI }}
         NUXT_NEXTAUTH_SECRET: ${{ secrets.NUXT_NEXTAUTH_SECRET || 'test-secret-key-for-ci' }}
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-        SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         NODE_ENV: test
         NODE_OPTIONS: "--max-old-space-size=4096 --no-warnings"
         
