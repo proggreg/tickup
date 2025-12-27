@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-
+import 'dotenv/config';
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -45,13 +45,12 @@ export default defineConfig({
 
     /* Configure projects for major browsers */
     projects: [
-    // Setup project runs first to authenticate
         {
-            name: 'setup db',
+            name: 'setup',
             testMatch: /global\.setup\.ts/,
         },
         {
-            name: 'cleanup db',
+            name: 'cleanup',
             testMatch: /global\.teardown\.ts/,
         },
 
@@ -62,7 +61,7 @@ export default defineConfig({
                 ...devices['Desktop Chrome'],
                 storageState: 'user.json',
             },
-            dependencies: ['setup db'],
+            dependencies: ['setup'],
         },
 
         {
@@ -71,7 +70,7 @@ export default defineConfig({
                 ...devices['Pixel 7'],
                 storageState: 'user.json',
             },
-            dependencies: ['setup db'],
+            dependencies: ['setup'],
         },
     ],
 
