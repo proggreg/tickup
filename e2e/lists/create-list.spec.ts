@@ -37,4 +37,45 @@ test.describe('a user can create a list', () => {
 
         expect(newListNavItem).not.toBeHidden();
     });
+
+    test('using the keyboard shortcut', async ({ page, isMobile }) => {
+        test.skip(isMobile, 'This feature is desktop only');
+        // console.log('device', device);
+        await page.goto('/');
+
+        // Wait for auth to be ready - ensure we're not redirected to login
+        await page.waitForLoadState('networkidle');
+
+        // Verify we're logged in by checking URL
+        const url = page.url();
+        if (url.includes('/login')) {
+            throw new Error('Not authenticated - redirected to login page');
+        }
+        await page.keyboard.press('l');
+
+        await page.waitForTimeout(500);
+
+        const newListDialogTitle = await page.locator('div').filter({ hasText: 'New List' }).nth(4);
+        expect(newListDialogTitle).not.toBeHidden();
+
+        const testId = uuidv4();
+        const listName = `List ${testId}`;
+        const newListInput = await page.getByRole('textbox', { name: 'New List' });
+        await newListInput.type(listName);
+        const requestPromise = page.waitForRequest(request =>
+            request.url().includes('/api/list') && request.method() === 'POST',
+        );
+        await page.keyboard.press('Enter');
+
+        await page.pause();
+        await requestPromise;
+
+        await page.waitForTimeout(500);
+
+        expect(newListDialogTitle).toBeHidden();
+        const newListNavItem = await page.locator(`[data-test-id="${listName}"]`);
+        console.log(newListNavItem);
+
+        expect(newListNavItem).not.toBeHidden();
+    });
 });
