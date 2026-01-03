@@ -1,12 +1,13 @@
 <script setup lang="ts">
-const open = useNav();
 const dialog = useDialog();
 const { smAndDown } = useDisplay();
+const { isDesktop } = useDevice();
 const user = useSupabaseUser();
 const loggedIn = computed(() => !!user.value);
 const contextMenuOpen = ref(false);
 const selectedList = ref<List>();
 const listsStore = useListsStore();
+const open = computed(() => isDesktop || !smAndDown);
 
 function openContextMenu(event: MouseEvent, list: List) {
     contextMenuOpen.value = true;
@@ -92,11 +93,8 @@ function deleteList() {
     <v-navigation-drawer
         v-if="loggedIn"
         v-model="open"
-        style="max-height: 100vh; overflow-y: hidden !important;"
-        disable-resize-watcher
         class="font-weight-bold"
-        :permanent="!smAndDown"
-        height="100vh"
+        data-testid="nav-bar"
     >
         <v-list nav>
             <ListNew
