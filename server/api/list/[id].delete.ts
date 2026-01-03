@@ -19,10 +19,14 @@ export default defineEventHandler(async (event) => {
 
         const client = await serverSupabaseClient(event);
 
-        return await client
+        const listDeleted = await client
             .from('Lists')
             .delete()
             .eq('id', id);
+
+        console.log('listDeleted', listDeleted);
+
+        return listDeleted;
     }
     catch (error) {
         console.error('Delete error:', error);

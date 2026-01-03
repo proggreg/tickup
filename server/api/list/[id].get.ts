@@ -2,9 +2,9 @@ import { serverSupabaseClient } from '#supabase/server';
 
 export default defineEventHandler(async (event) => {
     try {
-        const listId = event.context.params?._id;
+        const { id } = event.context.params;
 
-        if (!listId) {
+        if (!id) {
             throw createError({
                 statusCode: 400,
                 message: 'List ID is required',
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
         const { data: list, error: listError } = await supabase
             .from('Lists')
             .select('*')
-            .eq('id', listId)
+            .eq('id', id)
             .single();
 
         if (listError || !list) {
@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
         const { data: listTodos, error: todosError } = await supabase
             .from('Todos')
             .select('*')
-            .eq('list_id', listId)
+            .eq('list_id', id)
             .order('order', { ascending: true });
 
         if (todosError) {
