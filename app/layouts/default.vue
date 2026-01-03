@@ -19,7 +19,6 @@ const _show = ref(true);
                     <v-container
                         fluid
                         class="pa-0"
-                        style="height: 100%;"
                     >
                         <AppSettings />
                         <NuxtPage />

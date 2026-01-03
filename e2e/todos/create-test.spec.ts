@@ -1,23 +1,39 @@
 import { test, expect } from '@playwright/test';
+import { v4 as uuidv4 } from 'uuid';
 
 test.describe('Create Todo', () => {
-    test.skip();
-    test('in a list', async ({ page }) => {
-        await page.goto('/list/688e2e5d0ecb2728667ebe40');
+    test.beforeEach(async ({ page, request, isMobile }) => {
+        test.skip(isMobile, 'This feature is desktop only');
+        const testId = uuidv4();
+        const response = await request.post('/api/list', {
+            data: {
+                name: `Test List ${testId}`,
+                icon: 'mdi-format-list-bulleted',
+                listType: 'simple',
+                name: 'asd',
+                todos: [],
+            },
+        });
+        const list = await response.json();
+        console.log('create list response', list.id);
 
+        await page.goto(`/list/${list.id}`);
+        await page.waitForLoadState('networkidle');
+    });
+    test('in a list', async ({ page, isMobile }) => {
+        test.skip(isMobile, 'This feature is desktop only');
         // Wait for auth to be ready - ensure we're not redirected to login
         await page.waitForLoadState('networkidle');
 
-        // Verify we're logged in by checking URL
-        const url = page.url();
-        if (url.includes('/login')) {
-            throw new Error('Not authenticated - redirected to login page');
-        }
-        const newTodoInput = await page.getByPlaceholder('Add todo to Todo List');
-        const testId = new Date();
-        const todoName = `New Todo test ${testId}`;
+        const newTodoInput = await page.getByTestId('new-todo-input').locator('input');
+
+        console.log('newTodoInput', newTodoInput);
+
+        const testId = uuidv4();
+        const todoName = `Todo ${testId}`;
         await newTodoInput.fill(todoName);
-        await newTodoInput.press('Enter');
+        page.pause();
+        // await newTodoInput.press('Enter');
         await page.waitForLoadState('networkidle');
         const listItemTitlesEls = await page.getByTestId('todo-title').all();
         const listItemTitles = await Promise.all(listItemTitlesEls.map(navItem => navItem.textContent()));
@@ -26,16 +42,8 @@ test.describe('Create Todo', () => {
     });
 
     test('in a table', async ({ page }) => {
-        await page.goto('/list/688e660a9f3371ad3648103a');
-
-        // Wait for auth to be ready - ensure we're not redirected to login
         await page.waitForLoadState('networkidle');
 
-        // Verify we're logged in by checking URL
-        const url = page.url();
-        if (url.includes('/login')) {
-            throw new Error('Not authenticated - redirected to login page');
-        }
         const newTodoInput = await page.getByPlaceholder('Add todo to Table Todos');
         const testId = new Date();
         const todoName = `New Todo test ${testId}`;

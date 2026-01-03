@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { ListSimple } from '#components';
+import type { ViewType } from '~/types/table-item.types';
 
 const route = useRoute();
 const listsStore = useListsStore();
 const tabs = ref<ViewType[]>(['board', 'list']);
 const currentTab = ref<ViewType>('list');
 const on = useToolbar();
-const _saveTodo = ref(false);
-const _dialog = useDialog();
 
 onBeforeMount(async () => {
     const currentList = listsStore.lists.find((list: List) => list.id == route.params.id);
 
     if (currentList) {
         listsStore.setCurrentList(currentList);
+    }
+    else {
+        const list = await $fetch(`/api/list/${route.params.id}`);
+        listsStore.setCurrentList(list);
     }
 
     listsStore.getListTodos();

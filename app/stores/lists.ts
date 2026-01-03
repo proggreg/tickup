@@ -1,11 +1,11 @@
-const createNewListState = (): List => ({
+export const createNewListState = (): List => ({
     name: '',
     todos: [],
     icon: 'mdi-format-list-bulleted',
     listType: 'simple',
 });
 
-const createNewTodoState = (): Todo => ({
+export const createNewTodoState = (): Todo => ({
     name: '',
     status: 'Open',
     desc: '',
@@ -113,7 +113,19 @@ export const useListsStore = defineStore('lists', {
             this.currentList.todos = todos;
             return todos || [];
         },
-        async addTodo(newTodo: Todo) {
+        async addTodo(newTodo?: Todo) {
+            // console.log('add todo', newTodo);
+            // if (newTodo === undefined) {
+            //     newTodo = this.newTodo;
+            // }
+            if (!newTodo.name) {
+                showError({
+                    statusCode: 400,
+                    statusMessage: 'Todo name is required',
+                });
+                return;
+            }
+
             if (!this.currentList.todos) this.currentList.todos = [];
 
             this.currentList.todos.push(newTodo);

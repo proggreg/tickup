@@ -10,7 +10,7 @@
                     <app-nav />
                     <v-main>
                         <v-container class="fill-height flex justify-center">
-                            <!-- <NuxtPage /> -->
+                            <NuxtPage />
                         </v-container>
                     </v-main>
                 </v-layout>

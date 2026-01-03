@@ -13,3 +13,5 @@ export interface TableItem {
 export interface GroupItem {
     items: TableItem[];
 }
+
+export type ViewType = 'board' | 'list';

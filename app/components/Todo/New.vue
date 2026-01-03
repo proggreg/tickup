@@ -26,6 +26,7 @@ async function addTodo() {
         v-model="listsStore.newTodo.name"
         min-width="150"
         width="100%"
+        data-testid="new-todo-input"
         :placeholder="'Add todo to ' + listsStore.currentList.name"
         @keyup.enter="addTodo"
     >
