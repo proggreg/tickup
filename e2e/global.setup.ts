@@ -1,6 +1,6 @@
 import { test as setup, expect } from '@playwright/test';
 
-setup('create new database', async ({ page }) => {
+setup('Authenticate', async ({ page }) => {
     // TODO seed db data, using a single test user for now
     console.log('Setting up authentication...');
 
