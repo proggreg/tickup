@@ -15,7 +15,7 @@ export default defineConfig({
     testDir: './e2e',
 
     /* Run tests in files in parallel */
-    fullyParallel: true,
+    fullyParallel: false,
     /* Global setup and teardown */
     // globalSetup: './e2e/setup-user-journey.ts',
     /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -38,7 +38,7 @@ export default defineConfig({
         video: 'on',
 
         /* Take screenshot on failure */
-        screenshot: 'only-on-failure',
+        screenshot: 'on',
 
         headless: true,
     },
@@ -80,7 +80,7 @@ export default defineConfig({
         url: 'http://localhost:3000',
         reuseExistingServer: !process.env.CI,
         timeout: 120 * 1000, // 120 seconds to allow for longer startup times
-        stdout: 'pipe', // Pipe the stdout to see server logs
-        stderr: 'pipe', // Pipe the stderr to see error logs
+        stdout: 'ignore', // Pipe the stdout to see server logs
+        stderr: 'ignore', // Pipe the stderr to see error logs
     },
 });
