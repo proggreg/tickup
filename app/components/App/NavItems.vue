@@ -24,7 +24,6 @@ onBeforeMount(() => {
         :item-size="1"
         :items="store.lists"
         class="pa-0 nav-items-scroll"
-        height="100%"
     >
         <template #default="{ item }">
             <v-hover>
@@ -59,9 +58,7 @@ onBeforeMount(() => {
                             </v-icon>
                         </template>
                         <template #append>
-                            <div @click.stop>
-                                <list-settings-button :list-id="item.id" />
-                            </div>
+                            <list-settings-button :list-id="item.id" />
                         </template>
                     </v-list-item>
                     <v-divider v-if="isMobile" />
@@ -72,7 +69,7 @@ onBeforeMount(() => {
 </template>
 
 <style scoped>
-  .nav-items-scroll {
+  /* .nav-items-scroll {
     height: 100%;
     max-height: 100%;
     overflow-y: auto;
@@ -85,5 +82,5 @@ onBeforeMount(() => {
     @media (min-width: 600px) {
       font-size: 1rem !important;
     }
-  }
+  } */
 </style>
