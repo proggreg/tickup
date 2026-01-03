@@ -14,18 +14,26 @@ watchEffect(async () => {
     }
 });
 
-function signInWithPassword() {
-    supabase.auth.signInWithPassword({
+async function signInWithPassword() {
+    const { error } = await supabase.auth.signInWithPassword({
         email: email.value,
         password: password.value,
     });
+
+    if (error) {
+        console.error('Login failed:', error);
+    }
 }
 
-function signUpWithPassword() {
-    supabase.auth.signUp({
+async function signUpWithPassword() {
+    const { error } = await supabase.auth.signUp({
         email: email.value,
         password: password.value,
     });
+
+    if (error) {
+        console.error('Signup failed:', error);
+    }
 }
 </script>
 
@@ -87,12 +95,12 @@ function signUpWithPassword() {
                             block
                             class="mb-4"
                             :disabled="!email || !password"
-                            @click="signInWithPassword"
                         >
                             Sign In
                         </v-btn>
 
                         <v-btn
+                            type="button"
                             color="secondary"
                             variant="outlined"
                             size="large"
