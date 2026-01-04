@@ -28,7 +28,6 @@ test.describe('a user can delete a list', () => {
     });
 
     test('using the settings menu', async ({ page, request }) => {
-        await page.goto('/');
         await page.waitForLoadState('networkidle');
 
         const newListNavItem = page.locator(`[data-test-id="${listName}"]`);
@@ -37,13 +36,10 @@ test.describe('a user can delete a list', () => {
         const href = await newListNavItem.getAttribute('href');
         const listId = href?.split('/').pop();
 
-        console.log('listId from href:', listId);
-
         expect(listId).toBeTruthy();
 
-        // Verify list exists before attempting delete
         const listExistsResponse = await request.get(`/list/${listId}`);
-        console.log('List exists check:', listExistsResponse.status());
+
         expect(listExistsResponse.status()).toBe(200);
 
         const settingsButton = page.locator(`[data-test-id="setting-button-${listId}"]`);
@@ -52,8 +48,7 @@ test.describe('a user can delete a list', () => {
         const deleteMenuItem = page.locator(`[data-test-id="delete-list"]`);
         await expect(deleteMenuItem).toBeVisible();
 
-        // Capture the actual DELETE request to see what URL is being called
-        const [deleteResponse] = await Promise.all([
+        await Promise.all([
             page.waitForResponse((r) => {
                 const isDelete = r.url().includes('/api/list/') && r.request().method() === 'DELETE';
                 if (isDelete) {
@@ -65,17 +60,11 @@ test.describe('a user can delete a list', () => {
             deleteMenuItem.click(),
         ]);
 
-        console.log('Final DELETE status:', deleteResponse.status());
-        // await page.pause();
         await page.waitForLoadState('networkidle');
-
-        // Check what status your API actually returns for successful deletes
-        // It might be 204 (No Content) instead of 200
-        // expect([200, 204]).toContain(deleteResponse.status());
 
         await page.waitForURL(/^http:\/\/localhost:3000\/?$/);
 
-        const response = await request.get(`/list/${listId}`);
+        const response = await request.get(`/api/list/${listId}`);
         expect(response.status()).toBe(404);
     });
 });

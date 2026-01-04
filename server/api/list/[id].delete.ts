@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
     try {
     // Get the id from the URL path
     // console.log(event)
-        const id = event.context.params?._id;
+        const id = event.context.params?.id;
 
         console.log('Params:', event.context.params);
         console.log('ID:', id);
