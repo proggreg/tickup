@@ -6,8 +6,6 @@ const statusStore = useSettingsStore();
 
 interface Props {
     status: Status;
-    cardHeight: string;
-    cardWidth: string;
     selectedClass?: string;
 }
 
@@ -41,7 +39,6 @@ function handleBlur() {
 <template>
     <v-card
         :class="['ma-2 font-weight-bold', selectedClass, 'flex-column']"
-        :height="cardHeight"
         width="100%"
         :max-width="400"
         variant="tonal"
