@@ -20,6 +20,10 @@ onBeforeMount(async () => {
     }
 
     listsStore.getListTodos();
+    const view = localStorage.getItem('view');
+    if (view) {
+        currentTab.value = view as ViewType;
+    }
 });
 
 if (!listsStore.currentList) {
@@ -35,6 +39,11 @@ if (listsStore.currentList) {
 watch(listsStore.currentList.todos, (todos: Todo[]) => {
     if (!todos) return;
     on.value = todos.filter((todo: Todo) => todo.selected).length > 0;
+});
+
+watch(currentTab, (newView) => {
+    console.log(newView);
+    localStorage.setItem('view', newView);
 });
 </script>
 
