@@ -10,7 +10,6 @@ test.describe('Create Todo', () => {
                 name: `Test List ${testId}`,
                 icon: 'mdi-format-list-bulleted',
                 listType: 'simple',
-                name: 'asd',
                 todos: [],
             },
         });
@@ -64,12 +63,13 @@ test.describe('Create Todo', () => {
         test.skip(isMobile, 'This feature is desktop only');
         await page.waitForLoadState('networkidle');
         const todoName = `Todo ${uuidv4()}`;
+
         await page.getByRole('tab', { name: 'board' }).click();
         await page.locator('.v-btn.v-btn--icon.v-theme--system.v-btn--density-default.elevation-0.rounded-lg.v-btn--size-small').first().click();
         await page.getByRole('textbox', { name: 'Add todo' }).fill(todoName);
         await page.getByRole('textbox', { name: 'Add todo' }).press('Enter');
+
         const newTodo = await page.getByRole('link', { name: todoName });
         expect(newTodo).toBeVisible();
-        // await page.pause();
     });
 });
