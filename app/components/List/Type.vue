@@ -22,6 +22,7 @@ watch(() => store.currentList.listType, (newVal: ListType, oldVal: ListType) => 
         variant="outlined"
         flat
         elevation="0"
+        data-testid="list-type-select"
     />
 </template>
 
