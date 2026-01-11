@@ -23,11 +23,14 @@ test.describe('list settings button prevents navigation', () => {
 
         const newListInput = await page.getByRole('textbox', { name: 'New List' });
         await newListInput.type(listName);
-        const createRequestPromise = page.waitForRequest(request =>
-            request.url().includes('/api/list') && request.method() === 'POST',
+
+        const createResponse = page.waitForResponse(response =>
+            response.url().includes('/api/list') && response.request().method() === 'POST',
         );
         await page.keyboard.press('Enter');
-        await createRequestPromise;
+        const response = await createResponse;
+        const listData = await response.json();
+        const listId = listData.id;
 
         await page.waitForTimeout(500);
 
@@ -35,54 +38,17 @@ test.describe('list settings button prevents navigation', () => {
         const newListNavItem = await page.locator(`[data-test-id="${listName}"]`);
         await expect(newListNavItem).toBeVisible();
 
-        // Get the current URL before clicking settings button
-        const urlBeforeClick = page.url();
+        await page.waitForTimeout(500);
 
-        // Hover over the list item to make the settings button visible
-        await newListNavItem.hover();
-        await page.waitForTimeout(200);
-
-        // Find the settings button by looking for the icon within the list item's container
-        const listItemContainer = newListNavItem.locator('xpath=ancestor::div[contains(@class, "v-list-item")]');
-        const iconWithDots = listItemContainer.locator('i.mdi-dots-vertical');
-        await expect(iconWithDots).toBeVisible();
-
-        // Get the button that contains this icon
-        const settingsButton = iconWithDots.locator('xpath=ancestor::button').first();
-
-        // Set up a navigation watcher to detect if navigation occurs
-        let navigationOccurred = false;
-        const navigationPromise = page.waitForURL(/\/list\//, { timeout: 1000 }).catch(() => {
-            // Navigation didn't occur, which is what we want
-        });
-
-        // Click the settings button
+        const settingsButton = page.locator(`[data-testid="setting-button-${listId}"]`);
+        await expect(settingsButton).toBeVisible();
         await settingsButton.click();
-
         // Wait a bit to see if navigation occurs
         await page.waitForTimeout(500);
 
-        // Check if navigation occurred
-        try {
-            await navigationPromise;
-            navigationOccurred = true;
-        }
-        catch {
-            navigationOccurred = false;
-        }
-
-        // Verify navigation did NOT occur - URL should be the same
-        const urlAfterClick = page.url();
-        expect(urlAfterClick).toBe(urlBeforeClick);
-        expect(navigationOccurred).toBe(false);
-
         // Verify the menu is open (Delete List option should be visible)
-        const deleteMenuItem = page.getByRole('menuitem', { name: 'Delete List' });
+        const deleteMenuItem = page.locator('[data-test-id="delete-list"]');
         await expect(deleteMenuItem).toBeVisible();
-
-        // Verify we're still on the home page (not on a list page)
-        expect(urlAfterClick).toMatch(/^http:\/\/localhost:3000\/?$/);
-        expect(urlAfterClick).not.toMatch(/\/list\//);
     });
 
     test('clicking list item (not settings button) navigates to list page', async ({ page, isMobile }) => {

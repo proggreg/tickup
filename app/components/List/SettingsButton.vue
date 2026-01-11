@@ -25,8 +25,6 @@ function deleteList() {
 
 async function openMenu(event) {
     event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
     console.log('open menu');
     if (showMenu.value) {
         showMenu.value = false;
@@ -48,7 +46,7 @@ async function openMenu(event) {
         ref="menuTarget"
         variant="plain"
         icon="mdi-dots-vertical"
-        :data-test-id="`setting-button-${listId}`"
+        :data-testid="`setting-button-${listId}`"
         @click.stop="openMenu"
     />
     <v-menu

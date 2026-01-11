@@ -42,7 +42,7 @@ test.describe('a user can delete a list', () => {
 
         expect(listExistsResponse.status()).toBe(200);
 
-        const settingsButton = page.locator(`[data-test-id="setting-button-${listId}"]`);
+        const settingsButton = page.locator(`[data-testid="setting-button-${listId}"]`);
         await settingsButton.click();
 
         const deleteMenuItem = page.locator(`[data-test-id="delete-list"]`);

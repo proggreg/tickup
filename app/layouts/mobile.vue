@@ -49,7 +49,7 @@ const showFab = computed(() => {
                     text="New"
                     @click="addEventHandler"
                 />
-                <AppMobileNav />
+                <AppNavMobile />
             </v-app>
         </v-theme-provider>
     </ColorScheme>
