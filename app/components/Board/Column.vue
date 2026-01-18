@@ -16,7 +16,6 @@ const todos = computed(() => {
 });
 
 function addTodo() {
-    newTodo.value.listId = listsStore.currentList.id;
     newTodo.value.status = status.name;
     listsStore.addTodo(newTodo.value);
     newTodo.value = createNewTodoState();

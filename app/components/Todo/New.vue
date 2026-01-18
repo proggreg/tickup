@@ -6,7 +6,6 @@ const emit = defineEmits(['save-todo']);
 async function addTodo() {
     if (!route.params.id) {
         listsStore.newTodo.dueDate = new Date();
-        listsStore.newTodo.listId = route.params.id as string;
     }
 
     if (listsStore.newTodo && listsStore.newTodo.name) {
