@@ -59,7 +59,8 @@ jobs:
       env:
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        
+        BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY}}
+
     - name: Check Build
       run: pnpm build  
         
