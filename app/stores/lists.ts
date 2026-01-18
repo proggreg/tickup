@@ -125,6 +125,15 @@ export const useListsStore = defineStore('lists', {
                 });
                 return;
             }
+            const route = useRoute();
+            // Ensure listId is always a string
+            const listIdParam = route.params?.id;
+            if (Array.isArray(listIdParam)) {
+                newTodo.listId = listIdParam[0];
+            }
+            else {
+                newTodo.listId = listIdParam;
+            }
 
             if (!this.currentList.todos) this.currentList.todos = [];
 

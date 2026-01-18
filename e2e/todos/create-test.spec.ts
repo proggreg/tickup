@@ -30,7 +30,10 @@ test.describe('Create Todo', () => {
         await newTodoInput.fill(todoName);
 
         await newTodoInput.press('Enter');
+
+        await page.reload();
         await page.waitForLoadState('networkidle');
+
         const listItemTitlesEls = await page.getByTestId('todo-title').all();
         const listItemTitles = await Promise.all(listItemTitlesEls.map(navItem => navItem.textContent()));
 
@@ -53,6 +56,9 @@ test.describe('Create Todo', () => {
         await page.keyboard.type(todoName);
         await page.keyboard.press('Enter');
 
+        await page.reload();
+        await page.waitForLoadState('networkidle');
+
         const listItemTitlesEls = await page.getByTestId('todo-title').all();
         const listItemTitles = await Promise.all(listItemTitlesEls.map(navItem => navItem.textContent()));
 
@@ -68,6 +74,9 @@ test.describe('Create Todo', () => {
         await page.locator('.v-btn.v-btn--icon.v-theme--system.v-btn--density-default.elevation-0.rounded-lg.v-btn--size-small').first().click();
         await page.getByRole('textbox', { name: 'Add todo' }).fill(todoName);
         await page.getByRole('textbox', { name: 'Add todo' }).press('Enter');
+
+        await page.reload();
+        await page.waitForLoadState('networkidle');
 
         const newTodo = await page.getByRole('link', { name: todoName });
         expect(newTodo).toBeVisible();
