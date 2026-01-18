@@ -1,0 +1,28 @@
+{
+    "mcpServers": {
+        "context7": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@upstash/context7-mcp"
+            ],
+            "env": {
+                "DEFAULT_MINIMUM_TOKENS": ""
+            },
+            "alwaysAllow": [
+                "resolve-library-id",
+                "get-library-docs"
+            ]
+        },
+        "nuxt": {
+            "url": "https://mcp.nuxt.com/sse",
+            "alwaysAllow": [
+                "search_nuxt_docs",
+                "list_nuxt_modules"
+            ]
+        },
+        "local": {
+            "url": "http://localhost:3000/__mcp/sse"
+        }
+    }
+}

@@ -1,41 +1,41 @@
-import type { SchemaDefinitionProperty } from 'mongoose'
-import { Schema } from 'mongoose'
-import { defineMongooseModel } from '#nuxt/mongoose'
+// import type { SchemaDefinitionProperty } from 'mongoose'
+// import { Schema } from 'mongoose'
+// import { defineMongooseModel } from '#nuxt/mongoose'
 
-type ListType = 'status' | 'simple'
+// type ListType = 'status' | 'simple'
 
-interface ListSchemaType {
-  userId?: string
-  name: string
-  descriptions?: string
-  listType: ListType
-}
+// interface ListSchemaType {
+//   userId?: string
+//   name: string
+//   descriptions?: string
+//   listType: ListType
+// }
 
-export const ListSchema = defineMongooseModel({
-  name: 'List',
-  schema: {
-    userId: {
-      type: Schema.Types.String,
-      required: false,
-    } as SchemaDefinitionProperty<string>,
+// export const ListSchema = defineMongooseModel({
+//   name: 'List',
+//   schema: {
+//     userId: {
+//       type: Schema.Types.String,
+//       required: false,
+//     } as SchemaDefinitionProperty<string>,
 
-    name: {
-      type: Schema.Types.String,
-      required: true,
-      validate: {
-        validator: v => v.trim() !== '',
-        message: 'Name cannot be empty',
-      },
-    },
-    descriptions: {
-      type: Schema.Types.String,
-      required: false,
-    } as SchemaDefinitionProperty<string>,
+//     name: {
+//       type: Schema.Types.String,
+//       required: true,
+//       validate: {
+//         validator: v => v.trim() !== '',
+//         message: 'Name cannot be empty',
+//       },
+//     },
+//     descriptions: {
+//       type: Schema.Types.String,
+//       required: false,
+//     } as SchemaDefinitionProperty<string>,
 
-    listType: {
-      type: Schema.Types.String,
-      enum: ['status', 'simple'],
-      default: 'simple',
-    } as SchemaDefinitionProperty<ListType>,
-  },
-})
+//     listType: {
+//       type: Schema.Types.String,
+//       enum: ['status', 'simple'],
+//       default: 'simple',
+//     } as SchemaDefinitionProperty<ListType>,
+//   },
+// })
