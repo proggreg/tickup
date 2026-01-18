@@ -35,6 +35,14 @@ async function signUpWithPassword() {
         console.error('Signup failed:', error);
     }
 }
+
+async function resetPassword() {
+    const { error } = await supabase.auth.resetPasswordForEmail(email.value);
+
+    if (error) {
+        console.error('Signup failed:', error);
+    }
+}
 </script>
 
 <template>
@@ -56,16 +64,16 @@ async function signUpWithPassword() {
                 elevation="2"
                 width="100%"
             >
-                <v-card-title class="text-center pa-6">
-                    <h2 class="text-h4 font-weight-bold">
-                        Welcome
-                    </h2>
-                    <p class="text-subtitle-1 text-medium-emphasis mt-4">
-                        Sign in to your account
-                    </p>
-                </v-card-title>
+                <v-card-item class="mb-4">
+                    <v-img
+                        class="mx-auto"
+                        width="50%"
+                        rounded="xl"
+                        src="/pwa-512x512.png"
+                    />
+                </v-card-item>
 
-                <v-card-text class="pt-0">
+                <v-card-text>
                     <v-form @submit.prevent="signInWithPassword">
                         <v-text-field
                             v-model="email"
@@ -101,7 +109,7 @@ async function signUpWithPassword() {
 
                         <v-btn
                             type="button"
-                            color="secondary"
+                            color="terniary"
                             variant="outlined"
                             size="large"
                             block
@@ -109,6 +117,15 @@ async function signUpWithPassword() {
                             @click="signUpWithPassword"
                         >
                             Create Account
+                        </v-btn>
+
+                        <v-btn
+                            block
+                            class="mb-4"
+                            :disabled="!email.length"
+                            @click="resetPassword"
+                        >
+                            Reset Password
                         </v-btn>
                     </v-form>
                 </v-card-text>
