@@ -3,20 +3,18 @@ definePageMeta({
     layout: 'login-register',
 });
 
-// const supabase = useSupabaseClient();
-const email = ref('');
+const supabase = useSupabaseClient();
 const password = ref('');
 
 async function resetPassword() {
-    // const { data: user, error } = await supabase.auth.admin.updateUserById(
-    //     '6aa5d0d4-2a9f-4483-b6c8-0cf4c6c98ac4',
-    //     { password: 'new_password' },
-    // );
-    // ;
+    const { error } = await supabase.auth.updateUser(
+        { password: password.value },
+    );
+    ;
 
-    // if (error) {
-    //     console.error('Signup failed:', error);
-    // }
+    if (error) {
+        console.error('Signup failed:', error);
+    }
 }
 </script>
 
@@ -51,16 +49,6 @@ async function resetPassword() {
                 <v-card-text>
                     <v-form @submit.prevent="resetPassword">
                         <v-text-field
-                            v-model="email"
-                            label="Email"
-                            type="email"
-                            variant="outlined"
-                            prepend-inner-icon="mdi-email"
-                            class="mb-6"
-                            required
-                        />
-
-                        <v-text-field
                             v-model="password"
                             label="Password"
                             type="password"
@@ -77,7 +65,7 @@ async function resetPassword() {
                             size="large"
                             block
                             class="mb-4"
-                            :disabled="!email || !password"
+                            :disabled="!password"
                         >
                             Reset Password
                         </v-btn>
