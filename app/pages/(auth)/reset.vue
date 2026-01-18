@@ -3,45 +3,20 @@ definePageMeta({
     layout: 'login-register',
 });
 
-const supabase = useSupabaseClient();
-const user = useSupabaseUser();
+// const supabase = useSupabaseClient();
 const email = ref('');
 const password = ref('');
 
-watchEffect(async () => {
-    if (user.value) {
-        return navigateTo('/');
-    }
-});
-
-async function signInWithPassword() {
-    const { error } = await supabase.auth.signInWithPassword({
-        email: email.value,
-        password: password.value,
-    });
-
-    if (error) {
-        console.error('Login failed:', error);
-    }
-}
-
-async function signUpWithPassword() {
-    const { error } = await supabase.auth.signUp({
-        email: email.value,
-        password: password.value,
-    });
-
-    if (error) {
-        console.error('Signup failed:', error);
-    }
-}
-
 async function resetPassword() {
-    const { error } = await supabase.auth.resetPasswordForEmail(email.value);
+    // const { data: user, error } = await supabase.auth.admin.updateUserById(
+    //     '6aa5d0d4-2a9f-4483-b6c8-0cf4c6c98ac4',
+    //     { password: 'new_password' },
+    // );
+    // ;
 
-    if (error) {
-        console.error('Signup failed:', error);
-    }
+    // if (error) {
+    //     console.error('Signup failed:', error);
+    // }
 }
 </script>
 
@@ -74,7 +49,7 @@ async function resetPassword() {
                 </v-card-item>
 
                 <v-card-text>
-                    <v-form @submit.prevent="signInWithPassword">
+                    <v-form @submit.prevent="resetPassword">
                         <v-text-field
                             v-model="email"
                             label="Email"
@@ -103,27 +78,6 @@ async function resetPassword() {
                             block
                             class="mb-4"
                             :disabled="!email || !password"
-                        >
-                            Sign In
-                        </v-btn>
-
-                        <v-btn
-                            type="button"
-                            color="terniary"
-                            variant="outlined"
-                            size="large"
-                            block
-                            :disabled="!email || !password"
-                            @click="signUpWithPassword"
-                        >
-                            Create Account
-                        </v-btn>
-
-                        <v-btn
-                            block
-                            class="mb-4"
-                            :disabled="!email.length"
-                            @click="resetPassword"
                         >
                             Reset Password
                         </v-btn>
