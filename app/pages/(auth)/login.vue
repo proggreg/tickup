@@ -7,6 +7,7 @@ const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const email = ref('');
 const password = ref('');
+const loginError = ref('');
 
 watchEffect(async () => {
     if (user.value) {
@@ -15,17 +16,20 @@ watchEffect(async () => {
 });
 
 async function signInWithPassword() {
+    loginError.value = '';
     const { error } = await supabase.auth.signInWithPassword({
         email: email.value,
         password: password.value,
     });
 
     if (error) {
+        loginError.value = error.message;
         console.error('Login failed:', error);
     }
 }
 
 async function signUpWithPassword() {
+    loginError.value = '';
     const { error } = await supabase.auth.signUp({
         email: email.value,
         password: password.value,
@@ -37,6 +41,7 @@ async function signUpWithPassword() {
 }
 
 async function resetPassword() {
+    loginError.value = '';
     const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
         redirectTo: '/reset',
     });
@@ -77,6 +82,17 @@ async function resetPassword() {
 
                 <v-card-text>
                     <v-form @submit.prevent="signInWithPassword">
+                        <v-alert
+                            v-if="loginError"
+                            type="error"
+                            variant="tonal"
+                            closable
+                            class="mb-4"
+                            @click:close="loginError = ''"
+                        >
+                            {{ loginError }}
+                        </v-alert>
+
                         <v-text-field
                             v-model="email"
                             label="Email"
