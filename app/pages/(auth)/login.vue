@@ -23,7 +23,7 @@ async function signInWithPassword() {
     });
 
     if (error) {
-        loginError.value = error.message;
+        loginError.value = error?.message ?? 'Invalid login credentials';
         console.error('Login failed:', error);
     }
 }
@@ -81,18 +81,18 @@ async function resetPassword() {
                 </v-card-item>
 
                 <v-card-text>
-                    <v-form @submit.prevent="signInWithPassword">
-                        <v-alert
-                            v-if="loginError"
-                            type="error"
-                            variant="tonal"
-                            closable
-                            class="mb-4"
-                            @click:close="loginError = ''"
-                        >
-                            {{ loginError }}
-                        </v-alert>
+                    <v-alert
+                        v-if="loginError"
+                        type="error"
+                        class="mb-4"
+                    >
+                        {{ loginError }}
+                    </v-alert>
 
+                    <form
+                        class="d-flex flex-column"
+                        @submit.prevent="signInWithPassword"
+                    >
                         <v-text-field
                             v-model="email"
                             label="Email"
@@ -145,7 +145,7 @@ async function resetPassword() {
                         >
                             Reset Password
                         </v-btn>
-                    </v-form>
+                    </form>
                 </v-card-text>
             </v-card>
         </v-col>
