@@ -1,6 +1,6 @@
 import { precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
-import { StaleWhileRevalidate, CacheFirst } from 'workbox-strategies';
+import { StaleWhileRevalidate, CacheFirst, NetworkFirst } from 'workbox-strategies';
 
 declare const self: ServiceWorkerGlobalScope & {
     __WB_MANIFEST: string[];
@@ -17,7 +17,21 @@ new StaleWhileRevalidate({
 }),
 );
 
-// Runtime cache for API requests
+// Dynamic todo/list APIs: network first so new/updated todos appear without refresh.
+// Cache is only used when offline. Must be registered before the generic /api/ route.
+registerRoute(
+    ({ url }) => {
+        const p = url.pathname;
+        return p === '/api/todos' || p === '/api/lists' || p === '/api/list/todos'
+            || p.startsWith('/api/todo/')
+            || (p.startsWith('/api/list/') && p !== '/api/list/todos');
+    },
+    new NetworkFirst({
+        cacheName: 'api-cache',
+    }),
+);
+
+// Other API requests: stale-while-revalidate
 registerRoute(
     ({ url }) => url.pathname.startsWith('/api/'),
     new StaleWhileRevalidate({

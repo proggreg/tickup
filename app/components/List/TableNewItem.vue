@@ -1,31 +1,30 @@
 <script setup lang="ts">
-// const { data } = useAuth()
 const newTodoVariant = ref<'text' | 'outlined'>('text');
-const openNewTodo = ref('');
-const newTodoTitle = ref('');
-const store = useListsStore();
+const openNewTodo = ref(false);
+const listStore = useListsStore();
+const newTodo = ref(createNewTodoState());
+
 const { groupItem } = defineProps<{
     groupItem: Record<string, unknown>;
 }>();
 const { params } = useRoute();
 
 async function createTodo(status: string) {
-    if (newTodoTitle.value) {
-        const newTodo: Todo = {
-            name: newTodoTitle.value,
-            status,
-            desc: '',
-            listId: params.id as string,
-            // userId: userId.value,
-            color: 'grey',
-            edit: false,
-            links: [],
-        };
-        await store.addTodo(newTodo);
-        newTodoTitle.value = '';
-    }
-    else {
-        openNewTodo.value = '';
+    listStore.newTodo.status = status;
+    if (newTodo.value.name) {
+        // const newTodo: Todo = {
+        //     name: newTodoTitle.value,
+        //     status,
+        //     desc: '',
+        //     listId: params.id as string,
+        //     // userId: userId.value,
+        //     color: 'grey',
+        //     edit: false,
+        //     links: [],
+        // };
+        await listStore.addTodo(newTodo.value);
+        newTodo.value = createNewTodoState();
+        openNewTodo.value = false;
     }
 }
 </script>
@@ -33,12 +32,12 @@ async function createTodo(status: string) {
 <template>
     <tr>
         <td
-            v-if="openNewTodo === '' || openNewTodo !== groupItem.value"
+            v-if="!openNewTodo"
             colspan="5"
         >
             <v-btn
                 elevation="0"
-                @click="openNewTodo = groupItem.value"
+                @click="openNewTodo = true"
                 @mouseover="newTodoVariant = 'outlined'"
                 @mouseleave="newTodoVariant = 'text'"
             >
@@ -47,15 +46,15 @@ async function createTodo(status: string) {
         </td>
 
         <td
-            v-else-if="groupItem.value === openNewTodo"
+            v-else
             colspan="5"
         >
             <v-text-field
-                v-model="newTodoTitle"
+                v-model="newTodo.name"
                 autofocus
                 variant="plain"
                 placeholder="new todo"
-                @blur="createTodo(groupItem.value)"
+                @blur="createTodo"
                 @keyup.enter="$event.target.blur()"
             />
         </td>

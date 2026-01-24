@@ -15,6 +15,7 @@ onBeforeMount(async () => {
         listsStore.setCurrentList(currentList);
     }
     else {
+        console.log('get list ', route.params.id);
         const list = await $fetch(`/api/list/${route.params.id}`);
         listsStore.setCurrentList(list);
     }
@@ -42,7 +43,6 @@ watch(listsStore.currentList.todos, (todos: Todo[]) => {
 });
 
 watch(currentTab, (newView) => {
-    console.log(newView);
     localStorage.setItem('view', newView);
 });
 </script>
