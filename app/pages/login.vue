@@ -74,6 +74,7 @@ async function signUpWithPassword() {
                         v-if="loginError"
                         type="error"
                         class="mb-4"
+                        data-testid="login-error-alert"
                     >
                         {{ loginError }}
                     </v-alert>
