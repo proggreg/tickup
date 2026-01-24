@@ -17,7 +17,7 @@ const todos = computed(() => {
 
 function addTodo() {
     newTodo.value.status = status.name;
-    listsStore.addTodo(newTodo.value);
+    listsStore.addTodo();
     newTodo.value = createNewTodoState();
 }
 function updateStatus(todo: Todo, status: Status) {
@@ -106,7 +106,7 @@ function handleBlur() {
             <v-card>
                 <v-card-item>
                     <v-text-field
-                        v-model="newTodo.name"
+                        v-model="listsStore.newTodo.name"
                         placeholder="Add todo"
                         hide-details
                         class="ma-0 pa-0"

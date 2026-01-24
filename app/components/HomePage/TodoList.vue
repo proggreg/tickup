@@ -69,7 +69,7 @@ const handleSetOpenSimple = (todo: Todo) => {
 
                 <v-list-item
                     v-for="todo in openTodos"
-                    :key="todo._id"
+                    :key="todo.id"
                     slim
                     nav
                     style="padding: 0 16px !important;"
@@ -104,7 +104,7 @@ const handleSetOpenSimple = (todo: Todo) => {
 
                 <v-list-item
                     v-for="todo in closedTodos"
-                    :key="todo._id"
+                    :key="todo.id"
                     slim
                     @click="selectTodo(todo)"
                 >
@@ -137,7 +137,7 @@ const handleSetOpenSimple = (todo: Todo) => {
         >
             <v-list-item
                 v-for="todo in todos"
-                :key="todo._id"
+                :key="todo.id"
                 class="align-center"
                 @click="selectTodo(todo)"
             >
@@ -152,7 +152,10 @@ const handleSetOpenSimple = (todo: Todo) => {
                         @click.stop="handleSetOpenSimple(todo)"
                     />
                 </template>
-                <v-list-item-title class="text-h6">
+                <v-list-item-title
+                    class="text-h6"
+                    data-testid="todo-title"
+                >
                     {{ todo.name }}
                 </v-list-item-title>
 

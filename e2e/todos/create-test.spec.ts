@@ -53,14 +53,22 @@ test.describe('Create Todo', () => {
         await page.getByRole('button', { name: 'Add Todo' }).click();
 
         const todoName = `Todo ${uuidv4()}`;
+
         await page.keyboard.type(todoName);
+        // await page.pause();
         await page.keyboard.press('Enter');
+
+        let listItemTitlesEls = await page.getByTestId('todo-title').all();
+        let listItemTitles = await Promise.all(listItemTitlesEls.map(navItem => navItem.textContent()));
+        console.log(listItemTitles, todoName);
+
+        expect(listItemTitles.includes(todoName)).toBeTruthy();
 
         await page.reload();
         await page.waitForLoadState('networkidle');
 
-        const listItemTitlesEls = await page.getByTestId('todo-title').all();
-        const listItemTitles = await Promise.all(listItemTitlesEls.map(navItem => navItem.textContent()));
+        listItemTitlesEls = await page.getByTestId('todo-title').all();
+        listItemTitles = await Promise.all(listItemTitlesEls.map(navItem => navItem.textContent()));
 
         expect(listItemTitles.includes(todoName)).toBeTruthy();
     });
