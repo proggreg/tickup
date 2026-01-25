@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
         attachments: body.attachments,
         color: body.color,
         due_date: body.dueDate,
-
+        subtasks: body.subtasks || [],
     };
     try {
     // Transform camelCase fields to snake_case for database
