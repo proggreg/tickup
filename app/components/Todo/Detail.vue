@@ -247,11 +247,13 @@ watch(
                     v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length"
                     density="compact"
                     class="pa-0"
+                    data-testid="subtasks-list"
                 >
                     <v-list-item
                         v-for="(subtask, idx) in listsStore.currentTodo.subtasks"
                         :key="subtask._id"
                         class="py-2 px-0 align-center"
+                        :data-testid="`subtask-item-${idx}`"
                     >
                         <template #prepend>
                             <v-checkbox
@@ -260,6 +262,7 @@ watch(
                                 :false-value="'open'"
                                 class="me-2"
                                 density="compact"
+                                :data-testid="`subtask-checkbox-${idx}`"
                                 @change="listsStore.updateTodo(listsStore.currentTodo)"
                             />
                         </template>
@@ -269,6 +272,7 @@ watch(
                             variant="plain"
                             :readonly="listsStore.currentTodo.subtasks[idx].status === 'done'"
                             :class="{ 'text-decoration-line-through text-disabled': listsStore.currentTodo.subtasks[idx].status === 'done' }"
+                            :data-testid="`subtask-name-${idx}`"
                             @blur="listsStore.updateTodo(listsStore.currentTodo)"
                         />
                         <template #append>
@@ -276,6 +280,7 @@ watch(
                                 icon="mdi-delete"
                                 size="small"
                                 variant="text"
+                                :data-testid="`subtask-delete-${idx}`"
                                 @click="listsStore.currentTodo.subtasks.splice(idx, 1); listsStore.updateTodo(listsStore.currentTodo)"
                             />
                         </template>
@@ -299,6 +304,7 @@ watch(
                         variant="outlined"
                         class="me-2 flex-grow-1"
                         style="min-width: 120px;"
+                        data-testid="add-subtask-input"
                         @keyup.enter="addSubtask"
                     />
                     <v-btn
@@ -307,6 +313,7 @@ watch(
                         variant="tonal"
                         color="primary"
                         :disabled="!newSubtaskName"
+                        data-testid="add-subtask-button"
                         @click="addSubtask"
                     />
                 </div>
