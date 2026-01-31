@@ -1,19 +1,13 @@
 import { defineEventHandler, createError } from 'h3';
 import { App } from 'octokit';
-import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
+import { serverSupabaseClient } from '#supabase/server';
 import type { Database } from '~/types/database.types';
 
 export default defineEventHandler(async (event) => {
-    const user = await serverSupabaseUser(event);
-    if (!user) {
-        throw createError({ statusCode: 401, message: 'Unauthorized' });
-    }
-
     const supabase = await serverSupabaseClient<Database>(event);
     const { data: userData } = await supabase
         .from('Users')
         .select('github_installation_id, github_username')
-        .eq('id', user.sub)
         .single();
 
     if (!userData?.github_installation_id) {
@@ -28,22 +22,28 @@ export default defineEventHandler(async (event) => {
     });
     const octokit = await app.getInstallationOctokit(userData.github_installation_id);
     try {
-        const { data } = await octokit.rest.apps.listReposAccessibleToInstallation();
+        const { owner, repo, branch } = getQuery(event);
+        console.log({
+            owner, repo, branch,
+        });
 
-        return {
-            total_count: data.total_count,
-            repositories: data.repositories.map(repo => ({
-                id: repo.id,
-                name: repo.name,
-                full_name: repo.full_name,
-                private: repo.private,
-                html_url: repo.html_url,
-                description: repo.description,
-                language: repo.language,
-                default_branch: repo.default_branch,
-                updated_at: repo.updated_at,
-            })),
+        // Ensure owner, repo, and branch are strings (as getQuery may return string|string[])
+        const parseQueryParam = (param: unknown): string => {
+            if (Array.isArray(param)) return param[0] as string;
+            return String(param ?? '');
         };
+
+        const safeOwner = parseQueryParam(owner);
+        const safeRepo = parseQueryParam(repo);
+        const safeBranch = parseQueryParam(branch);
+
+        const { data } = await octokit.rest.repos.getBranch({
+            owner: safeOwner,
+            repo: safeRepo,
+            branch: safeBranch,
+        });
+
+        return data;
     }
     catch (error: any) {
         console.error('Error listing repos:', error);

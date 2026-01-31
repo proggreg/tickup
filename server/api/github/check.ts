@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     const { data } = await supabase
         .from('Users')
         .select('github_installation_id')
-        .eq('id', user.id)
+        .eq('id', user.sub)
         .single();
 
     return !!data?.github_installation_id;

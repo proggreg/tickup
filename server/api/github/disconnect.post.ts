@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     const { error } = await supabase
         .from('Users')
         .update({ github_installation_id: null, github_username: null })
-        .eq('id', user.id);
+        .eq('id', user.sub);
 
     if (error) {
         throw createError({ statusCode: 500, statusMessage: error.message });

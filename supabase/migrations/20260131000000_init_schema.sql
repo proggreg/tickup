@@ -28,7 +28,6 @@ CREATE TABLE IF NOT EXISTS "public"."Todos" (
     completed_date timestamp with time zone,
     "order" integer,
     color text DEFAULT '#87909e',
-    github_branch_name text,
     notification_date_time timestamp with time zone,
     notification_sent boolean DEFAULT false,
     links jsonb DEFAULT '[]'::jsonb,
@@ -54,7 +53,6 @@ CREATE TABLE IF NOT EXISTS "public"."Users" (
 -- ===================
 CREATE INDEX IF NOT EXISTS idx_todos_user_id ON "public"."Todos" (user_id);
 CREATE INDEX IF NOT EXISTS idx_todos_list_id ON "public"."Todos" (list_id);
-CREATE INDEX IF NOT EXISTS idx_todos_github_branch ON "public"."Todos" (github_branch_name);
 CREATE INDEX IF NOT EXISTS idx_todos_notification ON "public"."Todos" (notification_date_time) WHERE notification_sent IS NOT TRUE;
 CREATE INDEX IF NOT EXISTS idx_lists_user_id ON "public"."Lists" (user_id);
 

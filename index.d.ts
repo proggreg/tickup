@@ -17,6 +17,8 @@ declare global {
         selected?: boolean;
         color: string;
         githubBranchName?: string;
+        githubRepo?: string;
+        githubLink?: string;
         links: {
             id?: string;
             title: string;

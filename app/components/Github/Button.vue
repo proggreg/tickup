@@ -1,11 +1,8 @@
 <script setup lang="ts">
 const { todo } = defineProps<{ todo: Todo }>();
 const listStore = useListsStore();
-const open = ref(false);
-const message = ref('');
-const branchURL = ref('');
-const githubBtn = ref();
-const hasGithub = useHasGithub();
+const { notify } = useNotification();
+const repo = ref();
 
 const filteredTodoName = computed(() => todo.name.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2700}-\u{27BF}]|[\u{1F000}-\u{1F02F}]|[\u{1F0A0}-\u{1F0FF}]|[\u{1F100}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2B00}-\u{2BFF}]/gu, '').trim());
 const githubBranchName = computed(() => {
@@ -29,12 +26,10 @@ const githubBranchCommand = computed(() => {
 const copyToClipBoard = () => {
     if (githubBranchName.value) {
         navigator.clipboard.writeText(githubBranchCommand.value);
-        message.value = 'Copied to clipboard';
-        if (!branchURL.value) {
-            updateBranchName();
+        notify('Copied to clipboard');
+        if (!listStore.currentTodo.githubBranchName) {
+            updateTodo();
         }
-
-        open.value = true;
     }
 };
 
@@ -43,43 +38,50 @@ async function createBranch() {
         method: 'POST',
         body: {
             branchName: githubBranchName.value,
+            repo: repo.value,
         },
     });
 
     if (response.ref) {
-        updateBranchName();
+        updateTodo(response);
+        notify('Branch created successfully');
     }
 }
 
-async function getBranch() {
-    if (!githubBranchName.value) {
-        return;
-    }
-    const branch = await $fetch('/api/github', { query: { branchName: githubBranchName.value } });
-
-    if (branch && branch._links) {
-        branchURL.value = branch._links.html;
-    }
-
-    return branch;
-}
-
-onUpdated(() => {
-    if (!hasGithub) return;
-    getBranch();
-});
-
-function updateBranchName() {
+function updateTodo(response?) {
     listStore.currentTodo.githubBranchName = githubBranchName.value;
+    listStore.currentTodo.githubRepo = repo.value.full_name;
+
+    if (response) {
+        listStore.currentTodo.githubLink = response.url;
+    }
+
     listStore.updateTodo(listStore.currentTodo);
 }
-onMounted(async () => {
-    if (!hasGithub) return;
 
-    const hasBranch = await getBranch();
-    if (hasBranch && !todo.githubBranchName) {
-        updateBranchName();
+watch(repo, async () => {
+    console.log('repo changed', repo);
+
+    try {
+        const branch = await $fetch('/api/github/branch', {
+            query: {
+                branch: githubBranchName.value,
+                repo: repo.value.name,
+                owner: repo.value.full_name.split('/').shift(),
+            },
+        });
+
+        if (branch) {
+            const url = branch._links.html;
+            if (url) {
+                updateTodo({
+                    url,
+                });
+            }
+            console.log('url', url);
+        }
     }
+    catch { /* empty */ }
 });
 </script>
 
@@ -96,9 +98,8 @@ onMounted(async () => {
             />
         </template>
         <v-list>
-            <v-list-item class="d-flex pa-8">
+            <v-list-item class="d-flex">
                 <v-text-field
-                    ref="githubBtn"
                     class="font-weight-bold"
                     append-icon="mdi-content-copy"
                     variant="outlined"
@@ -106,35 +107,29 @@ onMounted(async () => {
                 >
                     {{ githubBranchCommand }}
                 </v-text-field>
+            </v-list-item>
+            <v-list-item>
+                {{ todo.githubRepo }}
 
-                <p class="px-4 py-2 font-weight-bold">
-                    Branch Name: {{ todo.githubBranchName }}
-                </p>
-                <v-snackbar
-                    v-model="open"
-                    min-width="10px"
-                    attach="githubBtn"
-                    location="end center"
-                    location-strategy="connected"
-                    contained
-                    timeout="2000"
-                >
-                    {{ message }}
-                </v-snackbar>
+                <GithubRepoSelect
+                    v-if="!todo.githubRepo"
+                    v-model="repo"
+                />
             </v-list-item>
             <v-list-item>
                 <v-btn
-                    v-if="!branchURL"
+                    v-if="!todo.githubBranchName"
                     color="primary"
                     variant="tonal"
+                    :disabled="!repo"
                     @click.stop="createBranch"
                 >
                     Create Branch
                 </v-btn>
                 <v-btn
-                    v-else
+                    v-else-if="todo.githubLink"
                     class="font-weight-bold"
-                    :href="branchURL"
+                    :href="todo.githubLink"
                     target="_blank"
                 >
                     View Branch

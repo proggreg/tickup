@@ -35,13 +35,15 @@ export default defineNuxtConfig({
     },
 
     runtimeConfig: {
-        github: {
-            clientId: process.env.NUXT_GITHUB_CLIENT_ID,
-            clientSecret: process.env.NUXT_GITHUB_CLIENT_SECRET,
-            personal: process.env.NUXT_GITHUB_PERSONAL_ACCESS_TOKEN,
-        },
+
         private: {
             vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
+            github: {
+                privateKey: process.env.GITHUB_PRIVATE_KEY,
+                appId: process.env.GITHUB_APP_ID,
+                clientId: process.env.GITHUB_CLIENT_ID,
+                clientSecret: process.env.GITHUB_CLIENT_SECRET,
+            },
         },
         public: {
             apiBase: '/api',
@@ -69,6 +71,12 @@ export default defineNuxtConfig({
             options: {
                 target: 'esnext',
             },
+        },
+    },
+
+    vite: {
+        server: {
+            allowedHosts: ['dev.gregfield.dev'],
         },
     },
 

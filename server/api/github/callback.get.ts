@@ -4,6 +4,8 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event);
     const installationId = query.installation_id as string;
     const code = query.code as string;
+    const supabase = await serverSupabaseClient(event);
+    const config = useRuntimeConfig();
 
     if (!installationId) {
         // If no installation_id, redirect to settings with error
@@ -22,8 +24,6 @@ export default defineEventHandler(async (event) => {
         return sendRedirect(event, `/settings/github?github=pending&${params.toString()}`);
     }
 
-    const config = useRuntimeConfig();
-
     // Exchange code for GitHub username
     let githubUsername: string | null = null;
     if (code) {
@@ -35,8 +35,8 @@ export default defineEventHandler(async (event) => {
                     'Accept': 'application/json',
                 },
                 body: JSON.stringify({
-                    client_id: config.github.clientId,
-                    client_secret: config.github.clientSecret,
+                    client_id: config.private.github.clientId,
+                    client_secret: config.private.github.clientSecret,
                     code,
                 }),
             });
@@ -48,6 +48,15 @@ export default defineEventHandler(async (event) => {
                 });
                 const githubUser = await userRes.json();
                 githubUsername = githubUser.login;
+                const integrationtokenData = {
+                    user_id: user.sub,
+                    provider: 'GitHub',
+                    access_token: tokenData.access_token,
+                    refresh_token: tokenData.refresh_token,
+                };
+                const { error } = await supabase.from('user_integrations').upsert(integrationtokenData);
+
+                console.error(error);
             }
         }
         catch (e) {
@@ -55,10 +64,8 @@ export default defineEventHandler(async (event) => {
         }
     }
 
-    const supabase = await serverSupabaseClient(event);
-
     const updateData: Record<string, unknown> = {
-        id: user.id,
+        id: user.sub,
         github_installation_id: parseInt(installationId),
     };
     if (githubUsername) {
