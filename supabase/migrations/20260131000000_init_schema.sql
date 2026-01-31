@@ -44,7 +44,9 @@ CREATE TABLE IF NOT EXISTS "public"."Todos" (
 CREATE TABLE IF NOT EXISTS "public"."Users" (
     id uuid PRIMARY KEY REFERENCES auth.users ON DELETE CASCADE,
     username text,
-    push_subscriptions jsonb DEFAULT '[]'::jsonb
+    push_subscriptions jsonb DEFAULT '[]'::jsonb,
+    github_installation_id bigint,
+    github_username text
 );
 
 -- ===================

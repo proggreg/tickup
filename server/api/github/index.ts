@@ -1,5 +1,6 @@
 import { defineEventHandler, getQuery, readBody, createError } from 'h3';
 import { Octokit } from 'octokit';
+import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
 
 export default defineEventHandler(async (event) => {
     // Check if this is a test request
@@ -32,9 +33,21 @@ export default defineEventHandler(async (event) => {
         return createError({ statusCode: 405, message: 'Method Not Allowed' });
     }
 
-    // For now, skip server-side auth validation to avoid cookie parsing issues
-    // Authentication will be handled by client-side middleware
-    console.debug('GitHub API: Server-side auth validation temporarily disabled');
+    const user = await serverSupabaseUser(event);
+    if (!user) {
+        throw createError({ statusCode: 401, message: 'Unauthorized' });
+    }
+
+    const supabase = await serverSupabaseClient(event);
+    const { data: userData } = await supabase
+        .from('Users')
+        .select('github_installation_id')
+        .eq('id', user.id)
+        .single();
+
+    if (!userData?.github_installation_id) {
+        throw createError({ statusCode: 403, message: 'GitHub integration not connected. Connect it in Settings.' });
+    }
 
     const config = useRuntimeConfig();
     const octokit = new Octokit({ auth: config.github.personal });
