@@ -1,0 +1,2 @@
+-- Seed file for TickUp
+-- Add any seed data here after creating test users via Supabase Auth
