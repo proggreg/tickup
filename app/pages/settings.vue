@@ -259,7 +259,10 @@ onMounted(async () => {
                     GitHub Integration
                 </v-card-title>
                 <v-card-text>
-                    <div v-if="githubLoading" class="d-flex align-center">
+                    <div
+                        v-if="githubLoading"
+                        class="d-flex align-center"
+                    >
                         <v-progress-circular
                             indeterminate
                             size="20"
@@ -267,7 +270,10 @@ onMounted(async () => {
                         />
                         Loading...
                     </div>
-                    <div v-else-if="githubConnected" class="d-flex align-center gap-2">
+                    <div
+                        v-else-if="githubConnected"
+                        class="d-flex align-center gap-2"
+                    >
                         <v-icon color="success">
                             mdi-check-circle
                         </v-icon>
