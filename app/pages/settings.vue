@@ -10,7 +10,6 @@ const route = useRoute();
 
 const githubConnected = ref(false);
 const githubLoading = ref(false);
-const githubAppName = config.public.githubAppName;
 
 async function checkGithubStatus() {
     githubLoading.value = true;
@@ -20,18 +19,6 @@ async function checkGithubStatus() {
     }
     catch {
         githubConnected.value = false;
-    }
-    githubLoading.value = false;
-}
-
-async function disconnectGithub() {
-    githubLoading.value = true;
-    try {
-        await $fetch('/api/github/disconnect', { method: 'POST' });
-        githubConnected.value = false;
-    }
-    catch (e) {
-        console.error('Failed to disconnect GitHub:', e);
     }
     githubLoading.value = false;
 }
@@ -274,61 +261,36 @@ onMounted(async () => {
             <v-card
                 variant="flat"
                 class="pa-4 mt-4"
+                to="/settings/github"
             >
-                <v-card-title class="text-h6">
-                    GitHub Integration
-                </v-card-title>
-                <v-card-text>
-                    <div
-                        v-if="githubLoading"
-                        class="d-flex align-center"
-                    >
-                        <v-progress-circular
-                            indeterminate
-                            size="20"
-                            class="mr-2"
-                        />
-                        Loading...
+                <v-card-text class="d-flex align-center justify-space-between">
+                    <div class="d-flex align-center ga-3">
+                        <v-icon>mdi-github</v-icon>
+                        <div>
+                            <div class="font-weight-medium">
+                                GitHub Integration
+                            </div>
+                            <div
+                                v-if="githubLoading"
+                                class="text-caption text-medium-emphasis"
+                            >
+                                Checking...
+                            </div>
+                            <div
+                                v-else-if="githubConnected"
+                                class="text-caption text-success"
+                            >
+                                Connected
+                            </div>
+                            <div
+                                v-else
+                                class="text-caption text-medium-emphasis"
+                            >
+                                Not connected
+                            </div>
+                        </div>
                     </div>
-                    <div
-                        v-else-if="githubConnected"
-                        class="d-flex align-center gap-2"
-                    >
-                        <v-icon color="success">
-                            mdi-check-circle
-                        </v-icon>
-                        <span>GitHub connected</span>
-                        <v-btn
-                            variant="tonal"
-                            color="error"
-                            size="small"
-                            class="ml-4"
-                            @click="disconnectGithub"
-                        >
-                            Disconnect
-                        </v-btn>
-                    </div>
-                    <div v-else>
-                        <p class="mb-3">
-                            Connect your GitHub account to create branches directly from todos.
-                        </p>
-                        <v-btn
-                            v-if="githubAppName"
-                            color="primary"
-                            prepend-icon="mdi-github"
-                            :href="`https://github.com/apps/${githubAppName}/installations/new`"
-                        >
-                            Connect GitHub
-                        </v-btn>
-                        <v-alert
-                            v-else
-                            type="warning"
-                            variant="tonal"
-                            class="mt-2"
-                        >
-                            GitHub App is not configured. Set NUXT_PUBLIC_GITHUB_APP_NAME in your environment.
-                        </v-alert>
-                    </div>
+                    <v-icon>mdi-chevron-right</v-icon>
                 </v-card-text>
             </v-card>
         </v-col>

@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
 
     if (!installationId) {
         // If no installation_id, redirect to settings with error
-        return sendRedirect(event, '/settings?github=error&reason=missing_installation_id');
+        return sendRedirect(event, '/settings/github?github=error&reason=missing_installation_id');
     }
 
     // Try server-side auth first
@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
             installation_id: installationId,
             ...(code && { code }),
         });
-        return sendRedirect(event, `/settings?github=pending&${params.toString()}`);
+        return sendRedirect(event, `/settings/github?github=pending&${params.toString()}`);
     }
 
     const config = useRuntimeConfig();
@@ -71,8 +71,8 @@ export default defineEventHandler(async (event) => {
 
     if (error) {
         console.error('Failed to save GitHub installation:', error);
-        return sendRedirect(event, '/settings?github=error&reason=save_failed');
+        return sendRedirect(event, '/settings/github?github=error&reason=save_failed');
     }
 
-    return sendRedirect(event, '/settings?github=connected');
+    return sendRedirect(event, '/settings/github?github=connected');
 });
