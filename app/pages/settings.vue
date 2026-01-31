@@ -108,9 +108,29 @@ async function signOut() {
 }
 
 onMounted(async () => {
-    await checkGithubStatus();
-    if (route.query.github === 'connected') {
-        githubConnected.value = true;
+    // Handle pending GitHub connection (redirected from callback when server-side auth wasn't available)
+    if (route.query.github === 'pending' && route.query.installation_id) {
+        githubLoading.value = true;
+        try {
+            await $fetch('/api/github/connect', {
+                method: 'POST',
+                body: {
+                    installation_id: route.query.installation_id,
+                    code: route.query.code || undefined,
+                },
+            });
+            githubConnected.value = true;
+        }
+        catch (e) {
+            console.error('Failed to complete GitHub connection:', e);
+        }
+        githubLoading.value = false;
+    }
+    else {
+        await checkGithubStatus();
+        if (route.query.github === 'connected') {
+            githubConnected.value = true;
+        }
     }
 
     const subscribePush = async () => {

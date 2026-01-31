@@ -1,32 +1,23 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
 
 export default defineEventHandler(async (event) => {
-    const query = getQuery(event);
-    const installationId = query.installation_id as string;
-    const code = query.code as string;
-
-    if (!installationId) {
-        // If no installation_id, redirect to settings with error
-        return sendRedirect(event, '/settings?github=error&reason=missing_installation_id');
-    }
-
-    // Try server-side auth first
     const user = await serverSupabaseUser(event);
     if (!user) {
-        // User session not available server-side during redirect from GitHub.
-        // Redirect to a client-side page that can handle it with the session cookie.
-        const params = new URLSearchParams({
-            installation_id: installationId,
-            ...(code && { code }),
-        });
-        return sendRedirect(event, `/settings?github=pending&${params.toString()}`);
+        throw createError({ statusCode: 401, statusMessage: 'Unauthorized' });
+    }
+
+    const body = await readBody(event);
+    const installationId = body.installation_id;
+
+    if (!installationId) {
+        throw createError({ statusCode: 400, statusMessage: 'Missing installation_id' });
     }
 
     const config = useRuntimeConfig();
 
-    // Exchange code for GitHub username
+    // Exchange code for GitHub username if provided
     let githubUsername: string | null = null;
-    if (code) {
+    if (body.code) {
         try {
             const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
                 method: 'POST',
@@ -37,7 +28,7 @@ export default defineEventHandler(async (event) => {
                 body: JSON.stringify({
                     client_id: config.github.clientId,
                     client_secret: config.github.clientSecret,
-                    code,
+                    code: body.code,
                 }),
             });
             const tokenData = await tokenRes.json();
@@ -70,9 +61,8 @@ export default defineEventHandler(async (event) => {
         .upsert(updateData);
 
     if (error) {
-        console.error('Failed to save GitHub installation:', error);
-        return sendRedirect(event, '/settings?github=error&reason=save_failed');
+        throw createError({ statusCode: 500, statusMessage: error.message });
     }
 
-    return sendRedirect(event, '/settings?github=connected');
+    return { success: true };
 });
