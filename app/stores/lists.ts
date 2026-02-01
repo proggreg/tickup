@@ -106,42 +106,92 @@ export const useListsStore = defineStore('lists', {
             this.currentList.todos = todos;
         },
         async getListTodos(listId?: string): Promise<Todo[]> {
+            console.log('getListTodos');
             if (!listId) {
                 listId = this.currentList.id;
             }
             const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { listId } });
+            console.log('getListTodos num of todos', todos.length);
             this.currentList.todos = todos;
             return todos || [];
         },
-        async addTodo(newTodo?: Todo) {
-            // console.log('add todo', newTodo);
-            // if (newTodo === undefined) {
-            //     newTodo = this.newTodo;
-            // }
-            if (!newTodo.name) {
+
+        validateTodo(todo: Todo) {
+            let valid = true;
+            if (!todo.name) {
                 showError({
                     statusCode: 400,
                     statusMessage: 'Todo name is required',
                 });
+                valid = false;
+            }
+            return valid;
+        },
+        async addTodo(newTodo?: Todo) {
+            const todo = newTodo !== undefined ? newTodo : this.newTodo;
+            console.debug('Create Todo', todo);
+            if (!this.validateTodo(todo)) {
                 return;
             }
 
-            if (!this.currentList.todos) this.currentList.todos = [];
+            this.setTodoDetails(todo);
 
-            this.currentList.todos.push(newTodo);
+            this.optimisticallyUpdateTodos(todo);
 
-            const todo = await $fetch<Todo>('/api/todo', {
+            const createdTodo = await $fetch<Todo>('/api/todo', {
                 method: 'POST',
-                body: newTodo,
+                body: todo,
             });
 
-            console.log('add todo', todo);
+            console.debug('Todo created!', createdTodo);
 
-            this.currentList.todos[this.currentList.todos.length - 1].id = todo.id;
+            this.updateTodosId(createdTodo);
 
             this.resetTodo();
 
             return todo;
+        },
+        updateTodosId(todo: Todo) {
+            const route = useRoute();
+            if (route.path.includes('list')) {
+                this.currentList.todos[this.currentList.todos.length - 1].id = todo.id;
+            }
+            else {
+                this.todaysTodos[this.todaysTodos.length - 1].id = todo.id;
+            }
+        },
+        optimisticallyUpdateTodos(todo: Todo) {
+            const route = useRoute();
+            if (route.path.includes('list')) {
+                this.currentList.todos.push(todo);
+            }
+            else {
+                this.todaysTodos.push(todo);
+            }
+        },
+        setTodoDetails(todo: Todo) {
+            const route = useRoute();
+            const isListRoute = route.path.includes('list');
+
+            if (isListRoute) {
+                this.addListId(route, todo);
+            }
+            else {
+                const now = new Date();
+                this.setNewTodoDueDate(now);
+            }
+        },
+        addListId(route, todo) {
+            const listIdParam = route.params?.id;
+            if (Array.isArray(listIdParam)) {
+                todo.listId = listIdParam[0];
+            }
+            else {
+                todo.listId = listIdParam;
+            }
+        },
+        setNewTodoDueDate(newDueDate: Date) {
+            this.newTodo.dueDate = newDueDate;
         },
         async updateTodo(todo?: Todo) {
             if (!todo) {

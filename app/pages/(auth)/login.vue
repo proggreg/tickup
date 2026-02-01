@@ -7,6 +7,7 @@ const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const email = ref('');
 const password = ref('');
+const loginError = ref('');
 
 watchEffect(async () => {
     if (user.value) {
@@ -15,34 +16,40 @@ watchEffect(async () => {
 });
 
 async function signInWithPassword() {
+    loginError.value = '';
     const { error } = await supabase.auth.signInWithPassword({
         email: email.value,
         password: password.value,
     });
 
     if (error) {
-        console.error('Login failed:', error);
+        loginError.value = error?.message ?? 'Invalid login credentials';
+        console.error('Login failed', error);
     }
 }
 
 async function signUpWithPassword() {
+    loginError.value = '';
     const { error } = await supabase.auth.signUp({
         email: email.value,
         password: password.value,
     });
 
     if (error) {
-        console.error('Signup failed:', error);
+        loginError.value = error?.message ?? '';
+        console.error('Signup failed', error);
     }
 }
 
 async function resetPassword() {
+    loginError.value = '';
     const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
         redirectTo: '/reset',
     });
 
     if (error) {
-        console.error('Signup failed:', error);
+        loginError.value = error?.message ?? '';
+        console.error('Reset password failed', error);
     }
 }
 </script>
@@ -75,8 +82,20 @@ async function resetPassword() {
                     />
                 </v-card-item>
 
-                <v-card-text>
-                    <v-form @submit.prevent="signInWithPassword">
+                <v-card-text class="pt-0">
+                    <v-alert
+                        v-if="loginError"
+                        type="error"
+                        class="mb-4"
+                        data-testid="login-error-alert"
+                    >
+                        {{ loginError }}
+                    </v-alert>
+
+                    <form
+                        class="d-flex flex-column"
+                        @submit.prevent="signInWithPassword"
+                    >
                         <v-text-field
                             v-model="email"
                             label="Email"
@@ -129,7 +148,7 @@ async function resetPassword() {
                         >
                             Reset Password
                         </v-btn>
-                    </v-form>
+                    </form>
                 </v-card-text>
             </v-card>
         </v-col>

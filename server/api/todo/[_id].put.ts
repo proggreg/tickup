@@ -31,6 +31,7 @@ export default defineEventHandler(async (event) => {
     if (body.notificationDateTime !== undefined) updateData.notification_date_time = body.notificationDateTime;
     if (body.notificationSent !== undefined) updateData.notification_sent = body.notificationSent;
     if (body.attachments !== undefined) updateData.attachments = body.attachments;
+    if (body.subtasks !== undefined) updateData.subtasks = body.subtasks;
 
     const { data, error } = await supabase
         .from('Todos')
