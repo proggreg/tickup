@@ -2,25 +2,14 @@
 import { ListSimple } from '#components';
 import type { ViewType } from '~/types/table-item.types';
 
-const route = useRoute();
 const listsStore = useListsStore();
 const tabs = ref<ViewType[]>(['board', 'list']);
 const currentTab = ref<ViewType>('list');
 const on = useToolbar();
 
 onBeforeMount(async () => {
-    const currentList = listsStore.lists.find((list: List) => list.id == route.params.id);
+    listsStore.getCurrentList();
 
-    if (currentList) {
-        listsStore.setCurrentList(currentList);
-    }
-    else {
-        console.log('get list ', route.params.id);
-        const list = await $fetch(`/api/list/${route.params.id}`);
-        listsStore.setCurrentList(list);
-    }
-
-    listsStore.getListTodos();
     const view = localStorage.getItem('view');
     if (view) {
         currentTab.value = view as ViewType;

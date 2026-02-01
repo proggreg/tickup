@@ -76,9 +76,6 @@ export const useListsStore = defineStore('lists', {
                 body: listToUpdate,
             });
         },
-        setLists(lists: Array<List>) {
-            this.lists = lists;
-        },
         async deleteList(listId?: string) {
             if (!listId) {
                 listId = this.currentList.id;
@@ -94,6 +91,9 @@ export const useListsStore = defineStore('lists', {
             catch {
                 // logger.error(err as Error, { component: 'ListsStore', function: 'deleteList', listId })
             }
+        },
+        setLists(lists: Array<List>) {
+            this.lists = lists;
         },
         setListName(newName: string) {
             if (!this.currentList) {
@@ -115,7 +115,17 @@ export const useListsStore = defineStore('lists', {
             this.currentList.todos = todos;
             return todos || [];
         },
+        setCurrentList(list: List) {
+            if (list) {
+                this.currentList = list;
+            }
+        },
+        async getCurrentList() {
+            const route = useRoute();
+            if (this.currentList.id == route.params.id) return;
 
+            this.currentList = await $fetch(`/api/list/${route.params.id}`);
+        },
         validateTodo(todo: Todo) {
             let valid = true;
             if (!todo.name) {
@@ -228,11 +238,7 @@ export const useListsStore = defineStore('lists', {
                 this.todos = data.value;
             }
         },
-        setCurrentList(list: List) {
-            if (list) {
-                this.currentList = list;
-            }
-        },
+
         setCurrentListName(name: string) {
             this.currentList.name = name;
         },
