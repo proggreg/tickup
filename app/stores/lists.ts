@@ -125,6 +125,7 @@ export const useListsStore = defineStore('lists', {
             if (this.currentList.id == route.params.id) return;
 
             this.currentList = await $fetch(`/api/list/${route.params.id}`);
+            console.log('get current list', this.currentList);
         },
         validateTodo(todo: Todo) {
             let valid = true;

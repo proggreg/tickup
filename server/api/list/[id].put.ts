@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
         const client = await serverSupabaseClient(event);
         return await client.from('Lists').update({
             name: body.name,
+            list_type: body.listType,
         }).eq('id', body.id);
     }
     catch (error) {

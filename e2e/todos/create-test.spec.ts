@@ -50,13 +50,14 @@ test.describe('Create Todo', () => {
         await page.waitForLoadState('networkidle');
         await page.getByTestId('list-type-select').click();
         await page.getByRole('option', { name: 'table' }).click();
+        await page.waitForLoadState('networkidle');
         await page.getByRole('button', { name: 'Add Todo' }).click();
 
         const todoName = `Todo ${uuidv4()}`;
 
         await page.keyboard.type(todoName);
-        // await page.pause();
         await page.keyboard.press('Enter');
+        await page.waitForLoadState('networkidle');
 
         let listItemTitlesEls = await page.getByTestId('todo-title').all();
         let listItemTitles = await Promise.all(listItemTitlesEls.map(navItem => navItem.textContent()));
