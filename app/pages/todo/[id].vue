@@ -23,7 +23,10 @@ onBeforeMount(() => {
             </v-alert>
         </template>
         <v-col cols="12">
-            <v-btn :to="history.state.back as string">
+            <v-btn
+                data-testid="nav-back-list"
+                :to="history.state.back as string"
+            >
                 <template #prepend>
                     <v-icon>mdi-arrow-left</v-icon>
                 </template>

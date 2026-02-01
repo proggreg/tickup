@@ -7,16 +7,6 @@ const notificationDateTime = ref('');
 const pushSupported = ref(false);
 const pushSubscribed = ref(false);
 const pushError = ref('');
-
-//   const username = computed(() => {
-//     if (!authData.value?.user) return ''
-//     const user = authData.value.user as any
-//     if (user.username) return user.username
-//     if (user._doc && user._doc.username) return user._doc.username
-//     if (user.name) return user.name
-//     return ''
-// })
-
 const config = useRuntimeConfig();
 const { smAndDown } = useDisplay();
 const notificationDialog = ref(false);
