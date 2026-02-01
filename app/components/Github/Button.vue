@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import type { Endpoints } from '@octokit/types';
+
 const { todo } = defineProps<{ todo: Todo }>();
 const listStore = useListsStore();
 const { notify } = useNotification();
-const repo = ref();
-
+const repo = useState('githubRepo', () => null);
+const selectedBranch = ref();
+const selectedRepo = useState('githubRepo', () => null);
 const filteredTodoName = computed(() => todo.name.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2700}-\u{27BF}]|[\u{1F000}-\u{1F02F}]|[\u{1F0A0}-\u{1F0FF}]|[\u{1F100}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2B00}-\u{2BFF}]/gu, '').trim());
 const githubBranchName = computed(() => {
     if (todo?.githubBranchName) {
@@ -43,45 +46,24 @@ async function createBranch() {
     });
 
     if (response.ref) {
-        updateTodo(response);
+        updateTodo(response.url);
         notify('Branch created successfully');
     }
 }
 
-function updateTodo(response?) {
+function updateTodo(url?: string) {
     listStore.currentTodo.githubBranchName = githubBranchName.value;
     listStore.currentTodo.githubRepo = repo.value.full_name;
 
-    if (response) {
-        listStore.currentTodo.githubLink = response.url;
+    if (url) {
+        listStore.currentTodo.githubLink = url;
     }
 
     listStore.updateTodo(listStore.currentTodo);
 }
 
-watch(repo, async () => {
-    console.log('repo changed', repo);
-
-    try {
-        const branch = await $fetch('/api/github/branch', {
-            query: {
-                branch: githubBranchName.value,
-                repo: repo.value.name,
-                owner: repo.value.full_name.split('/').shift(),
-            },
-        });
-
-        if (branch) {
-            const url = branch._links.html;
-            if (url) {
-                updateTodo({
-                    url,
-                });
-            }
-            console.log('url', url);
-        }
-    }
-    catch { /* empty */ }
+onUnmounted(() => {
+    selectedRepo.value = null;
 });
 </script>
 
@@ -101,39 +83,47 @@ watch(repo, async () => {
             <v-list-item class="d-flex">
                 <v-text-field
                     class="font-weight-bold"
-                    append-icon="mdi-content-copy"
                     variant="outlined"
-                    @click:append.stop="copyToClipBoard"
+                    readonly
                 >
+                    <template #append>
+                        <v-btn
+                            icon="mdi-content-copy"
+                            @click.stop="copyToClipBoard"
+                        />
+                        <v-btn
+                            v-if="!todo.githubLink"
+                            icon="mdi-plus"
+                            variant="tonal"
+                            color="green"
+                            width="30"
+                            height="30"
+                            :disabled="!repo"
+                            @click="createBranch"
+                        />
+                        <v-btn
+                            v-if="todo.githubLink"
+                            icon="mdi-open-in-new"
+                            :href="todo.githubLink"
+                            target="_blank"
+                        />
+                    </template>
                     {{ githubBranchCommand }}
                 </v-text-field>
             </v-list-item>
             <v-list-item>
-                {{ todo.githubRepo }}
-
-                <GithubRepoSelect
-                    v-if="!todo.githubRepo"
-                    v-model="repo"
-                />
-            </v-list-item>
-            <v-list-item>
-                <v-btn
-                    v-if="!todo.githubBranchName"
-                    color="primary"
-                    variant="tonal"
-                    :disabled="!repo"
-                    @click.stop="createBranch"
-                >
-                    Create Branch
-                </v-btn>
-                <v-btn
-                    v-else-if="todo.githubLink"
-                    class="font-weight-bold"
-                    :href="todo.githubLink"
-                    target="_blank"
-                >
-                    View Branch
-                </v-btn>
+                <v-row>
+                    <v-col>
+                        <GithubRepoSelect
+                            v-model="repo"
+                        />
+                    </v-col>
+                    <v-col>
+                        <GithubBranchSelect
+                            v-model="selectedBranch"
+                        />
+                    </v-col>
+                </v-row>
             </v-list-item>
         </v-list>
     </v-menu>

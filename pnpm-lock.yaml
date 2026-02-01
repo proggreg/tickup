@@ -20,6 +20,9 @@ importers:
       '@bugsnag/js':
         specifier: ^8.6.0
         version: 8.6.0
+      '@octokit/types':
+        specifier: ^16.0.0
+        version: 16.0.0
       '@pinia/nuxt':
         specifier: ^0.11.3
         version: 0.11.3(magicast@0.5.1)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3)))

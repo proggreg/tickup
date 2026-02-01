@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const listStore = useListsStore();
 interface Repo {
     id: number;
     name: string;
@@ -11,8 +12,7 @@ interface Repo {
     updated_at: string;
 }
 
-const selectedRepo = defineModel<Repo | null>({ default: null });
-
+const selectedRepo = useState('githubRepo', () => listStore.currentTodo.githubRepo);
 const repos = ref<Repo[]>([]);
 const loading = ref(false);
 const error = ref('');
@@ -31,12 +31,21 @@ async function loadRepos() {
 }
 
 onMounted(() => {
-    loadRepos();
+    if (!listStore.currentTodo.githubRepo) {
+        loadRepos();
+    }
+});
+onUnmounted(() => {
+    selectedRepo.value = null;
 });
 </script>
 
 <template>
+    <v-text-field v-if="listStore.currentTodo.githubRepo">
+        {{ listStore.currentTodo.githubRepo }}
+    </v-text-field>
     <v-autocomplete
+        v-else
         v-model="selectedRepo"
         :items="repos"
         :loading="loading"
@@ -69,7 +78,7 @@ onMounted(() => {
                 <v-icon size="small">
                     {{ item.raw.private ? 'mdi-lock' : 'mdi-source-repository' }}
                 </v-icon>
-                {{ item.raw.full_name }}
+                {{ item.raw.name }}
             </div>
         </template>
     </v-autocomplete>
