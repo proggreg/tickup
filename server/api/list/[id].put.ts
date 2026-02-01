@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
         return await client.from('Lists').update({
             name: body.name,
             github_repo: body.githubRepo,
+            list_type: body.listType,
         }).eq('id', body.id);
     }
     catch (error) {

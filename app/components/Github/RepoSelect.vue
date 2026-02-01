@@ -35,7 +35,6 @@ async function loadRepos() {
 function handleRepoUpdate(value: Repo | null) {
     selectedRepo.value = value;
     if (value) {
-        // Close the menu and blur the input
         menuOpen.value = false;
         nextTick(() => {
             if (repoSelectInput.value) {
@@ -50,7 +49,6 @@ function handleRepoUpdate(value: Repo | null) {
 
 function handleMenuUpdate(isOpen: boolean) {
     menuOpen.value = isOpen;
-    // When menu closes after selection, ensure input loses focus
     if (!isOpen && selectedRepo.value) {
         nextTick(() => {
             if (repoSelectInput.value) {

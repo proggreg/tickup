@@ -12,7 +12,8 @@ export default defineEventHandler(async (event) => {
     const supabase = await serverSupabaseClient<Database>(event);
     const { data: userData } = await supabase
         .from('Users')
-        .select('*')
+        .select('github_installation_id, github_username')
+        .eq('id', user.sub)
         .single();
 
     if (!userData?.github_installation_id) {

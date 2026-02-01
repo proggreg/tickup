@@ -39,29 +39,6 @@ export default defineEventHandler(async (event) => {
             console.error('Error fetching todos:', todosError);
         }
 
-        // Transform todos snake_case fields to camelCase for API response
-        const transformedTodos = (listTodos || []).map(todo => ({
-            ...todo,
-            dueDate: todo.due_date,
-            completedDate: todo.completed_date,
-            userId: todo.user_id,
-            listId: todo.list_id,
-            githubBranchName: todo.github_branch_name,
-            notificationDateTime: todo.notification_date_time,
-            notificationSent: todo.notification_sent,
-            createdAt: todo.created_at,
-            updatedAt: todo.updated_at,
-        }));
-
-        // Transform list fields to camelCase
-        const transformedList = {
-            ...list,
-            userId: list.user_id,
-            githubRepo: list.github_repo,
-            createdAt: list.created_at,
-            updatedAt: list.updated_at,
-        };
-
         // Return list with todos embedded for compatibility with existing frontend code
         return { ...objectToCamel(list), todos: objectToCamel(listTodos) };
     }

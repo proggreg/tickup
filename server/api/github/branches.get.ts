@@ -1,16 +1,18 @@
-import { defineEventHandler, createError } from 'h3';
+import { defineEventHandler, createError, getQuery } from 'h3';
 import { App } from 'octokit';
 import type { Endpoints } from '@octokit/types';
-import { serverSupabaseClient } from '#supabase/server';
+import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
 import type { Database } from '~/types/database.types';
 
 type ListBranchesData = Endpoints['GET /repos/{owner}/{repo}/branches']['response']['data'];
 
 export default defineEventHandler(async (event): Promise<ListBranchesData> => {
+    const user = await serverSupabaseUser(event);
     const supabase = await serverSupabaseClient<Database>(event);
     const { data: userData } = await supabase
         .from('Users')
         .select('github_installation_id, github_username')
+        .eq('id', user.sub)
         .single();
 
     if (!userData?.github_installation_id) {
@@ -27,7 +29,6 @@ export default defineEventHandler(async (event): Promise<ListBranchesData> => {
     try {
         const { owner, repo } = getQuery(event);
 
-        // Ensure owner and repo are strings (as getQuery may return string|string[])
         const parseQueryParam = (param: unknown): string => {
             if (Array.isArray(param)) return param[0] as string;
             return String(param ?? '');
@@ -37,19 +38,18 @@ export default defineEventHandler(async (event): Promise<ListBranchesData> => {
         const safeRepo = parseQueryParam(repo);
 
         let page = 1;
-        let link;
-        let branches = [];
-        let last;
+        let link: string | undefined;
+        let branches: ListBranchesData = [];
+        let last: number | undefined;
         do {
-            console.log('get branches');
             const { data, headers } = await octokit.rest.repos.listBranches({
                 owner: safeOwner,
                 repo: safeRepo,
                 page,
             });
 
-            link = headers['link'];
-            const links = {};
+            link = headers.link;
+            const links: Record<string, { page?: string; url?: string }> = {};
             link?.split(',').forEach((part) => {
                 const match = part.match(/<([^>]+)>;\s*rel="([^"]+)"/);
                 if (match) {
@@ -60,21 +60,16 @@ export default defineEventHandler(async (event): Promise<ListBranchesData> => {
                 }
             });
 
-            console.log('links', links);
-            last = links?.last?.page || last;
-            const isLast = page == last;
+            last = links?.last?.page ? parseInt(links.last.page, 10) : last;
+            const isLast = page === last;
             page++;
 
-            console.log('branches', data.length);
-
-            console.log('link', link);
             branches = branches.concat(data);
             if (isLast) {
                 break;
             }
         } while (link);
 
-        console.log('num of branches', branches.length);
         return branches;
     }
     catch (error: any) {

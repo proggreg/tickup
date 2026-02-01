@@ -1,14 +1,15 @@
 import { defineEventHandler, readBody, createError } from 'h3';
 import { App } from 'octokit';
-import { serverSupabaseClient } from '#supabase/server';
+import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
 import type { Database } from '~/types/database.types';
 
-
 export default defineEventHandler(async (event) => {
+    const user = await serverSupabaseUser(event);
     const supabase = await serverSupabaseClient<Database>(event);
     const { data: userData } = await supabase
         .from('Users')
         .select('github_installation_id')
+        .eq('id', user.sub)
         .single();
 
     console.log(userData);
@@ -39,25 +40,13 @@ export default defineEventHandler(async (event) => {
             return createError({ statusCode: 400, message: 'Missing branchName request body' });
         }
 
+        const { data: tokenData } = await supabase.from('user_integrations').select().single();
+        if (!tokenData?.access_token) {
+            throw createError({ statusCode: 401, message: 'GitHub token not found. Please reconnect GitHub in Settings.' });
+        }
+
         try {
             const ref = `refs/heads/${branchName}`;
-
-            // Get a valid (potentially refreshed) access token
-            let accessToken: string;
-            try {
-                accessToken = await getValidGithubToken(supabase);
-            }
-            catch (tokenError: any) {
-                console.error('Failed to get valid GitHub token:', tokenError);
-                throw createError({
-                    statusCode: 401,
-                    message: 'GitHub token expired or invalid. Please reconnect GitHub in Settings.',
-                });
-            }
-
-            if (!accessToken) {
-                throw Error('access token not found');
-            }
 
             // Check if branch already exists
             try {
@@ -78,7 +67,6 @@ export default defineEventHandler(async (event) => {
                 }
             }
             catch (error: any) {
-                // If branch doesn't exist, we'll get a 404 - that's expected, continue to create it
                 if (error.status !== 404) {
                     throw error;
                 }
@@ -91,9 +79,7 @@ export default defineEventHandler(async (event) => {
                     repo: repo.name,
                     branch: repo.default_branch,
                 });
-                console.log('got branch', data);
                 sha = data.commit.sha;
-                console.log('sha', sha);
             }
 
             if (!sha) {
@@ -106,7 +92,7 @@ export default defineEventHandler(async (event) => {
                 ref: ref,
                 sha: sha,
                 headers: {
-                    authorization: `Bearer ${accessToken}`,
+                    authorization: `Bearer ${tokenData.access_token}`,
                 },
             });
 
@@ -117,7 +103,6 @@ export default defineEventHandler(async (event) => {
         catch (error: any) {
             console.error('Error creating branch:', error);
 
-            // Handle token expiration errors specifically
             if (error.status === 401 || error.message?.includes('Bad credentials')) {
                 throw createError({
                     statusCode: 401,
