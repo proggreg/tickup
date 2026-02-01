@@ -251,7 +251,7 @@ watch(
                 >
                     <v-list-item
                         v-for="(subtask, idx) in listsStore.currentTodo.subtasks"
-                        :key="subtask._id"
+                        :key="subtask.id"
                         class="py-2 px-0 align-center"
                         :data-testid="`subtask-item-${idx}`"
                     >
@@ -331,7 +331,7 @@ watch(
         <v-card-actions class="py-6 px-6 d-flex flex-wrap gap-4 align-center justify-space-between">
             <div class="d-flex align-center gap-2 flex-wrap">
                 <AppDeleteButton :todo="listsStore.currentTodo" />
-                <AppGithubButton
+                <GithubButton
                     v-if="hasGithub"
                     :todo="listsStore.currentTodo"
                 />

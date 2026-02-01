@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server';
+import { objectToCamel } from 'ts-case-convert';
 
 export default defineEventHandler(async (event) => {
     if (!event.context.params || !event.context.params._id) {
@@ -24,18 +25,7 @@ export default defineEventHandler(async (event) => {
 
     // Transform snake_case fields back to camelCase for API response
     if (data) {
-        return {
-            ...data,
-            dueDate: data.due_date,
-            completedDate: data.completed_date,
-            userId: data.user_id,
-            listId: data.list_id,
-            githubBranchName: data.github_branch_name,
-            notificationDateTime: data.notification_date_time,
-            notificationSent: data.notification_sent,
-            createdAt: data.created_at,
-            updatedAt: data.updated_at,
-        };
+        return objectToCamel(data);
     }
 
     return data;
