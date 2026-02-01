@@ -1,6 +1,18 @@
-export default defineEventHandler(async (_event) => {
-    // For now, skip server-side auth validation to avoid cookie parsing issues
-    // Return true temporarily until we resolve the Supabase server-side auth
-    console.debug('GitHub check: Server-side auth validation temporarily disabled');
-    return true;
+import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
+
+export default defineEventHandler(async (event) => {
+    const user = await serverSupabaseUser(event);
+
+    if (!user) {
+        return false;
+    }
+
+    const supabase = await serverSupabaseClient(event);
+    const { data } = await supabase
+        .from('Users')
+        .select('github_installation_id')
+        .eq('id', user.sub)
+        .single();
+
+    return !!data?.github_installation_id;
 });

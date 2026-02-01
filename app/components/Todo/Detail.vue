@@ -7,16 +7,6 @@ const notificationDateTime = ref('');
 const pushSupported = ref(false);
 const pushSubscribed = ref(false);
 const pushError = ref('');
-
-//   const username = computed(() => {
-//     if (!authData.value?.user) return ''
-//     const user = authData.value.user as any
-//     if (user.username) return user.username
-//     if (user._doc && user._doc.username) return user._doc.username
-//     if (user.name) return user.name
-//     return ''
-// })
-
 const config = useRuntimeConfig();
 const { smAndDown } = useDisplay();
 const notificationDialog = ref(false);
@@ -251,7 +241,7 @@ watch(
                 >
                     <v-list-item
                         v-for="(subtask, idx) in listsStore.currentTodo.subtasks"
-                        :key="subtask._id"
+                        :key="subtask.id"
                         class="py-2 px-0 align-center"
                         :data-testid="`subtask-item-${idx}`"
                     >
@@ -331,7 +321,7 @@ watch(
         <v-card-actions class="py-6 px-6 d-flex flex-wrap gap-4 align-center justify-space-between">
             <div class="d-flex align-center gap-2 flex-wrap">
                 <AppDeleteButton :todo="listsStore.currentTodo" />
-                <AppGithubButton
+                <GithubButton
                     v-if="hasGithub"
                     :todo="listsStore.currentTodo"
                 />

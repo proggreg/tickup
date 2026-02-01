@@ -5,7 +5,22 @@ definePageMeta({
 const supabase = useSupabaseClient();
 const { userId } = useCurrentUser();
 const store = useSettingsStore();
-const config = useRuntimeConfig();
+// const config = useRuntimeConfig();
+const route = useRoute();
+const githubConnected = ref(false);
+const githubLoading = ref(false);
+
+async function checkGithubStatus() {
+    githubLoading.value = true;
+    try {
+        const connected = await $fetch('/api/github/check');
+        githubConnected.value = !!connected;
+    }
+    catch {
+        githubConnected.value = false;
+    }
+    githubLoading.value = false;
+}
 
 await useAsyncData(() => store.getUserSettings().then(() => true));
 
@@ -78,39 +93,64 @@ async function signOut() {
     navigateTo('login');
 }
 
-onMounted(() => {
-    const subscribePush = async () => {
-        if (!('serviceWorker' in navigator)) {
-            return;
-        }
-
-        const sw = await navigator.serviceWorker.ready;
+onMounted(async () => {
+    // Handle pending GitHub connection (redirected from callback when server-side auth wasn't available)
+    if (route.query.github === 'pending' && route.query.installation_id) {
+        githubLoading.value = true;
         try {
-            // Check for existing subscription
-            const existingSubscription = await sw.pushManager.getSubscription();
-            if (existingSubscription) {
-                // Unsubscribe if it exists
-                await existingSubscription.unsubscribe();
-            }
-
-            // Now subscribe with the new key
-            const pushSubscription = await sw.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: config.public.VAPID_KEY,
-            });
-
-            // Send pushSubscription to server
-            await $fetch('/api/subscribe', {
+            await $fetch('/api/github/connect', {
                 method: 'POST',
-                body: { subscription: pushSubscription },
+                body: {
+                    installation_id: route.query.installation_id,
+                    code: route.query.code || undefined,
+                },
             });
+            githubConnected.value = true;
         }
-        catch (error) {
-            console.error(error as Error, { component: 'Settings', function: 'subscribePush' });
+        catch (e) {
+            console.error('Failed to complete GitHub connection:', e);
         }
-    };
+        githubLoading.value = false;
+    }
+    else {
+        await checkGithubStatus();
+        if (route.query.github === 'connected') {
+            githubConnected.value = true;
+        }
+    }
 
-    subscribePush();
+    // const subscribePush = async () => {
+    //     if (!('serviceWorker' in navigator)) {
+    //         return;
+    //     }
+
+    //     const sw = await navigator.serviceWorker.ready;
+    //     try {
+    //         // Check for existing subscription
+    //         const existingSubscription = await sw.pushManager.getSubscription();
+    //         if (existingSubscription) {
+    //             // Unsubscribe if it exists
+    //             await existingSubscription.unsubscribe();
+    //         }
+
+    //         // Now subscribe with the new key
+    //         const pushSubscription = await sw.pushManager.subscribe({
+    //             userVisibleOnly: true,
+    //             applicationServerKey: config.public.VAPID_KEY,
+    //         });
+
+    //         // Send pushSubscription to server
+    //         await $fetch('/api/subscribe', {
+    //             method: 'POST',
+    //             body: { subscription: pushSubscription },
+    //         });
+    //     }
+    //     catch (error) {
+    //         console.error(error as Error, { component: 'Settings', function: 'subscribePush' });
+    //     }
+    // };
+
+    // subscribePush(); // TODO erroring
 });
 </script>
 
@@ -215,6 +255,42 @@ onMounted(() => {
                 >
                     Sign Out
                 </v-btn>
+            </v-card>
+
+            <v-card
+                variant="flat"
+                class="pa-4 mt-4"
+                to="/settings/github"
+            >
+                <v-card-text class="d-flex align-center justify-space-between">
+                    <div class="d-flex align-center ga-3">
+                        <v-icon>mdi-github</v-icon>
+                        <div>
+                            <div class="font-weight-medium">
+                                GitHub Integration
+                            </div>
+                            <div
+                                v-if="githubLoading"
+                                class="text-caption text-medium-emphasis"
+                            >
+                                Checking...
+                            </div>
+                            <div
+                                v-else-if="githubConnected"
+                                class="text-caption text-success"
+                            >
+                                Connected
+                            </div>
+                            <div
+                                v-else
+                                class="text-caption text-medium-emphasis"
+                            >
+                                Not connected
+                            </div>
+                        </div>
+                    </div>
+                    <v-icon>mdi-chevron-right</v-icon>
+                </v-card-text>
             </v-card>
         </v-col>
     </v-row>
