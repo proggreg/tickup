@@ -56,6 +56,7 @@ async function resetPassword() {
                             prepend-inner-icon="mdi-lock"
                             class="mb-8"
                             required
+                            new-password
                         />
 
                         <v-btn
