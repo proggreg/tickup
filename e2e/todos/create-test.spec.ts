@@ -55,8 +55,9 @@ test.describe('Create Todo', () => {
 
         const todoName = `Todo ${uuidv4()}`;
 
-        await page.keyboard.type(todoName);
-        await page.keyboard.press('Enter');
+        const tableNewTodoInput = page.getByTestId('table-new-todo-input').locator('input');
+        await tableNewTodoInput.fill(todoName);
+        await tableNewTodoInput.press('Enter');
         await page.waitForLoadState('networkidle');
 
         let listItemTitlesEls = await page.getByTestId('todo-title').all();
@@ -88,7 +89,7 @@ test.describe('Create Todo', () => {
         await page.reload();
         await page.waitForLoadState('networkidle');
 
-        const newTodo = await page.getByRole('link', { name: todoName });
+        const newTodo = page.getByRole('link', { name: todoName });
         expect(newTodo).toBeVisible();
     });
 });

@@ -49,7 +49,7 @@ test.describe('Todo List to Detail Navigation', () => {
         expect(urlAfterClick).toMatch(/\/todo\/[^/]+$/);
 
         // Verify TodoDetail component is visible
-        const todoDetailElement = await page.locator('//div[contains(@class, "v-col") and .//button[contains(@class, "v-btn")]]');
+        const todoDetailElement = page.locator('[data-testid="add-subtask-input"]');
         await expect(todoDetailElement).toBeVisible();
 
         // Navigate back using the back button

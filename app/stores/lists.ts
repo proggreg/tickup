@@ -214,6 +214,11 @@ export const useListsStore = defineStore('lists', {
                 body: todo,
             });
 
+            // Update local state to match server response
+            if (this.currentTodo && this.currentTodo.id === updatedTodo.id) {
+                this.currentTodo = updatedTodo;
+            }
+
             return updatedTodo;
         },
         async deleteTodo(id: string) {

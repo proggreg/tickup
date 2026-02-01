@@ -10,7 +10,7 @@ const { groupItem } = defineProps<{
 const { params } = useRoute();
 
 async function createTodo(status: string) {
-    listStore.newTodo.status = status;
+    newTodo.value.status = status;
     if (newTodo.value.name) {
         // const newTodo: Todo = {
         //     name: newTodoTitle.value,
@@ -54,7 +54,8 @@ async function createTodo(status: string) {
                 autofocus
                 variant="plain"
                 placeholder="new todo"
-                @blur="createTodo"
+                data-testid="table-new-todo-input"
+                @blur="createTodo(groupItem.value as string)"
                 @keyup.enter="$event.target.blur()"
             />
         </td>
