@@ -62,6 +62,8 @@ test.describe('Create a Subtask', () => {
         const subtaskInput = page.getByTestId('add-subtask-input').locator('input');
         const subtaskName = `Subtask ${uuidv4()}`;
         await subtaskInput.fill(subtaskName);
+        // Wait a bit for the reactive state to update and button to become enabled
+        await page.waitForTimeout(100);
 
         const addSubtaskButton = page.getByTestId('add-subtask-button');
         await addSubtaskButton.click();
@@ -99,6 +101,8 @@ test.describe('Create a Subtask', () => {
         const subtaskInput = page.getByTestId('add-subtask-input').locator('input');
         const subtaskName = `Subtask to complete ${uuidv4()}`;
         await subtaskInput.fill(subtaskName);
+        // Wait a bit for the reactive state to update and button to become enabled
+        await page.waitForTimeout(100);
         await page.getByTestId('add-subtask-button').click();
 
         await page.waitForLoadState('networkidle');
@@ -139,6 +143,8 @@ test.describe('Create a Subtask', () => {
         const subtaskInput = page.getByTestId('add-subtask-input').locator('input');
         const subtaskName = `Subtask to delete ${uuidv4()}`;
         await subtaskInput.fill(subtaskName);
+        // Wait a bit for the reactive state to update and button to become enabled
+        await page.waitForTimeout(100);
         await page.getByTestId('add-subtask-button').click();
 
         await page.waitForLoadState('networkidle');
@@ -178,6 +184,8 @@ test.describe('Create a Subtask', () => {
         const subtaskInput = page.getByTestId('add-subtask-input').locator('input');
         const subtask1Name = `First subtask ${uuidv4()}`;
         await subtaskInput.fill(subtask1Name);
+        // Wait a bit for the reactive state to update and button to become enabled
+        await page.waitForTimeout(100);
         await page.getByTestId('add-subtask-button').click();
 
         await page.waitForLoadState('networkidle');
@@ -185,6 +193,8 @@ test.describe('Create a Subtask', () => {
         // Add second subtask
         const subtask2Name = `Second subtask ${uuidv4()}`;
         await subtaskInput.fill(subtask2Name);
+        // Wait a bit for the reactive state to update and button to become enabled
+        await page.waitForTimeout(100);
         await page.getByTestId('add-subtask-button').click();
 
         await page.waitForLoadState('networkidle');
