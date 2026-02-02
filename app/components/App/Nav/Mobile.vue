@@ -1,5 +1,10 @@
+<script setup lang="ts">
+const { smAndDown } = useDisplay();
+</script>
+
 <template>
     <v-bottom-navigation
+        v-if="smAndDown"
         grow
         app
     >
