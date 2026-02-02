@@ -122,7 +122,7 @@ function deleteList() {
         </v-menu>
 
         <template #append>
-            <AppMenu />
+            <AppMenu v-if="smAndDown" />
         </template>
     </v-navigation-drawer>
 </template>
