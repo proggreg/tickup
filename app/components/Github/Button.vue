@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Endpoints } from '@octokit/types';
-
 const { todo } = defineProps<{ todo: Todo }>();
 const listStore = useListsStore();
 const { notify } = useNotification();
@@ -53,7 +51,7 @@ async function createBranch() {
 
 function updateTodo(url?: string) {
     listStore.currentTodo.githubBranchName = githubBranchName.value;
-    listStore.currentTodo.githubRepo = repo.value.full_name;
+    listStore.currentTodo.githubRepo = repo.value?.full_name;
 
     if (url) {
         listStore.currentTodo.githubLink = url;
