@@ -20,7 +20,7 @@ async function loadBranches() {
     try {
         const data = await $fetch<ListBranchesData>('/api/github/branches', {
             query: {
-                owner: selectedRepo.value.full_name.split('/').shift(),
+                owner: selectedRepo.value?.full_name?.split('/').shift(),
                 repo: selectedRepo?.value?.name,
             },
         });
@@ -35,6 +35,9 @@ async function loadBranches() {
 }
 
 async function linkBranch() {
+    if (!selectedBranch.value?.name || !selectedRepo.value?.name || !selectedRepo.value?.full_name) {
+        return;
+    }
     const branch = await $fetch<Endpoints['GET /repos/{owner}/{repo}/branches/{branch}']['response']['data']>('/api/github/branch', {
         query: {
             branch: selectedBranch.value.name,

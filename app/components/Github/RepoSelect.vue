@@ -76,9 +76,9 @@ onUnmounted(() => {
         <template #selection="{ item }">
             <div class="d-flex align-center ga-2">
                 <v-icon size="small">
-                    {{ item.raw.private ? 'mdi-lock' : 'mdi-source-repository' }}
+                    {{ item?.raw?.private ? 'mdi-lock' : 'mdi-source-repository' }}
                 </v-icon>
-                {{ item.raw.name }}
+                {{ item?.raw?.name }}
             </div>
         </template>
     </v-autocomplete>
