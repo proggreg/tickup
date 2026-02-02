@@ -13,12 +13,7 @@ interface Repo {
 }
 
 const selectedRepo = useState('githubRepo', () => null);
-const repos = ref<Repo[]>([{
-    id: 123,
-    name: 'test',
-    full_name: 'asd',
-
-}]);
+const repos = ref<Repo[]>([]);
 const loading = ref(false);
 const error = ref('');
 
