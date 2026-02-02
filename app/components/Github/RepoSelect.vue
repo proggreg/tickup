@@ -37,7 +37,7 @@ async function loadRepos() {
 
 onBeforeMount(async () => {
     await loadRepos();
-    selectedRepo.value = repos.value.find(repo => repo.name === listStore.currentList.githubRepo);
+    selectedRepo.value = repos.value.find(repo => repo?.name === listStore.currentList.githubRepo);
 });
 onUnmounted(() => {
     selectedRepo.value = null;
