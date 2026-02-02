@@ -223,7 +223,7 @@ watch(
                 hide-details
                 max-rows="20"
                 variant="outlined"
-                @input="listsStore.updateTodo(listsStore.currentTodo)"
+                @input="listsStore.debounceUpdateTodo(listsStore.currentTodo)"
                 @blur="listsStore.updateTodo(listsStore.currentTodo)"
             />
         </v-card-item>
