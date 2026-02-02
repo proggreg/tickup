@@ -57,6 +57,7 @@ declare global {
         image?: string;
         listType: ListType;
         icon: string;
+        githubRepo?: string;
     }
 
     interface listsState {

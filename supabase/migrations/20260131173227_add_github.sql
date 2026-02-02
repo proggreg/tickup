@@ -48,3 +48,4 @@ CREATE INDEX idx_user_integrations_user_provider
 ALTER TABLE "public"."Todos" ADD COLUMN github_branch_name text;
 ALTER TABLE "public"."Todos" ADD COLUMN github_repo text;
 ALTER TABLE "public"."Todos" ADD COLUMN github_link text;
+

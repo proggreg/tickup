@@ -107,8 +107,14 @@ function removeImage() {
                             @blur="store.currentList.name ? rename = false : null"
                         />
                     </v-col>
+
                     <v-col class="text-right">
-                        <ListSettingsButton />
+                        <v-btn
+                            :to="`/list/${router.params.id}/settings`"
+                            icon="mdi-cog"
+                        />
+
+                        <ListMenu />
                     </v-col>
                 </v-row>
 

@@ -56,6 +56,7 @@ export default defineEventHandler(async (event) => {
         const transformedList = {
             ...list,
             userId: list.user_id,
+            githubRepo: list.github_repo,
             createdAt: list.created_at,
             updatedAt: list.updated_at,
         };

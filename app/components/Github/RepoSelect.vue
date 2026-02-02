@@ -3,17 +3,22 @@ const listStore = useListsStore();
 interface Repo {
     id: number;
     name: string;
-    full_name: string;
-    private: boolean;
-    html_url: string;
-    description: string | null;
-    language: string | null;
-    default_branch: string;
-    updated_at: string;
+    full_name?: string;
+    private?: boolean;
+    html_url?: string;
+    description?: string | null;
+    language?: string | null;
+    default_branch?: string;
+    updated_at?: string;
 }
 
-const selectedRepo = useState('githubRepo', () => listStore.currentTodo.githubRepo);
-const repos = ref<Repo[]>([]);
+const selectedRepo = useState('githubRepo', () => null);
+const repos = ref<Repo[]>([{
+    id: 123,
+    name: 'test',
+    full_name: 'asd',
+
+}]);
 const loading = ref(false);
 const error = ref('');
 
@@ -30,10 +35,9 @@ async function loadRepos() {
     loading.value = false;
 }
 
-onMounted(() => {
-    if (!listStore.currentTodo.githubRepo) {
-        loadRepos();
-    }
+onBeforeMount(async () => {
+    await loadRepos();
+    selectedRepo.value = repos.value.find(repo => repo.name === listStore.currentList.githubRepo);
 });
 onUnmounted(() => {
     selectedRepo.value = null;
