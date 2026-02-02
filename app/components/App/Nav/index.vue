@@ -8,7 +8,6 @@ const contextMenuOpen = ref(false);
 const selectedList = ref<List>();
 const listsStore = useListsStore();
 const open = computed(() => isDesktop || !smAndDown);
-const { isMobile } = useDevice();
 
 function openContextMenu(event: MouseEvent, list: List) {
     contextMenuOpen.value = true;
@@ -123,7 +122,7 @@ function deleteList() {
         </v-menu>
 
         <template #append>
-            <AppMenu v-if="isMobile" />
+            <AppMenu v-if="smAndDown" />
         </template>
     </v-navigation-drawer>
 </template>
