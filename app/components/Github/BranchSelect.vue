@@ -21,7 +21,7 @@ async function loadBranches() {
         const data = await $fetch<ListBranchesData>('/api/github/branches', {
             query: {
                 owner: selectedRepo.value.full_name.split('/').shift(),
-                repo: selectedRepo.value.name,
+                repo: selectedRepo?.value?.name,
             },
         });
         branches.value = data;
@@ -58,19 +58,6 @@ async function unlinkBranch() {
     listStore.currentTodo.githubLink = null;
     listStore.updateTodo();
 }
-watch(selectedRepo, (newSelectedRepo) => {
-    if (newSelectedRepo?.name) {
-        loadBranches();
-    }
-
-    listStore.updateTodo();
-});
-
-watch(selectedRepo, (newSelectedRepo) => {
-    if (newSelectedRepo.name) {
-        loadBranches();
-    }
-});
 
 onMounted(() => {
     console.log('mount select branch', selectedRepo);
@@ -138,7 +125,7 @@ onMounted(() => {
                 <v-icon size="small">
                     mdi-git-branch
                 </v-icon>
-                {{ item.raw.name }}
+                {{ item?.raw?.name }}
             </div>
         </template>
     </v-autocomplete>
