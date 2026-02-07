@@ -48,11 +48,17 @@ export default defineEventHandler(async (event) => {
                 });
                 const githubUser = await userRes.json();
                 githubUsername = githubUser.login;
+
+                // Calculate token expiry time (default to 8 hours if not provided)
+                const expiresIn = tokenData.expires_in || 28800; // 8 hours in seconds
+                const expiresAt = new Date(Date.now() + expiresIn * 1000);
+
                 const integrationtokenData = {
                     user_id: user.sub,
                     provider: 'GitHub',
                     access_token: tokenData.access_token,
                     refresh_token: tokenData.refresh_token,
+                    expires_at: expiresAt.toISOString(),
                 };
                 const { error } = await supabase.from('user_integrations').upsert(integrationtokenData);
 

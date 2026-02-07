@@ -74,7 +74,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <v-text-field v-if="listStore.currentTodo.githubRepo">
+    <v-text-field
+        v-if="listStore.currentTodo.githubRepo"
+        v-model="listStore.currentTodo.githubRepo"
+    >
         {{ listStore.currentTodo.githubRepo }}
     </v-text-field>
     <v-autocomplete

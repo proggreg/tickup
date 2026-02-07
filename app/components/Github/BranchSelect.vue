@@ -10,7 +10,8 @@ const branches = ref<BranchItem[]>([]);
 const loading = ref(false);
 const error = ref('');
 const selectBranchInput = ref();
-
+const { branchName } = defineProps <{ branchName: string }>();
+const hasBranch = useState('hasBranch', () => false);
 async function loadBranches() {
     loading.value = true;
     error.value = '';
@@ -25,11 +26,22 @@ async function loadBranches() {
                 repo: selectedRepo?.value?.name,
             },
         });
+
         branches.value = data;
-        
+
         // Only focus if there are branches available
         if (branches.value && branches.value.length > 0) {
             // Use nextTick to ensure the DOM has updated before focusing
+            console.log('listStore.currentTodo.githubBranchName', branchName);
+            const foundBranch = branches.value.find(branch => branch.name === branchName);
+
+            console.log('hasBranch', hasBranch);
+
+            if (foundBranch) {
+                hasBranch.value = true;
+                selectedBranch.value = foundBranch;
+            }
+
             await nextTick();
             // Add a delay to allow the autocomplete to finish its internal updates
             setTimeout(() => {
@@ -75,7 +87,6 @@ async function linkBranch() {
 
 async function unlinkBranch() {
     listStore.currentTodo.githubBranchName = null;
-    listStore.currentTodo.githubRepo = null;
     listStore.currentTodo.githubLink = null;
     listStore.updateTodo();
 }
@@ -94,6 +105,10 @@ onMounted(() => {
     if (selectedRepo.value) {
         loadBranches();
     }
+});
+
+onUnmounted(() => {
+    selectedBranch.value = '';
 });
 </script>
 

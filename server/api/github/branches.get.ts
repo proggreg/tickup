@@ -36,12 +36,46 @@ export default defineEventHandler(async (event): Promise<ListBranchesData> => {
         const safeOwner = parseQueryParam(owner);
         const safeRepo = parseQueryParam(repo);
 
-        const { data } = await octokit.rest.repos.listBranches({
-            owner: safeOwner,
-            repo: safeRepo,
-        });
+        let page = 1;
+        let link;
+        let branches = [];
+        let last;
+        do {
+            console.log('get branches');
+            const { data, headers } = await octokit.rest.repos.listBranches({
+                owner: safeOwner,
+                repo: safeRepo,
+                page,
+            });
 
-        return data;
+            link = headers['link'];
+            const links = {};
+            link?.split(',').forEach((part) => {
+                const match = part.match(/<([^>]+)>;\s*rel="([^"]+)"/);
+                if (match) {
+                    links[match[2]] = {
+                        page: match[1].split('=').pop(),
+                        url: match[1],
+                    };
+                }
+            });
+
+            console.log('links', links);
+            last = links?.last?.page || last;
+            const isLast = page == last;
+            page++;
+
+            console.log('branches', data.length);
+
+            console.log('link', link);
+            branches = branches.concat(data);
+            if (isLast) {
+                break;
+            }
+        } while (link);
+
+        console.log('num of branches', branches.length);
+        return branches;
     }
     catch (error: any) {
         console.error('Error listing repos:', error);

@@ -1,10 +1,12 @@
 import { defineEventHandler, readBody, createError } from 'h3';
 import { App } from 'octokit';
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
+import type { Database } from '~/types/database.types';
+import { getValidGithubToken } from '../../utils/githubTokenRefresh';
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event);
-    const supabase = await serverSupabaseClient(event);
+    const supabase = await serverSupabaseClient<Database>(event);
     const { data: userData } = await supabase
         .from('Users')
         .select('github_installation_id')
@@ -32,7 +34,7 @@ export default defineEventHandler(async (event) => {
             full_name: string;
         };
         const owner = repo.full_name.split('/').shift();
-        let sha = body.sha as string;
+        let sha = body.sha as string | null;
         console.log('Creating branch: ', { branchName, owner, repo });
 
         if (!branchName) {
@@ -41,19 +43,49 @@ export default defineEventHandler(async (event) => {
 
         try {
             const ref = `refs/heads/${branchName}`;
-            const { data: tokenData } = await supabase.from('user_integrations').select().single();
+
+            // Get a valid (potentially refreshed) access token
+            let accessToken: string;
+            try {
+                accessToken = await getValidGithubToken(supabase);
+            }
+            catch (tokenError: any) {
+                console.error('Failed to get valid GitHub token:', tokenError);
+                throw createError({
+                    statusCode: 401,
+                    message: 'GitHub token expired or invalid. Please reconnect GitHub in Settings.',
+                });
+            }
+
+            if (!accessToken) {
+                throw Error('access token not found');
+            }
+            // console.log('access token', accessToken);
+            // console.log({
+            //     owner,
+            //     repo,
+            // });
+            console.log('repo.name', repo.name);
+
+            // const head = await octokit.request(`GET /repos/${owner}/${repo.name}/git/refs/heads/main`, {
+            //     headers: {
+            //         authorization: `Bearer ${accessToken}`,
+            //     },
+            // });
+            // console.log('head', head);
 
             if (!sha) {
-                sha = await octokit.rest.repos.getBranch({
+                const { data } = await octokit.rest.repos.getBranch({
                     owner: owner,
                     repo: repo.name,
                     branch: repo.default_branch,
                     headers: {
-                        authorization: `Bearer ${tokenData.access_token}`,
+                        authorization: `Bearer ${accessToken}`,
                     },
-                }).then(({ data }) => {
-                    return data.commit.sha;
                 });
+                console.log('got branch', data);
+                sha = data.commit.sha;
+                console.log('sha', sha);
             }
 
             if (!sha) {
@@ -66,7 +98,7 @@ export default defineEventHandler(async (event) => {
                 ref: ref,
                 sha: sha,
                 headers: {
-                    authorization: `Bearer ${tokenData.access_token}`,
+                    authorization: `Bearer ${accessToken}`,
                 },
             });
 
@@ -76,6 +108,15 @@ export default defineEventHandler(async (event) => {
         }
         catch (error: any) {
             console.error('Error creating branch:', error);
+
+            // Handle token expiration errors specifically
+            if (error.status === 401 || error.message?.includes('Bad credentials')) {
+                throw createError({
+                    statusCode: 401,
+                    message: 'GitHub authentication failed. Please reconnect GitHub in Settings.',
+                });
+            }
+
             return createError({ statusCode: error.status || 500, message: error.message || 'Failed to create branch' });
         }
     }

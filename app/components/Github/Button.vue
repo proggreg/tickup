@@ -15,6 +15,7 @@ const githubBranchName = computed(() => {
     }
     return branchName;
 });
+const hasBranch = useState('hasBranch', () => false);
 
 const githubBranchCommand = computed(() => {
     if (todo.githubBranchName) {
@@ -34,17 +35,29 @@ const copyToClipBoard = () => {
 };
 
 async function createBranch() {
-    const response = await $fetch('/api/github', {
-        method: 'POST',
-        body: {
-            branchName: githubBranchName.value,
-            repo: repo.value,
-        },
-    });
+    try {
+        const response = await $fetch('/api/github', {
+            method: 'POST',
+            body: {
+                branchName: githubBranchName.value,
+                repo: repo.value,
+            },
+        });
 
-    if (response.ref) {
-        updateTodo(response.url);
-        notify('Branch created successfully');
+        if (response.ref) {
+            updateTodo(response.url);
+            notify('Branch created successfully');
+        }
+    }
+    catch (error: any) {
+        console.error('Failed to create branch:', error);
+        const errorMessage = error?.data?.message || error?.message || 'Failed to create branch';
+        notify(errorMessage);
+
+        // If it's an auth error, suggest reconnecting
+        if (error?.status === 401 || error?.statusCode === 401) {
+            notify('Please reconnect GitHub in Settings');
+        }
     }
 }
 
@@ -95,7 +108,7 @@ onUnmounted(() => {
                             color="green"
                             width="30"
                             height="30"
-                            :disabled="!repo"
+                            :disabled="!repo || hasBranch"
                             @click="createBranch"
                         />
                         <v-btn
@@ -116,7 +129,7 @@ onUnmounted(() => {
                         />
                     </v-col>
                     <v-col cols="12">
-                        <GithubBranchSelect />
+                        <GithubBranchSelect :branch-name="githubBranchName" />
                     </v-col>
                 </v-row>
             </v-list-item>
