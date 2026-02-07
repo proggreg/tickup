@@ -85,6 +85,7 @@ async function linkBranch() {
 }
 
 async function unlinkBranch() {
+    selectedBranch.value = listStore.currentTodo.githubBranchName;
     listStore.currentTodo.githubBranchName = null;
     listStore.currentTodo.githubLink = null;
     listStore.updateTodo();
