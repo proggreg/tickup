@@ -6,7 +6,6 @@ const selectedBranch = useState('githubBranch', () => null);
 const selectedRepo = useState('githubRepo', () => null);
 
 async function linkBranch() {
-    console.log('link branch', selectedBranch.value);
     if (!selectedBranch.value) {
         return;
     }
@@ -21,8 +20,6 @@ async function linkBranch() {
             owner: selectedRepo.value.full_name.split('/').shift(),
         },
     });
-
-    console.log('branch', branch);
 
     if (branch) {
         listStore.currentTodo.githubBranchName = branch.name;
@@ -39,7 +36,7 @@ async function linkBranch() {
         v-if="selectedBranch"
         icon="mdi-link"
         variant="tonal"
-        size="small"
+        size="x-small"
         color="green"
         @click="linkBranch"
     />

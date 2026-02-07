@@ -85,13 +85,12 @@ onUnmounted(() => {
             <v-list-item>
                 <v-row>
                     <v-col
-                        cols="12"
-                        class="pt-6"
+                        cols="6"
                     >
                         <GithubRepoSelect />
                     </v-col>
                     <v-col
-                        cols="12"
+                        cols="6"
                     >
                         <GithubBranchSelect :branch-name="githubBranchName" />
                     </v-col>
