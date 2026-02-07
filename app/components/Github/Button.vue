@@ -16,6 +16,8 @@ const githubBranchName = computed(() => {
     return branchName;
 });
 const hasBranch = useState('hasBranch', () => false);
+const showLinkDialog = ref(false);
+const pendingBranchResponse = ref(null);
 
 const githubBranchCommand = computed(() => {
     if (todo.githubBranchName) {
@@ -45,8 +47,15 @@ async function createBranch() {
         });
 
         if (response.ref) {
-            updateTodo(response.url);
-            notify('Branch created successfully');
+            if (response.alreadyExists) {
+                // Show confirmation dialog
+                pendingBranchResponse.value = response;
+                showLinkDialog.value = true;
+            }
+            else {
+                updateTodo(response.url);
+                notify('Branch created successfully');
+            }
         }
     }
     catch (error: any) {
@@ -59,6 +68,20 @@ async function createBranch() {
             notify('Please reconnect GitHub in Settings');
         }
     }
+}
+
+function confirmLinkBranch() {
+    if (pendingBranchResponse.value) {
+        updateTodo(pendingBranchResponse.value.url);
+        notify('Branch linked successfully');
+        showLinkDialog.value = false;
+        pendingBranchResponse.value = null;
+    }
+}
+
+function cancelLinkBranch() {
+    showLinkDialog.value = false;
+    pendingBranchResponse.value = null;
 }
 
 function updateTodo(url?: string) {
@@ -79,8 +102,6 @@ onUnmounted(() => {
 
 <template>
     <v-menu
-        class="pa-4"
-        min-width="300px"
         :close-on-content-click="false"
     >
         <template #activator="{ props }">
@@ -90,11 +111,14 @@ onUnmounted(() => {
             />
         </template>
         <v-list>
-            <v-list-item class="d-flex">
+            <v-list-item>
                 <v-text-field
+                    :model-value="githubBranchCommand"
                     class="font-weight-bold"
                     variant="outlined"
                     readonly
+                    hide-details
+                    center-affix
                 >
                     <template #append>
                         <v-btn
@@ -118,21 +142,53 @@ onUnmounted(() => {
                             target="_blank"
                         />
                     </template>
-                    {{ githubBranchCommand }}
                 </v-text-field>
             </v-list-item>
             <v-list-item>
                 <v-row>
-                    <v-col cols="12">
+                    <v-col
+                        cols="12"
+                        class="pt-6"
+                    >
                         <GithubRepoSelect
                             v-model="repo"
                         />
                     </v-col>
-                    <v-col cols="12">
+                    <v-col
+                        cols="12"
+                    >
                         <GithubBranchSelect :branch-name="githubBranchName" />
                     </v-col>
                 </v-row>
             </v-list-item>
         </v-list>
     </v-menu>
+
+    <!-- Confirmation dialog for existing branch -->
+    <v-dialog
+        v-model="showLinkDialog"
+        max-width="400"
+    >
+        <v-card>
+            <v-card-title class="text-h6">
+                Branch Already Exists
+            </v-card-title>
+            <v-card-text>
+                The branch <strong>{{ githubBranchName }}</strong> already exists in this repository.
+                Would you like to link this todo to the existing branch?
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer />
+                <v-btn
+                    text="Cancel"
+                    @click="cancelLinkBranch"
+                />
+                <v-btn
+                    color="primary"
+                    text="Link Branch"
+                    @click="confirmLinkBranch"
+                />
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>

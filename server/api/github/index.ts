@@ -60,28 +60,38 @@ export default defineEventHandler(async (event) => {
             if (!accessToken) {
                 throw Error('access token not found');
             }
-            // console.log('access token', accessToken);
-            // console.log({
-            //     owner,
-            //     repo,
-            // });
-            console.log('repo.name', repo.name);
 
-            // const head = await octokit.request(`GET /repos/${owner}/${repo.name}/git/refs/heads/main`, {
-            //     headers: {
-            //         authorization: `Bearer ${accessToken}`,
-            //     },
-            // });
-            // console.log('head', head);
+            // Check if branch already exists
+            try {
+                const existingBranch = await octokit.rest.repos.getBranch({
+                    owner: owner,
+                    repo: repo.name,
+                    branch: branchName,
+                });
+
+                if (existingBranch.data) {
+                    console.log('Branch already exists:', branchName);
+                    return {
+                        ref: `refs/heads/${branchName}`,
+                        url: `https://github.com/${owner}/${repo.name}/tree/${branchName}`,
+                        object: { sha: existingBranch.data.commit.sha },
+                        alreadyExists: true,
+                    };
+                }
+            }
+            catch (error: any) {
+                // If branch doesn't exist, we'll get a 404 - that's expected, continue to create it
+                if (error.status !== 404) {
+                    throw error;
+                }
+                console.log('Branch does not exist, creating:', branchName);
+            }
 
             if (!sha) {
                 const { data } = await octokit.rest.repos.getBranch({
                     owner: owner,
                     repo: repo.name,
                     branch: repo.default_branch,
-                    headers: {
-                        authorization: `Bearer ${accessToken}`,
-                    },
                 });
                 console.log('got branch', data);
                 sha = data.commit.sha;

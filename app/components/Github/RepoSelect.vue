@@ -77,7 +77,7 @@ onUnmounted(() => {
     <v-chip
         v-if="listStore.currentTodo.githubRepo && listStore.currentTodo.githubLink"
     >
-        {{ listStore.currentTodo.githubRepo }}
+        <v-icon icon="mdi-source-repository" />   {{ listStore.currentTodo.githubRepo }}
     </v-chip>
     <v-autocomplete
         v-else
