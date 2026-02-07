@@ -9,6 +9,7 @@ const selectedRepo = useState('githubRepo', () => null);
 const branches = ref<BranchItem[]>([]);
 const loading = ref(false);
 const error = ref('');
+const selectBranchInput = ref();
 
 async function loadBranches() {
     loading.value = true;
@@ -25,9 +26,22 @@ async function loadBranches() {
             },
         });
         branches.value = data;
+        // Use nextTick to ensure the DOM has updated before focusing
+        await nextTick();
+        // Add a delay to allow the autocomplete to finish its internal updates
+        setTimeout(() => {
+            if (selectBranchInput.value) {
+                // Focus the actual input element inside the Vuetify component
+                const input = selectBranchInput.value.$el?.querySelector('input');
+                if (input) {
+                    input.focus();
+                }
+            }
+        }, 150);
     }
     catch (e: any) {
         error.value = e?.data?.message || 'Failed to load branches';
+        branches.value = [];
     }
     finally {
         loading.value = false;
@@ -62,6 +76,15 @@ async function unlinkBranch() {
     listStore.updateTodo();
 }
 
+watch(selectedRepo, (newVal, oldVal) => {
+    console.log('selectedRepo changed:', { newVal, oldVal });
+    if (newVal && newVal !== oldVal) {
+        selectedBranch.value = '';
+        loadBranches();
+    }
+},
+);
+
 onMounted(() => {
     console.log('mount select branch', selectedRepo);
     if (selectedRepo.value) {
@@ -85,6 +108,7 @@ onMounted(() => {
     </v-text-field>
     <v-autocomplete
         v-else
+        ref="selectBranchInput"
         v-model="selectedBranch"
         :items="branches"
         :loading="loading"
@@ -98,8 +122,17 @@ onMounted(() => {
         hide-details
         no-data-text="No branches found"
         :error-messages="error"
+        prepend-inner-icon="mdi-source-branch"
         clearable
+        autofocus
     >
+        <template #item="{ props, item }">
+            <v-list-item
+                v-bind="props"
+                :subtitle="item.raw.commit.sha"
+            />
+        </template>
+
         <template #append>
             <v-btn
                 v-if="selectedBranch"
@@ -109,27 +142,6 @@ onMounted(() => {
                 color="green"
                 @click="linkBranch"
             />
-        </template>
-        <template #item="{ props, item }">
-            <v-list-item
-                v-bind="props"
-                :subtitle="item.raw.commit.sha"
-            >
-                <template #prepend>
-                    <v-icon size="small">
-                        mdi-git-branch
-                    </v-icon>
-                </template>
-            </v-list-item>
-        </template>
-
-        <template #selection="{ item }">
-            <div class="d-flex align-center ga-2">
-                <v-icon size="small">
-                    mdi-git-branch
-                </v-icon>
-                {{ item?.raw?.name }}
-            </div>
         </template>
     </v-autocomplete>
 </template>

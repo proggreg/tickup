@@ -3,7 +3,6 @@ const { todo } = defineProps<{ todo: Todo }>();
 const listStore = useListsStore();
 const { notify } = useNotification();
 const repo = useState('githubRepo', () => null);
-const selectedBranch = ref();
 const selectedRepo = useState('githubRepo', () => null);
 const filteredTodoName = computed(() => todo.name.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2700}-\u{27BF}]|[\u{1F000}-\u{1F02F}]|[\u{1F0A0}-\u{1F0FF}]|[\u{1F100}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2B00}-\u{2BFF}]/gu, '').trim());
 const githubBranchName = computed(() => {
@@ -111,15 +110,13 @@ onUnmounted(() => {
             </v-list-item>
             <v-list-item>
                 <v-row>
-                    <v-col>
+                    <v-col cols="12">
                         <GithubRepoSelect
                             v-model="repo"
                         />
                     </v-col>
-                    <v-col>
-                        <GithubBranchSelect
-                            v-model="selectedBranch"
-                        />
+                    <v-col cols="12">
+                        <GithubBranchSelect />
                     </v-col>
                 </v-row>
             </v-list-item>

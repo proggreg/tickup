@@ -16,6 +16,8 @@ const selectedRepo = useState('githubRepo', () => null);
 const repos = ref<Repo[]>([]);
 const loading = ref(false);
 const error = ref('');
+const repoSelectInput = ref();
+const menuOpen = ref(false);
 
 async function loadRepos() {
     loading.value = true;
@@ -28,6 +30,37 @@ async function loadRepos() {
         error.value = e?.data?.message || 'Failed to load repositories';
     }
     loading.value = false;
+}
+
+function handleRepoUpdate(value: Repo | null) {
+    selectedRepo.value = value;
+    if (value) {
+        // Close the menu and blur the input
+        menuOpen.value = false;
+        nextTick(() => {
+            if (repoSelectInput.value) {
+                const input = repoSelectInput.value.$el?.querySelector('input');
+                if (input) {
+                    input.blur();
+                }
+            }
+        });
+    }
+}
+
+function handleMenuUpdate(isOpen: boolean) {
+    menuOpen.value = isOpen;
+    // When menu closes after selection, ensure input loses focus
+    if (!isOpen && selectedRepo.value) {
+        nextTick(() => {
+            if (repoSelectInput.value) {
+                const input = repoSelectInput.value.$el?.querySelector('input');
+                if (input) {
+                    input.blur();
+                }
+            }
+        });
+    }
 }
 
 onBeforeMount(async () => {
@@ -46,7 +79,9 @@ onUnmounted(() => {
     </v-text-field>
     <v-autocomplete
         v-else
-        v-model="selectedRepo"
+        ref="repoSelectInput"
+        :model-value="selectedRepo"
+        :menu="menuOpen"
         :items="repos"
         :loading="loading"
         item-value="id"
@@ -59,6 +94,8 @@ onUnmounted(() => {
         hide-details
         no-data-text="No repositories found"
         :error-messages="error"
+        @update:model-value="handleRepoUpdate"
+        @update:menu="handleMenuUpdate"
     >
         <template #item="{ props, item }">
             <v-list-item
