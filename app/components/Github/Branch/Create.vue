@@ -11,7 +11,7 @@ const showLinkDialog = useState('showLinkDialog');
 
 async function createBranch() {
     try {
-        const response = await $fetch('/api/github', {
+        const response = await $fetch('/api/github/branch', {
             method: 'POST',
             body: {
                 branchName: githubBranchName.value,

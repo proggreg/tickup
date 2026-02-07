@@ -1,16 +1,14 @@
 import { defineEventHandler, readBody, createError } from 'h3';
 import { App } from 'octokit';
-import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
+import { serverSupabaseClient } from '#supabase/server';
 import type { Database } from '~/types/database.types';
-import { getValidGithubToken } from '../../utils/githubTokenRefresh';
+
 
 export default defineEventHandler(async (event) => {
-    const user = await serverSupabaseUser(event);
     const supabase = await serverSupabaseClient<Database>(event);
     const { data: userData } = await supabase
         .from('Users')
         .select('github_installation_id')
-        .eq('id', user.sub)
         .single();
 
     console.log(userData);
