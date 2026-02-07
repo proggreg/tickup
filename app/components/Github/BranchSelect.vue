@@ -12,6 +12,7 @@ const error = ref('');
 const selectBranchInput = ref();
 const { branchName } = defineProps <{ branchName: string }>();
 const hasBranch = useState('hasBranch', () => false);
+
 async function loadBranches() {
     loading.value = true;
     error.value = '';
@@ -29,17 +30,15 @@ async function loadBranches() {
 
         branches.value = data;
 
-        // Only focus if there are branches available
         if (branches.value && branches.value.length > 0) {
-            // Use nextTick to ensure the DOM has updated before focusing
-            console.log('listStore.currentTodo.githubBranchName', branchName);
             const foundBranch = branches.value.find(branch => branch.name === branchName);
-
-            console.log('hasBranch', hasBranch);
 
             if (foundBranch) {
                 hasBranch.value = true;
                 selectedBranch.value = foundBranch;
+            }
+            else {
+                hasBranch.value = false;
             }
 
             await nextTick();
@@ -78,7 +77,7 @@ async function linkBranch() {
 
     if (branch) {
         listStore.currentTodo.githubBranchName = branch.name;
-        listStore.currentTodo.githubRepo = selectedRepo.value.name;
+        listStore.currentTodo.githubRepo = selectedRepo.value.full_name || selectedRepo.value.name;
         listStore.currentTodo.githubLink = branch._links.html;
         listStore.updateTodo();
         selectedBranch.value = null;
@@ -101,7 +100,6 @@ watch(selectedRepo, (newVal, oldVal) => {
 );
 
 onMounted(() => {
-    console.log('mount select branch', selectedRepo);
     if (selectedRepo.value) {
         loadBranches();
     }

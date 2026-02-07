@@ -74,12 +74,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <v-text-field
-        v-if="listStore.currentTodo.githubRepo"
-        v-model="listStore.currentTodo.githubRepo"
+    <v-chip
+        v-if="listStore.currentTodo.githubRepo && listStore.currentTodo.githubLink"
     >
         {{ listStore.currentTodo.githubRepo }}
-    </v-text-field>
+    </v-chip>
     <v-autocomplete
         v-else
         ref="repoSelectInput"
