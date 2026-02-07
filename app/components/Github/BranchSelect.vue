@@ -77,7 +77,7 @@ async function linkBranch() {
 
     if (branch) {
         listStore.currentTodo.githubBranchName = branch.name;
-        listStore.currentTodo.githubRepo = selectedRepo.value.full_name || selectedRepo.value.name;
+        listStore.currentTodo.githubRepo = selectedRepo.value.name;
         listStore.currentTodo.githubLink = branch._links.html;
         listStore.updateTodo();
         selectedBranch.value = null;
@@ -111,18 +111,20 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <v-text-field
+    <v-chip
         v-if="listStore.currentTodo.githubBranchName"
     >
+        <v-icon icon="mdi-source-branch" />
         {{ listStore.currentTodo.githubBranchName }}
         <template #append>
             <v-btn
                 color="red"
                 icon="mdi-link-off"
+                size="small"
                 @click="unlinkBranch"
             />
         </template>
-    </v-text-field>
+    </v-chip>
     <v-autocomplete
         v-else
         ref="selectBranchInput"
