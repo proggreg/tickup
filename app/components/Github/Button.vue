@@ -79,6 +79,7 @@ onUnmounted(() => {
                         <GithubBranchCopy />
                         <GithubBranchCreate />
                         <GithubBranchOpen />
+                        <GithubBranchOpenInIde />
                     </template>
                 </v-text-field>
             </v-list-item>
