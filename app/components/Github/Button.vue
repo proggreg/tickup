@@ -119,6 +119,7 @@ onUnmounted(() => {
                     readonly
                     hide-details
                     center-affix
+                    min-width="300px"
                 >
                     <template #append>
                         <v-btn
