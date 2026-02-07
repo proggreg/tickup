@@ -26,18 +26,22 @@ async function loadBranches() {
             },
         });
         branches.value = data;
-        // Use nextTick to ensure the DOM has updated before focusing
-        await nextTick();
-        // Add a delay to allow the autocomplete to finish its internal updates
-        setTimeout(() => {
-            if (selectBranchInput.value) {
-                // Focus the actual input element inside the Vuetify component
-                const input = selectBranchInput.value.$el?.querySelector('input');
-                if (input) {
-                    input.focus();
+        
+        // Only focus if there are branches available
+        if (branches.value && branches.value.length > 0) {
+            // Use nextTick to ensure the DOM has updated before focusing
+            await nextTick();
+            // Add a delay to allow the autocomplete to finish its internal updates
+            setTimeout(() => {
+                if (selectBranchInput.value) {
+                    // Focus the actual input element inside the Vuetify component
+                    const input = selectBranchInput.value.$el?.querySelector('input');
+                    if (input) {
+                        input.focus();
+                    }
                 }
-            }
-        }, 150);
+            }, 150);
+        }
     }
     catch (e: any) {
         error.value = e?.data?.message || 'Failed to load branches';
@@ -124,7 +128,6 @@ onMounted(() => {
         :error-messages="error"
         prepend-inner-icon="mdi-source-branch"
         clearable
-        autofocus
     >
         <template #item="{ props, item }">
             <v-list-item
