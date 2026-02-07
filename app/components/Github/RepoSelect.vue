@@ -103,6 +103,7 @@ onUnmounted(() => {
             <v-list-item
                 v-bind="props"
                 :subtitle="item.raw.description"
+                slim
             >
                 <template #prepend>
                     <v-icon size="small">
@@ -110,15 +111,6 @@ onUnmounted(() => {
                     </v-icon>
                 </template>
             </v-list-item>
-        </template>
-
-        <template #selection="{ item }">
-            <div class="d-flex align-center ga-2">
-                <v-icon size="small">
-                    {{ item?.raw?.private ? 'mdi-lock' : 'mdi-source-repository' }}
-                </v-icon>
-                {{ item?.raw?.name }}
-            </div>
         </template>
     </v-autocomplete>
 </template>
