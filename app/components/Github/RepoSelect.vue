@@ -50,7 +50,7 @@ onUnmounted(() => {
         :items="repos"
         :loading="loading"
         item-value="id"
-        item-title="full_name"
+        item-title="name"
         return-object
         label="Repository"
         placeholder="Select a repository"
