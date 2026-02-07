@@ -122,12 +122,14 @@ onUnmounted(() => {
                 >
                     <template #append>
                         <v-btn
+                            size="small"
                             icon="mdi-content-copy"
                             @click.stop="copyToClipBoard"
                         />
                         <v-btn
                             v-if="!todo.githubLink"
                             icon="mdi-plus"
+                            size="small"
                             variant="tonal"
                             color="green"
                             width="30"
@@ -137,6 +139,7 @@ onUnmounted(() => {
                         />
                         <v-btn
                             v-if="todo.githubLink"
+                            size="small"
                             icon="mdi-open-in-new"
                             :href="todo.githubLink"
                             target="_blank"
