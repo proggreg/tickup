@@ -57,6 +57,7 @@ onUnmounted(() => {
 <template>
     <v-menu
         :close-on-content-click="false"
+        elevation="0"
     >
         <template #activator="{ props }">
             <v-btn
@@ -64,34 +65,50 @@ onUnmounted(() => {
                 icon="mdi-github"
             />
         </template>
-        <v-list>
-            <v-list-item>
+        <v-list
+            class="github-menu rounded-xl"
+            density="compact"
+            elevation="1"
+        >
+            <v-list-item
+                class="github-menu-item"
+                slim
+            >
                 <v-text-field
                     :model-value="githubBranchCommand"
-                    class="font-weight-bold"
+                    class="github-command-field font-weight-bold"
                     variant="outlined"
+                    single-line
+                    density="compact"
                     readonly
                     hide-details
                     center-affix
-                    min-width="300px"
                 >
-                    <template #append>
+                    <template #append-inner>
                         <GithubBranchCopy />
-                        <GithubBranchCreate />
                         <GithubBranchOpen />
                         <GithubBranchOpenInIde />
+                        <GithubBranchCreate />
                     </template>
                 </v-text-field>
             </v-list-item>
-            <v-list-item>
-                <v-row>
+            <v-list-item
+                class="github-menu-item"
+                slim
+            >
+                <v-row
+                    class="github-menu-row"
+                    dense
+                >
                     <v-col
-                        cols="6"
+                        cols="5"
+                        class="pa-0 pr-1 github-repo-col"
                     >
                         <GithubRepoSelect />
                     </v-col>
                     <v-col
-                        cols="6"
+                        cols="7"
+                        class="pa-0 pl-1 github-branch-col"
                     >
                         <GithubBranchSelect :branch-name="githubBranchName" />
                     </v-col>
@@ -128,3 +145,51 @@ onUnmounted(() => {
         </v-card>
     </v-dialog>
 </template>
+
+<style scoped>
+.github-menu {
+    padding: 6px 8px;
+    min-width: 420px;
+    overflow: visible;
+}
+
+.github-branch-col {
+    min-width: 0;
+}
+
+.github-branch-col :deep(.v-autocomplete .v-field),
+.github-branch-col :deep(.v-chip) {
+    min-width: 160px;
+}
+
+.github-menu-item {
+    padding: 4px 0;
+    overflow: visible;
+}
+
+.github-menu-item :deep(.v-list-item__content) {
+    padding: 0;
+    overflow: visible;
+    min-width: 0;
+}
+
+.github-command-field :deep(.v-field__input) {
+    display: flex;
+    align-items: center;
+}
+
+.github-command-field :deep(.v-field__input input) {
+    font-size: 14px;
+}
+
+.github-command-field :deep(.v-field) {
+    --v-field-padding-top: 4px;
+    --v-field-padding-bottom: 8px;
+    --v-field-padding-start: 10px;
+    --v-field-padding-end: 6px;
+}
+
+.github-menu-row {
+    margin: 0;
+}
+</style>
