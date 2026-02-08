@@ -24,9 +24,8 @@ const removeRepo = () => {
 };
 
 const updateList = async () => {
-    console.log('update list', route.params.id);
     const list = await listsStore.getList(route.params.id);
-    console.log('updatelist', list);
+
     if (list) {
         listsStore.updateList(list);
     }
@@ -36,9 +35,21 @@ const updateList = async () => {
 <template>
     <v-container
         fluid
-        class="py-8"
     >
         <v-row>
+            <v-col
+                cols="12"
+            >
+                <v-btn
+                    :to="`/list/${listId}`"
+                    variant="text"
+
+                    prepend-icon="mdi-arrow-left"
+                    class="mb-6"
+                >
+                    Back to List
+                </v-btn>
+            </v-col>
             <v-col
                 cols="12"
                 md="8"
@@ -46,15 +57,6 @@ const updateList = async () => {
                 class="mx-auto"
             >
                 <!-- Back button -->
-                <v-btn
-                    :to="`/list/${listId}`"
-                    variant="text"
-                    color="primary"
-                    prepend-icon="mdi-arrow-left"
-                    class="mb-6"
-                >
-                    Back to List
-                </v-btn>
 
                 <!-- Page title -->
                 <h1 class="text-h3 font-weight-bold mb-8">
@@ -119,29 +121,6 @@ const updateList = async () => {
                         </div>
                     </v-card-text>
                 </v-card>
-
-                <!-- Save Button -->
-                <div class="d-flex align-center gap-4">
-                    <v-btn
-
-                        color="primary"
-                        size="large"
-                        prepend-icon="mdi-content-save"
-                        @click="saveSettings"
-                    >
-                        Save Settings
-                    </v-btn>
-
-                    <v-fade-transition>
-                        <v-chip
-
-                            color="success"
-                            prepend-icon="mdi-check-circle"
-                        >
-                            Settings saved successfully
-                        </v-chip>
-                    </v-fade-transition>
-                </div>
             </v-col>
         </v-row>
     </v-container>
