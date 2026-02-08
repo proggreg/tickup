@@ -48,11 +48,16 @@ export default defineEventHandler(async (event) => {
                 });
                 const githubUser = await userRes.json();
                 githubUsername = githubUser.login;
+
+                const expiresIn = tokenData.expires_in || 28800;
+                const expiresAt = new Date(Date.now() + expiresIn * 1000);
+
                 const integrationtokenData = {
                     user_id: user.sub,
                     provider: 'GitHub',
                     access_token: tokenData.access_token,
                     refresh_token: tokenData.refresh_token,
+                    expires_at: expiresAt.toISOString(),
                 };
                 const { error } = await supabase.from('user_integrations').upsert(integrationtokenData);
 

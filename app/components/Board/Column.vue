@@ -12,6 +12,9 @@ interface Props {
 const { status } = defineProps<Props>();
 
 const todos = computed(() => {
+    if (!listsStore.currentList || !listsStore.currentList.todos || !listsStore.currentList.todos.length || !status || !status.name) {
+        return [];
+    }
     return listsStore.currentList.todos.filter((todo: Todo) => todo.status === status.name);
 });
 

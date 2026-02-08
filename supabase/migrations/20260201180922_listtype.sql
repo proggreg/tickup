@@ -1,0 +1,1 @@
+ALTER TABLE "public"."Lists" ADD COLUMN list_type text;

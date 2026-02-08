@@ -53,7 +53,7 @@ const closedTodos = computed(() => {
 
                 <v-list-item
                     v-for="todo in openTodos"
-                    :key="todo._id"
+                    :key="todo.id"
                     slim
                     @click="selectTodo(todo)"
                 >
@@ -87,7 +87,7 @@ const closedTodos = computed(() => {
 
                 <v-list-item
                     v-for="todo in closedTodos"
-                    :key="todo._id"
+                    :key="todo.id"
                     slim
                     @click="selectTodo(todo)"
                 >

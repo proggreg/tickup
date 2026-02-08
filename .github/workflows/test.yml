@@ -1,6 +1,5 @@
 name: Playwright Tests Only
 on:
-  push:
   pull_request:
 
 jobs:

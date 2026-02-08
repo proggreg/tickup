@@ -14,24 +14,16 @@ async function loadBranches() {
     loading.value = true;
     error.value = '';
     if (!selectedRepo.value) {
-        loading.value = false;
         return;
     }
-    try {
-        const data = await $fetch<ListBranchesData>('/api/github/branches', {
-            query: {
-                owner: selectedRepo.value.full_name.split('/').shift(),
-                repo: selectedRepo?.value?.name,
-            },
-        });
-        branches.value = data;
-    }
-    catch (e: any) {
-        error.value = e?.data?.message || 'Failed to load branches';
-    }
-    finally {
-        loading.value = false;
-    }
+    const data = await $fetch<ListBranchesData>('/api/github/branches', {
+        query: {
+            owner: selectedRepo.value?.full_name.split('/').shift(),
+            repo: selectedRepo.value?.name,
+        },
+    });
+    branches.value = data;
+    loading.value = false;
 }
 
 async function linkBranch() {
@@ -52,12 +44,18 @@ async function linkBranch() {
     }
 }
 
-async function unlinkBranch() {
+function unlinkBranch() {
     listStore.currentTodo.githubBranchName = null;
     listStore.currentTodo.githubRepo = null;
     listStore.currentTodo.githubLink = null;
     listStore.updateTodo();
 }
+
+watch(selectedRepo, (newSelectedRepo) => {
+    if (newSelectedRepo.name) {
+        loadBranches();
+    }
+});
 
 onMounted(() => {
     console.log('mount select branch', selectedRepo);
@@ -125,7 +123,7 @@ onMounted(() => {
                 <v-icon size="small">
                     mdi-git-branch
                 </v-icon>
-                {{ item?.raw?.name }}
+                {{ item.raw.name }}
             </div>
         </template>
     </v-autocomplete>
