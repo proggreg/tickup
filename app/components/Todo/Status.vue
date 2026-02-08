@@ -25,9 +25,8 @@ function updateStatus(statusName: string) {
 <template>
     <v-select
         v-model="listStore.currentTodo.status"
-        class="pa-0 my-0"
         hide-details
-        max-width="300"
+        max-width="150"
         density="compact"
         hide-selected
         item-title="name"

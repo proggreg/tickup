@@ -284,7 +284,6 @@ export const useListsStore = defineStore('lists', {
                 return this.currentList;
             }
         },
-
         async getTodaysTodos() {
             const todos = await $fetch<Todo[]>('/api/todos', {
                 query: { today: true },
