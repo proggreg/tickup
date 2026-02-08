@@ -181,16 +181,30 @@ watch(
         elevation="0"
         class="pa-0 d-flex flex-column rounded-lg"
     >
-        <v-card-item class="pb-0 pt-4 px-6 mb-6">
+        <v-card-title>
+            <v-text-field
+                v-model="listsStore.currentTodo.name"
+                label="Title"
+                hide-details
+                variant="outlined"
+                class="rounded-lg"
+                @blur="updateName"
+            />
+        </v-card-title>
+        <v-card-item>
             <v-row align="center">
-                <v-col
-                    sm="3"
-                    md="2"
-                    cols="6"
-                >
+                <v-col cols="auto">
                     <TodoStatus />
                 </v-col>
+                <v-col cols="auto">
+                    <GithubButton
+                        v-if="hasGithub"
+                        :todo="listsStore.currentTodo"
+                    />
+                </v-col>
+                <v-col />
                 <v-spacer />
+
                 <v-col
                     sm="4"
                     md="4"
@@ -205,17 +219,7 @@ watch(
                 </v-col>
             </v-row>
         </v-card-item>
-        <v-card-title class="px-6 pt-2 mb-2">
-            <v-text-field
-                v-model="listsStore.currentTodo.name"
-                label="Title"
-                hide-details
-                variant="outlined"
-                class="rounded-lg"
-                @blur="updateName"
-            />
-        </v-card-title>
-        <v-card-item class="px-6 pt-0 pb-2 mb-2">
+        <v-card-item>
             <v-textarea
                 v-model="listsStore.currentTodo.desc"
                 auto-grow
@@ -227,8 +231,7 @@ watch(
                 @blur="listsStore.updateTodo(listsStore.currentTodo)"
             />
         </v-card-item>
-
-        <v-card-item class="px-6 pt-0 pb-2">
+        <v-card-item>
             <div class="pa-4 rounded-lg">
                 <div class="mb-2 text-subtitle-1 font-weight-bold">
                     Subtasks
@@ -309,22 +312,15 @@ watch(
                 </div>
             </div>
         </v-card-item>
-
-        <v-card-item class="px-6 pt-0 pb-2">
+        <v-card-item>
             <TodoLinks />
         </v-card-item>
-
-        <v-card-item class="px-6 pt-0 pb-2">
+        <v-card-item>
             <TodoAttachments />
         </v-card-item>
-
         <v-card-actions class="py-6 px-6 d-flex flex-wrap gap-4 align-center justify-space-between">
             <div class="d-flex align-center gap-2 flex-wrap">
                 <AppDeleteButton :todo="listsStore.currentTodo" />
-                <GithubButton
-                    v-if="hasGithub"
-                    :todo="listsStore.currentTodo"
-                />
             </div>
             <div class="d-flex align-center gap-2 flex-wrap">
                 <v-alert

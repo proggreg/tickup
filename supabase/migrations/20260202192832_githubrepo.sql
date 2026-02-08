@@ -1,0 +1,1 @@
+ALTER TABLE "public"."Lists" ADD COLUMN github_repo text;
