@@ -1,42 +1,52 @@
 <script setup lang="ts">
-import { useChat } from '@ai-sdk/vue';
+import { Chat } from '@ai-sdk/vue';
 
-const { messages, input, handleSubmit, isLoading, error } = useChat({
-    api: '/api/chat',
-});
+const chat = new Chat();
+const input = ref('');
+
+async function handleSubmit(e?: Event) {
+    e?.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    await chat.sendMessage({ text });
+}
 </script>
 
 <template>
     <div>
         <div
-            v-for="message in messages"
+            v-for="message in chat.messages"
             :key="message.id"
             class="mb-2"
         >
             <p>
                 <strong>{{ message.role === 'user' ? 'You' : 'AI' }}:</strong>
-                {{ message.content }}
+                <span
+                    v-for="(part, i) in message.parts.filter(p => p.type === 'text')"
+                    :key="i"
+                >{{ part.text }}</span>
             </p>
         </div>
 
         <p
-            v-if="error"
+            v-if="chat.error"
             class="text-error"
         >
-            {{ error.message }}
+            {{ chat.error.message }}
         </p>
 
         <form @submit="handleSubmit">
             <v-text-field
                 v-model="input"
                 placeholder="Type a message..."
-                :disabled="isLoading"
+                :disabled="chat.status === 'submitted' || chat.status === 'streaming'"
                 @keyup.enter="handleSubmit"
             >
                 <template #append>
                     <v-btn
                         type="submit"
-                        :loading="isLoading"
+                        :loading="chat.status === 'submitted' || chat.status === 'streaming'"
                         icon="mdi-send"
                         variant="text"
                     />

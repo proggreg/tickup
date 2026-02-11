@@ -13,5 +13,5 @@ export default defineEventHandler(async (event) => {
         messages,
     });
 
-    return result.toDataStreamResponse();
+    return result.toUIMessageStreamResponse();
 });
