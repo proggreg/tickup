@@ -35,6 +35,7 @@ export default defineNuxtConfig({
     },
 
     runtimeConfig: {
+        bugsnagApiKey: process.env.BUGSNAG_API_KEY,
 
         private: {
             vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
