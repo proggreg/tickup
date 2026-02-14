@@ -21,11 +21,6 @@ const handleSubmit = (e: Event) => {
 
 <template>
     <div>
-        <ChatModelSelect
-            v-model="selectedModel"
-            class="mb-4"
-        />
-
         <div
             v-for="(m, index) in chat.messages"
             :key="m.id ? m.id : index"
@@ -46,11 +41,21 @@ const handleSubmit = (e: Event) => {
         </div>
 
         <form @submit="handleSubmit">
-            <input
-                v-model="input"
-                data-testid="chat-input"
-                placeholder="Say something..."
-            >
+            <v-row>
+                <v-col>
+                    <v-text-field
+                        v-model="input"
+                        data-testid="chat-input"
+                        placeholder="Say something..."
+                    />
+                </v-col>
+                <v-col cols="auto">
+                    <ChatModelSelect
+                        v-model="selectedModel"
+                        class="mb-4"
+                    />
+                </v-col>
+            </v-row>
         </form>
     </div>
 </template>
