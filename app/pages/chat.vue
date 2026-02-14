@@ -10,7 +10,7 @@ definePageMeta({ layout: 'chat' });
 
 <style scoped>
 .chat-page {
-    height: calc(100dvh - var(--v-layout-top));
+    height: calc(100dvh - var(--v-layout-top) - var(--v-layout-bottom));
     padding: 24px;
     display: flex;
     flex-direction: column;
