@@ -12,50 +12,60 @@ const chat = new Chat({
     }),
 });
 
+const isLoading = computed(() => chat.status === 'streaming' || chat.status === 'submitted');
+
 const handleSubmit = (e: Event) => {
     e.preventDefault();
+    if (!input.value.trim() || isLoading.value) return;
     chat.sendMessage({ text: input.value });
     input.value = '';
 };
 </script>
 
 <template>
-    <div>
-        <div
-            v-for="(m, index) in chat.messages"
-            :key="m.id ? m.id : index"
-            data-testid="chat-message"
-        >
-            {{ m.role === "user" ? "User: " : "AI: " }}
-            <div
-                v-for="(part, index) in m.parts"
-                :key="`${m.id}-${part.type}-${index}`"
-            >
-                <div
-                    v-if="part.type === 'text'"
-                    data-testid="chat-message-text"
-                >
-                    {{ part.text }}
-                </div>
-            </div>
-        </div>
+    <v-card
+        class="chat-container d-flex flex-column"
+        variant="outlined"
+    >
+        <!-- Scrollable message list -->
+        <ChatMessageList
+            :messages="chat.messages"
+            :loading="isLoading"
+        />
 
-        <form @submit="handleSubmit">
-            <v-row>
-                <v-col>
-                    <v-text-field
-                        v-model="input"
-                        data-testid="chat-input"
-                        placeholder="Say something..."
-                    />
-                </v-col>
-                <v-col cols="auto">
+        <v-divider />
+
+        <!-- Input bar -->
+        <v-card-item class="py-2">
+            <form @submit="handleSubmit">
+                <div class="d-flex align-center ga-3">
                     <ChatModelSelect
                         v-model="selectedModel"
-                        class="mb-4"
+                        class="flex-shrink-0"
+                        style="width: 140px;"
                     />
-                </v-col>
-            </v-row>
-        </form>
-    </div>
+                    <v-text-field
+                        v-model="input"
+                        :disabled="isLoading"
+                        data-testid="chat-input"
+                        placeholder="Say something..."
+                        variant="outlined"
+                        density="compact"
+                        hide-details
+                        append-inner-icon="mdi-send"
+                        @click:append-inner="handleSubmit"
+                        @keydown.enter.exact.prevent="handleSubmit"
+                    />
+                </div>
+            </form>
+        </v-card-item>
+    </v-card>
 </template>
+
+<style scoped>
+.chat-container {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+</style>

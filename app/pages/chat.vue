@@ -1,11 +1,19 @@
+<script setup lang="ts">
+definePageMeta({ layout: 'chat' });
+</script>
+
 <template>
-    <v-row
-        class="fill-height pa-6"
-        align="end"
-        justify="center"
-    >
-        <v-col>
-            <Chat />
-        </v-col>
-    </v-row>
+    <div class="chat-page">
+        <Chat />
+    </div>
 </template>
+
+<style scoped>
+.chat-page {
+    height: calc(100dvh - var(--v-layout-top));
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+</style>

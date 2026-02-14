@@ -39,13 +39,12 @@ onMounted(async () => {
         density="compact"
         variant="outlined"
         hide-details
+        max-width="200"
         data-testid="chat-model-select"
     >
-        <template #item="{ props: itemProps, item }">
+        <template #item="{ props: itemProps }">
             <v-list-item
                 v-bind="itemProps"
-                :subtitle="item.raw.description"
-                lines="two"
             />
         </template>
     </v-select>
