@@ -22,14 +22,17 @@ const selected = computed({
     set: (value: string) => emit('update:modelValue', value),
 });
 
-onMounted(async () => {
-    const models = await $fetch<Model[]>('/api/chat/models');
-    console.log('models', models);
-});
+const { mobile } = useDisplay();
+
+const selectedModel = computed(() =>
+    models.value?.find((m) => m.id === selected.value),
+);
 </script>
 
 <template>
+    <!-- Desktop: full select -->
     <v-select
+        v-if="!mobile"
         v-model="selected"
         :items="models ?? []"
         :loading="status === 'pending'"
@@ -43,9 +46,39 @@ onMounted(async () => {
         data-testid="chat-model-select"
     >
         <template #item="{ props: itemProps }">
-            <v-list-item
-                v-bind="itemProps"
-            />
+            <v-list-item v-bind="itemProps" />
         </template>
     </v-select>
+
+    <!-- Mobile: icon button + menu -->
+    <v-menu
+        v-else
+        location="top"
+        data-testid="chat-model-select"
+    >
+        <template #activator="{ props: menuProps }">
+            <v-btn
+                v-bind="menuProps"
+                :loading="status === 'pending'"
+                :title="selectedModel?.name ?? 'Select model'"
+                icon="mdi-creation"
+                variant="outlined"
+                density="compact"
+                size="38"
+            />
+        </template>
+
+        <v-list density="compact" min-width="200">
+            <v-list-subheader>Model</v-list-subheader>
+            <v-list-item
+                v-for="model in models ?? []"
+                :key="model.id"
+                :title="model.name"
+                :subtitle="model.description"
+                :active="selected === model.id"
+                active-color="primary"
+                @click="selected = model.id"
+            />
+        </v-list>
+    </v-menu>
 </template>
