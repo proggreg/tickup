@@ -12,35 +12,7 @@ export default defineEventHandler(async (event) => {
             });
         }
 
-        const supabase = await serverSupabaseClient(event);
-
-        // Get the list
-        const { data: list, error: listError } = await supabase
-            .from('Lists')
-            .select('*')
-            .eq('id', id)
-            .single();
-
-        if (listError || !list) {
-            throw createError({
-                statusCode: 404,
-                message: 'List not found',
-            });
-        }
-
-        // Get todos for this list (using snake_case field name)
-        const { data: listTodos, error: todosError } = await supabase
-            .from('Todos')
-            .select('*')
-            .eq('list_id', id)
-            .order('order', { ascending: true });
-
-        if (todosError) {
-            console.error('Error fetching todos:', todosError);
-        }
-
-        // Return list with todos embedded for compatibility with existing frontend code
-        return { ...objectToCamel(list), todos: objectToCamel(listTodos) };
+        return await getList(event, { id });
     }
     catch (error: any) {
     // If it's already a createError, re-throw it
@@ -55,3 +27,39 @@ export default defineEventHandler(async (event) => {
         });
     }
 });
+
+export async function getList(event, params: { id?: string; name?: string }) {
+    const supabase = await serverSupabaseClient(event);
+
+    // Get the list
+    const { id, name } = params;
+    const filterColumn = id ? 'id' : 'name';
+    const filterValue = id ? id : name;
+
+    const { data: list, error: listError } = await supabase
+        .from('Lists')
+        .select('*')
+        .eq(filterColumn, filterValue)
+        .single();
+
+    if (listError || !list) {
+        throw createError({
+            statusCode: 404,
+            message: 'List not found',
+        });
+    }
+
+    // Get todos for this list (using snake_case field name)
+    const { data: listTodos, error: todosError } = await supabase
+        .from('Todos')
+        .select('*')
+        .eq('list_id', id)
+        .order('order', { ascending: true });
+
+    if (todosError) {
+        console.error('Error fetching todos:', todosError);
+    }
+
+    // Return list with todos embedded for compatibility with existing frontend code
+    return { ...objectToCamel(list), todos: objectToCamel(listTodos) };
+}

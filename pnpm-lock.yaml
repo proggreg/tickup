@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@ai-sdk/openai':
         specifier: ^3.0.26
-        version: 3.0.26(zod@3.25.76)
+        version: 3.0.26(zod@4.3.6)
       '@ai-sdk/vue':
         specifier: ^3.0.79
-        version: 3.0.79(vue@3.5.22(typescript@5.9.3))(zod@3.25.76)
+        version: 3.0.79(vue@3.5.22(typescript@5.9.3))(zod@4.3.6)
       '@aws-sdk/client-bedrock':
         specifier: ^3.922.0
         version: 3.922.0
@@ -46,7 +46,7 @@ importers:
         version: 12.0.0(vue@3.5.22(typescript@5.9.3))
       ai:
         specifier: ^6.0.79
-        version: 6.0.79(zod@3.25.76)
+        version: 6.0.79(zod@4.3.6)
       aws-sdk:
         specifier: ^2.1692.0
         version: 2.1692.0
@@ -92,6 +92,9 @@ importers:
       web-push:
         specifier: ^3.6.7
         version: 3.6.7
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@lhci/cli':
         specifier: ^0.15.1
@@ -131,7 +134,7 @@ importers:
         version: 6.0.0
       '@snaplet/seed':
         specifier: 0.98.0
-        version: 0.98.0(@snaplet/copycat@6.0.0)(@types/pg@8.16.0)(magicast@0.5.1)(openai@4.104.0(ws@8.18.3)(zod@3.25.76))(pg@8.16.3)(ws@8.18.3)
+        version: 0.98.0(@snaplet/copycat@6.0.0)(@types/pg@8.16.0)(magicast@0.5.1)(openai@4.104.0(ws@8.18.3)(zod@4.3.6))(pg@8.16.3)(ws@8.18.3)
       '@types/node':
         specifier: ^24.10.0
         version: 24.10.0
@@ -8852,36 +8855,39 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
+  zod@4.3.6:
+    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
+
 snapshots:
 
-  '@ai-sdk/gateway@3.0.40(zod@3.25.76)':
+  '@ai-sdk/gateway@3.0.40(zod@4.3.6)':
     dependencies:
       '@ai-sdk/provider': 3.0.8
-      '@ai-sdk/provider-utils': 4.0.14(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.14(zod@4.3.6)
       '@vercel/oidc': 3.1.0
-      zod: 3.25.76
+      zod: 4.3.6
 
-  '@ai-sdk/openai@3.0.26(zod@3.25.76)':
+  '@ai-sdk/openai@3.0.26(zod@4.3.6)':
     dependencies:
       '@ai-sdk/provider': 3.0.8
-      '@ai-sdk/provider-utils': 4.0.14(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 4.0.14(zod@4.3.6)
+      zod: 4.3.6
 
-  '@ai-sdk/provider-utils@4.0.14(zod@3.25.76)':
+  '@ai-sdk/provider-utils@4.0.14(zod@4.3.6)':
     dependencies:
       '@ai-sdk/provider': 3.0.8
       '@standard-schema/spec': 1.1.0
       eventsource-parser: 3.0.6
-      zod: 3.25.76
+      zod: 4.3.6
 
   '@ai-sdk/provider@3.0.8':
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/vue@3.0.79(vue@3.5.22(typescript@5.9.3))(zod@3.25.76)':
+  '@ai-sdk/vue@3.0.79(vue@3.5.22(typescript@5.9.3))(zod@4.3.6)':
     dependencies:
-      '@ai-sdk/provider-utils': 4.0.14(zod@3.25.76)
-      ai: 6.0.79(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.14(zod@4.3.6)
+      ai: 6.0.79(zod@4.3.6)
       swrv: 1.1.0(vue@3.5.22(typescript@5.9.3))
       vue: 3.5.22(typescript@5.9.3)
     transitivePeerDependencies:
@@ -10732,13 +10738,13 @@ snapshots:
 
   '@kwsites/promise-deferred@1.1.1': {}
 
-  '@langchain/core@0.2.36(openai@4.104.0(ws@8.18.3)(zod@3.25.76))':
+  '@langchain/core@0.2.36(openai@4.104.0(ws@8.18.3)(zod@4.3.6))':
     dependencies:
       ansi-styles: 5.2.0
       camelcase: 6.3.0
       decamelize: 1.2.0
       js-tiktoken: 1.0.21
-      langsmith: 0.1.68(openai@4.104.0(ws@8.18.3)(zod@3.25.76))
+      langsmith: 0.1.68(openai@4.104.0(ws@8.18.3)(zod@4.3.6))
       mustache: 4.2.0
       p-queue: 6.6.2
       p-retry: 4.6.2
@@ -10748,9 +10754,9 @@ snapshots:
     transitivePeerDependencies:
       - openai
 
-  '@langchain/groq@0.0.15(openai@4.104.0(ws@8.18.3)(zod@3.25.76))(ws@8.18.3)':
+  '@langchain/groq@0.0.15(openai@4.104.0(ws@8.18.3)(zod@4.3.6))(ws@8.18.3)':
     dependencies:
-      '@langchain/core': 0.2.36(openai@4.104.0(ws@8.18.3)(zod@3.25.76))
+      '@langchain/core': 0.2.36(openai@4.104.0(ws@8.18.3)(zod@4.3.6))
       '@langchain/openai': 0.2.11(ws@8.18.3)
       groq-sdk: 0.3.3
       zod: 3.25.76
@@ -10762,7 +10768,7 @@ snapshots:
 
   '@langchain/openai@0.2.11(ws@8.18.3)':
     dependencies:
-      '@langchain/core': 0.2.36(openai@4.104.0(ws@8.18.3)(zod@3.25.76))
+      '@langchain/core': 0.2.36(openai@4.104.0(ws@8.18.3)(zod@4.3.6))
       js-tiktoken: 1.0.21
       openai: 4.104.0(ws@8.18.3)(zod@3.25.76)
       zod: 3.25.76
@@ -12470,11 +12476,11 @@ snapshots:
       string-argv: 0.3.2
       uuid: 9.0.1
 
-  '@snaplet/seed@0.98.0(@snaplet/copycat@6.0.0)(@types/pg@8.16.0)(magicast@0.5.1)(openai@4.104.0(ws@8.18.3)(zod@3.25.76))(pg@8.16.3)(ws@8.18.3)':
+  '@snaplet/seed@0.98.0(@snaplet/copycat@6.0.0)(@types/pg@8.16.0)(magicast@0.5.1)(openai@4.104.0(ws@8.18.3)(zod@4.3.6))(pg@8.16.3)(ws@8.18.3)':
     dependencies:
       '@inquirer/prompts': 5.5.0
-      '@langchain/core': 0.2.36(openai@4.104.0(ws@8.18.3)(zod@3.25.76))
-      '@langchain/groq': 0.0.15(openai@4.104.0(ws@8.18.3)(zod@3.25.76))(ws@8.18.3)
+      '@langchain/core': 0.2.36(openai@4.104.0(ws@8.18.3)(zod@4.3.6))
+      '@langchain/groq': 0.0.15(openai@4.104.0(ws@8.18.3)(zod@4.3.6))(ws@8.18.3)
       '@langchain/openai': 0.2.11(ws@8.18.3)
       '@prisma/generator-helper': 5.14.0-dev.34
       '@prisma/internals': 5.14.0-dev.34
@@ -13270,13 +13276,13 @@ snapshots:
     dependencies:
       humanize-ms: 1.2.1
 
-  ai@6.0.79(zod@3.25.76):
+  ai@6.0.79(zod@4.3.6):
     dependencies:
-      '@ai-sdk/gateway': 3.0.40(zod@3.25.76)
+      '@ai-sdk/gateway': 3.0.40(zod@4.3.6)
       '@ai-sdk/provider': 3.0.8
-      '@ai-sdk/provider-utils': 4.0.14(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.14(zod@4.3.6)
       '@opentelemetry/api': 1.9.0
-      zod: 3.25.76
+      zod: 4.3.6
 
   ajv@6.12.6:
     dependencies:
@@ -16179,7 +16185,7 @@ snapshots:
 
   knitwork@1.3.0: {}
 
-  langsmith@0.1.68(openai@4.104.0(ws@8.18.3)(zod@3.25.76)):
+  langsmith@0.1.68(openai@4.104.0(ws@8.18.3)(zod@4.3.6)):
     dependencies:
       '@types/uuid': 10.0.0
       commander: 10.0.1
@@ -16188,7 +16194,7 @@ snapshots:
       semver: 7.7.3
       uuid: 10.0.0
     optionalDependencies:
-      openai: 4.104.0(ws@8.18.3)(zod@3.25.76)
+      openai: 4.104.0(ws@8.18.3)(zod@4.3.6)
 
   launch-editor@2.12.0:
     dependencies:
@@ -17039,6 +17045,22 @@ snapshots:
       zod: 3.25.76
     transitivePeerDependencies:
       - encoding
+
+  openai@4.104.0(ws@8.18.3)(zod@4.3.6):
+    dependencies:
+      '@types/node': 18.19.130
+      '@types/node-fetch': 2.6.13
+      abort-controller: 3.0.0
+      agentkeepalive: 4.6.0
+      form-data-encoder: 1.7.2
+      formdata-node: 4.4.1
+      node-fetch: 2.7.0
+    optionalDependencies:
+      ws: 8.18.3
+      zod: 4.3.6
+    transitivePeerDependencies:
+      - encoding
+    optional: true
 
   optionator@0.9.4:
     dependencies:
@@ -19600,3 +19622,5 @@ snapshots:
       zod: 3.25.76
 
   zod@3.25.76: {}
+
+  zod@4.3.6: {}

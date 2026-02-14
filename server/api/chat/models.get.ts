@@ -9,8 +9,6 @@ export default defineLazyEventHandler(async () => {
     return defineEventHandler(async () => {
         const allModels = await gateway.getAvailableModels();
 
-        console.log('available models', allModels);
-
         const languageModels = allModels.models
             .filter(m => m.modelType === 'language')
             .map(m => ({

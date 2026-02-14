@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { UIMessage } from 'ai';
+import { isToolOrDynamicToolUIPart } from 'ai';
 
 interface Props {
     messages: UIMessage[];
@@ -78,6 +79,11 @@ onMounted(() => scrollToBottom('instant'));
                     >
                         {{ part.text }}
                     </p>
+
+                    <ChatToolCall
+                        v-else-if="isToolOrDynamicToolUIPart(part)"
+                        :part="part"
+                    />
                 </div>
             </div>
 

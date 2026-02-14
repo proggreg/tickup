@@ -1,5 +1,7 @@
 import type { UIMessage } from 'ai';
 import { streamText, convertToModelMessages, createGateway } from 'ai';
+import { getListsTool } from '../ai/tools/get-lists';
+import { getListTool } from '../ai/tools/get-list';
 
 const DEFAULT_MODEL = 'google/gemini-2.0-flash';
 
@@ -25,6 +27,10 @@ export default defineLazyEventHandler(async () => {
         const result = streamText({
             model: gateway(resolvedModel),
             messages: await convertToModelMessages(messages),
+            tools: {
+                getLists: getListsTool(event),
+                getList: getListTool(event),
+            },
         });
 
         return result.toUIMessageStreamResponse();
