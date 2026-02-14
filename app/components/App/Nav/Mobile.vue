@@ -28,6 +28,14 @@
         </v-btn>
 
         <v-btn
+            to="/chat"
+            value="chat"
+        >
+            <v-icon>mdi-creation</v-icon>
+            <span>Chat</span>
+        </v-btn>
+
+        <v-btn
             to="/account"
             value="settings"
         >
