@@ -1,5 +1,12 @@
 import { serverSupabaseClient } from '#supabase/server';
 
+/**
+ * Get all user lists with essential information only
+ * Returns an array of lists containing only the name, ID, and icon for display purposes.
+ * Other information like user metadata and timestamps is hidden from the tool.
+ *
+ * @returns {Array<{id: string, name: string, icon?: string}>} Array of lists with name and icon
+ */
 export default defineEventHandler(async (event) => {
     try {
         const client = await serverSupabaseClient(event);
