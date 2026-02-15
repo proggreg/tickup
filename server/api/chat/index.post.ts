@@ -1,5 +1,5 @@
 import type { UIMessage } from 'ai';
-import { streamText, convertToModelMessages, createGateway } from 'ai';
+import { streamText, convertToModelMessages, createGateway, stepCountIs } from 'ai';
 import { getListsTool } from '../ai/tools/get-lists';
 import { getListTool } from '../ai/tools/get-list';
 
@@ -31,6 +31,7 @@ export default defineLazyEventHandler(async () => {
                 getLists: getListsTool(event),
                 getList: getListTool(event),
             },
+            stopWhen: stepCountIs(5),
         });
 
         return result.toUIMessageStreamResponse();

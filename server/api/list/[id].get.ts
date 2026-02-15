@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { objectToCamel } from 'ts-case-convert';
 
 export default defineEventHandler(async (event) => {
@@ -28,19 +29,15 @@ export default defineEventHandler(async (event) => {
     }
 });
 
-export async function getList(event, params: { id?: string; name?: string }) {
+interface GetListParam { id?: string; name?: string };
+
+export async function getList(event, params: GetListParam) {
     const supabase = await serverSupabaseClient(event);
 
     // Get the list
     const { id, name } = params;
-    const filterColumn = id ? 'id' : 'name';
-    const filterValue = id ? id : name;
 
-    const { data: list, error: listError } = await supabase
-        .from('Lists')
-        .select('*')
-        .eq(filterColumn, filterValue)
-        .single();
+    const { data: list, error: listError } = id ? await getListById(supabase, id) : await getListByName(supabase, name);
 
     if (listError || !list) {
         throw createError({
@@ -62,4 +59,20 @@ export async function getList(event, params: { id?: string; name?: string }) {
 
     // Return list with todos embedded for compatibility with existing frontend code
     return { ...objectToCamel(list), todos: objectToCamel(listTodos) };
+}
+
+async function getListById(supabase: SupabaseClient, id: string) {
+    return await supabase
+        .from('Lists')
+        .select('*')
+        .eq('id', id)
+        .single();
+}
+
+async function getListByName(supabase: SupabaseClient, name: string) {
+    return await supabase
+        .from('Lists')
+        .select('*')
+        .ilike('name', `%${name}%`)
+        .single();
 }

@@ -59,6 +59,11 @@ function deleteList() {
                     />
                     <v-btn
                         variant="plain"
+                        icon="mdi-creation"
+                        to="/chat"
+                    />
+                    <v-btn
+                        variant="plain"
                         icon="mdi-cog"
                         to="/settings"
                     />

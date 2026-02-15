@@ -47,8 +47,11 @@ const stateLabel = computed(() => {
     }
 });
 
-const isLoading = computed(() =>
-    state.value === 'input-streaming' || state.value === 'input-available',
+const isLoading = computed(() => {
+    console.log('isLoading', state.value);
+    return false;
+    return state.value === 'input-streaming' || state.value === 'input-available';
+},
 );
 
 const input = computed(() => {
@@ -73,6 +76,7 @@ const errorText = computed(() => {
         data-testid="chat-tool-call"
     >
         <!-- Header row -->
+
         <div
             class="chat-tool-call__header"
             @click="open = !open"

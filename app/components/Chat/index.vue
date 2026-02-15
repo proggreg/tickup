@@ -25,7 +25,7 @@ const handleSubmit = (e: Event) => {
 <template>
     <v-card
         class="chat-container d-flex flex-column"
-        variant="outlined"
+        variant="flat"
     >
         <!-- Scrollable message list -->
         <ChatMessageList
