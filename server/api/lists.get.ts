@@ -3,7 +3,7 @@ import { serverSupabaseClient } from '#supabase/server';
 export default defineEventHandler(async (event) => {
     try {
         const client = await serverSupabaseClient(event);
-        const { data, error } = await client.from('Lists').select('*');
+        const { data, error } = await client.from('Lists').select('id, name, icon, list_type, image, github_repo');
 
         if (error) {
             throw createError({
@@ -12,12 +12,13 @@ export default defineEventHandler(async (event) => {
             });
         }
 
-        // Transform snake_case fields to camelCase for API response
         return (data || []).map(list => ({
-            ...list,
-            userId: list.user_id,
-            createdAt: list.created_at,
-            updatedAt: list.updated_at,
+            id: list.id,
+            name: list.name,
+            icon: list.icon,
+            listType: list.list_type,
+            image: list.image,
+            githubRepo: list.github_repo,
         }));
     }
     catch (error) {
