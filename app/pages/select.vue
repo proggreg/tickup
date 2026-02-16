@@ -35,7 +35,7 @@ onMounted(async () => {
 const selectableItems = computed<SelectableItem[]>(() => {
     const items: SelectableItem[] = [];
     for (const list of listsStore.lists) {
-        for (const todo of list.todos) {
+        for (const todo of (list.todos || [])) {
             if (todo.id) {
                 items.push({
                     id: todo.id,
