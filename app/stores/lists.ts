@@ -225,7 +225,7 @@ export const useListsStore = defineStore('lists', {
         },
         async fetchSubtasks(todoId: string | number) {
             const subtasks = await $fetch<Todo[]>(`/api/todo/${todoId}/subtasks`);
-            if (this.currentTodo?.id === String(todoId)) {
+            if (this.currentTodo && Number(this.currentTodo.id) === Number(todoId)) {
                 this.currentTodo.subtasks = subtasks || [];
             }
             return subtasks || [];

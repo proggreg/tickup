@@ -3,15 +3,17 @@ const { params } = useRoute();
 const { history } = useRouter().options;
 const listsStore = useListsStore();
 
-onBeforeMount(() => {
-    $fetch(`/api/todo/${params.id}`).then((todo: Todo) => {
-        listsStore.setCurrentTodo(todo as Todo);
-        if (todo && todo.listId) {
-            $fetch(`/api/list/${todo.listId}`).then((list) => {
-                listsStore.setCurrentList(list as List);
-            });
-        }
-    });
+onBeforeMount(async () => {
+    const todo = await $fetch<Todo>(`/api/todo/${params.id}`);
+    listsStore.setCurrentTodo(todo);
+    
+    // Explicitly fetch subtasks
+    await listsStore.fetchSubtasks(params.id as string);
+    
+    if (todo && todo.listId) {
+        const list = await $fetch<List>(`/api/list/${todo.listId}`);
+        listsStore.setCurrentList(list);
+    }
 });
 </script>
 
