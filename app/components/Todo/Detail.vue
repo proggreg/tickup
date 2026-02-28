@@ -17,7 +17,7 @@ function updateName() {
     <v-card
         width="100%"
         elevation="0"
-        class="pa-0 d-flex flex-column rounded-lg"
+        class="pa-0 d-flex flex-column rounded-lg todo-detail-card"
     >
         <v-card-title>
             <v-text-field
@@ -86,3 +86,9 @@ function updateName() {
         </v-card-actions>
     </v-card>
 </template>
+
+<style scoped>
+.todo-detail-card {
+    min-height: 360px;
+}
+</style>
