@@ -61,6 +61,8 @@ export default defineNuxtConfig({
         },
     },
 
+    ignore: ['**/.claude'],
+
     experimental: {
         payloadExtraction: false,
         typedPages: false,
