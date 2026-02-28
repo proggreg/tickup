@@ -83,11 +83,17 @@ export const useListsStore = defineStore('lists', {
             }
 
             try {
+                const route = useRoute();
+
                 this.lists = this.lists.filter((list: List) => list.id !== listId);
                 await $fetch<List>(`/api/list/${listId}`, {
                     method: 'DELETE',
                 });
-                navigateTo('/');
+
+                // Only navigate away if we're currently viewing the list being deleted
+                if (route.path.includes('/list/') && route.params?.id === listId) {
+                    navigateTo('/');
+                }
             }
             catch {
                 // logger.error(err as Error, { component: 'ListsStore', function: 'deleteList', listId })
