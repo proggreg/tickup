@@ -38,7 +38,7 @@ function toggleExpanded() {
                     :color="sortBy === 'priority' ? 'primary' : 'grey-darken-1'"
                     variant="tonal"
                     size="x-small"
-                    density="compact"
+                    class="mx-2"
                     data-testid="subtasks-sort-button"
                     @click.stop="toggleSort"
                 />
