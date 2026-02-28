@@ -2,6 +2,7 @@
 const store = useListsStore();
 const editListName = ref('');
 const { isMobile } = useDevice();
+const router = useRouter();
 
 function renameList(list: List) {
     store.updateList(list);
@@ -12,6 +13,16 @@ function rename(list: List) {
     if (store.currentList.id === list.id) {
         store.currentList = list;
     }
+}
+
+function openList(listId: string) {
+    if (!listId) return;
+    router.push(`/list/${listId}`);
+}
+
+function deleteList(listId: string) {
+    if (!listId) return;
+    store.deleteList(listId);
 }
 
 onBeforeMount(() => {
@@ -32,33 +43,57 @@ onBeforeMount(() => {
                         v-bind="props"
                         :key="item.id"
                         :disabled="!item.id"
+                        class="nav-list-item"
                         style="cursor: pointer;"
                         :data-test-id="item.name"
-                        :to="`/list/${item.id}`"
+                        @click="openList(item.id)"
                     >
                         <v-text-field
                             v-if="editListName === item.id"
                             v-model="item.name"
-                            class="font-weight-bold "
+                            class="font-weight-bold nav-item-input"
                             autofocus
                             variant="plain"
                             @input.stop="() => rename(item)"
                             @keyup.enter="renameList(item)"
                             @blur="renameList(item)"
                         />
-                        <v-list-item-title v-else>
+
+                        <v-list-item-title
+                            v-else
+                            class="nav-item-title text-truncate"
+                        >
                             {{ item.name }}
                         </v-list-item-title>
-                        <template #prepend>
-                            <v-icon v-if="item.icon">
-                                {{ item.icon }}
-                            </v-icon>
-                            <v-icon v-else>
-                                mdi-format-list-bulleted
-                            </v-icon>
-                        </template>
+
                         <template #append>
-                            <list-settings-button :list-id="item.id" />
+                            <div
+                                class="nav-more-wrapper"
+                                @click.stop
+                                @mousedown.stop
+                                @touchstart.stop
+                            >
+                                <v-menu>
+                                    <template #activator="{ props: menuProps }">
+                                        <v-btn
+                                            v-bind="menuProps"
+                                            icon
+                                            variant="text"
+                                            density="comfortable"
+                                            class="nav-more-btn"
+                                        >
+                                            <v-icon>mdi-dots-vertical</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <v-list density="compact">
+                                        <v-list-item @click.stop="deleteList(item.id)">
+                                            <v-list-item-title class="text-error">
+                                                Delete list
+                                            </v-list-item-title>
+                                        </v-list-item>
+                                    </v-list>
+                                </v-menu>
+                            </div>
                         </template>
                     </v-list-item>
                     <v-divider v-if="isMobile" />
@@ -69,18 +104,44 @@ onBeforeMount(() => {
 </template>
 
 <style scoped>
-  /* .nav-items-scroll {
+.nav-items-scroll {
     height: 100%;
     max-height: 100%;
     overflow-y: auto;
-  }
+}
 
-  .nav-item-title {
-    text-transform: capitalize !important;
-    font-weight: bold;
+.nav-item-title {
+    text-transform: capitalize;
+    font-weight: 600;
+}
 
-    @media (min-width: 600px) {
-      font-size: 1rem !important;
+.nav-item-input {
+    font-weight: 600;
+}
+
+@media (max-width: 600px) {
+    .nav-list-item {
+        min-height: 56px;
+        padding-inline: 16px;
     }
-  } */
+
+    .nav-item-title {
+        font-size: 1.1rem; /* ~17-18px for better tap targets on mobile */
+        line-height: 1.4;
+    }
+
+    .nav-item-input :deep(input) {
+        font-size: 1.1rem;
+        line-height: 1.4;
+    }
+}
+
+.nav-more-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.nav-more-btn {
+    min-width: 32px;
+}
 </style>
