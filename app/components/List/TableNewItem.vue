@@ -7,7 +7,7 @@ const newTodo = ref(createNewTodoState());
 const { groupItem } = defineProps<{
     groupItem: Record<string, unknown>;
 }>();
-const { params } = useRoute();
+// const { params } = useRoute();
 
 async function createTodo(status: string) {
     newTodo.value.status = status;
