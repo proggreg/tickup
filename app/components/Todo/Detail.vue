@@ -10,6 +10,7 @@ const pushError = ref('');
 const config = useRuntimeConfig();
 const { smAndDown } = useDisplay();
 const notificationDialog = ref(false);
+const subtasksExpanded = ref(true);
 
 onMounted(() => {
     pushSupported.value = 'serviceWorker' in navigator && 'PushManager' in window;
@@ -233,90 +234,118 @@ watch(
         </v-card-item>
         <v-card-item>
             <div class="pa-4 rounded-lg">
-                <div class="mb-2 text-subtitle-1 font-weight-bold">
-                    Subtasks
-                </div>
-                <v-list
-                    v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length"
-                    density="compact"
-                    class="pa-0"
-                    data-testid="subtasks-list"
+                <div 
+                    class="d-flex align-center justify-space-between mb-2 cursor-pointer"
+                    data-testid="subtasks-header"
+                    @click="subtasksExpanded = !subtasksExpanded"
                 >
-                    <v-list-item
-                        v-for="(subtask, idx) in listsStore.currentTodo.subtasks"
-                        :key="subtask.id"
-                        class="py-2 px-0 align-center"
-                        :data-testid="`subtask-item-${idx}`"
-                    >
-                        <template #prepend>
-                            <v-checkbox
-                                v-model="listsStore.currentTodo.subtasks[idx].status"
-                                :true-value="'Closed'"
-                                :false-value="'Open'"
-                                class="me-2"
-                                density="compact"
-                                :data-testid="`subtask-checkbox-${idx}`"
-                                @change="listsStore.updateTodo(subtask)"
-                            />
-                        </template>
-                        <v-text-field
-                            v-model="listsStore.currentTodo.subtasks[idx].name"
-                            hide-details
-                            variant="plain"
-                            :readonly="listsStore.currentTodo.subtasks[idx].status === 'Closed'"
-                            :class="{ 'text-decoration-line-through text-disabled': listsStore.currentTodo.subtasks[idx].status === 'Closed' }"
-                            :data-testid="`subtask-name-${idx}`"
-                            @blur="listsStore.updateTodo(subtask)"
-                        />
-                        <template #append>
-                            <v-btn
-                                icon="mdi-open-in-new"
-                                size="small"
-                                variant="text"
-                                :data-testid="`subtask-link-${idx}`"
-                                :to="`/todo/${subtask.id}`"
-                            />
-                            <v-btn
-                                icon="mdi-delete"
-                                size="small"
-                                variant="text"
-                                :data-testid="`subtask-delete-${idx}`"
-                                @click="deleteSubtask(subtask.id)"
-                            />
-                        </template>
-                        <v-divider
-                            v-if="idx < listsStore.currentTodo.subtasks.length - 1"
-                            class="my-1"
-                        />
-                    </v-list-item>
-                </v-list>
-                <div
-                    v-else
-                    class="text-grey text-body-2 pa-2"
-                >
-                    No subtasks yet. Add one below!
-                </div>
-                <div class="d-flex align-center mt-4">
-                    <v-text-field
-                        v-model="newSubtaskName"
-                        label="Add subtask"
-                        hide-details
-                        variant="outlined"
-                        class="me-2 flex-grow-1"
-                        style="min-width: 120px;"
-                        data-testid="add-subtask-input"
-                        @keyup.enter="addSubtask"
-                    />
+                    <div class="text-subtitle-1 font-weight-bold d-flex align-center gap-2">
+                        <span>Subtasks</span>
+                        <v-chip
+                            v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length"
+                            size="small"
+                            variant="tonal"
+                            color="primary"
+                        >
+                            {{ listsStore.currentTodo.subtasks.length }}
+                        </v-chip>
+                    </div>
                     <v-btn
-                        icon="mdi-plus"
+                        :icon="subtasksExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                        variant="text"
                         size="small"
-                        variant="tonal"
-                        color="primary"
-                        :disabled="!newSubtaskName"
-                        data-testid="add-subtask-button"
-                        @click="addSubtask"
+                        data-testid="subtasks-toggle"
                     />
                 </div>
+                <v-expand-transition>
+                    <div v-show="subtasksExpanded">
+                        <div
+                            v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length"
+                            class="subtasks-scrollable-container"
+                        >
+                            <v-list
+                                density="compact"
+                                class="pa-0"
+                                data-testid="subtasks-list"
+                            >
+                                <v-list-item
+                                    v-for="(subtask, idx) in listsStore.currentTodo.subtasks"
+                                    :key="subtask.id"
+                                    class="py-2 px-0 align-center"
+                                    :data-testid="`subtask-item-${idx}`"
+                                >
+                                    <template #prepend>
+                                        <v-checkbox
+                                            v-model="listsStore.currentTodo.subtasks[idx].status"
+                                            :true-value="'Closed'"
+                                            :false-value="'Open'"
+                                            class="me-2"
+                                            density="compact"
+                                            :data-testid="`subtask-checkbox-${idx}`"
+                                            @change="listsStore.updateTodo(subtask)"
+                                        />
+                                    </template>
+                                    <v-text-field
+                                        v-model="listsStore.currentTodo.subtasks[idx].name"
+                                        hide-details
+                                        variant="plain"
+                                        :readonly="listsStore.currentTodo.subtasks[idx].status === 'Closed'"
+                                        :class="{ 'text-decoration-line-through text-disabled': listsStore.currentTodo.subtasks[idx].status === 'Closed' }"
+                                        :data-testid="`subtask-name-${idx}`"
+                                        @blur="listsStore.updateTodo(subtask)"
+                                    />
+                                    <template #append>
+                                        <v-btn
+                                            icon="mdi-open-in-new"
+                                            size="small"
+                                            variant="text"
+                                            :data-testid="`subtask-link-${idx}`"
+                                            :to="`/todo/${subtask.id}`"
+                                        />
+                                        <v-btn
+                                            icon="mdi-delete"
+                                            size="small"
+                                            variant="text"
+                                            :data-testid="`subtask-delete-${idx}`"
+                                            @click="deleteSubtask(subtask.id)"
+                                        />
+                                    </template>
+                                    <v-divider
+                                        v-if="idx < listsStore.currentTodo.subtasks.length - 1"
+                                        class="my-1"
+                                    />
+                                </v-list-item>
+                            </v-list>
+                        </div>
+                        <div
+                            v-else
+                            class="text-grey text-body-2 pa-2"
+                        >
+                            No subtasks yet. Add one below!
+                        </div>
+                        <div class="d-flex align-center mt-4">
+                            <v-text-field
+                                v-model="newSubtaskName"
+                                label="Add subtask"
+                                hide-details
+                                variant="outlined"
+                                class="me-2 flex-grow-1"
+                                style="min-width: 120px;"
+                                data-testid="add-subtask-input"
+                                @keyup.enter="addSubtask"
+                            />
+                            <v-btn
+                                icon="mdi-plus"
+                                size="small"
+                                variant="tonal"
+                                color="primary"
+                                :disabled="!newSubtaskName"
+                                data-testid="add-subtask-button"
+                                @click="addSubtask"
+                            />
+                        </div>
+                    </div>
+                </v-expand-transition>
             </div>
         </v-card-item>
         <v-card-item>
@@ -414,5 +443,33 @@ watch(
   border: 2px solid var(--v-theme-primary);
   border-radius: 8px;
   background-color: #f5f5f5;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.subtasks-scrollable-container {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Subtle scrollbar styling */
+.subtasks-scrollable-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.subtasks-scrollable-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.subtasks-scrollable-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.subtasks-scrollable-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
 }
 </style>
