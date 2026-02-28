@@ -168,14 +168,33 @@ async function updatePriority(subtask: Todo, level: string) {
                                     />
                                 </v-col>
                                 <v-col>
-                                    <v-btn
-                                        icon="mdi-delete"
-                                        size="small"
-                                        variant="text"
-                                        density="compact"
-                                        :data-testid="`subtask-delete-${index}`"
-                                        @click="deleteSubtask(subtask.id)"
-                                    />
+                                    <v-menu>
+                                        <template #activator="{ props }">
+                                            <v-btn
+                                                v-bind="props"
+                                                icon="mdi-dots-vertical"
+                                                size="small"
+                                                variant="text"
+                                                density="compact"
+                                                :data-testid="`subtask-menu-${index}`"
+                                            />
+                                        </template>
+                                        <v-list density="compact">
+                                            <v-list-item
+                                                :data-testid="`subtask-delete-${index}`"
+                                                @click="deleteSubtask(subtask.id)"
+                                            >
+                                                <template #prepend>
+                                                    <v-icon color="error">
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </template>
+                                                <v-list-item-title>
+                                                    Delete subtask
+                                                </v-list-item-title>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-menu>
                                 </v-col>
                             </v-row>
                         </template>
