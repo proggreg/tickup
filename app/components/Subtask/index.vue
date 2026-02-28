@@ -123,7 +123,7 @@ async function updatePriority(subtask: Todo, level: string) {
                         :data-testid="`subtask-item-${index}`"
                     >
                         <template #prepend>
-                            <div class="d-flex align-center">
+                            <div class="">
                                 <v-checkbox
                                     v-model="subtask.status"
                                     :true-value="'Closed'"
@@ -133,65 +133,6 @@ async function updatePriority(subtask: Todo, level: string) {
                                     :data-testid="`subtask-checkbox-${index}`"
                                     @change="listsStore.updateTodo(subtask)"
                                 />
-                                <!-- <v-menu>
-                                    <template #activator="{ props }">
-                                        <v-btn
-                                            v-bind="props"
-                                            :icon="getPriorityIcon(subtask.priority)"
-                                            :color="getPriorityColor(subtask.priority)"
-                                            size="small"
-                                            variant="text"
-                                            density="compact"
-                                            :data-testid="`subtask-priority-${index}`"
-                                        />
-                                    </template>
-                                    <v-list density="compact">
-                                        <v-list-item
-                                            :data-testid="`subtask-priority-high-${index}`"
-                                            @click="subtask.priority = 'high'; listsStore.updateTodo(subtask)"
-                                        >
-                                            <template #prepend>
-                                                <v-icon color="error">
-                                                    mdi-flag
-                                                </v-icon>
-                                            </template>
-                                            <v-list-item-title>High</v-list-item-title>
-                                        </v-list-item>
-                                        <v-list-item
-                                            :data-testid="`subtask-priority-medium-${index}`"
-                                            @click="subtask.priority = 'medium'; listsStore.updateTodo(subtask)"
-                                        >
-                                            <template #prepend>
-                                                <v-icon color="warning">
-                                                    mdi-flag
-                                                </v-icon>
-                                            </template>
-                                            <v-list-item-title>Medium</v-list-item-title>
-                                        </v-list-item>
-                                        <v-list-item
-                                            :data-testid="`subtask-priority-low-${index}`"
-                                            @click="subtask.priority = 'low'; listsStore.updateTodo(subtask)"
-                                        >
-                                            <template #prepend>
-                                                <v-icon color="success">
-                                                    mdi-flag
-                                                </v-icon>
-                                            </template>
-                                            <v-list-item-title>Low</v-list-item-title>
-                                        </v-list-item>
-                                        <v-list-item
-                                            :data-testid="`subtask-priority-none-${index}`"
-                                            @click="subtask.priority = null; listsStore.updateTodo(subtask)"
-                                        >
-                                            <template #prepend>
-                                                <v-icon color="grey">
-                                                    mdi-flag-outline
-                                                </v-icon>
-                                            </template>
-                                            <v-list-item-title>None</v-list-item-title>
-                                        </v-list-item>
-                                    </v-list>
-                                </v-menu> -->
                             </div>
                         </template>
                         <v-text-field
@@ -204,30 +145,39 @@ async function updatePriority(subtask: Todo, level: string) {
                             @blur="listsStore.updateTodo(subtask)"
                         />
                         <template #append>
-                            <div class="d-flex align-center">
-                                <SubtaskPriority
-                                    :subtask="subtask"
-                                    :index="index"
-                                    @update-priority="(level) => updatePriority(subtask, level)"
-                                />
-                                <v-btn
-                                    icon="mdi-open-in-new"
-                                    size="x-small"
-                                    variant="text"
-                                    density="compact"
-                                    class="mr-1"
-                                    :data-testid="`subtask-link-${index}`"
-                                    :to="`/todo/${subtask.id}`"
-                                />
-                                <v-btn
-                                    icon="mdi-delete"
-                                    size="x-small"
-                                    variant="text"
-                                    density="compact"
-                                    :data-testid="`subtask-delete-${index}`"
-                                    @click="deleteSubtask(subtask.id)"
-                                />
-                            </div>
+                            <v-row
+                                class="d-flex align-center gap-4"
+                                min-width="500px"
+                            >
+                                <v-col>
+                                    <SubtaskPriority
+                                        :subtask="subtask"
+                                        :index="index"
+                                        @update-priority="(level) => updatePriority(subtask, level)"
+                                    />
+                                </v-col>
+                                <v-col>
+                                    <v-btn
+                                        icon="mdi-open-in-new"
+                                        size="small"
+                                        variant="text"
+                                        density="compact"
+                                        class="mr-1"
+                                        :data-testid="`subtask-link-${index}`"
+                                        :to="`/todo/${subtask.id}`"
+                                    />
+                                </v-col>
+                                <v-col>
+                                    <v-btn
+                                        icon="mdi-delete"
+                                        size="small"
+                                        variant="text"
+                                        density="compact"
+                                        :data-testid="`subtask-delete-${index}`"
+                                        @click="deleteSubtask(subtask.id)"
+                                    />
+                                </v-col>
+                            </v-row>
                         </template>
                         <v-divider
                             v-if="index < filteredAndSortedSubtasks.length - 1"
