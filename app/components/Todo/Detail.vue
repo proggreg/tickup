@@ -70,7 +70,7 @@ function updateName() {
                 @blur="listsStore.updateTodo(listsStore.currentTodo)"
             />
         </v-card-item>
-        <v-card-item v-if="!listsStore.currentTodo.parentId">
+        <v-card-item>
             <Subtask />
         </v-card-item>
         <v-card-item>
