@@ -214,13 +214,12 @@ export const useListsStore = defineStore('lists', {
                 body: todo,
             });
 
-            // Update local state to match server response
-            if (this.currentTodo && this.currentTodo.id === updatedTodo.id) {
-                this.currentTodo = updatedTodo;
-            }
-
             return updatedTodo;
         },
+        debounceUpdateTodo: useDebounceFn(function (...args) {
+            // @ts-expect-error: debounce context must be bound to the store, this workaround ensures correct `this`
+            return (this.updateTodo as any).apply(this, args);
+        }, 200),
         async deleteTodo(id: string) {
             await $fetch(`/api/todo/${id}`, { method: 'DELETE' });
 
