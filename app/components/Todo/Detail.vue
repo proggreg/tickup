@@ -187,6 +187,7 @@ watch(
                 hide-details
                 variant="outlined"
                 class="rounded-lg"
+                data-testid="todo-detail-title"
                 @blur="updateName"
             />
         </v-card-title>
@@ -268,6 +269,13 @@ watch(
                             @blur="listsStore.updateTodo(subtask)"
                         />
                         <template #append>
+                            <v-btn
+                                icon="mdi-open-in-new"
+                                size="small"
+                                variant="text"
+                                :data-testid="`subtask-link-${idx}`"
+                                :to="`/todo/${subtask.id}`"
+                            />
                             <v-btn
                                 icon="mdi-delete"
                                 size="small"
