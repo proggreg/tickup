@@ -25,7 +25,7 @@ INSERT INTO auth.users (
   gen_random_uuid(),
   'authenticated',
   'authenticated',
-  'testuser@example.com',
+  'test@example.com',
   crypt('password', gen_salt('bf')),
   NOW(),
   NOW(),
@@ -52,9 +52,9 @@ INSERT INTO auth.identities (
   updated_at
 ) VALUES (
   gen_random_uuid(),
-  (SELECT id FROM auth.users WHERE email = 'testuser@example.com'),
-  (SELECT id::text FROM auth.users WHERE email = 'testuser@example.com'),  -- Added this
-  jsonb_build_object('sub', (SELECT id::text FROM auth.users WHERE email = 'testuser@example.com'), 'email', 'testuser@example.com'),
+  (SELECT id FROM auth.users WHERE email = 'test@example.com'),
+  (SELECT id::text FROM auth.users WHERE email = 'test@example.com'),  -- Added this
+  jsonb_build_object('sub', (SELECT id::text FROM auth.users WHERE email = 'test@example.com'), 'email', 'test@example.com'),
   'email',
   NOW(),
   NOW(),
