@@ -376,5 +376,5 @@ export const useListsStore = defineStore('lists', {
         resetList() {
             this.newList = createNewListState();
         },
+    },
 });
-
