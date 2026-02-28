@@ -3,11 +3,13 @@ const props = defineProps<{
     filter: 'all' | 'active';
     sortBy: 'none' | 'priority';
     hasSubtasks: boolean;
+    expanded: boolean;
 }>();
 
 const emit = defineEmits<{
     'update:filter': [value: 'all' | 'active'];
     'update:sortBy': [value: 'none' | 'priority'];
+    'update:expanded': [value: boolean];
 }>();
 
 function toggleSort() {
@@ -16,6 +18,10 @@ function toggleSort() {
 
 function setFilter(value: 'all' | 'active') {
     emit('update:filter', value);
+}
+
+function toggleExpanded() {
+    emit('update:expanded', !props.expanded);
 }
 </script>
 
@@ -69,12 +75,13 @@ function setFilter(value: 'all' | 'active') {
         </div>
 
         <v-btn
-            :icon="$slots.default ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+            :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
             variant="text"
             size="x-small"
             density="compact"
             class="ml-2"
             data-testid="subtasks-toggle"
+            @click.stop="toggleExpanded"
         />
     </div>
 </template>

@@ -16,6 +16,7 @@ declare global {
         edit: boolean;
         selected?: boolean;
         color: string;
+        priorityLev: string;
         githubBranchName?: string;
         githubRepo?: string;
         githubLink?: string;
@@ -25,7 +26,7 @@ declare global {
             url: string;
         }[];
         parentId?: number;
-        subtasks?: Todo[];   // hydrated client-side only; never sent in PUT/POST body
+        subtasks?: Todo[]; // hydrated client-side only; never sent in PUT/POST body
         attachments?: {
             id: ObjectId;
             attachmentId: string;
