@@ -11,6 +11,33 @@ const config = useRuntimeConfig();
 const { smAndDown } = useDisplay();
 const notificationDialog = ref(false);
 const subtasksExpanded = ref(true);
+const subtasksFilter = ref<'all' | 'active'>('all');
+
+const filteredSubtasks = computed(() => {
+    if (!listsStore.currentTodo.subtasks) return [];
+    
+    if (subtasksFilter.value === 'active') {
+        return listsStore.currentTodo.subtasks.filter(
+            subtask => subtask.status !== 'Closed'
+        );
+    }
+    
+    return listsStore.currentTodo.subtasks;
+});
+
+const completedCount = computed(() => {
+    if (!listsStore.currentTodo.subtasks) return 0;
+    return listsStore.currentTodo.subtasks.filter(
+        subtask => subtask.status === 'Closed'
+    ).length;
+});
+
+const activeCount = computed(() => {
+    if (!listsStore.currentTodo.subtasks) return 0;
+    return listsStore.currentTodo.subtasks.filter(
+        subtask => subtask.status !== 'Closed'
+    ).length;
+});
 
 onMounted(() => {
     pushSupported.value = 'serviceWorker' in navigator && 'PushManager' in window;
@@ -234,12 +261,12 @@ watch(
         </v-card-item>
         <v-card-item>
             <div class="pa-4 rounded-lg">
-                <div 
-                    class="d-flex align-center justify-space-between mb-2 cursor-pointer"
-                    data-testid="subtasks-header"
-                    @click="subtasksExpanded = !subtasksExpanded"
-                >
-                    <div class="text-subtitle-1 font-weight-bold d-flex align-center gap-2">
+                <div class="d-flex align-center justify-space-between mb-2">
+                    <div 
+                        class="text-subtitle-1 font-weight-bold d-flex align-center gap-2 cursor-pointer flex-grow-1"
+                        data-testid="subtasks-header"
+                        @click="subtasksExpanded = !subtasksExpanded"
+                    >
                         <span>Subtasks</span>
                         <v-chip
                             v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length"
@@ -247,20 +274,48 @@ watch(
                             variant="tonal"
                             color="primary"
                         >
-                            {{ listsStore.currentTodo.subtasks.length }}
+                            {{ activeCount }}/{{ listsStore.currentTodo.subtasks.length }}
                         </v-chip>
                     </div>
-                    <v-btn
-                        :icon="subtasksExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-                        variant="text"
-                        size="small"
-                        data-testid="subtasks-toggle"
-                    />
+                    <div class="d-flex align-center gap-1">
+                        <v-btn-toggle
+                            v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length"
+                            v-model="subtasksFilter"
+                            mandatory
+                            density="compact"
+                            variant="outlined"
+                            divided
+                            data-testid="subtasks-filter"
+                            @click.stop
+                        >
+                            <v-btn
+                                value="all"
+                                size="x-small"
+                                data-testid="filter-all"
+                            >
+                                All
+                            </v-btn>
+                            <v-btn
+                                value="active"
+                                size="x-small"
+                                data-testid="filter-active"
+                            >
+                                Active
+                            </v-btn>
+                        </v-btn-toggle>
+                        <v-btn
+                            :icon="subtasksExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                            variant="text"
+                            size="small"
+                            data-testid="subtasks-toggle"
+                            @click="subtasksExpanded = !subtasksExpanded"
+                        />
+                    </div>
                 </div>
                 <v-expand-transition>
                     <div v-show="subtasksExpanded">
                         <div
-                            v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length"
+                            v-if="filteredSubtasks.length"
                             class="subtasks-scrollable-container"
                         >
                             <v-list
@@ -269,14 +324,14 @@ watch(
                                 data-testid="subtasks-list"
                             >
                                 <v-list-item
-                                    v-for="(subtask, idx) in listsStore.currentTodo.subtasks"
+                                    v-for="(subtask, idx) in filteredSubtasks"
                                     :key="subtask.id"
                                     class="py-2 px-0 align-center"
                                     :data-testid="`subtask-item-${idx}`"
                                 >
                                     <template #prepend>
                                         <v-checkbox
-                                            v-model="listsStore.currentTodo.subtasks[idx].status"
+                                            v-model="subtask.status"
                                             :true-value="'Closed'"
                                             :false-value="'Open'"
                                             class="me-2"
@@ -286,11 +341,11 @@ watch(
                                         />
                                     </template>
                                     <v-text-field
-                                        v-model="listsStore.currentTodo.subtasks[idx].name"
+                                        v-model="subtask.name"
                                         hide-details
                                         variant="plain"
-                                        :readonly="listsStore.currentTodo.subtasks[idx].status === 'Closed'"
-                                        :class="{ 'text-decoration-line-through text-disabled': listsStore.currentTodo.subtasks[idx].status === 'Closed' }"
+                                        :readonly="subtask.status === 'Closed'"
+                                        :class="{ 'text-decoration-line-through text-disabled': subtask.status === 'Closed' }"
                                         :data-testid="`subtask-name-${idx}`"
                                         @blur="listsStore.updateTodo(subtask)"
                                     />
@@ -311,17 +366,24 @@ watch(
                                         />
                                     </template>
                                     <v-divider
-                                        v-if="idx < listsStore.currentTodo.subtasks.length - 1"
+                                        v-if="idx < filteredSubtasks.length - 1"
                                         class="my-1"
                                     />
                                 </v-list-item>
                             </v-list>
                         </div>
                         <div
-                            v-else
+                            v-else-if="!listsStore.currentTodo.subtasks || !listsStore.currentTodo.subtasks.length"
                             class="text-grey text-body-2 pa-2"
                         >
                             No subtasks yet. Add one below!
+                        </div>
+                        <div
+                            v-else
+                            class="text-grey text-body-2 pa-2"
+                            data-testid="no-active-subtasks"
+                        >
+                            All subtasks completed! 🎉
                         </div>
                         <div class="d-flex align-center mt-4">
                             <v-text-field
