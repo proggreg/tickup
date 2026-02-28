@@ -18,6 +18,7 @@ const subtasksSortBy = ref<'none' | 'priority'>('none');
 
 const subtaskNameRefs = ref<any[]>([]);
 const editingSubtaskIds = ref<(string | number)[]>([]);
+const linkSearch = ref('');
 
 const isEditingSubtask = (id: string | number) => editingSubtaskIds.value.includes(id);
 
@@ -50,6 +51,44 @@ const filteredAndSortedSubtasks = computed(() => {
     return filtered;
 });
 
+const baseLinkableTodos = computed(() => {
+    const todos = listsStore.currentList?.todos || [];
+    return todos.filter(todo => {
+        // Exclude the current todo, existing subtasks, and any item that already has a parent
+        if (!todo.id || listsStore.currentTodo?.id === todo.id) return false;
+        if ((todo as any).parentId) return false;
+        if (listsStore.currentTodo?.subtasks?.some(st => st.id === todo.id)) return false;
+        return true;
+    });
+});
+
+const linkableTodos = computed(() => {
+    let todos = [...baseLinkableTodos.value];
+
+    const rawSearch = linkSearch.value ?? '';
+    const q = String(rawSearch).trim().toLowerCase();
+    if (q) {
+        todos = todos.filter(todo => todo.name?.toLowerCase().includes(q));
+    }
+
+    // Sort by most recently edited when possible (updatedAt),
+    // falling back to dueDate, then id.
+    todos.sort((a, b) => {
+        const getTime = (t: any) => {
+            if (t.updatedAt) return new Date(t.updatedAt).getTime();
+            if (t.dueDate) return new Date(t.dueDate).getTime();
+            if (t.id) {
+                const n = Number(t.id);
+                return Number.isNaN(n) ? 0 : n;
+            }
+            return 0;
+        };
+        return getTime(b) - getTime(a);
+    });
+
+    return todos;
+});
+
 async function addSubtask() {
     if (!newSubtaskName.value || !listsStore.currentTodo?.id) return;
     await listsStore.addSubtask(newSubtaskName.value, listsStore.currentTodo.id);
@@ -58,6 +97,21 @@ async function addSubtask() {
 
 async function deleteSubtask(subtaskId: string | number) {
     await listsStore.deleteSubtask(subtaskId);
+}
+
+async function linkExistingTodo(todo: Todo) {
+    if (!listsStore.currentTodo?.id || !todo.id) return;
+    // Backend does not allow subtask-of-subtask
+    if ((todo as any).parentId) return;
+
+    todo.parentId = Number(listsStore.currentTodo.id);
+    const updated = await listsStore.updateTodo(todo);
+
+    if (!listsStore.currentTodo.subtasks) listsStore.currentTodo.subtasks = [];
+    // Avoid duplicates
+    if (!listsStore.currentTodo.subtasks.some(st => st.id === updated.id)) {
+        listsStore.currentTodo.subtasks.push(updated);
+    }
 }
 
 function navigateToSubtask(subtaskId: string | number) {
@@ -136,8 +190,59 @@ async function updatePriority(subtask: Todo, level: string) {
                 color="primary"
                 :disabled="!newSubtaskName"
                 data-testid="add-subtask-button"
+                class="mr-2"
                 @click="addSubtask"
             />
+            <v-menu
+                :width="400"
+                location="bottom"
+            >
+                <template #activator="{ props }">
+                    <v-btn
+                        v-bind="props"
+                        icon="mdi-link-plus"
+                        size="small"
+                        variant="text"
+                        color="primary"
+                        data-testid="link-subtask-button"
+                    />
+                </template>
+                <v-list density="compact">
+                    <v-list-item>
+                        <v-text-field
+                            v-model="linkSearch"
+                            placeholder="Search tasks"
+                            hide-details
+                            variant="outlined"
+                            density="compact"
+                            clearable
+                            data-testid="link-subtask-search"
+                            @click.stop
+                        />
+                    </v-list-item>
+                    <v-divider />
+                    <v-list-item
+                        v-for="todo in linkableTodos"
+                        :key="todo.id"
+                        :data-testid="`link-subtask-option-${todo.id}`"
+                        @click="linkExistingTodo(todo)"
+                    >
+                        <v-list-item-title>
+                            {{ todo.name }}
+                        </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item v-if="!baseLinkableTodos.length">
+                        <v-list-item-title>
+                            No tasks available to link
+                        </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item v-else-if="baseLinkableTodos.length && !linkableTodos.length">
+                        <v-list-item-title>
+                            No tasks match your search
+                        </v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
         </div>
         <v-expand-transition>
             <v-virtual-scroll
