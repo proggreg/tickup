@@ -13,6 +13,7 @@ export const createNewTodoState = (): Todo => ({
     color: '#87909e',
     links: [],
     attachments: [],
+    priorityLev: '',
 });
 
 export const useListsStore = defineStore('lists', {

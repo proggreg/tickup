@@ -53,7 +53,7 @@ const filteredAndSortedSubtasks = computed(() => {
 
 const baseLinkableTodos = computed(() => {
     const todos = listsStore.currentList?.todos || [];
-    return todos.filter(todo => {
+    return todos.filter((todo) => {
         // Exclude the current todo, existing subtasks, and any item that already has a parent
         if (!todo.id || listsStore.currentTodo?.id === todo.id) return false;
         if ((todo as any).parentId) return false;
@@ -104,7 +104,7 @@ async function linkExistingTodo(todo: Todo) {
     // Backend does not allow subtask-of-subtask
     if ((todo as any).parentId) return;
 
-    todo.parentId = Number(listsStore.currentTodo.id);
+    todo.parentId = listsStore.currentTodo.id;
     const updated = await listsStore.updateTodo(todo);
 
     if (!listsStore.currentTodo.subtasks) listsStore.currentTodo.subtasks = [];
