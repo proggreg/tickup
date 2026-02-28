@@ -4,6 +4,9 @@ import { objectToSnake, objectToCamel } from 'ts-case-convert';
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
 
+    delete body.subtasks;
+    delete body.edit;
+
     if (!event.context.params || !event.context.params._id) {
         throw createError({
             statusCode: 400,

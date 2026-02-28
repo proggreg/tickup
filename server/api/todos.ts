@@ -15,7 +15,8 @@ export default defineEventHandler(async (event) => {
                 .from('Todos')
                 .select('*')
                 .gte('due_date', start.toISOString())
-                .lt('due_date', end.toISOString());
+                .lt('due_date', end.toISOString())
+                .is('parent_id', null);
 
             if (error) {
                 console.error('Supabase error:', error);
@@ -45,6 +46,7 @@ export default defineEventHandler(async (event) => {
                 .from('Todos')
                 .select('*')
                 .lt('due_date', start.toISOString())
+                .is('parent_id', null)
                 .order('due_date', { ascending: false });
 
             if (error) {
@@ -70,7 +72,8 @@ export default defineEventHandler(async (event) => {
         const { data, error } = await supabase
             .from('Todos')
             .select('*')
-            .eq('user_id', query.id);
+            .eq('user_id', query.id)
+            .is('parent_id', null);
 
         if (error) {
             console.error('Supabase error:', error);

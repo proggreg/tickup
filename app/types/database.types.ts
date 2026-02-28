@@ -74,9 +74,9 @@ export type Database = {
                     notification_date_time: string | null;
                     notification_sent: boolean | null;
                     order: number | null;
+                    parent_id: number | null;
                     priority: string | null;
                     status: string | null;
-                    subtasks: Json | null;
                     type: string | null;
                     updated_at: string | null;
                     user_id: string | null;
@@ -96,9 +96,9 @@ export type Database = {
                     notification_date_time?: string | null;
                     notification_sent?: boolean | null;
                     order?: number | null;
+                    parent_id?: number | null;
                     priority?: string | null;
                     status?: string | null;
-                    subtasks?: Json | null;
                     type?: string | null;
                     updated_at?: string | null;
                     user_id?: string | null;
@@ -118,9 +118,9 @@ export type Database = {
                     notification_date_time?: string | null;
                     notification_sent?: boolean | null;
                     order?: number | null;
+                    parent_id?: number | null;
                     priority?: string | null;
                     status?: string | null;
-                    subtasks?: Json | null;
                     type?: string | null;
                     updated_at?: string | null;
                     user_id?: string | null;
@@ -131,6 +131,13 @@ export type Database = {
                         columns: ['list_id'];
                         isOneToOne: false;
                         referencedRelation: 'Lists';
+                        referencedColumns: ['id'];
+                    },
+                    {
+                        foreignKeyName: 'Todos_parent_id_fkey';
+                        columns: ['parent_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'Todos';
                         referencedColumns: ['id'];
                     },
                 ];

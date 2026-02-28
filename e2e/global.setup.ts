@@ -13,7 +13,7 @@ setup('Authenticate', async ({ page }) => {
     // Fill in the email field using input selector
     const emailInput = page.locator('input[type="email"]');
     await emailInput.waitFor({ state: 'visible' });
-    await emailInput.fill('testuser@example.com');
+    await emailInput.fill('test@example.com');
 
     // Fill in the password field using input selector
     const passwordInput = page.locator('input[type="password"]');
