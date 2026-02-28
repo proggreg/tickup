@@ -70,7 +70,7 @@ test.describe('subtasks are scrollable', () => {
         expect(hasScroll).toBeTruthy();
 
         // Verify first subtask is visible
-        const firstSubtask = page.getByTestId('subtask-name-0').locator('input');
+        const firstSubtask = page.getByTestId('subtask-name-0');
         await expect(firstSubtask).toBeVisible();
 
         // Scroll to bottom
@@ -82,11 +82,11 @@ test.describe('subtasks are scrollable', () => {
         await page.waitForTimeout(300);
 
         // Verify last subtask is visible after scrolling
-        const lastSubtask = page.getByTestId('subtask-name-14').locator('input');
+        const lastSubtask = page.getByTestId('subtask-name-14');
         await expect(lastSubtask).toBeVisible();
 
         // Verify last subtask has the correct name
-        await expect(lastSubtask).toHaveValue(subtaskNames[14]);
+        await expect(lastSubtask).toHaveText(subtaskNames[14]);
     });
 
     test('subtasks maintain scroll position when interacting with them', async ({ page, request, isMobile }) => {

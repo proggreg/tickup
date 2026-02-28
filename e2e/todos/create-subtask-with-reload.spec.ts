@@ -81,8 +81,8 @@ test.describe('a user can create a subtask and it persists after reload', () => 
         const subtasksList = page.getByTestId('subtasks-list');
         await expect(subtasksList).toBeVisible();
 
-        const subtaskNameField = page.getByTestId('subtask-name-0').locator('input');
-        await expect(subtaskNameField).toHaveValue(subtaskName);
+        const subtaskNameField = page.getByTestId('subtask-name-0');
+        await expect(subtaskNameField).toHaveText(subtaskName);
 
         // Reload the page to verify persistence
         await page.reload();
@@ -96,7 +96,7 @@ test.describe('a user can create a subtask and it persists after reload', () => 
         const subtasksListAfterReload = page.getByTestId('subtasks-list');
         await expect(subtasksListAfterReload).toBeVisible();
 
-        const subtaskNameFieldAfterReload = page.getByTestId('subtask-name-0').locator('input');
-        await expect(subtaskNameFieldAfterReload).toHaveValue(subtaskName);
+        const subtaskNameFieldAfterReload = page.getByTestId('subtask-name-0');
+        await expect(subtaskNameFieldAfterReload).toHaveText(subtaskName);
     });
 });

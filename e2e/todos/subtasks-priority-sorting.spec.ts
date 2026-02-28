@@ -155,15 +155,15 @@ test.describe('subtasks priority and sorting', () => {
         }
 
         // Verify initial order (creation order)
-        let subtask0Name = page.getByTestId('subtask-name-0').locator('input');
-        let subtask1Name = page.getByTestId('subtask-name-1').locator('input');
-        let subtask2Name = page.getByTestId('subtask-name-2').locator('input');
-        let subtask3Name = page.getByTestId('subtask-name-3').locator('input');
+        let subtask0Name = page.getByTestId('subtask-name-0');
+        let subtask1Name = page.getByTestId('subtask-name-1');
+        let subtask2Name = page.getByTestId('subtask-name-2');
+        let subtask3Name = page.getByTestId('subtask-name-3');
 
-        await expect(subtask0Name).toHaveValue('Low Priority Task');
-        await expect(subtask1Name).toHaveValue('High Priority Task');
-        await expect(subtask2Name).toHaveValue('No Priority Task');
-        await expect(subtask3Name).toHaveValue('Medium Priority Task');
+        await expect(subtask0Name).toHaveText('Low Priority Task');
+        await expect(subtask1Name).toHaveText('High Priority Task');
+        await expect(subtask2Name).toHaveText('No Priority Task');
+        await expect(subtask3Name).toHaveText('Medium Priority Task');
 
         // Click sort button to sort by priority
         const sortButton = page.getByTestId('subtasks-sort-button');
@@ -172,30 +172,30 @@ test.describe('subtasks priority and sorting', () => {
         await page.waitForTimeout(300);
 
         // Verify sorted order: High -> Medium -> Low -> None
-        subtask0Name = page.getByTestId('subtask-name-0').locator('input');
-        subtask1Name = page.getByTestId('subtask-name-1').locator('input');
-        subtask2Name = page.getByTestId('subtask-name-2').locator('input');
-        subtask3Name = page.getByTestId('subtask-name-3').locator('input');
+        subtask0Name = page.getByTestId('subtask-name-0');
+        subtask1Name = page.getByTestId('subtask-name-1');
+        subtask2Name = page.getByTestId('subtask-name-2');
+        subtask3Name = page.getByTestId('subtask-name-3');
 
-        await expect(subtask0Name).toHaveValue('High Priority Task');
-        await expect(subtask1Name).toHaveValue('Medium Priority Task');
-        await expect(subtask2Name).toHaveValue('Low Priority Task');
-        await expect(subtask3Name).toHaveValue('No Priority Task');
+        await expect(subtask0Name).toHaveText('High Priority Task');
+        await expect(subtask1Name).toHaveText('Medium Priority Task');
+        await expect(subtask2Name).toHaveText('Low Priority Task');
+        await expect(subtask3Name).toHaveText('No Priority Task');
 
         // Click sort button again to turn off sorting (back to creation order)
         await sortButton.click();
         await page.waitForTimeout(300);
 
         // Verify back to original order
-        subtask0Name = page.getByTestId('subtask-name-0').locator('input');
-        subtask1Name = page.getByTestId('subtask-name-1').locator('input');
-        subtask2Name = page.getByTestId('subtask-name-2').locator('input');
-        subtask3Name = page.getByTestId('subtask-name-3').locator('input');
+        subtask0Name = page.getByTestId('subtask-name-0');
+        subtask1Name = page.getByTestId('subtask-name-1');
+        subtask2Name = page.getByTestId('subtask-name-2');
+        subtask3Name = page.getByTestId('subtask-name-3');
 
-        await expect(subtask0Name).toHaveValue('Low Priority Task');
-        await expect(subtask1Name).toHaveValue('High Priority Task');
-        await expect(subtask2Name).toHaveValue('No Priority Task');
-        await expect(subtask3Name).toHaveValue('Medium Priority Task');
+        await expect(subtask0Name).toHaveText('Low Priority Task');
+        await expect(subtask1Name).toHaveText('High Priority Task');
+        await expect(subtask2Name).toHaveText('No Priority Task');
+        await expect(subtask3Name).toHaveText('Medium Priority Task');
     });
 
     test('priority persists after page reload', async ({ page, request, isMobile }) => {
@@ -340,10 +340,10 @@ test.describe('subtasks priority and sorting', () => {
         await page.waitForTimeout(300);
 
         // Verify sorted order of active tasks: Medium -> Low
-        const subtask0Name = page.getByTestId('subtask-name-0').locator('input');
-        const subtask1Name = page.getByTestId('subtask-name-1').locator('input');
+        const subtask0Name = page.getByTestId('subtask-name-0');
+        const subtask1Name = page.getByTestId('subtask-name-1');
 
-        await expect(subtask0Name).toHaveValue('Medium Priority Active');
-        await expect(subtask1Name).toHaveValue('Low Priority Active');
+        await expect(subtask0Name).toHaveText('Medium Priority Active');
+        await expect(subtask1Name).toHaveText('Low Priority Active');
     });
 });

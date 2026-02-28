@@ -58,7 +58,7 @@ test.describe('subtasks are collapsible', () => {
         const subtasksList = page.getByTestId('subtasks-list');
         await expect(subtasksList).toBeVisible();
 
-        const subtaskNameField = page.getByTestId('subtask-name-0').locator('input');
+        const subtaskNameField = page.getByTestId('subtask-name-0');
         await expect(subtaskNameField).toBeVisible();
 
         // Verify toggle button shows chevron-up (expanded state)

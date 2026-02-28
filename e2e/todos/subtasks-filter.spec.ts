@@ -93,11 +93,11 @@ test.describe('subtasks filtering', () => {
         await expect(page.getByTestId('subtask-item-2')).not.toBeVisible();
 
         // Verify the visible subtasks are the right ones (not the completed one)
-        const subtask0Name = page.getByTestId('subtask-name-0').locator('input');
-        const subtask1Name = page.getByTestId('subtask-name-1').locator('input');
+        const subtask0Name = page.getByTestId('subtask-name-0');
+        const subtask1Name = page.getByTestId('subtask-name-1');
         
-        await expect(subtask0Name).toHaveValue('Subtask 2');
-        await expect(subtask1Name).toHaveValue('Subtask 3');
+        await expect(subtask0Name).toHaveText('Subtask 2');
+        await expect(subtask1Name).toHaveText('Subtask 3');
 
         // Click "All" filter to show all again
         await filterAll.click();
@@ -250,8 +250,8 @@ test.describe('subtasks filtering', () => {
         const newSubtask = page.getByTestId('subtask-item-0');
         await expect(newSubtask).toBeVisible();
 
-        const newSubtaskName = page.getByTestId('subtask-name-0').locator('input');
-        await expect(newSubtaskName).toHaveValue('New active subtask');
+        const newSubtaskName = page.getByTestId('subtask-name-0');
+        await expect(newSubtaskName).toHaveText('New active subtask');
 
         // Verify count badge shows "1/2"
         const countBadge = page.locator('.v-chip').filter({ hasText: '1/2' });

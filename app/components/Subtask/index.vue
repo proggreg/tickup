@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { nextTick } from 'vue';
+
 const listsStore = useListsStore();
+const router = useRouter();
 const newSubtaskName = ref('');
 const subtasksExpanded = ref(true);
 
@@ -12,6 +15,11 @@ const activeCount = computed(() => {
 
 const subtasksFilter = ref<'all' | 'active'>('all');
 const subtasksSortBy = ref<'none' | 'priority'>('none');
+
+const subtaskNameRefs = ref<any[]>([]);
+const editingSubtaskIds = ref<(string | number)[]>([]);
+
+const isEditingSubtask = (id: string | number) => editingSubtaskIds.value.includes(id);
 
 const getPriorityOrder = (priority: string | null | undefined): number => {
     if (!priority) return 4; // No priority set
@@ -52,6 +60,28 @@ async function deleteSubtask(subtaskId: string | number) {
     await listsStore.deleteSubtask(subtaskId);
 }
 
+function navigateToSubtask(subtaskId: string | number) {
+    router.push(`/todo/${subtaskId}`);
+}
+
+function renameSubtask(subtaskId: string | number, index: number) {
+    if (!editingSubtaskIds.value.includes(subtaskId)) {
+        editingSubtaskIds.value.push(subtaskId);
+    }
+
+    const input = subtaskNameRefs.value[index];
+    if (input && typeof input.focus === 'function') {
+        nextTick(() => {
+            input.focus();
+        });
+    }
+}
+
+function onSubtaskBlur(subtask: Todo) {
+    editingSubtaskIds.value = editingSubtaskIds.value.filter(id => id !== subtask.id);
+    listsStore.updateTodo(subtask);
+}
+
 async function updatePriority(subtask: Todo, level: string) {
     subtask.priorityLev = level;
     listsStore.updateTodo(subtask);
@@ -87,7 +117,7 @@ async function updatePriority(subtask: Todo, level: string) {
         </div>
         <div
             v-show="subtasksExpanded"
-            class="d-flex align-center mt-4"
+            class="d-flex align-center my-4"
         >
             <v-text-field
                 v-model="newSubtaskName"
@@ -120,7 +150,9 @@ async function updatePriority(subtask: Todo, level: string) {
                     <v-list-item
                         :key="subtask.id"
                         class="py-2 px-0 align-center"
+                        style="cursor: pointer;"
                         :data-testid="`subtask-item-${index}`"
+                        @click="navigateToSubtask(subtask.id)"
                     >
                         <template #prepend>
                             <div class="">
@@ -131,18 +163,29 @@ async function updatePriority(subtask: Todo, level: string) {
                                     density="compact"
                                     class="mr-1"
                                     :data-testid="`subtask-checkbox-${index}`"
+                                    @click.stop
                                     @change="listsStore.updateTodo(subtask)"
                                 />
                             </div>
                         </template>
+                        <div
+                            v-if="subtask.status === 'Closed' || !isEditingSubtask(subtask.id)"
+                            :data-testid="`subtask-name-${index}`"
+                            class="subtask-name-readonly"
+                            :class="{ 'text-decoration-line-through text-disabled': subtask.status === 'Closed' }"
+                            @click.stop="navigateToSubtask(subtask.id)"
+                        >
+                            {{ subtask.name }}
+                        </div>
                         <v-text-field
+                            v-else
+                            :ref="el => subtaskNameRefs[index] = el"
                             v-model="subtask.name"
                             hide-details
                             variant="plain"
-                            :readonly="subtask.status === 'Closed'"
                             :class="{ 'text-decoration-line-through text-disabled': subtask.status === 'Closed' }"
-                            :data-testid="`subtask-name-${index}`"
-                            @blur="listsStore.updateTodo(subtask)"
+                            :data-testid="`subtask-name-input-${index}`"
+                            @blur="onSubtaskBlur(subtask)"
                         />
                         <template #append>
                             <v-row
@@ -157,17 +200,6 @@ async function updatePriority(subtask: Todo, level: string) {
                                     />
                                 </v-col>
                                 <v-col>
-                                    <v-btn
-                                        icon="mdi-open-in-new"
-                                        size="small"
-                                        variant="text"
-                                        density="compact"
-                                        class="mr-1"
-                                        :data-testid="`subtask-link-${index}`"
-                                        :to="`/todo/${subtask.id}`"
-                                    />
-                                </v-col>
-                                <v-col>
                                     <v-menu>
                                         <template #activator="{ props }">
                                             <v-btn
@@ -177,9 +209,23 @@ async function updatePriority(subtask: Todo, level: string) {
                                                 variant="text"
                                                 density="compact"
                                                 :data-testid="`subtask-menu-${index}`"
+                                                @click.stop
                                             />
                                         </template>
                                         <v-list density="compact">
+                                            <v-list-item
+                                                :data-testid="`subtask-rename-${index}`"
+                                                @click="renameSubtask(subtask.id, index)"
+                                            >
+                                                <template #prepend>
+                                                    <v-icon>
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </template>
+                                                <v-list-item-title>
+                                                    Rename subtask
+                                                </v-list-item-title>
+                                            </v-list-item>
                                             <v-list-item
                                                 :data-testid="`subtask-delete-${index}`"
                                                 @click="deleteSubtask(subtask.id)"
@@ -198,13 +244,16 @@ async function updatePriority(subtask: Todo, level: string) {
                                 </v-col>
                             </v-row>
                         </template>
-                        <v-divider
-                            v-if="index < filteredAndSortedSubtasks.length - 1"
-                            class="my-1"
-                        />
                     </v-list-item>
                 </template>
             </v-virtual-scroll>
         </v-expand-transition>
     </div>
 </template>
+
+<style scoped>
+.subtask-name-readonly {
+    cursor: pointer;
+    text-decoration: none;
+}
+</style>

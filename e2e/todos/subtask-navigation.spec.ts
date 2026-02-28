@@ -93,8 +93,8 @@ test.describe('subtask navigation', () => {
 
         // Verify the subtask is still visible
         await expect(subtasksList).toBeVisible();
-        const subtaskNameField = page.getByTestId('subtask-name-0').locator('input');
-        await expect(subtaskNameField).toHaveValue(subtaskName);
+        const subtaskNameField = page.getByTestId('subtask-name-0');
+        await expect(subtaskNameField).toHaveText(subtaskName);
 
         // Verify the back button now goes to list (not parent, since we're on parent)
         await expect(backToListButton).toBeVisible();
