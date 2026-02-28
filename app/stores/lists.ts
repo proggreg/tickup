@@ -248,6 +248,12 @@ export const useListsStore = defineStore('lists', {
                 );
             }
         },
+            return updatedTodo;
+        },
+        debounceUpdateTodo: useDebounceFn(function (...args) {
+            // @ts-expect-error: debounce context must be bound to the store, this workaround ensures correct `this`
+            return (this.updateTodo as any).apply(this, args);
+        }, 200),
         async deleteTodo(id: string) {
             await $fetch(`/api/todo/${id}`, { method: 'DELETE' });
 
