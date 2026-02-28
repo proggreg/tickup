@@ -24,11 +24,8 @@ declare global {
             title: string;
             url: string;
         }[];
-        subtasks?: {
-            name: string;
-            status: string;
-            id: string;
-        }[];
+        parentId?: number;
+        subtasks?: Todo[];   // hydrated client-side only; never sent in PUT/POST body
         attachments?: {
             id: ObjectId;
             attachmentId: string;

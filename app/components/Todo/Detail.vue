@@ -138,16 +138,14 @@ function updateName() {
     }
 }
 
-function addSubtask() {
-    if (!newSubtaskName.value) return;
-    if (!listsStore.currentTodo.subtasks) listsStore.currentTodo.subtasks = [];
-    listsStore.currentTodo.subtasks.push({
-        name: newSubtaskName.value,
-        status: 'open',
-        id: crypto.randomUUID(),
-    });
+async function addSubtask() {
+    if (!newSubtaskName.value || !listsStore.currentTodo?.id) return;
+    await listsStore.addSubtask(newSubtaskName.value, listsStore.currentTodo.id);
     newSubtaskName.value = '';
-    listsStore.updateTodo(listsStore.currentTodo);
+}
+
+async function deleteSubtask(subtaskId: string | number) {
+    await listsStore.deleteSubtask(subtaskId);
 }
 
 function onNotificationDateTimeBlur() {
@@ -157,8 +155,9 @@ function onNotificationDateTimeBlur() {
 }
 
 watch(
-    () => listsStore.currentTodo && listsStore.currentTodo.id,
-    () => {
+    () => listsStore.currentTodo?.id,
+    async (id) => {
+        if (id) await listsStore.fetchSubtasks(id);
         const dt = listsStore.currentTodo?.notificationDateTime;
         if (dt) {
             // Format as 'YYYY-MM-DDTHH:mm' for datetime-local input
@@ -251,22 +250,22 @@ watch(
                         <template #prepend>
                             <v-checkbox
                                 v-model="listsStore.currentTodo.subtasks[idx].status"
-                                :true-value="'done'"
-                                :false-value="'open'"
+                                :true-value="'Closed'"
+                                :false-value="'Open'"
                                 class="me-2"
                                 density="compact"
                                 :data-testid="`subtask-checkbox-${idx}`"
-                                @change="listsStore.updateTodo(listsStore.currentTodo)"
+                                @change="listsStore.updateTodo(subtask)"
                             />
                         </template>
                         <v-text-field
                             v-model="listsStore.currentTodo.subtasks[idx].name"
                             hide-details
                             variant="plain"
-                            :readonly="listsStore.currentTodo.subtasks[idx].status === 'done'"
-                            :class="{ 'text-decoration-line-through text-disabled': listsStore.currentTodo.subtasks[idx].status === 'done' }"
+                            :readonly="listsStore.currentTodo.subtasks[idx].status === 'Closed'"
+                            :class="{ 'text-decoration-line-through text-disabled': listsStore.currentTodo.subtasks[idx].status === 'Closed' }"
                             :data-testid="`subtask-name-${idx}`"
-                            @blur="listsStore.updateTodo(listsStore.currentTodo)"
+                            @blur="listsStore.updateTodo(subtask)"
                         />
                         <template #append>
                             <v-btn
@@ -274,7 +273,7 @@ watch(
                                 size="small"
                                 variant="text"
                                 :data-testid="`subtask-delete-${idx}`"
-                                @click="listsStore.currentTodo.subtasks.splice(idx, 1); listsStore.updateTodo(listsStore.currentTodo)"
+                                @click="deleteSubtask(subtask.id)"
                             />
                         </template>
                         <v-divider

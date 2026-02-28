@@ -216,10 +216,36 @@ export const useListsStore = defineStore('lists', {
 
             // Update local state to match server response
             if (this.currentTodo && this.currentTodo.id === updatedTodo.id) {
+                const existingSubtasks = this.currentTodo.subtasks;
                 this.currentTodo = updatedTodo;
+                if (existingSubtasks) this.currentTodo.subtasks = existingSubtasks;
             }
 
             return updatedTodo;
+        },
+        async fetchSubtasks(todoId: string | number) {
+            const subtasks = await $fetch<Todo[]>(`/api/todo/${todoId}/subtasks`);
+            if (this.currentTodo?.id === String(todoId)) {
+                this.currentTodo.subtasks = subtasks || [];
+            }
+            return subtasks || [];
+        },
+        async addSubtask(name: string, parentId: string | number) {
+            const subtask = await $fetch<Todo>('/api/todo', {
+                method: 'POST',
+                body: { name, status: 'Open', parentId: Number(parentId), color: '#87909e', edit: false, links: [] },
+            });
+            if (this.currentTodo?.subtasks) this.currentTodo.subtasks.push(subtask);
+            else if (this.currentTodo) this.currentTodo.subtasks = [subtask];
+            return subtask;
+        },
+        async deleteSubtask(subtaskId: string | number) {
+            await $fetch(`/api/todo/${subtaskId}`, { method: 'DELETE' });
+            if (this.currentTodo?.subtasks) {
+                this.currentTodo.subtasks = this.currentTodo.subtasks.filter(
+                    (s: Todo) => String(s.id) !== String(subtaskId),
+                );
+            }
         },
         async deleteTodo(id: string) {
             await $fetch(`/api/todo/${id}`, { method: 'DELETE' });

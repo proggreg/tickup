@@ -7,6 +7,21 @@ export default defineEventHandler(async (event) => {
 
     delete body.edit;
     delete body.userId;
+    delete body.subtasks;
+
+    if (body.parentId) {
+        const { data: parent, error: parentError } = await supabase
+            .from('Todos')
+            .select('parent_id')
+            .eq('id', body.parentId)
+            .single();
+        if (parentError || !parent) {
+            throw createError({ statusCode: 400, statusMessage: 'Parent todo not found' });
+        }
+        if (parent.parent_id !== null) {
+            throw createError({ statusCode: 400, statusMessage: 'Cannot create subtask of a subtask' });
+        }
+    }
 
     const todo = objectToSnake(body);
     try {

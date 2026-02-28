@@ -8,7 +8,8 @@ export default defineEventHandler(async (event) => {
             const { data, error } = await supabase
                 .from('Todos')
                 .select('*')
-                .eq('list_id', listId);
+                .eq('list_id', listId)
+                .is('parent_id', null);
 
             if (error) {
                 throw createError({
