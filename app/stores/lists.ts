@@ -254,8 +254,6 @@ export const useListsStore = defineStore('lists', {
                 );
             }
         },
-            return updatedTodo;
-        },
         debounceUpdateTodo: useDebounceFn(function (...args) {
             // @ts-expect-error: debounce context must be bound to the store, this workaround ensures correct `this`
             return (this.updateTodo as any).apply(this, args);
@@ -378,14 +376,5 @@ export const useListsStore = defineStore('lists', {
         resetList() {
             this.newList = createNewListState();
         },
-
-    },
-    // persist: {
-    //   debug: true,
-    //   storage: piniaPluginPersistedstate.localStorage(),
-    // },
 });
 
-// if (import.meta.hot) {
-//     import.meta.hot.accept(acceptHMRUpdate(useListsStore, import.meta.hot));
-// }
