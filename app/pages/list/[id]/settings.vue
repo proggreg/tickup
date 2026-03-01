@@ -1,7 +1,4 @@
-<script setup></script>
-
-Here's the settings page using Vuetify components:
-<script setup>
+<script setup lang="ts">
 const route = useRoute();
 const listId = computed(() => route.params.id);
 const listsStore = useListsStore();
@@ -12,13 +9,11 @@ onBeforeMount(async () => {
 });
 
 watch(selectedRepo, () => {
-    console.log('selectedRepo', selectedRepo);
     if (selectedRepo.value?.name) {
         listsStore.currentList.githubRepo = selectedRepo.value?.name;
     }
 });
 
-// Remove
 const removeRepo = () => {
     listsStore.currentList.githubRepo = '';
 };
@@ -33,101 +28,91 @@ const updateList = async () => {
 </script>
 
 <template>
-    <v-container
-        fluid
-    >
-        <v-row>
-            <v-col
-                cols="12"
-            >
+    <v-container fluid>
+        <v-row no-gutters>
+            <v-col cols="auto">
                 <v-btn
                     :to="`/list/${listId}`"
                     variant="text"
-
                     prepend-icon="mdi-arrow-left"
                     class="mb-6"
-                >
-                    Back to List
-                </v-btn>
+                />
             </v-col>
-            <v-col
-                cols="12"
-                md="8"
-                lg="6"
-                class="mx-auto"
-            >
-                <!-- Back button -->
+            <v-col cols="auto">
+                <h1 class="text-h3 font-weight-bold ">
+                    {{ listsStore.currentList.name }} Settings
+                </h1>
+            </v-col>
+        </v-row>
 
-                <!-- Page title -->
+        <!-- <v-row>
+            <v-col cols="12">
                 <h1 class="text-h3 font-weight-bold mb-8">
                     {{ listsStore.currentList.name }} Settings
                 </h1>
+            </v-col>
+        </v-row> -->
 
-                <!-- GitHub Repo Card -->
-                <v-card class="mb-6">
-                    <v-card-title class="d-flex align-center">
+        <v-row>
+            <!-- GitHub integration / default repo column -->
+            <SettingsColumn
+                test-id="list-settings-github-column"
+                icon="mdi-github"
+                title="GitHub Integration"
+                description="Default GitHub repository"
+            >
+                <v-alert
+                    v-if="listsStore.currentList.githubRepo"
+                    type="info"
+                    variant="tonal"
+                    class="mb-4"
+                    closable
+                    @click:close="removeRepo"
+                >
+                    <div class="d-flex align-center">
                         <v-icon
-                            size="28"
+                            size="20"
                             class="mr-2"
                         >
                             mdi-github
                         </v-icon>
-                        Default GitHub Repository {{ listsStore.currentList.githubRepo }}
-                    </v-card-title>
-
-                    <v-card-text>
-                        <!-- Current Repo Display -->
-                        <v-alert
-
-                            type="info"
-                            variant="tonal"
-                            class="mb-4"
-                            closable
-                            @click:close="removeRepo"
-                        >
-                            <div class="d-flex align-center">
-                                <v-icon
-                                    size="20"
-                                    class="mr-2"
-                                >
-                                    mdi-github
-                                </v-icon>
-                                <div class="flex-grow-1">
-                                    <div class="font-weight-medium" />
-                                    <a
-
-                                        target="_blank"
-                                        class="text-primary text-decoration-none"
-                                    >
-                                        View on GitHub
-                                        <v-icon size="14">mdi-open-in-new</v-icon>
-                                    </a>
-                                </div>
+                        <div class="flex-grow-1">
+                            <div class="font-weight-medium">
+                                {{ listsStore.currentList.githubRepo }}
                             </div>
-                        </v-alert>
-
-                        <!-- Search Section -->
-                        <div>
-                            <v-row>
-                                <v-col>
-                                    <GithubRepoSelect />
-                                </v-col>
-                                <v-col cols="auto">
-                                    <v-btn @click="updateList()">
-                                        Save
-                                    </v-btn>
-                                </v-col>
-                            </v-row>
                         </div>
-                    </v-card-text>
-                </v-card>
-            </v-col>
+                    </div>
+                </v-alert>
+
+                <v-row>
+                    <v-col
+                        cols="12"
+                        md="8"
+                    >
+                        <GithubRepoSelect />
+                    </v-col>
+                    <v-col
+                        cols="12"
+                        md="4"
+                        class="d-flex align-end"
+                    >
+                        <v-btn
+                            color="primary"
+                            @click="updateList()"
+                        >
+                            Save
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </SettingsColumn>
+
+            <!-- Future settings columns can be added here using <SettingsColumn> -->
         </v-row>
     </v-container>
 </template>
 
 <style scoped>
 .cursor-pointer {
-  cursor: pointer;
+    cursor: pointer;
 }
 </style>
