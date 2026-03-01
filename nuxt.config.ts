@@ -91,8 +91,8 @@ export default defineNuxtConfig({
         publishRelease: true,
         config: {
             apiKey: process.env.BUGSNAG_API_KEY,
-            enabledReleaseStages: ['staging', 'production'],
-            releaseStage: process.env.NUXT_PUBLIC_VERCEL_ENV || 'development',
+            enabledReleaseStages: ['preview', 'production'],
+            releaseStage: process.env.VERCEL_ENV || 'development',
         },
     },
 
