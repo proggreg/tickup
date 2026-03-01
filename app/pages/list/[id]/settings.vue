@@ -39,19 +39,11 @@ const updateList = async () => {
                 />
             </v-col>
             <v-col cols="auto">
-                <h1 class="text-h3 font-weight-bold ">
+                <h1 class="text-capitalize font-weight-bold">
                     {{ listsStore.currentList.name }} Settings
                 </h1>
             </v-col>
         </v-row>
-
-        <!-- <v-row>
-            <v-col cols="12">
-                <h1 class="text-h3 font-weight-bold mb-8">
-                    {{ listsStore.currentList.name }} Settings
-                </h1>
-            </v-col>
-        </v-row> -->
 
         <v-row>
             <!-- GitHub integration / default repo column -->
