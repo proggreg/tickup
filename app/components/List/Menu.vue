@@ -44,7 +44,7 @@ async function openMenu(event) {
 <template>
     <v-btn
         ref="menuTarget"
-        variant="plain"
+        class="bg-transparent"
         icon="mdi-dots-vertical"
         :data-testid="`setting-button-${listId}`"
         @click.stop="openMenu"
@@ -53,9 +53,14 @@ async function openMenu(event) {
         v-model="menu"
         :target="menuTarget"
         location="bottom end"
+        bg-color="none"
         @click.stop
     >
-        <v-list @click.stop>
+        <v-list
+            bg-color="none"
+            class="bg-transparent"
+            @click.stop
+        >
             <v-list-item @click.stop="deleteList">
                 <v-list-item-title
                     data-test-id="delete-list"
