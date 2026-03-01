@@ -33,5 +33,5 @@ jobs:
         working-directory: ./supabase
         run: |
           # Push all migrations in supabase/migrations to the linked Supabase project
-          supbase link --project-ref $SUPABASE_PROJECT_REF
+          supabase link --project-ref $SUPABASE_PROJECT_REF
           supabase db push
