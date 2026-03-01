@@ -87,7 +87,7 @@ export default defineNuxtConfig({
     },
 
     bugsnag: {
-        // disabled: process.env.NODE_ENV === 'development', // Disable in development
+        disabled: process.env.NODE_ENV === 'development', // Disable in development
         publishRelease: true,
         config: {
             apiKey: process.env.BUGSNAG_API_KEY,
