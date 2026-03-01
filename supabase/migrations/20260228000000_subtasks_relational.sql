@@ -1,8 +1,6 @@
 -- Add column (no constraint yet, so data migration can insert rows freely)
 ALTER TABLE "public"."Todos"
   ADD COLUMN parent_id bigint;
-ALTER TABLE "public"."Todos"  
-  ADD COLUMN priority_lev text;
 
 -- Migrate existing JSONB subtasks to real rows
 DO $$
