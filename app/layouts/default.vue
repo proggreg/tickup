@@ -18,7 +18,7 @@ const _show = ref(true);
                     <!-- <v-snackbar width="10" v-model="show" location="bottom right" timeout="-1">isOnline {{ isOnline }}</v-snackbar> -->
                     <v-container
                         fluid
-                        class="pa-0"
+                        class="pa-0 fill-height"
                     >
                         <AppSettings />
                         <NuxtPage />
