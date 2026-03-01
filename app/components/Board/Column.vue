@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const isAddingTodo = ref(false);
 const listsStore = useListsStore();
-const newTodo = ref<Todo>(createNewTodoState());
 const statusStore = useSettingsStore();
 
 interface Props {
@@ -18,10 +17,9 @@ const todos = computed(() => {
     return listsStore.currentList.todos.filter((todo: Todo) => todo.status === status.name);
 });
 
-function addTodo() {
-    newTodo.value.status = status.name;
+function addTodo(status: Status) {
+    listsStore.newTodo.status = status.name;
     listsStore.addTodo();
-    newTodo.value = createNewTodoState();
 }
 function updateStatus(todo: Todo, status: Status) {
     const index = statusStore.statuses.findIndex(s => s.name === status.name);
@@ -32,8 +30,18 @@ function updateStatus(todo: Todo, status: Status) {
 }
 
 function handleBlur() {
-    if (!newTodo.value.name) {
+    if (!listsStore.newTodo.name) {
         isAddingTodo.value = false;
+    }
+}
+
+function handleDragChange(evt: any) {
+    if (evt?.added?.element) {
+        const todo = evt.added.element as Todo;
+        if (todo.status !== status.name) {
+            todo.status = status.name;
+            listsStore.updateTodo(todo);
+        }
     }
 }
 </script>
@@ -66,11 +74,11 @@ function handleBlur() {
         </template>
         <v-card-item class="flex-fill list">
             <draggable
-                v-if="todos.length"
                 :list="todos"
                 item-key="id"
                 group="status"
                 class="draggable-container"
+                @change="handleDragChange"
             >
                 <template #item="{ element: todo }">
                     <v-card
@@ -94,13 +102,6 @@ function handleBlur() {
                                     @click.stop
                                 />
                                 <span class="text-truncate text-body-1 font-weight-bold flex-grow-1 mr-2">{{ todo.name }}</span>
-                                <v-btn
-                                    v-if="status.name !== statusStore.statuses[statusStore.statuses.length - 1].name"
-                                    icon="mdi-arrow-right"
-                                    variant="plain"
-                                    size="small"
-                                    @click="updateStatus(todo, status)"
-                                />
                             </div>
                         </v-card-item>
                     </v-card>
@@ -118,7 +119,7 @@ function handleBlur() {
                         autofocus
                         variant="plain"
                         @blur="handleBlur"
-                        @keyup.enter.stop="addTodo"
+                        @keyup.enter.stop="addTodo(status)"
                     />
                 </v-card-item>
             </v-card>

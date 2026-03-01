@@ -1,7 +1,5 @@
 <script setup lang="ts">
 const statusStore = useSettingsStore();
-
-const boardRef = ref<HTMLElement | null>(null);
 </script>
 
 <template>
