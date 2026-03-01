@@ -60,7 +60,7 @@ const updateList = async () => {
 
                 <!-- Page title -->
                 <h1 class="text-h3 font-weight-bold mb-8">
-                    List Settings
+                    {{ listsStore.currentList.name }} Settings
                 </h1>
 
                 <!-- GitHub Repo Card -->

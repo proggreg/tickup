@@ -106,7 +106,7 @@ function removeImage() {
                         class="pt-2"
                         style="width: 14px;"
                     >
-                        <ListMenu />
+                        <ListMenu :list-id="router.params.id as string" />
                     </div>
                 </v-row>
 

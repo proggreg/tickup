@@ -2,7 +2,7 @@
 const listsStore = useListsStore();
 const { isMobile } = useDevice();
 const { listId } = defineProps<{
-    listId?: string;
+    listId: string;
 }>();
 
 const menu = ref(false);
@@ -61,7 +61,7 @@ async function openMenu(event) {
             class="bg-transparent"
             @click.stop
         >
-            <v-list-item to="/list/{{ listId }}/settings">
+            <v-list-item :to="`/list/${listId}/settings`">
                 <template #prepend>
                     <v-icon
                         icon="mdi-cog"
