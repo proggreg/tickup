@@ -1,25 +1,30 @@
 <script setup lang="ts">
 const statusStore = useSettingsStore();
-
-const boardRef = ref<HTMLElement | null>(null);
 </script>
 
 <template>
-    <v-slide-group
-        ref="boardRef"
-        :show-arrows="true"
-        class="font-weight-bold"
-    >
-        <v-slide-group-item
-            v-for="status in statusStore.statuses"
-            :key="status.name"
+    <div class="board-container">
+        <v-row
+            class="board-row"
+            no-gutters
         >
-            <BoardColumn
-                :status="status"
-            />
-        </v-slide-group-item>
-    </v-slide-group>
+            <v-col
+                v-for="status in statusStore.statuses"
+                :key="status.name"
+                class="board-col"
+            >
+                <BoardColumn :status="status" />
+            </v-col>
+        </v-row>
+    </div>
 </template>
 
 <style scoped>
+.board-row {
+  height: 100%;
+}
+
+.board-col {
+  display: flex;
+}
 </style>
