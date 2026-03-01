@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
             github_repo: body.githubRepo,
             list_type: body.listType,
             default_view: body.defaultView,
-        }).eq('id', body.id);
+        }).eq('id', body.id).select();
     }
     catch (error) {
         return error;
