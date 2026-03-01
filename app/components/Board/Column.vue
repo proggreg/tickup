@@ -66,43 +66,45 @@ function handleBlur() {
         </template>
         <v-card-item class="flex-fill list">
             <draggable
+                v-if="todos.length"
                 :list="todos"
                 item-key="id"
                 group="status"
                 class="draggable-container"
             >
-                <v-card
-                    v-for="todo in todos"
-                    :key="todo.id"
-                    class="mb-2 pa-0"
-                    :color="status.color"
-                    style="cursor: pointer;"
-                    :max-width="'100%'"
-                    :to="`/todo/${todo.id}`"
-                >
-                    <v-card-item
-                        class="py-2 px-4"
+                <template #item="{ element: todo }">
+                    <v-card
+                        :key="todo.id"
+                        class="mb-2 pa-0"
+                        :color="status.color"
+                        style="cursor: pointer;"
+                        :max-width="'100%'"
+                        :to="`/todo/${todo.id}`"
                     >
-                        <div class="d-flex align-center justify-space-between">
-                            <v-checkbox
-                                v-model="todo.selected"
-                                size="small"
-                                density="compact"
-                                hide-details
-                                class="flex-shrink-0"
-                                @click.stop
-                            />
-                            <span class="text-truncate text-body-1 font-weight-bold flex-grow-1 mr-2">{{ todo.name }}</span>
-                            <v-btn
-                                v-if="status.name !== statusStore.statuses[statusStore.statuses.length - 1].name"
-                                icon="mdi-arrow-right"
-                                variant="plain"
-                                size="small"
-                                @click="updateStatus(todo, status)"
-                            />
-                        </div>
-                    </v-card-item>
-                </v-card>
+                        <v-card-item
+                            class="py-2 px-4"
+                        >
+                            <div class="d-flex align-center justify-space-between">
+                                <v-checkbox
+                                    v-model="todo.selected"
+                                    size="small"
+                                    density="compact"
+                                    hide-details
+                                    class="flex-shrink-0"
+                                    @click.stop
+                                />
+                                <span class="text-truncate text-body-1 font-weight-bold flex-grow-1 mr-2">{{ todo.name }}</span>
+                                <v-btn
+                                    v-if="status.name !== statusStore.statuses[statusStore.statuses.length - 1].name"
+                                    icon="mdi-arrow-right"
+                                    variant="plain"
+                                    size="small"
+                                    @click="updateStatus(todo, status)"
+                                />
+                            </div>
+                        </v-card-item>
+                    </v-card>
+                </template>
             </draggable>
         </v-card-item>
         <v-card-item v-if="isAddingTodo">
