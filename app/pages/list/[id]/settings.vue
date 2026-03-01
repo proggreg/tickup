@@ -64,47 +64,12 @@ const updateList = async () => {
                 title="GitHub Integration"
                 description="Default GitHub repository"
             >
-                <v-alert
-                    v-if="listsStore.currentList.githubRepo"
-                    type="info"
-                    variant="tonal"
-                    class="mb-4"
-                    closable
-                    @click:close="removeRepo"
-                >
-                    <div class="d-flex align-center">
-                        <v-icon
-                            size="20"
-                            class="mr-2"
-                        >
-                            mdi-github
-                        </v-icon>
-                        <div class="flex-grow-1">
-                            <div class="font-weight-medium">
-                                {{ listsStore.currentList.githubRepo }}
-                            </div>
-                        </div>
-                    </div>
-                </v-alert>
-
                 <v-row>
                     <v-col
                         cols="12"
                         md="8"
                     >
-                        <GithubRepoSelect />
-                    </v-col>
-                    <v-col
-                        cols="12"
-                        md="4"
-                        class="d-flex align-end"
-                    >
-                        <v-btn
-                            color="primary"
-                            @click="updateList()"
-                        >
-                            Save
-                        </v-btn>
+                        <GithubRepoSelect @update-repo="updateList" />
                     </v-col>
                 </v-row>
             </SettingsColumn>
