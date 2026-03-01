@@ -8,7 +8,12 @@ const currentTab = ref<ViewType>('list');
 const on = useToolbar();
 
 onBeforeMount(async () => {
-    listsStore.getCurrentList();
+    await listsStore.getCurrentList();
+
+    const defaultView = listsStore.currentList?.defaultView as ViewType | undefined;
+    if (defaultView && tabs.value.includes(defaultView)) {
+        currentTab.value = defaultView;
+    }
 });
 
 if (!listsStore.currentList) {

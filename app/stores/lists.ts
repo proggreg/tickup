@@ -310,7 +310,6 @@ export const useListsStore = defineStore('lists', {
         },
         async getLists() {
             const lists = await $fetch<List[]>('/api/lists');
-            console.log('get lists', lists);
             this.setLists(lists);
         },
         async getList(id: string) {
