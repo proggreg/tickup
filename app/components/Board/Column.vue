@@ -40,7 +40,7 @@ function handleBlur() {
 
 <template>
     <v-card
-        :class="['ma-2 font-weight-bold', selectedClass, 'flex-column']"
+        :class="['mx-2 my-0 font-weight-bold', selectedClass, 'd-flex', 'flex-column', 'fill-height']"
         width="100%"
         :max-width="400"
         variant="tonal"
