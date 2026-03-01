@@ -1,10 +1,10 @@
 name: Run Supabase Migrations
 
 on:
-  # Run migrations when pushing to main
+  # Run migrations on any branch when migrations change
   push:
-    branches:
-      - main
+    paths:
+      - 'supabase/migrations/**'
   # And allow manual runs from the Actions tab
   workflow_dispatch:
 

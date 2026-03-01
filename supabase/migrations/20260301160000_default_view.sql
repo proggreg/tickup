@@ -1,1 +1,2 @@
 ALTER TABLE "public"."Lists" ADD COLUMN default_view text DEFAULT 'list';
+
