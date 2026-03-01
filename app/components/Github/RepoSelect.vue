@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const listStore = useListsStore();
-interface Repo {
+export interface Repo {
     id: number;
     name: string;
     full_name?: string;

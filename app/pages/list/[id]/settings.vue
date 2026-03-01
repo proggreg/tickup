@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import type { Repo } from '~/components/Github/RepoSelect.vue';
+
 const route = useRoute();
 const listId = computed(() => route.params.id);
 const listsStore = useListsStore();
-const selectedRepo = useState('githubRepo', () => listsStore.currentList.githubRepo);
+const selectedRepo = useState<Repo>('githubRepo', () => null);
 const defaultViewOptions = ref<View[]>(['list', 'board']);
 const selectedDefaultView = ref<View | null>(null);
 
@@ -14,7 +16,7 @@ const onDefaultViewChange = async (value: View | null) => {
 };
 
 onBeforeMount(async () => {
-    await listsStore.getList(route.params.id);
+    await listsStore.getList(route.params.id as string);
 
     // Initialize local selected value from the loaded list
     if (listsStore.currentList.defaultView && defaultViewOptions.value.includes(listsStore.currentList.defaultView)) {
@@ -27,10 +29,6 @@ watch(selectedRepo, () => {
         listsStore.currentList.githubRepo = selectedRepo.value?.name;
     }
 });
-
-const removeRepo = () => {
-    listsStore.currentList.githubRepo = '';
-};
 
 const updateList = async () => {
     // Persist current list settings (including defaultView and githubRepo)
