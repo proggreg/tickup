@@ -7,7 +7,7 @@ const boardRef = ref<HTMLElement | null>(null);
 <template>
     <v-slide-group
         ref="boardRef"
-        :show-arrows="true"
+        :show-arrows="false"
         class="font-weight-bold"
     >
         <v-slide-group-item
