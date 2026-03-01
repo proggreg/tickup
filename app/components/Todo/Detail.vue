@@ -76,9 +76,10 @@ function updateName() {
         <v-card-item>
             <TodoLinks />
         </v-card-item>
-        <v-card-item>
+        <!-- TODO  add db table and implement API -->
+        <!-- <v-card-item>
             <TodoAttachments />
-        </v-card-item>
+        </v-card-item> -->
         <v-card-actions class="py-6 px-6 d-flex flex-wrap gap-4 align-center justify-space-between">
             <div class="d-flex align-center gap-2 flex-wrap">
                 <AppDeleteButton :todo="listsStore.currentTodo" />

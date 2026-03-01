@@ -56,6 +56,10 @@ declare global {
         listType: ListType;
         icon: string;
         githubRepo?: string;
+        /**
+         * Default view when opening this list ("list" or "board").
+         */
+        defaultView?: View;
     }
 
     interface listsState {

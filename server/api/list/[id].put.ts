@@ -8,7 +8,8 @@ export default defineEventHandler(async (event) => {
             name: body.name,
             github_repo: body.githubRepo,
             list_type: body.listType,
-        }).eq('id', body.id);
+            default_view: body.defaultView,
+        }).eq('id', body.id).select();
     }
     catch (error) {
         return error;

@@ -2,7 +2,7 @@
 const listsStore = useListsStore();
 const { isMobile } = useDevice();
 const { listId } = defineProps<{
-    listId?: string;
+    listId: string;
 }>();
 
 const menu = ref(false);
@@ -61,19 +61,29 @@ async function openMenu(event) {
             class="bg-transparent"
             @click.stop
         >
-            <v-list-item @click.stop="deleteList">
-                <v-list-item-title
-                    data-test-id="delete-list"
-                    class="text-red"
-                >
-                    Delete List
+            <v-list-item :to="`/list/${listId}/settings`">
+                <template #prepend>
+                    <v-icon
+                        icon="mdi-cog"
+                    />
+                </template>
+                <v-list-item-title>
+                    List Settings
                 </v-list-item-title>
+            </v-list-item>
+            <v-list-item @click.stop="deleteList">
                 <template #prepend>
                     <v-icon
                         color="red"
                         icon="mdi-delete"
                     />
                 </template>
+                <v-list-item-title
+                    data-test-id="delete-list"
+                    class="text-red"
+                >
+                    Delete List
+                </v-list-item-title>
             </v-list-item>
         </v-list>
     </v-menu>

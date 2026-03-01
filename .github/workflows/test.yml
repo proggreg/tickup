@@ -102,3 +102,18 @@ jobs:
           playwright-report/
           test-results/
         retention-days: 30
+
+    - name: Notify Slack
+      if: always()  # sends even on failure
+      uses: slackapi/slack-github-action@v2
+      with:
+        method: chat.postMessage
+        token: ${{ secrets.SLACK_BOT_TOKEN }}
+        payload: |
+          channel: ${{ secrets.SLACK_CHANNEL_ID }}
+          text: |
+            *${{ github.workflow }}* triggered manually by ${{ github.actor }}
+            Status: ${{ job.status }}
+            Branch: ${{ github.ref_name }}
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

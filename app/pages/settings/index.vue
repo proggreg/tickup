@@ -5,7 +5,6 @@ definePageMeta({
 const supabase = useSupabaseClient();
 const { userId } = useCurrentUser();
 const store = useSettingsStore();
-// const config = useRuntimeConfig();
 const route = useRoute();
 const githubConnected = ref(false);
 const githubLoading = ref(false);
@@ -25,10 +24,6 @@ async function checkGithubStatus() {
 await useAsyncData(() => store.getUserSettings().then(() => true));
 
 const options = reactive([{
-    name: 'Rename',
-    handler: renameStatus,
-    icon: 'mdi-pencil',
-}, {
     name: 'Delete',
     handler: deleteStatus,
     icon: 'mdi-delete',
@@ -72,16 +67,9 @@ async function save() {
     });
 }
 
-function renameStatus() {
-
-}
 function deleteStatus(status: Status) {
     store.statuses.splice(store.statuses.indexOf(status), 1);
     save();
-}
-
-function cancel() {
-
 }
 
 async function signOut() {
@@ -118,39 +106,6 @@ onMounted(async () => {
             githubConnected.value = true;
         }
     }
-
-    // const subscribePush = async () => {
-    //     if (!('serviceWorker' in navigator)) {
-    //         return;
-    //     }
-
-    //     const sw = await navigator.serviceWorker.ready;
-    //     try {
-    //         // Check for existing subscription
-    //         const existingSubscription = await sw.pushManager.getSubscription();
-    //         if (existingSubscription) {
-    //             // Unsubscribe if it exists
-    //             await existingSubscription.unsubscribe();
-    //         }
-
-    //         // Now subscribe with the new key
-    //         const pushSubscription = await sw.pushManager.subscribe({
-    //             userVisibleOnly: true,
-    //             applicationServerKey: config.public.VAPID_KEY,
-    //         });
-
-    //         // Send pushSubscription to server
-    //         await $fetch('/api/subscribe', {
-    //             method: 'POST',
-    //             body: { subscription: pushSubscription },
-    //         });
-    //     }
-    //     catch (error) {
-    //         console.error(error as Error, { component: 'Settings', function: 'subscribePush' });
-    //     }
-    // };
-
-    // subscribePush(); // TODO erroring
 });
 </script>
 

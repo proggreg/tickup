@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import type { Endpoints } from '@octokit/types';
 
-const githubBranchName = useState('githubBranchName');
+const githubBranchName = useState<string>('githubBranchName');
 const selectedRepo = useState<Endpoints['GET /repos/{owner}/{repo}']['response']['data']>('githubRepo');
 const { notify } = useNotification();
 const listStore = useListsStore();
 
-const githubBranchCommand = useState('githubBranchCommand', () => {
-    return computed(() => {
-        if (listStore.currentTodo.githubBranchName) {
-            return `git checkout "${githubBranchName.value}"`;
-        }
-        return `git checkout -b "${githubBranchName.value}"`;
-    });
+const githubBranchCommand = computed(() => {
+    if (listStore.currentTodo.githubBranchName) {
+        return `git checkout "${githubBranchName.value}"`;
+    }
+    return `git checkout -b "${githubBranchName.value}"`;
 });
 
 const copyToClipBoard = () => {
