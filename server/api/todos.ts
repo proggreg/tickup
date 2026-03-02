@@ -4,6 +4,9 @@ export default defineEventHandler(async (event) => {
     try {
         const query = getQuery(event);
         const supabase = await serverSupabaseClient(event);
+        const searchTerm = typeof query.q === 'string'
+            ? query.q.trim()
+            : (typeof query.query === 'string' ? query.query.trim() : '');
 
         if (query.today) {
             const start = new Date();
@@ -11,12 +14,18 @@ export default defineEventHandler(async (event) => {
             const end = new Date();
             end.setHours(23, 59, 59, 999);
 
-            const { data, error } = await supabase
+            let todosQuery = supabase
                 .from('Todos')
                 .select('*')
                 .gte('due_date', start.toISOString())
                 .lt('due_date', end.toISOString())
                 .is('parent_id', null);
+
+            if (searchTerm) {
+                todosQuery = todosQuery.ilike('name', `%${searchTerm}%`);
+            }
+
+            const { data, error } = await todosQuery;
 
             if (error) {
                 console.error('Supabase error:', error);
@@ -42,12 +51,17 @@ export default defineEventHandler(async (event) => {
             const start = new Date();
             start.setHours(0, 0, 0, 0);
 
-            const { data, error } = await supabase
+            let todosQuery = supabase
                 .from('Todos')
                 .select('*')
                 .lt('due_date', start.toISOString())
-                .is('parent_id', null)
-                .order('due_date', { ascending: false });
+                .is('parent_id', null);
+
+            if (searchTerm) {
+                todosQuery = todosQuery.ilike('name', `%${searchTerm}%`);
+            }
+
+            const { data, error } = await todosQuery.order('due_date', { ascending: false });
 
             if (error) {
                 console.error('Supabase error:', error);
@@ -69,11 +83,17 @@ export default defineEventHandler(async (event) => {
             }));
         }
 
-        const { data, error } = await supabase
+        let todosQuery = supabase
             .from('Todos')
             .select('*')
             .eq('user_id', query.id)
             .is('parent_id', null);
+
+        if (searchTerm) {
+            todosQuery = todosQuery.ilike('name', `%${searchTerm}%`);
+        }
+
+        const { data, error } = await todosQuery;
 
         if (error) {
             console.error('Supabase error:', error);

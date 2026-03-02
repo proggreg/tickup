@@ -3,6 +3,7 @@ import { streamText, convertToModelMessages, createGateway, stepCountIs } from '
 import { getListsTool } from '../ai/tools/get-lists';
 import { getListTool } from '../ai/tools/get-list';
 import { searchTool } from '../ai/tools/search';
+import { getTodosTool } from '../ai/tools/get-todos';
 
 const DEFAULT_MODEL = 'google/gemini-2.0-flash';
 
@@ -31,6 +32,7 @@ export default defineLazyEventHandler(async () => {
             tools: {
                 getLists: getListsTool(event),
                 getList: getListTool(event),
+                getTodos: getTodosTool(event),
                 search: searchTool(event),
             },
             stopWhen: stepCountIs(5),
