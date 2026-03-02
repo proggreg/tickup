@@ -5,8 +5,10 @@ import type { H3Event } from 'h3';
 
 export const getListsTool = (event: H3Event) => tool({
     description: 'Get all lists',
-    inputSchema: z.object({}),
-    execute: async () => {
+    inputSchema: z.object({
+        includeTodos: z.boolean().default(false),
+    }),
+    execute: async ({ includeTodos }) => {
         console.log('get lists tool called');
         const client = await serverSupabaseClient(event);
         const { data, error } = await client.from('Lists').select('*');
@@ -16,12 +18,13 @@ export const getListsTool = (event: H3Event) => tool({
         console.log('error', error);
 
         return {
-            lists: (data || []).map(({ id, name, user_id, created_at, updated_at }) => ({
+            lists: (data || []).map(({ id, name, user_id, created_at, updated_at, todos }) => ({
                 id,
                 name,
                 userId: user_id,
                 createdAt: created_at,
                 updatedAt: updated_at,
+                todos: includeTodos ? todos : [],
             })),
         };
     },
