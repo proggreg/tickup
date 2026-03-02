@@ -50,7 +50,7 @@ export async function getList(event, params: GetListParam) {
     const { data: listTodos, error: todosError } = await supabase
         .from('Todos')
         .select('*')
-        .eq('list_id', id)
+        .eq('list_id', list.id)
         .order('order', { ascending: true });
 
     if (todosError) {
