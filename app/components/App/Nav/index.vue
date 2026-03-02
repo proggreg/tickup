@@ -7,7 +7,7 @@ const loggedIn = computed(() => !!user.value);
 const contextMenuOpen = ref(false);
 const selectedList = ref<List>();
 const listsStore = useListsStore();
-const open = computed(() => isDesktop || !smAndDown);
+const open = computed(() => false);
 
 function openContextMenu(event: MouseEvent, list: List) {
     contextMenuOpen.value = true;

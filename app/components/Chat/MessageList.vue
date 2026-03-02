@@ -141,6 +141,7 @@ onMounted(() => scrollToBottom('instant'));
     height: 100%;
     overflow-y: auto;
     padding: 16px;
+    padding-bottom: 96px; /* keep last messages visible above the fixed input bar */
     display: flex;
     flex-direction: column;
     gap: 12px;
