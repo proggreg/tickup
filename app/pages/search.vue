@@ -8,40 +8,21 @@ definePageMeta({
 </script>
 
 <template>
-    <div class="search-page">
+    <div
+        class="d-flex flex-column"
+    >
         <div
-            class="search-results-container"
+            class="flex-grow-1 overflow-y-auto pa-4 pb-2"
             data-testid="search-results-container"
         >
             <SearchResults :disable-status-button="true" />
         </div>
 
         <div
-            class="search-input-bar"
+            class="flex-shrink-0 pt-2 px-4 pb-4 bg-background"
             data-testid="search-input-fixed"
         >
             <Search />
         </div>
     </div>
 </template>
-
-<style scoped>
-.search-page {
-    display: flex;
-    flex-direction: column;
-    height: 100dvh;
-}
-
-.search-results-container {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    padding-bottom: 8px;
-}
-
-.search-input-bar {
-    padding: 8px 16px 16px;
-    background: rgb(var(--v-theme-background));
-    flex-shrink: 0;
-}
-</style>

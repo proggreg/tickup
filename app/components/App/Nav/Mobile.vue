@@ -14,7 +14,6 @@ if (import.meta.client) {
     <v-bottom-navigation
         grow
         app
-        :active="!isKeyboardOpen"
     >
         <v-btn
             to="/"
