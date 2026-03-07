@@ -12,7 +12,7 @@ const { isMobile } = useDevice();
 <template>
     <v-virtual-scroll
         :items="store.results"
-        height="100%"
+        height="100vh"
         item-height="50"
     >
         <template #default="{ item }">
