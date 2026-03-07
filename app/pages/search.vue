@@ -19,7 +19,8 @@ definePageMeta({
         </div>
 
         <div
-            class="flex-shrink-0 pt-2 px-4 pb-4 bg-background"
+            class="flex-shrink-0 pt-2 px-4 pb-4 bg-background position-fixed bottom-10"
+            style="width: 100%; bottom: 45px;"
             data-testid="search-input-fixed"
         >
             <Search />
