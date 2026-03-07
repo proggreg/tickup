@@ -5,35 +5,20 @@ definePageMeta({
         navigateUnauthenticatedTo: '/login',
     },
 });
-
-const NAV_HEIGHT = 56;
-const inputBottom = ref(NAV_HEIGHT);
-
-if (import.meta.client) {
-    const update = () => {
-        const vvHeight = window.visualViewport?.height ?? window.innerHeight;
-        const keyboardHeight = window.innerHeight - vvHeight;
-        inputBottom.value = keyboardHeight > 0 ? keyboardHeight : NAV_HEIGHT;
-    };
-    window.visualViewport?.addEventListener('resize', update);
-    onUnmounted(() => {
-        window.visualViewport?.removeEventListener('resize', update);
-    });
-}
 </script>
 
 <template>
     <div class="search-page">
         <div
+            class="search-results-container"
             data-testid="search-results-container"
         >
             <SearchResults :disable-status-button="true" />
         </div>
 
         <div
-            class="search-input-fixed"
+            class="search-input-bar"
             data-testid="search-input-fixed"
-            :style="{ bottom: `${inputBottom}px` }"
         >
             <Search />
         </div>
@@ -42,23 +27,21 @@ if (import.meta.client) {
 
 <style scoped>
 .search-page {
-    height: 100%;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
 }
 
-.search-results {
-    height: 100%;
+.search-results-container {
+    flex: 1;
     overflow-y: auto;
     padding: 16px;
-    padding-bottom: 132px;
+    padding-bottom: 8px;
 }
 
-.search-input-fixed {
-    position: fixed;
-    left: 0;
-    right: 0;
-    z-index: 10;
+.search-input-bar {
     padding: 8px 16px 16px;
     background: rgb(var(--v-theme-background));
+    flex-shrink: 0;
 }
 </style>
