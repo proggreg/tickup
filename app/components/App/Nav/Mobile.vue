@@ -1,7 +1,20 @@
+<script setup lang="ts">
+const isKeyboardOpen = ref(false);
+
+if (import.meta.client) {
+    const onViewportResize = () => {
+        isKeyboardOpen.value = (window.visualViewport?.height ?? window.innerHeight) < window.innerHeight * 0.75;
+    };
+    window.visualViewport?.addEventListener('resize', onViewportResize);
+    onUnmounted(() => window.visualViewport?.removeEventListener('resize', onViewportResize));
+}
+</script>
+
 <template>
     <v-bottom-navigation
         grow
         app
+        :active="!isKeyboardOpen"
     >
         <v-btn
             to="/"

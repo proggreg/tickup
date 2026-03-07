@@ -1,33 +1,57 @@
 <script setup lang="ts">
 const searchStore = useSearchStore();
 const router = useRouter();
+const { isMobile } = useDevice();
 const open = ref(false);
 const loading = ref(false);
 
-if (import.meta.client) {
-    document.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 'k') {
-            e.preventDefault();
-            open.value = !open.value;
-            return false;
-        }
-    });
+function onKeyDown(e: KeyboardEvent) {
+    if (!isMobile && e.ctrlKey && e.key === 'k') {
+        e.preventDefault();
+        open.value = !open.value;
+    }
 }
+
+if (import.meta.client) {
+    document.addEventListener('keydown', onKeyDown);
+}
+
+onBeforeUnmount(() => {
+    if (import.meta.client) {
+        document.removeEventListener('keydown', onKeyDown);
+    }
+});
 
 router.beforeResolve(() => {
     open.value = false;
 });
 
 watch(() => searchStore.searchQuery, () => {
-    if (searchStore.searchQuery && searchStore.searchQuery.length) {
+    if (!isMobile && searchStore.searchQuery && searchStore.searchQuery.length) {
         open.value = true;
     }
     searchStore.debouncedSearch();
 });
+
+onMounted(() => {
+    searchStore.search();
+});
 </script>
 
 <template>
+    <v-text-field
+        v-if="isMobile"
+        v-model="searchStore.searchQuery"
+        data-testid="mobile-search-input"
+        placeholder="search"
+        append-inner-icon="mdi-magnify"
+        clearable
+        hide-details
+        variant="outlined"
+    />
+
     <v-dialog
+        v-else
         class="ma-6"
         width="500"
         min-height="300"
