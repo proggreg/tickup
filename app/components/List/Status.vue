@@ -1,7 +1,9 @@
 <script setup lang="ts">
 const settings = useSettingsStore();
 const store = useListsStore();
-const statusProps = defineProps<{ todo: Todo }>();
+const statusProps = withDefaults(defineProps<{ todo: Todo; disabled?: boolean }>(), {
+    disabled: false,
+});
 const statuses = computed(() => settings.statuses);
 function getStatusColor(todoStatus: string) {
     if (!statuses.value) return;
@@ -19,13 +21,15 @@ const updateStatus = (status: string) => {
 </script>
 
 <template>
-    <v-menu>
+    <v-menu :disabled="statusProps.disabled">
         <template #activator="{ props }">
             <v-btn
                 v-bind="props"
+                data-testid="status-button"
                 min-width="20px"
                 size="x-small"
                 rounded="xl"
+                :disabled="statusProps.disabled"
                 :style="{
                     backgroundColor: getStatusColor(statusProps.todo.status),
                 }"

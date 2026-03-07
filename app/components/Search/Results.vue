@@ -1,5 +1,8 @@
 <script setup lang="ts">
 const store = useSearchStore();
+const props = withDefaults(defineProps<{ disableStatusButton?: boolean }>(), {
+    disableStatusButton: false,
+});
 const _emit = defineEmits<{
     'item-click': [item: Todo];
 }>();
@@ -26,7 +29,10 @@ const { isMobile } = useDevice();
                         class="mr-2"
                         cols="auto"
                     >
-                        <ListStatus :todo="item" />
+                        <ListStatus
+                            :todo="item"
+                            :disabled="props.disableStatusButton"
+                        />
                     </v-col>
                     <v-col>
                         <span class="font-weight-bold">{{ item.name }}</span>

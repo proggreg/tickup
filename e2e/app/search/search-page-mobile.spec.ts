@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { v4 as uuidv4 } from 'uuid';
 
 test.describe('Search page on mobile', () => {
     test('keeps the search input fixed and dialog closed on mobile', async ({ page, isMobile }) => {
@@ -37,5 +38,38 @@ test.describe('Search page on mobile', () => {
                 && document.body.scrollWidth <= document.body.clientWidth;
         });
         expect(hasNoHorizontalOverflow).toBe(true);
+    });
+
+    test('disables status button in search page results', async ({ page, request, isMobile }) => {
+        test.skip(!isMobile, 'This regression is mobile-specific');
+
+        const testId = uuidv4();
+        const response = await request.post('/api/list', {
+            data: {
+                name: `Search List ${testId}`,
+                icon: 'mdi-format-list-bulleted',
+                listType: 'simple',
+                todos: [],
+            },
+        });
+        const list = await response.json();
+
+        const todoName = `Search Todo ${testId}`;
+        await request.post('/api/todo', {
+            data: {
+                name: todoName,
+                listId: list.id,
+                status: 'Open',
+            },
+        });
+
+        await page.goto('/search');
+        await page.waitForLoadState('networkidle');
+
+        const searchInput = page.getByTestId('mobile-search-input').locator('input');
+        await searchInput.fill(todoName);
+
+        await expect(page.getByText(todoName)).not.toBeHidden();
+        await expect(page.getByTestId('status-button').first()).toBeDisabled();
     });
 });

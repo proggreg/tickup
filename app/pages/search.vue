@@ -13,7 +13,7 @@ definePageMeta({
             class="search-results"
             data-testid="search-results-container"
         >
-            <SearchResults />
+            <SearchResults :disable-status-button="true" />
         </div>
 
         <div
