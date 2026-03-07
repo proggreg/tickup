@@ -22,11 +22,11 @@ const tab = ref('todo');
         <HomePageTabs v-model="tab" />
         <v-window
             v-model="tab"
-            class="fill-height px-4"
+            class="fill-height"
         >
             <v-window-item
                 value="overdue"
-                class="fill-height"
+                class="fill-height px-4"
             >
                 <HomePageOverDue />
             </v-window-item>
@@ -34,7 +34,7 @@ const tab = ref('todo');
                 value="todo"
                 class="fill-height"
             >
-                <div class="mb-4">
+                <div class="mb-4 px-4">
                     <TodoNew
                         :save-todo="saveTodo"
                         @add-todo="dialog.open = false; saveTodo = false"
@@ -44,7 +44,7 @@ const tab = ref('todo');
             </v-window-item>
             <v-window-item
                 value="done"
-                class="fill-height"
+                class="fill-height px-4"
             >
                 <HomePageTodayClosed />
             </v-window-item>
