@@ -6,18 +6,6 @@ import {
     createGateway,
 } from 'ai';
 
-const ALLOWED_MODELS = new Set([
-    'google/gemini-2.0-flash',
-    'google/gemini-2.0-flash-lite',
-    'google/gemini-1.5-pro',
-    'openai/gpt-4o',
-    'openai/gpt-4o-mini',
-    'anthropic/claude-3-5-haiku',
-    'anthropic/claude-3-7-sonnet',
-]);
-
-const DEFAULT_MODEL = 'google/gemini-2.0-flash';
-
 export default defineLazyEventHandler(async () => {
     const apiKey = useRuntimeConfig().aiGatewayApiKey;
     if (!apiKey) throw new Error('Missing AI Gateway API key');
