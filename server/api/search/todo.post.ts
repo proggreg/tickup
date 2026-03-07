@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server';
+import { objectToCamel } from 'ts-case-convert';
 
 export default defineEventHandler(async (event) => {
     try {
@@ -8,11 +9,25 @@ export default defineEventHandler(async (event) => {
         console.log('search query', query);
 
         // Use ilike for case-insensitive search in Supabase with snake_case fields
-        const { data, error } = await supabase
+        const { data: todos, error } = await supabase
             .from('Todos')
             .select('*')
             .ilike('name', `%${query}%`)
             .order('created_at', { ascending: false });
+
+        const listIds = todos.filter(todo => todo.list_id).map(todo => todo.list_id);
+
+        console.log('list ids', listIds);
+
+        const { data: lists } = await supabase.from('Lists').select('*').in('id', listIds);
+
+        todos.forEach((todo) => {
+            if (!todo.list_id) return;
+            const list = lists.find(list => list.id === todo.list_id);
+            todo.list = list;
+        });
+
+        console.log('related lists', lists);
 
         if (error) {
             console.error('Search error:', error);
@@ -22,19 +37,7 @@ export default defineEventHandler(async (event) => {
             });
         }
 
-        // Transform snake_case fields to camelCase for API response
-        return (data || []).map(todo => ({
-            ...todo,
-            dueDate: todo.due_date,
-            completedDate: todo.completed_date,
-            userId: todo.user_id,
-            listId: todo.list_id,
-            githubBranchName: todo.github_branch_name,
-            notificationDateTime: todo.notification_date_time,
-            notificationSent: todo.notification_sent,
-            createdAt: todo.created_at,
-            updatedAt: todo.updated_at,
-        }));
+        return objectToCamel(todos);
     }
     catch (error) {
         console.error('Todo search error:', error);
