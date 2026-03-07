@@ -16,10 +16,8 @@ if (import.meta.client) {
         inputBottom.value = keyboardHeight > 0 ? keyboardHeight : NAV_HEIGHT;
     };
     window.visualViewport?.addEventListener('resize', update);
-    window.visualViewport?.addEventListener('scroll', update);
     onUnmounted(() => {
         window.visualViewport?.removeEventListener('resize', update);
-        window.visualViewport?.removeEventListener('scroll', update);
     });
 }
 </script>
