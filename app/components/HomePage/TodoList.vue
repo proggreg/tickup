@@ -51,6 +51,7 @@ const handleSetOpenSimple = (todo: Todo) => {
     <v-card
         v-if="todos && todos.length"
         variant="flat"
+        class="todo-list-card mx-4"
     >
         <!-- Grouped view (for OverDue) -->
         <v-list
@@ -73,7 +74,7 @@ const handleSetOpenSimple = (todo: Todo) => {
                     slim
                     nav
                     style="padding: 0 16px !important;"
-                    class="pa-0"
+                    class="pa-0 todo-list-item"
                     @click="selectTodo(todo)"
                 >
                     <template #prepend>
@@ -106,6 +107,7 @@ const handleSetOpenSimple = (todo: Todo) => {
                     v-for="todo in closedTodos"
                     :key="todo.id"
                     slim
+                    class="todo-list-item"
                     @click="selectTodo(todo)"
                 >
                     <template #prepend>
@@ -138,7 +140,7 @@ const handleSetOpenSimple = (todo: Todo) => {
             <v-list-item
                 v-for="todo in todos"
                 :key="todo.id"
-                class="align-center"
+                class="align-center todo-list-item"
                 @click="selectTodo(todo)"
             >
                 <template #prepend>
@@ -168,8 +170,25 @@ const handleSetOpenSimple = (todo: Todo) => {
     <v-card
         v-else-if="emptyState"
         variant="flat"
-        :class="['d-flex flex-column justify-center align-center']"
+        class="todo-list-card mx-4 d-flex flex-column justify-center align-center"
     >
         <AppEmptyState height="100%" />
     </v-card>
 </template>
+
+<style scoped>
+.todo-list-card {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-radius: 24px !important;
+}
+
+.todo-list-item {
+    border-radius: 16px !important;
+    margin-bottom: 2px;
+    transition: background 0.2s;
+}
+
+.todo-list-item:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+</style>
