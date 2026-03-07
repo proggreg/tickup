@@ -5,24 +5,36 @@ const { notify } = useNotification();
 const listStore = useListsStore();
 
 const { todo } = defineProps<{ todo: Todo }>();
-const githubBranchCommand = useState('githubBranchCommand');
+const githubBranchName = useState<string>('githubBranchName', () => '');
+const githubBranchCommand = computed(() => {
+    if (listStore.currentTodo.githubBranchName) {
+        return `git checkout "${githubBranchName.value}"`;
+    }
+    return `git checkout -b "${githubBranchName.value}"`;
+});
 const showLinkDialog = useState('showLinkDialog', () => null);
 const selectedRepo = useState<Endpoints['GET /repos/{owner}/{repo}']['response']['data']>('githubRepo', () => null);
-const githubBranchName = useState('githubBranchName', () => {
-    return computed(() => {
-        if (todo?.githubBranchName) {
-            return todo.githubBranchName;
-        }
-        let branchName = filteredTodoName.value.replace(/[!@#$%^&*(),.?":{}|<>]/g, '').replace(/ /g, '-').toLowerCase();
-        if (branchName.charAt(branchName.length - 1) === '-') {
-            branchName = branchName.slice(0, -1);
-        }
-        return branchName;
-    });
-});
 const pendingBranchResponse = useState('pendingBranchResponse', () => null);
 
 const filteredTodoName = computed(() => todo.name.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2700}-\u{27BF}]|[\u{1F000}-\u{1F02F}]|[\u{1F0A0}-\u{1F0FF}]|[\u{1F100}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2B00}-\u{2BFF}]/gu, '').trim());
+
+watchEffect(() => {
+    if (todo?.githubBranchName) {
+        githubBranchName.value = todo.githubBranchName;
+        return;
+    }
+
+    let branchName = filteredTodoName.value
+        .replace(/[!@#$%^&*(),.?":{}|<>]/g, '')
+        .replace(/ /g, '-')
+        .toLowerCase();
+
+    if (branchName.endsWith('-')) {
+        branchName = branchName.slice(0, -1);
+    }
+
+    githubBranchName.value = branchName;
+});
 
 function confirmLinkBranch() {
     if (pendingBranchResponse.value) {

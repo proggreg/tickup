@@ -13,6 +13,7 @@ export const createNewTodoState = (): Todo => ({
     color: '#87909e',
     links: [],
     attachments: [],
+    priorityLev: '',
 });
 
 export const useListsStore = defineStore('lists', {
@@ -82,11 +83,17 @@ export const useListsStore = defineStore('lists', {
             }
 
             try {
+                const route = useRoute();
+
                 this.lists = this.lists.filter((list: List) => list.id !== listId);
                 await $fetch<List>(`/api/list/${listId}`, {
                     method: 'DELETE',
                 });
-                navigateTo('/');
+
+                // Only navigate away if we're currently viewing the list being deleted
+                if (route.path.includes('/list/') && route.params?.id === listId) {
+                    navigateTo('/');
+                }
             }
             catch {
                 // logger.error(err as Error, { component: 'ListsStore', function: 'deleteList', listId })
@@ -214,7 +221,38 @@ export const useListsStore = defineStore('lists', {
                 body: todo,
             });
 
+            // Update local state to match server response
+            if (this.currentTodo && this.currentTodo.id === updatedTodo.id) {
+                const existingSubtasks = this.currentTodo.subtasks;
+                this.currentTodo = updatedTodo;
+                if (existingSubtasks) this.currentTodo.subtasks = existingSubtasks;
+            }
+
             return updatedTodo;
+        },
+        async fetchSubtasks(todoId: string | number) {
+            const subtasks = await $fetch<Todo[]>(`/api/todo/${todoId}/subtasks`);
+            if (this.currentTodo && Number(this.currentTodo.id) === Number(todoId)) {
+                this.currentTodo.subtasks = subtasks || [];
+            }
+            return subtasks || [];
+        },
+        async addSubtask(name: string, parentId: string | number) {
+            const subtask = await $fetch<Todo>('/api/todo', {
+                method: 'POST',
+                body: { name, status: 'Open', parentId: Number(parentId), color: '#87909e', edit: false, links: [] },
+            });
+            if (this.currentTodo?.subtasks) this.currentTodo.subtasks.push(subtask);
+            else if (this.currentTodo) this.currentTodo.subtasks = [subtask];
+            return subtask;
+        },
+        async deleteSubtask(subtaskId: string | number) {
+            await $fetch(`/api/todo/${subtaskId}`, { method: 'DELETE' });
+            if (this.currentTodo?.subtasks) {
+                this.currentTodo.subtasks = this.currentTodo.subtasks.filter(
+                    (s: Todo) => String(s.id) !== String(subtaskId),
+                );
+            }
         },
         debounceUpdateTodo: useDebounceFn(function (...args) {
             // @ts-expect-error: debounce context must be bound to the store, this workaround ensures correct `this`
@@ -272,7 +310,6 @@ export const useListsStore = defineStore('lists', {
         },
         async getLists() {
             const lists = await $fetch<List[]>('/api/lists');
-            console.log('get lists', lists);
             this.setLists(lists);
         },
         async getList(id: string) {
@@ -338,14 +375,5 @@ export const useListsStore = defineStore('lists', {
         resetList() {
             this.newList = createNewListState();
         },
-
     },
-    // persist: {
-    //   debug: true,
-    //   storage: piniaPluginPersistedstate.localStorage(),
-    // },
 });
-
-// if (import.meta.hot) {
-//     import.meta.hot.accept(acceptHMRUpdate(useListsStore, import.meta.hot));
-// }

@@ -8,7 +8,12 @@ const currentTab = ref<ViewType>('list');
 const on = useToolbar();
 
 onBeforeMount(async () => {
-    listsStore.getCurrentList();
+    await listsStore.getCurrentList();
+
+    const defaultView = listsStore.currentList?.defaultView as ViewType | undefined;
+    if (defaultView && tabs.value.includes(defaultView)) {
+        currentTab.value = defaultView;
+    }
 });
 
 if (!listsStore.currentList) {
@@ -34,11 +39,14 @@ function updateListType(listType) {
 </script>
 
 <template>
-    <v-container fluid>
+    <v-container
+        fluid
+        class="fill-height"
+    >
         <v-row class="fill-height">
             <ListHeader />
             <v-col
-                class="fill-height"
+                class="fill-height d-flex flex-column"
                 cols="12"
             >
                 <v-tabs v-model="currentTab">
@@ -53,11 +61,10 @@ function updateListType(listType) {
                     v-model="currentTab"
                     :touch="false"
                     class="mt-4"
-                    style="height: 100%;"
                 >
                     <v-window-item
                         value="board"
-                        class="fill-height"
+                        class=""
                     >
                         <Board />
                     </v-window-item>

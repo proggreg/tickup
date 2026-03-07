@@ -2,6 +2,7 @@ import { defineNuxtConfig } from 'nuxt/config';
 import vuetify from './config/vuetify';
 
 export default defineNuxtConfig({
+
     modules: [
         '@vite-pwa/nuxt',
         'vuetify-nuxt-module',
@@ -35,7 +36,6 @@ export default defineNuxtConfig({
     },
 
     runtimeConfig: {
-
         private: {
             vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
             github: {
@@ -45,6 +45,7 @@ export default defineNuxtConfig({
                 clientSecret: process.env.GITHUB_CLIENT_SECRET,
             },
         },
+
         public: {
             apiBase: '/api',
             hotjarId: process.env.HOTJAR_ID,
@@ -61,22 +62,21 @@ export default defineNuxtConfig({
         },
     },
 
+    ignore: [
+        '**/.claude',
+    ],
+
     experimental: {
         payloadExtraction: false,
         typedPages: false,
     },
+    compatibilityDate: '2026-02-28',
 
     nitro: {
         esbuild: {
             options: {
                 target: 'esnext',
             },
-        },
-    },
-
-    vite: {
-        server: {
-            allowedHosts: ['dev.gregfield.dev'],
         },
     },
 
@@ -87,12 +87,12 @@ export default defineNuxtConfig({
     },
 
     bugsnag: {
-        disabled: process.env.NODE_ENV === 'development', // Disable in development
+        // disabled: process.env.NODE_ENV === 'development', // Disable in development
         publishRelease: true,
         config: {
             apiKey: process.env.BUGSNAG_API_KEY,
-            enabledReleaseStages: ['staging', 'production'],
-            releaseStage: process.env.NUXT_PUBLIC_VERCEL_ENV || 'development',
+            enabledReleaseStages: ['preview', 'production'],
+            releaseStage: process.env.VERCEL_ENV || 'development',
         },
     },
 

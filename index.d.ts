@@ -16,6 +16,7 @@ declare global {
         edit: boolean;
         selected?: boolean;
         color: string;
+        priorityLev: string;
         githubBranchName?: string;
         githubRepo?: string;
         githubLink?: string;
@@ -24,11 +25,8 @@ declare global {
             title: string;
             url: string;
         }[];
-        subtasks?: {
-            name: string;
-            status: string;
-            id: string;
-        }[];
+        parentId?: string;
+        subtasks?: Todo[]; // hydrated client-side only; never sent in PUT/POST body
         attachments?: {
             id: ObjectId;
             attachmentId: string;
@@ -58,6 +56,10 @@ declare global {
         listType: ListType;
         icon: string;
         githubRepo?: string;
+        /**
+         * Default view when opening this list ("list" or "board").
+         */
+        defaultView?: View;
     }
 
     interface listsState {

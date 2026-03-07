@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const listStore = useListsStore();
-interface Repo {
+export interface Repo {
     id: number;
     name: string;
     full_name?: string;
@@ -12,12 +12,14 @@ interface Repo {
     updated_at?: string;
 }
 
+const liststore = useListsStore();
 const selectedRepo = useState('githubRepo', () => null);
 const repos = ref<Repo[]>([]);
 const loading = ref(false);
 const error = ref('');
 const repoSelectInput = ref();
 const menuOpen = ref(false);
+const emit = defineEmits(['updateRepo']);
 
 async function loadRepos() {
     loading.value = true;
@@ -34,6 +36,8 @@ async function loadRepos() {
 
 function handleRepoUpdate(value: Repo | null) {
     selectedRepo.value = value;
+    listStore.currentList.githubRepo = value.name;
+    emit('updateRepo');
     if (value) {
         menuOpen.value = false;
         nextTick(() => {
@@ -68,6 +72,13 @@ onBeforeMount(async () => {
 });
 onUnmounted(() => {
     selectedRepo.value = null;
+});
+
+watch(() => liststore.currentList.githubRepo, (repo) => {
+    const listsDefaultRepo = repos.value.find(r => r.name === repo);
+    if (listsDefaultRepo) {
+        selectedRepo.value = listsDefaultRepo;
+    }
 });
 </script>
 
