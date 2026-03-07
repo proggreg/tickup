@@ -224,7 +224,6 @@ export const useListsStore = defineStore('lists', {
             // Update local state to match server response
             if (this.currentTodo && this.currentTodo.id === updatedTodo.id) {
                 const existingSubtasks = this.currentTodo.subtasks;
-                this.currentTodo = updatedTodo;
                 if (existingSubtasks) this.currentTodo.subtasks = existingSubtasks;
             }
 
