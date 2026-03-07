@@ -37,6 +37,13 @@ const { isMobile } = useDevice();
                     <v-col>
                         <span class="font-weight-bold">{{ item.name }}</span>
                         <br>
+                        <v-chip
+                            v-if="item.list"
+                            size="small"
+                        >
+                            {{ item.list.name }}
+                        </v-chip>
+                        <br>
                         {{ new Date(item.updatedAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' }) }}
                         {{ new Date(item.updatedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) }}
                     </v-col>

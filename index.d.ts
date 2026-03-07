@@ -11,6 +11,7 @@ declare global {
         id?: string;
         dueDate?: Date;
         listId?: string;
+        list?: List;
         status: string;
         desc?: string;
         edit: boolean;
