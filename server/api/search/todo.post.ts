@@ -2,15 +2,16 @@ import { serverSupabaseClient } from '#supabase/server';
 
 export default defineEventHandler(async (event) => {
     try {
-        const { q, id } = getQuery(event);
+        const { query } = await readBody(event);
         const supabase = await serverSupabaseClient(event);
+
+        console.log('search query', query);
 
         // Use ilike for case-insensitive search in Supabase with snake_case fields
         const { data, error } = await supabase
             .from('Todos')
             .select('*')
-            .eq('user_id', id)
-            .ilike('name', `%${q}%`)
+            .ilike('name', `%${query}%`)
             .order('created_at', { ascending: false });
 
         if (error) {
@@ -39,7 +40,7 @@ export default defineEventHandler(async (event) => {
         console.error('Todo search error:', error);
         throw createError({
             statusCode: 500,
-            statusMessage: 'Search failed',
+            statusMessage: `Search failed ${error.message}`,
         });
     }
 });
