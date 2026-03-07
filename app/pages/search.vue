@@ -5,6 +5,23 @@ definePageMeta({
         navigateUnauthenticatedTo: '/login',
     },
 });
+
+const NAV_HEIGHT = 56;
+const inputBottom = ref(NAV_HEIGHT);
+
+if (import.meta.client) {
+    const update = () => {
+        const vvHeight = window.visualViewport?.height ?? window.innerHeight;
+        const keyboardHeight = window.innerHeight - vvHeight;
+        inputBottom.value = keyboardHeight > 0 ? keyboardHeight : NAV_HEIGHT;
+    };
+    window.visualViewport?.addEventListener('resize', update);
+    window.visualViewport?.addEventListener('scroll', update);
+    onUnmounted(() => {
+        window.visualViewport?.removeEventListener('resize', update);
+        window.visualViewport?.removeEventListener('scroll', update);
+    });
+}
 </script>
 
 <template>
@@ -19,6 +36,7 @@ definePageMeta({
         <div
             class="search-input-fixed"
             data-testid="search-input-fixed"
+            :style="{ bottom: `${inputBottom}px` }"
         >
             <Search />
         </div>
@@ -42,7 +60,6 @@ definePageMeta({
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 56px;
     z-index: 10;
     padding: 8px 16px 16px;
     background: rgb(var(--v-theme-background));
