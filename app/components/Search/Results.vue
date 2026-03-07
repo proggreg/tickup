@@ -3,6 +3,7 @@ const store = useSearchStore();
 const _emit = defineEmits<{
     'item-click': [item: Todo];
 }>();
+const { isMobile } = useDevice();
 </script>
 
 <template>
@@ -15,20 +16,29 @@ const _emit = defineEmits<{
             <v-list-item
                 link
                 :to="`/todo/${item.id}`"
+                class="py-2"
             >
-                <template #prepend>
-                    <ListStatus :todo="item" />
-                </template>
+                <v-row
+                    no-gutters
+                    class="mb-2"
+                >
+                    <v-col
+                        class="mr-2"
+                        cols="auto"
+                    >
+                        <ListStatus :todo="item" />
+                    </v-col>
+                    <v-col>
+                        <span class="font-weight-bold">{{ item.name }}</span>
+                        <br>
+                        {{ new Date(item.updatedAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' }) }}
+                        {{ new Date(item.updatedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) }}
+                    </v-col>
+                </v-row>
 
-                <v-list-item-title class="font-weight-bold pa-4">
-                    {{ item.name }}
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                    {{ new Date(item.updatedAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' }) }}
-                    {{ new Date(item.updatedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) }}
-                </v-list-item-subtitle>
                 <template #append>
                     <v-btn
+                        v-if="!isMobile"
                         :to="`/todo/${item.id}`"
                         icon="mdi-open-in-new"
                         variant="text"

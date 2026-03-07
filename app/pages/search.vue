@@ -1,26 +1,50 @@
 <script setup lang="ts">
 definePageMeta({
-    layout: false,
     auth: {
         unauthenticatedOnly: false,
         navigateUnauthenticatedTo: '/login',
     },
 });
-
-const _searchStore = useSearchStore();
-
-// watch(() => searchStore.searchQuery, () => {
-//   searchStore.debouncedSearch()
-// })
 </script>
 
 <template>
-    <v-row>
-        <v-col cols="12">
-            <!-- <v-text-field v-model="searchStore.searchQuery" autofocus class="mx-12" append-inner-icon="mdi-magnify" /> -->
-        </v-col>
-        <v-col cols="12">
+    <div class="search-page">
+        <div
+            class="search-results"
+            data-testid="search-results-container"
+        >
             <SearchResults />
-        </v-col>
-    </v-row>
+        </div>
+
+        <div
+            class="search-input-fixed"
+            data-testid="search-input-fixed"
+        >
+            <Search />
+        </div>
+    </div>
 </template>
+
+<style scoped>
+.search-page {
+    height: 100%;
+    overflow: hidden;
+}
+
+.search-results {
+    height: 100%;
+    overflow-y: auto;
+    padding: 16px;
+    padding-bottom: 132px;
+}
+
+.search-input-fixed {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 56px;
+    z-index: 10;
+    padding: 8px 16px 16px;
+    background: rgb(var(--v-theme-background));
+}
+</style>
