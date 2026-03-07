@@ -71,8 +71,8 @@ onBeforeMount(() => {
 
 .pill-tab-btn {
     border-radius: 50px !important;
-    min-width: 88px !important;
-    font-size: 0.8125rem !important;
+    min-width: 100px !important;
+    font-size: 1rem !important;
     font-weight: 500 !important;
     text-transform: none !important;
     letter-spacing: 0 !important;
