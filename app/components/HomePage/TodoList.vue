@@ -86,7 +86,7 @@ const deleteTodo = async (todo: Todo) => {
                     <template #prepend>
                         <v-checkbox @click.stop="(el: any) => handleSetClosed(todo, el)" />
                     </template>
-                    <v-list-item-title class="text-h6">
+                    <v-list-item-title class="todo-title">
                         {{ todo.name }}
                     </v-list-item-title>
 
@@ -155,7 +155,7 @@ const deleteTodo = async (todo: Todo) => {
                             @click.stop="(el: any) => handleSetOpen(todo, el)"
                         />
                     </template>
-                    <v-list-item-title class="text-h6">
+                    <v-list-item-title class="todo-title">
                         {{ todo.name }}
                     </v-list-item-title>
 
@@ -227,7 +227,7 @@ const deleteTodo = async (todo: Todo) => {
                     />
                 </template>
                 <v-list-item-title
-                    class="text-h6"
+                    class="todo-title"
                     data-testid="todo-title"
                 >
                     {{ todo.name }}
@@ -295,5 +295,9 @@ const deleteTodo = async (todo: Todo) => {
 
 .todo-list-item:hover {
     background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.todo-title {
+    font-size: 1.05rem !important;
 }
 </style>
