@@ -47,7 +47,6 @@ onMounted(() => {
         append-inner-icon="mdi-magnify"
         clearable
         hide-details
-        :autofocus="isMobile"
         variant="outlined"
     />
 
