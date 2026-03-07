@@ -38,9 +38,12 @@ const handleSubmit = (e: Event) => {
         <div class="chat-input-wrapper">
             <v-divider />
 
-            <v-card-item class="chat-input-bar py-2">
-                <form class="chat-input-form" @submit="handleSubmit">
-                    <div class="chat-input-row d-flex align-center ga-3">
+            <v-card-item class="chat-input-bar">
+                <form
+                    class="chat-input-form"
+                    @submit="handleSubmit"
+                >
+                    <div class="chat-input-row d-flex align-center ga-3 py-2">
                         <ChatModelSelect
                             v-model="selectedModel"
                             class="flex-shrink-0"
