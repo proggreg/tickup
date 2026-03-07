@@ -27,7 +27,6 @@ if (import.meta.client) {
 <template>
     <div class="search-page">
         <div
-            class="search-results"
             data-testid="search-results-container"
         >
             <SearchResults :disable-status-button="true" />
