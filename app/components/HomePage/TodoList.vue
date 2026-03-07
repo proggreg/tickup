@@ -14,6 +14,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 // const { isMobile } = useDevice()
 const { selectTodo, setClosed, setOpen, formatDate } = useTodoActions();
+const listsStore = useListsStore();
 const opened = ref(['Open']);
 
 const openTodos = computed(() => {
@@ -45,13 +46,18 @@ const handleSetClosedSimple = (todo: Todo) => {
 const handleSetOpenSimple = (todo: Todo) => {
     setOpen(todo);
 };
+
+const deleteTodo = async (todo: Todo) => {
+    if (!todo.id) return;
+    await listsStore.deleteTodo(todo.id);
+};
 </script>
 
 <template>
     <v-card
         v-if="todos && todos.length"
         variant="flat"
-        class="todo-list-card mx-4"
+        class="todo-list-card"
     >
         <!-- Grouped view (for OverDue) -->
         <v-list
@@ -89,7 +95,40 @@ const handleSetOpenSimple = (todo: Todo) => {
                     </v-list-item-subtitle>
 
                     <template #append>
-                        <AppDeleteButton :todo="todo" />
+                        <v-menu>
+                            <template #activator="{ props: menuProps }">
+                                <v-btn
+                                    v-bind="menuProps"
+                                    icon="mdi-dots-vertical"
+                                    variant="text"
+                                    size="small"
+                                    @click.stop
+                                />
+                            </template>
+                            <v-list>
+                                <v-dialog width="250px">
+                                    <template #activator="{ props: dialogProps }">
+                                        <v-list-item
+                                            v-bind="dialogProps"
+                                            prepend-icon="mdi-trash-can"
+                                            title="Delete"
+                                            base-color="red"
+                                            @click.stop
+                                        />
+                                    </template>
+                                    <template #default="{ isActive }">
+                                        <v-card>
+                                            <v-card-text>Are you sure you want to delete this todo?</v-card-text>
+                                            <v-card-actions>
+                                                <v-spacer />
+                                                <v-btn color="red" @click="deleteTodo(todo); isActive.value = false">Yes</v-btn>
+                                                <v-btn @click="isActive.value = false">No</v-btn>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </template>
+                                </v-dialog>
+                            </v-list>
+                        </v-menu>
                     </template>
                 </v-list-item>
             </v-list-group>
@@ -125,7 +164,40 @@ const handleSetOpenSimple = (todo: Todo) => {
                     </v-list-item-subtitle>
 
                     <template #append>
-                        <AppDeleteButton :todo="todo" />
+                        <v-menu>
+                            <template #activator="{ props: menuProps }">
+                                <v-btn
+                                    v-bind="menuProps"
+                                    icon="mdi-dots-vertical"
+                                    variant="text"
+                                    size="small"
+                                    @click.stop
+                                />
+                            </template>
+                            <v-list>
+                                <v-dialog width="250px">
+                                    <template #activator="{ props: dialogProps }">
+                                        <v-list-item
+                                            v-bind="dialogProps"
+                                            prepend-icon="mdi-trash-can"
+                                            title="Delete"
+                                            base-color="red"
+                                            @click.stop
+                                        />
+                                    </template>
+                                    <template #default="{ isActive }">
+                                        <v-card>
+                                            <v-card-text>Are you sure you want to delete this todo?</v-card-text>
+                                            <v-card-actions>
+                                                <v-spacer />
+                                                <v-btn color="red" @click="deleteTodo(todo); isActive.value = false">Yes</v-btn>
+                                                <v-btn @click="isActive.value = false">No</v-btn>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </template>
+                                </v-dialog>
+                            </v-list>
+                        </v-menu>
                     </template>
                 </v-list-item>
             </v-list-group>
@@ -162,7 +234,40 @@ const handleSetOpenSimple = (todo: Todo) => {
                 </v-list-item-title>
 
                 <template #append>
-                    <AppDeleteButton :todo="todo" />
+                    <v-menu>
+                        <template #activator="{ props: menuProps }">
+                            <v-btn
+                                v-bind="menuProps"
+                                icon="mdi-dots-vertical"
+                                variant="text"
+                                size="small"
+                                @click.stop
+                            />
+                        </template>
+                        <v-list>
+                            <v-dialog width="250px">
+                                <template #activator="{ props: dialogProps }">
+                                    <v-list-item
+                                        v-bind="dialogProps"
+                                        prepend-icon="mdi-trash-can"
+                                        title="Delete"
+                                        base-color="red"
+                                        @click.stop
+                                    />
+                                </template>
+                                <template #default="{ isActive }">
+                                    <v-card>
+                                        <v-card-text>Are you sure you want to delete this todo?</v-card-text>
+                                        <v-card-actions>
+                                            <v-spacer />
+                                            <v-btn color="red" @click="deleteTodo(todo); isActive.value = false">Yes</v-btn>
+                                            <v-btn @click="isActive.value = false">No</v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </template>
+                            </v-dialog>
+                        </v-list>
+                    </v-menu>
                 </template>
             </v-list-item>
         </v-list>
@@ -170,7 +275,7 @@ const handleSetOpenSimple = (todo: Todo) => {
     <v-card
         v-else-if="emptyState"
         variant="flat"
-        class="todo-list-card mx-4 d-flex flex-column justify-center align-center"
+        class="todo-list-card d-flex flex-column justify-center align-center"
     >
         <AppEmptyState height="100%" />
     </v-card>
