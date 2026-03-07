@@ -2,9 +2,17 @@ import { defineStore } from 'pinia';
 
 export const useSearchStore = defineStore('search', () => {
     const searchQuery = ref('');
-    const results = reactive<Todo[]>([]);
+    const results = ref<Todo[]>([]);
 
-    function search() {
+    async function search() {
+        const todos = await $fetch<Todo[]>('/api/search/todo', {
+            method: 'POST',
+            body: {
+                query: searchQuery.value,
+            },
+        });
+
+        results.value = todos;
     }
     const debouncedSearch = useDebounceFn(search, 500);
 
