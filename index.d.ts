@@ -39,8 +39,8 @@ declare global {
         }[];
         notificationDateTime?: string | Date;
         notificationSent?: boolean;
-        createdAt: string;
-        updatedAt: string;
+        createdAt?: string;
+        updatedAt?: string;
     }
 
     interface Status {
