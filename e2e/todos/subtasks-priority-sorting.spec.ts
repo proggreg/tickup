@@ -34,7 +34,8 @@ test.describe('subtasks priority and sorting', () => {
         await page.waitForLoadState('networkidle');
 
         // Add a subtask
-        const subtaskInput = page.getByTestId('add-subtask-input').locator('input');
+        const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+        await page.waitForTimeout(500);
         await subtaskInput.click();
         await subtaskInput.fill('Test Subtask');
         await page.waitForTimeout(500);
@@ -131,7 +132,8 @@ test.describe('subtasks priority and sorting', () => {
         ];
 
         for (const subtaskData of subtasksData) {
-            const subtaskInput = page.getByTestId('add-subtask-input').locator('input');
+            const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+            await page.waitForTimeout(500);
             await subtaskInput.click();
             await subtaskInput.fill(subtaskData.name);
             await page.waitForTimeout(500);
@@ -147,7 +149,7 @@ test.describe('subtasks priority and sorting', () => {
                 const priorityButton = page.getByTestId(`subtask-priority-${i}`);
                 await priorityButton.click();
                 await page.waitForTimeout(200);
-                
+
                 const priorityOption = page.getByTestId(`subtask-priority-${subtasksData[i].priority}-${i}`);
                 await priorityOption.click();
                 await page.waitForTimeout(500);
@@ -230,7 +232,8 @@ test.describe('subtasks priority and sorting', () => {
         await page.waitForLoadState('networkidle');
 
         // Add a subtask
-        const subtaskInput = page.getByTestId('add-subtask-input').locator('input');
+        const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+        await page.waitForTimeout(500);
         await subtaskInput.click();
         await subtaskInput.fill('High Priority Subtask');
         await page.waitForTimeout(500);
@@ -297,7 +300,8 @@ test.describe('subtasks priority and sorting', () => {
         ];
 
         for (const subtaskData of subtasksData) {
-            const subtaskInput = page.getByTestId('add-subtask-input').locator('input');
+            const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+            await page.waitForTimeout(500);
             await subtaskInput.click();
             await subtaskInput.fill(subtaskData.name);
             await page.waitForTimeout(500);
@@ -312,7 +316,7 @@ test.describe('subtasks priority and sorting', () => {
             const priorityButton = page.getByTestId(`subtask-priority-${i}`);
             await priorityButton.click();
             await page.waitForTimeout(200);
-            
+
             const priorityOption = page.getByTestId(`subtask-priority-${subtasksData[i].priority}-${i}`);
             await priorityOption.click();
             await page.waitForTimeout(500);

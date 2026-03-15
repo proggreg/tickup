@@ -38,6 +38,6 @@ test.describe('Homepage done tab', () => {
 
         await page.getByRole('tab', { name: 'Done' }).click();
 
-        await expect(page.getByTestId('todo-title').filter({ hasText: 'Legacy done todo' })).toBeVisible();
+        await expect(page.getByTestId('todo-title').filter({ hasText: 'Legacy done todo' }).first()).toBeVisible();
     });
 });
