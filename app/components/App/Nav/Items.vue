@@ -2,7 +2,6 @@
 const store = useListsStore();
 const editListName = ref('');
 const { isMobile } = useDevice();
-const router = useRouter();
 
 function renameList(list: List) {
     store.updateList(list);
@@ -13,16 +12,6 @@ function rename(list: List) {
     if (store.currentList.id === list.id) {
         store.currentList = list;
     }
-}
-
-function openList(listId: string) {
-    if (!listId) return;
-    router.push(`/list/${listId}`);
-}
-
-function deleteList(listId: string) {
-    if (!listId) return;
-    store.deleteList(listId);
 }
 
 onBeforeMount(() => {
@@ -46,7 +35,7 @@ onBeforeMount(() => {
                         class="nav-list-item"
                         style="cursor: pointer;"
                         :data-test-id="item.name"
-                        @click="openList(item.id)"
+                        :to="`/list/${item.id}`"
                     >
                         <v-text-field
                             v-if="editListName === item.id"
@@ -67,33 +56,7 @@ onBeforeMount(() => {
                         </v-list-item-title>
 
                         <template #append>
-                            <div
-                                class="nav-more-wrapper"
-                                @click.stop
-                                @mousedown.stop
-                                @touchstart.stop
-                            >
-                                <v-menu>
-                                    <template #activator="{ props: menuProps }">
-                                        <v-btn
-                                            v-bind="menuProps"
-                                            icon
-                                            variant="text"
-                                            density="comfortable"
-                                            class="nav-more-btn"
-                                        >
-                                            <v-icon>mdi-dots-vertical</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <v-list density="compact">
-                                        <v-list-item @click.stop="deleteList(item.id)">
-                                            <v-list-item-title class="text-error">
-                                                Delete list
-                                            </v-list-item-title>
-                                        </v-list-item>
-                                    </v-list>
-                                </v-menu>
-                            </div>
+                            <list-menu :list-id="item.id" />
                         </template>
                     </v-list-item>
                     <v-divider v-if="isMobile" />
