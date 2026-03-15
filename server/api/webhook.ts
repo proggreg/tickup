@@ -5,6 +5,7 @@ export default defineEventHandler(async (event) => {
     const supabase = await serverSupabaseClient(event);
 
     console.log('Webhook Received: ', event);
+    // Test
 
     if (event.method === 'GET') {
         const query = getQuery(event);
