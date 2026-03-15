@@ -16,6 +16,8 @@ type WebhookPayload = {
 export default defineEventHandler(async (event) => {
     const supabase = await serverSupabaseClient<Database>(event);
 
+    console.log('Webhook Received: ', event.headers);
+
     if (event.method === 'GET') {
         const query = getQuery(event);
         const ref = query.ref;
