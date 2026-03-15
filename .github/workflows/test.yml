@@ -86,8 +86,6 @@ jobs:
     - name: Run Playwright tests
       run: pnpm exec playwright test
       env:
-        MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        NUXT_NEXTAUTH_SECRET: ${{ secrets.NUXT_NEXTAUTH_SECRET || 'test-secret-key-for-ci' }}
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         NODE_ENV: test

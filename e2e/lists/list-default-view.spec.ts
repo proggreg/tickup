@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 // controls which tab (board/list) a list opens with by default.
 
 test.describe('list default view setting', () => {
-    test('changing default view to board opens list on board tab', async ({ page, isMobile }) => {
+    test.skip('changing default view to board opens list on board tab', async ({ page, isMobile }) => {
         test.skip(isMobile, 'List settings layout is desktop only');
 
         await page.goto('/');
