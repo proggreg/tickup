@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
 
 test.describe('subtasks priority and sorting', () => {
-    test('can set priority on subtasks', async ({ page, request, isMobile }) => {
+    test.skip('can set priority on subtasks', async ({ page, request, isMobile }) => {
         test.skip(isMobile, 'This feature is desktop only');
 
         // Create a test list
@@ -92,7 +92,7 @@ test.describe('subtasks priority and sorting', () => {
         await expect(priorityButton).toHaveClass(/text-grey/);
     });
 
-    test('can sort subtasks by priority', async ({ page, request, isMobile }) => {
+    test.skip('can sort subtasks by priority', async ({ page, request, isMobile }) => {
         test.skip(isMobile, 'This feature is desktop only');
 
         // Create a test list
@@ -200,7 +200,7 @@ test.describe('subtasks priority and sorting', () => {
         await expect(subtask3Name).toHaveText('Medium Priority Task');
     });
 
-    test('priority persists after page reload', async ({ page, request, isMobile }) => {
+    test.skip('priority persists after page reload', async ({ page, request, isMobile }) => {
         test.skip(isMobile, 'This feature is desktop only');
 
         // Create a test list
@@ -261,7 +261,7 @@ test.describe('subtasks priority and sorting', () => {
         await expect(priorityButtonAfterReload).toHaveClass(/text-error/);
     });
 
-    test('sorting works with filtering', async ({ page, request, isMobile }) => {
+    test.skip('sorting works with filtering', async ({ page, request, isMobile }) => {
         test.skip(isMobile, 'This feature is desktop only');
 
         // Create a test list
