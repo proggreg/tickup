@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
         const { data, error } = await supabase
             .from('Todos')
             .update({ status: 'Closed' })
-            .eq('github_branch_name', ref)
+            .eq('github_branch_name', ref || ref[0])
             .select()
             .single();
 
