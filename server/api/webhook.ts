@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
 
     console.log('Webhook Received: ', event);
     console.log('headers', JSON.stringify(event.headers));
+    console.log('github header', event.headers.get('X-GitHub-Hook-Installation-Target-ID'));
     // Test
 
     if (event.method === 'GET') {
