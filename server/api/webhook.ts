@@ -28,6 +28,8 @@ export default defineEventHandler(async (event) => {
 
     const body = await readBody(event);
 
+    console.log('Webhook body: ', body);
+
     try {
         const githubEvent = event.headers.get('X-GitHub-Event');
 
