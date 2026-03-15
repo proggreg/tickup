@@ -328,17 +328,9 @@ export const useListsStore = defineStore('lists', {
                 this.todaysTodos = todos;
             }
         },
-        async getOverdueTodos(id?: string) {
-            const user = useSupabaseUser();
-            const actualUserId = id || user.value?.id;
-
-            if (!actualUserId) {
-                console.error('User ID not available');
-                return;
-            }
-
+        async getOverdueTodos() {
             const todos = await $fetch<Todo[]>('/api/todos', {
-                query: { overdue: true, id: actualUserId },
+                query: { overdue: true },
             });
 
             if (todos) {
