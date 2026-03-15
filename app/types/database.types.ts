@@ -179,6 +179,7 @@ export type Database = {
                 Row: {
                     github_installation_id: number | null;
                     github_username: string | null;
+                    github_webhook_subscriptions: Json | null;
                     id: string;
                     push_subscriptions: Json | null;
                     username: string | null;
@@ -186,6 +187,7 @@ export type Database = {
                 Insert: {
                     github_installation_id?: number | null;
                     github_username?: string | null;
+                    github_webhook_subscriptions?: Json | null;
                     id: string;
                     push_subscriptions?: Json | null;
                     username?: string | null;
@@ -193,6 +195,7 @@ export type Database = {
                 Update: {
                     github_installation_id?: number | null;
                     github_username?: string | null;
+                    github_webhook_subscriptions?: Json | null;
                     id?: string;
                     push_subscriptions?: Json | null;
                     username?: string | null;
