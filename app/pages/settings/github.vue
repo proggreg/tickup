@@ -128,7 +128,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <v-row>
+    <v-row class="fill-height">
         <v-col cols="12">
             <div class="d-flex align-center mb-4">
                 <v-btn
