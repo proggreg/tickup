@@ -4,6 +4,8 @@ import { serverSupabaseClient } from '#supabase/server';
 export default defineEventHandler(async (event) => {
     const supabase = await serverSupabaseClient(event);
 
+    console.log('Webhook Received: ', event);
+
     if (event.method === 'GET') {
         const query = getQuery(event);
         const ref = query.ref;
