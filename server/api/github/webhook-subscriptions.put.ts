@@ -68,7 +68,6 @@ export default defineEventHandler(async (event) => {
         url: webhookUrl,
         content_type: 'json' as const,
         insecure_ssl: '0' as const,
-        secret: user.sub,
     };
 
     try {
