@@ -100,7 +100,7 @@ export default defineEventHandler(async (event) => {
                 });
             }
         }
-
+        // test
         // for (const fullName of removedSubscriptions) {
         //     const { owner, repo } = toRepoParts(fullName);
         //     const { data: hooks } = await octokit.rest.repos.listWebhooks({ owner, repo, per_page: 100 });
