@@ -1,5 +1,5 @@
 import { defineEventHandler, readBody, getQuery } from 'h3';
-import { serverSupabaseClient } from '#supabase/server';
+import { serverSupabaseServiceRole } from '#supabase/server';
 import type { Database } from '~/types/database.types';
 
 type WebhookPayload = {
@@ -14,7 +14,9 @@ type WebhookPayload = {
 };
 
 export default defineEventHandler(async (event) => {
-    const supabase = await serverSupabaseClient<Database>(event);
+    const supabase = await serverSupabaseServiceRole<Database>(
+        event,
+    );
 
     console.log('Webhook Received: ', event.headers);
 
