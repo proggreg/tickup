@@ -61,6 +61,7 @@ export default defineEventHandler(async (event) => {
         appId: config.private.github.appId,
         privateKey: config.private.github.privateKey,
     });
+
     const octokit = await app.getInstallationOctokit(userData.github_installation_id);
 
     const hookConfig = {
