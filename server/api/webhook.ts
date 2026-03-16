@@ -19,27 +19,29 @@ export default defineEventHandler(async (event) => {
     );
 
     console.log('Webhook Received: ', event.headers);
-    const { userId, query } = getQuery(event);
+    const { userId, ref } = getQuery(event) as {
+        userId?: string | string[];
+        ref?: string | string[];
+    };
 
     console.log('userId', userId);
 
-    // if (event.method === 'GET') {
-    //     const ref = query.ref;
+    if (event.method === 'GET') {
+        const refValue = Array.isArray(ref) ? ref[0] : ref;
+        const { data, error } = await supabase
+            .from('Todos')
+            .update({ status: 'Closed' })
+            .eq('github_branch_name', refValue)
+            .select()
+            .single();
 
-    //     const { data, error } = await supabase
-    //         .from('Todos')
-    //         .update({ status: 'Closed' })
-    //         .eq('github_branch_name', ref || ref[0])
-    //         .select()
-    //         .single();
+        if (error) {
+            console.error('Error updating todo:', error);
+            return null;
+        }
 
-    //     if (error) {
-    //         console.error('Error updating todo:', error);
-    //         return null;
-    //     }
-
-    //     return data;
-    // }
+        return data;
+    }
 
     const body = await readBody<WebhookPayload>(event);
 
