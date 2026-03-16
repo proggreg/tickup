@@ -19,37 +19,37 @@ export default defineEventHandler(async (event) => {
     );
 
     console.log('Webhook Received: ', event.headers);
+    const { userId, query } = getQuery(event);
 
-    if (event.method === 'GET') {
-        const query = getQuery(event);
-        const ref = query.ref;
+    console.log('userId', userId);
 
-        const { data, error } = await supabase
-            .from('Todos')
-            .update({ status: 'Closed' })
-            .eq('github_branch_name', ref || ref[0])
-            .select()
-            .single();
+    // if (event.method === 'GET') {
+    //     const ref = query.ref;
 
-        if (error) {
-            console.error('Error updating todo:', error);
-            return null;
-        }
+    //     const { data, error } = await supabase
+    //         .from('Todos')
+    //         .update({ status: 'Closed' })
+    //         .eq('github_branch_name', ref || ref[0])
+    //         .select()
+    //         .single();
 
-        return data;
-    }
+    //     if (error) {
+    //         console.error('Error updating todo:', error);
+    //         return null;
+    //     }
+
+    //     return data;
+    // }
 
     const body = await readBody<WebhookPayload>(event);
 
     try {
         const githubEvent = event.headers.get('X-GitHub-Event');
         const branchName = body.ref?.split('/').pop();
-        const installationId = body.installation?.id || Number(event.headers.get('X-GitHub-Hook-Installation-Target-ID'));
         const repoFullName = body.repository?.full_name;
         const repoName = body.repository?.name;
 
-        console.log('installationId', installationId);
-        if (!githubEvent || !branchName || !installationId || !repoFullName) {
+        if (!githubEvent || !branchName || !userId || !repoFullName) {
             console.log('Missing required webhook metadata');
             return {
                 status: 'ignored',
@@ -60,13 +60,13 @@ export default defineEventHandler(async (event) => {
         const { data: users, error: usersError } = await supabase
             .from('Users')
             .select('id, github_webhook_subscriptions')
-            .eq('github_installation_id', installationId);
+            .eq('id', userId.toString());
 
         if (usersError || !users?.length) {
-            console.log(`No matching users for installation ${installationId}`);
+            console.log(`No matching users for userId ${userId}`);
             return {
                 status: 'ignored',
-                message: `No matching users for installation ${installationId}`,
+                message: `No matching users for userId ${userId}`,
             };
         }
 

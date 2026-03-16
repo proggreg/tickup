@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
     // const removedSubscriptions = previousSubscriptions.filter(repo => !subscriptions.includes(repo));
 
     const requestUrl = getRequestURL(event);
-    const webhookUrl = `${requestUrl.origin}/api/webhook`;
+    const webhookUrl = `${requestUrl.origin}/api/webhook?userId=${user.sub}`;
 
     const config = useRuntimeConfig();
     const app = new App({
@@ -68,9 +68,7 @@ export default defineEventHandler(async (event) => {
         url: webhookUrl,
         content_type: 'json' as const,
         insecure_ssl: '0' as const,
-        ...(config.private.github.webhookSecret
-            ? { secret: config.private.github.webhookSecret }
-            : {}),
+        secret: user.sub,
     };
 
     try {
