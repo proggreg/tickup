@@ -157,7 +157,6 @@ onBeforeMount(() => {
     border-radius: 16px;
     margin-bottom: 8px;
     background: rgba(128, 128, 128, 0.07);
-    overflow: hidden;
     transition: background 0.12s ease;
 }
 
