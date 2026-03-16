@@ -48,6 +48,7 @@ export default defineEventHandler(async (event) => {
         const repoFullName = body.repository?.full_name;
         const repoName = body.repository?.name;
 
+        console.log('installationId', installationId);
         if (!githubEvent || !branchName || !installationId || !repoFullName) {
             console.log('Missing required webhook metadata');
             return {
@@ -65,7 +66,7 @@ export default defineEventHandler(async (event) => {
             console.log(`No matching users for installation ${installationId}`);
             return {
                 status: 'ignored',
-                message: 'No matching users for installation',
+                message: `No matching users for installation ${installationId}`,
             };
         }
 
