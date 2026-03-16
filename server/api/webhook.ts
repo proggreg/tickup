@@ -62,7 +62,7 @@ export default defineEventHandler(async (event) => {
             .eq('github_installation_id', installationId);
 
         if (usersError || !users?.length) {
-            console.log('No matching users for installation');
+            console.log(`No matching users for installation ${installationId}`);
             return {
                 status: 'ignored',
                 message: 'No matching users for installation',
