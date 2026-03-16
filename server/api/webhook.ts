@@ -45,9 +45,14 @@ export default defineEventHandler(async (event) => {
 
     try {
         const githubEvent = event.headers.get('X-GitHub-Event');
-        const branchName = body.ref?.split('/').pop();
-        const repoFullName = body.repository?.full_name;
-        const repoName = body.repository?.name;
+        const branchName = body?.ref?.split('/').pop();
+        const repoFullName = body?.repository?.full_name;
+        const repoName = body?.repository?.name;
+
+        console.log('githubEvent', githubEvent);
+        console.log('branchName', branchName);
+        console.log('repoFullName', repoFullName);
+        console.log('repoName', repoName);
 
         if (!githubEvent || !branchName || !userId || !repoFullName) {
             console.log('Missing required webhook metadata');
