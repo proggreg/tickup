@@ -88,7 +88,7 @@ export default defineEventHandler(async (event) => {
                     repo,
                     hook_id: existingHook.id,
                     active: true,
-                    events: ['push', 'delete'],
+                    events: ['push', 'pull_request', 'delete'],
                     config: hookConfig,
                 });
             }
@@ -98,7 +98,7 @@ export default defineEventHandler(async (event) => {
                     repo,
                     name: 'web',
                     active: true,
-                    events: ['push', 'delete'],
+                    events: ['push', 'pull_request', 'delete'],
                     config: hookConfig,
                 });
             }
