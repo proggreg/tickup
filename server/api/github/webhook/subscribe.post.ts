@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const requestUrl = getRequestURL(event);
-    const webhookUrl = `${requestUrl.origin}/api/webhook?userId=${user.sub}`;
+    const webhookUrl = `${requestUrl.origin}/api/github/webhook?userId=${user.sub}`;
 
     const config = useRuntimeConfig();
     const app = new App({
