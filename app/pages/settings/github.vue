@@ -64,7 +64,7 @@ async function loadWebhookSubscriptions() {
     subscriptionsError.value = '';
 
     try {
-        const data = await $fetch<{ subscriptions: string[] }>('/api/github/webhook-subscriptions');
+        const data = await $fetch<{ subscriptions: string[] }>('/api/github/webhook/subscriptions');
         subscribedRepos.value = data.subscriptions || [];
     }
     catch (e: any) {
@@ -94,7 +94,7 @@ function isDirectSaveLoading(fullName: string) {
 }
 
 async function persistWebhookSubscriptions() {
-    await $fetch('/api/github/webhook', {
+    await $fetch('/api/github/webhook/subscribe', {
         method: 'POST',
         body: {
             subscriptions: subscribedRepos.value,

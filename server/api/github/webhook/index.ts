@@ -1,6 +1,7 @@
 import { defineEventHandler, readBody, getQuery } from 'h3';
 import { serverSupabaseClient } from '#supabase/server';
 import type { Database } from '~/types/database.types';
+import { handleDelete, handlePullRequest, handlePush } from './events';
 
 type WebhookPayload = {
     ref?: string;
@@ -86,16 +87,7 @@ export default defineEventHandler(async (event) => {
             : `github_repo.eq.${repoFullName}`;
 
         if (githubEvent === 'push') {
-            const { error } = await supabase
-                .from('Todos')
-                .update({ status: 'In Progress' })
-                .in('user_id', subscribedUserIds)
-                .eq('github_branch_name', branchName)
-                .or(repoMatchFilter);
-
-            if (error) {
-                console.error('Error updating todo status for push event:', error);
-            }
+            handlePush(supabase, subscribedUserIds, branchName, repoMatchFilter);
 
             return {
                 status: 'success',
@@ -103,17 +95,17 @@ export default defineEventHandler(async (event) => {
             };
         }
 
-        if (githubEvent === 'delete') {
-            const { error } = await supabase
-                .from('Todos')
-                .update({ status: 'Closed' })
-                .in('user_id', subscribedUserIds)
-                .eq('github_branch_name', branchName)
-                .or(repoMatchFilter);
+        if (githubEvent === 'pull_request') {
+            handlePullRequest(supabase, body, subscribedUserIds, branchName, repoMatchFilter);
 
-            if (error) {
-                console.error('Error updating todo status for delete event:', error);
-            }
+            return {
+                status: 'success',
+                message: 'Pull Request webhook processed',
+            };
+        }
+
+        if (githubEvent === 'delete') {
+            handleDelete(supabase, subscribedUserIds, branchName, repoMatchFilter);
 
             return {
                 status: 'success',

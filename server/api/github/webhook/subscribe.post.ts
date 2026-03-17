@@ -2,15 +2,7 @@ import { App } from 'octokit';
 import { createError, defineEventHandler, getRequestURL, readBody } from 'h3';
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
 import type { Database } from '~/types/database.types';
-
-function toRepoParts(fullName: string): { owner: string; repo: string } {
-    const [owner, repo] = fullName.split('/');
-    if (!owner || !repo) {
-        throw createError({ statusCode: 400, message: `Invalid repository full name: ${fullName}` });
-    }
-
-    return { owner, repo };
-}
+import { toRepoParts } from './helpers';
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event);
@@ -45,16 +37,6 @@ export default defineEventHandler(async (event) => {
 
     if (!userData?.github_installation_id) {
         throw createError({ statusCode: 403, message: 'GitHub integration not connected.' });
-    }
-
-    const previousSubscriptions = Array.isArray(userData.github_webhook_subscriptions)
-        ? userData.github_webhook_subscriptions.filter((item): item is string => typeof item === 'string')
-        : [];
-
-    const removedSubscriptions = previousSubscriptions.filter(repo => !subscriptions.includes(repo));
-
-    if (!removedSubscriptions.length) {
-        throw createError({ status: 404, message: 'Repo subscription not found' });
     }
 
     const requestUrl = getRequestURL(event);
