@@ -331,8 +331,9 @@ onMounted(async () => {
                         <template #activator="{ props }">
                             <v-btn
                                 v-bind="props"
-                                icon="mdi-bell-cog-outline"
-                                variant="text"
+                                icon="mdi-github"
+                                variant="tonal"
+                                color="primary"
                                 data-testid="github-webhook-settings-menu-button"
                             />
                         </template>
@@ -484,7 +485,7 @@ onMounted(async () => {
                         <v-list-item
                             v-for="repo in repos"
                             :key="repo.id"
-                            :href="repo.html_url"
+
                             target="_blank"
                             class="my-1"
                         >
