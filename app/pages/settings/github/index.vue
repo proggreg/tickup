@@ -12,6 +12,9 @@ const {
     repos,
     reposLoading,
     reposError,
+    webhooks,
+    deletingWebhookIds,
+    webhooksError,
     subscriptionMenuOpen,
     subscriptionsLoading,
     subscriptionsSaving,
@@ -23,6 +26,7 @@ const {
     toggleRepoSubscription,
     saveWebhookSubscriptions,
     toggleRepoSubscriptionDirect,
+    deleteWebhook,
     disconnectGithub,
 } = useGithubSettings();
 </script>
@@ -47,6 +51,23 @@ const {
                 :github-app-name="githubAppName"
                 @disconnect="disconnectGithub"
             />
+
+            <v-card
+                v-if="githubConnected"
+                variant="flat"
+                class="pa-4 mb-4"
+            >
+                <v-card-title>Webhooks</v-card-title>
+                <v-card-text>
+                    <GithubSettingsWebhookList
+                        :webhooks="webhooks"
+                        :loading="subscriptionsLoading"
+                        :error="webhooksError"
+                        :deleting-ids="deletingWebhookIds"
+                        @delete="deleteWebhook"
+                    />
+                </v-card-text>
+            </v-card>
 
             <v-card
                 v-if="githubConnected"
