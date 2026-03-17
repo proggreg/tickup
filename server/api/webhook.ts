@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
     if (event.method === 'GET') {
         const query = getQuery(event);
-        const ref = query.ref;
+        const ref = Array.isArray(query.ref) ? query.ref[0] : query.ref;
 
         const { data, error } = await supabase
             .from('Todos')
