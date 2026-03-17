@@ -1,3 +1,13 @@
+export type WebhookItem = {
+    id: number;
+    active: boolean;
+    events: string[];
+    config: { url?: string; content_type?: string };
+    repoFullName: string;
+    created_at: string;
+    updated_at: string;
+};
+
 export type RepoItem = {
     id: number;
     name: string;
@@ -19,6 +29,10 @@ export function useGithubSettings() {
     const repos = ref<RepoItem[]>([]);
     const reposLoading = ref(false);
     const reposError = ref('');
+
+    const webhooks = ref<WebhookItem[]>([]);
+    const deletingWebhookIds = ref<number[]>([]);
+    const webhooksError = ref('');
 
     const subscriptionMenuOpen = ref(false);
     const subscriptionsLoading = ref(false);
@@ -56,14 +70,35 @@ export function useGithubSettings() {
     async function loadWebhookSubscriptions() {
         subscriptionsLoading.value = true;
         subscriptionsError.value = '';
+        webhooksError.value = '';
         try {
-            const data = await $fetch<{ subscriptions: string[] }>('/api/github/webhook/subscriptions');
+            const data = await $fetch<{ subscriptions: string[]; webhooks: WebhookItem[] }>('/api/github/webhook/subscriptions');
             subscribedRepos.value = data.subscriptions || [];
+            webhooks.value = data.webhooks || [];
         }
         catch (e: any) {
             subscriptionsError.value = e?.data?.message || 'Failed to load webhook subscriptions';
         }
         subscriptionsLoading.value = false;
+    }
+
+    async function deleteWebhook(hookId: number, repoFullName: string) {
+        deletingWebhookIds.value = [...deletingWebhookIds.value, hookId];
+        webhooksError.value = '';
+        const [owner, repo] = repoFullName.split('/');
+        try {
+            await $fetch(`/api/github/webhook/${hookId}`, {
+                method: 'DELETE',
+                query: { owner, repo },
+            });
+            webhooks.value = webhooks.value.filter(h => h.id !== hookId);
+        }
+        catch (e: any) {
+            webhooksError.value = e?.data?.message || 'Failed to delete webhook';
+        }
+        finally {
+            deletingWebhookIds.value = deletingWebhookIds.value.filter(id => id !== hookId);
+        }
     }
 
     function isRepoSubscribed(fullName: string) {
@@ -135,6 +170,7 @@ export function useGithubSettings() {
             githubConnected.value = false;
             repos.value = [];
             subscribedRepos.value = [];
+            webhooks.value = [];
         }
         catch (e) {
             console.error('Failed to disconnect GitHub:', e);
@@ -184,6 +220,9 @@ export function useGithubSettings() {
         repos,
         reposLoading,
         reposError,
+        webhooks,
+        deletingWebhookIds,
+        webhooksError,
         subscriptionMenuOpen,
         subscriptionsLoading,
         subscriptionsSaving,
@@ -197,6 +236,7 @@ export function useGithubSettings() {
         isDirectSaveLoading,
         saveWebhookSubscriptions,
         toggleRepoSubscriptionDirect,
+        deleteWebhook,
         disconnectGithub,
     };
 }

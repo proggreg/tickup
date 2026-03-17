@@ -32,7 +32,8 @@ export default defineEventHandler(async (event) => {
         ? userData.github_webhook_subscriptions.filter((item): item is string => typeof item === 'string')
         : [];
 
-    type Webhook = Awaited<ReturnType<(typeof octokit)['rest']['repos']['listWebhooks']>>['data'][number];
+    type RawWebhook = Awaited<ReturnType<(typeof octokit)['rest']['repos']['listWebhooks']>>['data'][number];
+    type Webhook = RawWebhook & { repoFullName: string };
     let webhooks: Webhook[] = [];
     try {
         const { data: repos } = await octokit.rest.apps.listReposAccessibleToInstallation();
@@ -42,7 +43,8 @@ export default defineEventHandler(async (event) => {
                 repo: repo.name,
             });
 
-            webhooks = webhooks.concat(data);
+            const repoFullName = `${repo.owner.login}/${repo.name}`;
+            webhooks = webhooks.concat(data.map(hook => ({ ...hook, repoFullName })));
         }
     }
     catch (err) {
