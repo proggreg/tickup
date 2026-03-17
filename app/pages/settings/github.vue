@@ -3,14 +3,7 @@ definePageMeta({
     layout: 'settings',
 });
 
-const config = useRuntimeConfig();
-const route = useRoute();
-
-const githubConnected = ref(false);
-const githubLoading = ref(true);
-const githubAppName = config.public.githubAppName;
-
-const repos = ref<{
+type RepoItem = {
     id: number;
     name: string;
     full_name: string;
@@ -20,9 +13,26 @@ const repos = ref<{
     language: string | null;
     default_branch: string;
     updated_at: string;
-}[]>([]);
+};
+
+const config = useRuntimeConfig();
+const route = useRoute();
+
+const githubConnected = ref(false);
+const githubLoading = ref(true);
+const githubAppName = config.public.githubAppName;
+
+const repos = ref<RepoItem[]>([]);
 const reposLoading = ref(false);
 const reposError = ref('');
+
+const subscriptionMenuOpen = ref(false);
+const subscriptionsLoading = ref(false);
+const subscriptionsSaving = ref(false);
+const subscriptionsError = ref('');
+const subscriptionsSaved = ref(false);
+const subscribedRepos = ref<string[]>([]);
+const directSaveLoadingRepos = ref<string[]>([]);
 
 async function checkGithubStatus() {
     githubLoading.value = true;
@@ -40,7 +50,7 @@ async function loadRepos() {
     reposLoading.value = true;
     reposError.value = '';
     try {
-        const data = await $fetch('/api/github/repos');
+        const data = await $fetch<{ repositories: RepoItem[] }>('/api/github/repos');
         repos.value = data.repositories;
     }
     catch (e: any) {
@@ -49,12 +59,95 @@ async function loadRepos() {
     reposLoading.value = false;
 }
 
+async function loadWebhookSubscriptions() {
+    subscriptionsLoading.value = true;
+    subscriptionsError.value = '';
+
+    try {
+        const data = await $fetch<{ subscriptions: string[] }>('/api/github/webhook/subscriptions');
+        subscribedRepos.value = data.subscriptions || [];
+    }
+    catch (e: any) {
+        subscriptionsError.value = e?.data?.message || 'Failed to load webhook subscriptions';
+    }
+
+    subscriptionsLoading.value = false;
+}
+
+function isRepoSubscribed(fullName: string) {
+    return subscribedRepos.value.includes(fullName);
+}
+
+function toggleRepoSubscription(fullName: string, subscribed: boolean) {
+    if (subscribed) {
+        if (!subscribedRepos.value.includes(fullName)) {
+            subscribedRepos.value = [...subscribedRepos.value, fullName];
+        }
+        return;
+    }
+
+    subscribedRepos.value = subscribedRepos.value.filter(repo => repo !== fullName);
+}
+
+function isDirectSaveLoading(fullName: string) {
+    return directSaveLoadingRepos.value.includes(fullName);
+}
+
+async function persistWebhookSubscriptions() {
+    await $fetch('/api/github/webhook/subscribe', {
+        method: 'POST',
+        body: {
+            subscriptions: subscribedRepos.value,
+        },
+    });
+}
+
+async function saveWebhookSubscriptions() {
+    subscriptionsSaving.value = true;
+    subscriptionsError.value = '';
+    subscriptionsSaved.value = false;
+
+    try {
+        await persistWebhookSubscriptions();
+        subscriptionsSaved.value = true;
+    }
+    catch (e: any) {
+        subscriptionsError.value = e?.data?.message || 'Failed to save webhook subscriptions';
+    }
+
+    subscriptionsSaving.value = false;
+}
+
+async function toggleRepoSubscriptionDirect(fullName: string) {
+    if (isDirectSaveLoading(fullName)) {
+        return;
+    }
+
+    subscriptionsError.value = '';
+    const previousSubscriptions = [...subscribedRepos.value];
+    const nextSubscribedState = !isRepoSubscribed(fullName);
+    toggleRepoSubscription(fullName, nextSubscribedState);
+    directSaveLoadingRepos.value = [...directSaveLoadingRepos.value, fullName];
+
+    try {
+        await persistWebhookSubscriptions();
+    }
+    catch (e: any) {
+        subscribedRepos.value = previousSubscriptions;
+        subscriptionsError.value = e?.data?.message || 'Failed to save webhook subscriptions';
+    }
+    finally {
+        directSaveLoadingRepos.value = directSaveLoadingRepos.value.filter(repo => repo !== fullName);
+    }
+}
+
 async function disconnectGithub() {
     githubLoading.value = true;
     try {
         await $fetch('/api/github/disconnect', { method: 'POST' });
         githubConnected.value = false;
         repos.value = [];
+        subscribedRepos.value = [];
     }
     catch (e) {
         console.error('Failed to disconnect GitHub:', e);
@@ -95,6 +188,19 @@ function timeAgo(dateStr: string): string {
     return `${Math.floor(months / 12)}y ago`;
 }
 
+function toRepoTestId(fullName: string): string {
+    return fullName.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+}
+
+async function initializeGithubData() {
+    if (!githubConnected.value) {
+        return;
+    }
+
+    await loadRepos();
+    await loadWebhookSubscriptions();
+}
+
 onMounted(async () => {
     // Handle pending GitHub connection
     if (route.query.github === 'pending' && route.query.installation_id) {
@@ -121,14 +227,12 @@ onMounted(async () => {
         }
     }
 
-    if (githubConnected.value) {
-        await loadRepos();
-    }
+    await initializeGithubData();
 });
 </script>
 
 <template>
-    <v-row>
+    <v-row class="fill-height">
         <v-col cols="12">
             <div class="d-flex align-center mb-4">
                 <v-btn
@@ -207,15 +311,122 @@ onMounted(async () => {
                 variant="flat"
                 class="pa-4"
             >
-                <v-card-title class="d-flex align-center justify-space-between">
-                    <span>Repositories</span>
-                    <v-chip
-                        v-if="repos.length"
-                        size="small"
-                        variant="tonal"
+                <v-card-title class="d-flex align-center justify-space-between ga-2">
+                    <div class="d-flex align-center ga-2">
+                        <span>Repositories</span>
+                        <v-chip
+                            v-if="repos.length"
+                            size="small"
+                            variant="tonal"
+                        >
+                            {{ repos.length }}
+                        </v-chip>
+                    </div>
+
+                    <v-menu
+                        v-model="subscriptionMenuOpen"
+                        :close-on-content-click="false"
+                        location="bottom end"
                     >
-                        {{ repos.length }}
-                    </v-chip>
+                        <template #activator="{ props }">
+                            <v-btn
+                                v-bind="props"
+                                icon="mdi-bell-cog-outline"
+                                variant="text"
+                                data-testid="github-webhook-settings-menu-button"
+                            />
+                        </template>
+
+                        <v-card
+                            min-width="320"
+                            max-width="420"
+                        >
+                            <v-card-title class="text-subtitle-1">
+                                Webhook subscriptions
+                            </v-card-title>
+                            <v-card-subtitle>
+                                Choose which repos trigger todo status updates.
+                            </v-card-subtitle>
+                            <v-card-text>
+                                <div
+                                    v-if="subscriptionsLoading"
+                                    class="d-flex align-center ga-2"
+                                >
+                                    <v-progress-circular
+                                        indeterminate
+                                        size="18"
+                                    />
+                                    Loading subscriptions...
+                                </div>
+
+                                <v-alert
+                                    v-else-if="subscriptionsError"
+                                    type="error"
+                                    variant="tonal"
+                                    density="compact"
+                                    class="mb-3"
+                                    data-testid="github-webhook-subscriptions-error"
+                                >
+                                    {{ subscriptionsError }}
+                                </v-alert>
+
+                                <v-list
+                                    v-else
+                                    density="compact"
+                                >
+                                    <v-list-item
+                                        v-for="repo in repos"
+                                        :key="repo.id"
+                                        class="px-0"
+                                    >
+                                        <div class="d-flex align-center justify-space-between ga-3 w-100">
+                                            <span class="text-body-2">
+                                                {{ repo.full_name }}
+                                            </span>
+                                            <v-switch
+                                                :model-value="isRepoSubscribed(repo.full_name)"
+                                                color="primary"
+                                                density="compact"
+                                                hide-details
+                                                :disabled="subscriptionsSaving"
+                                                :data-testid="`github-webhook-switch-${toRepoTestId(repo.full_name)}`"
+                                                :data-subscribed="isRepoSubscribed(repo.full_name) ? 'true' : 'false'"
+                                                @update:model-value="value => toggleRepoSubscription(repo.full_name, !!value)"
+                                            />
+                                        </div>
+                                    </v-list-item>
+                                </v-list>
+
+                                <v-alert
+                                    v-if="subscriptionsSaved"
+                                    type="success"
+                                    variant="tonal"
+                                    density="compact"
+                                    class="mt-3"
+                                    data-testid="github-webhook-subscriptions-saved"
+                                >
+                                    Webhook subscriptions saved.
+                                </v-alert>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer />
+                                <v-btn
+                                    variant="text"
+                                    @click="subscriptionMenuOpen = false"
+                                >
+                                    Close
+                                </v-btn>
+                                <v-btn
+                                    color="primary"
+                                    :loading="subscriptionsSaving"
+                                    data-testid="github-webhook-save-button"
+                                    @click="saveWebhookSubscriptions"
+                                >
+                                    Save
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-menu>
                 </v-card-title>
                 <v-card-text>
                     <div
@@ -248,15 +459,26 @@ onMounted(async () => {
                         </template>
                     </v-alert>
 
+                    <v-alert
+                        v-if="!reposLoading && !reposError && subscriptionsError"
+                        type="error"
+                        variant="tonal"
+                        density="compact"
+                        class="mb-3"
+                        data-testid="github-webhook-inline-error"
+                    >
+                        {{ subscriptionsError }}
+                    </v-alert>
+
                     <div
-                        v-else-if="repos.length === 0"
+                        v-if="!reposLoading && !reposError && repos.length === 0"
                         class="text-center pa-8 text-medium-emphasis"
                     >
                         No repositories found. Make sure the GitHub App has access to your repositories.
                     </div>
 
                     <v-list
-                        v-else
+                        v-if="!reposLoading && !reposError && repos.length > 0"
                         variant="tonal"
                     >
                         <v-list-item
@@ -279,6 +501,24 @@ onMounted(async () => {
                             </v-list-item-subtitle>
                             <template #append>
                                 <div class="d-flex align-center ga-3 text-caption text-medium-emphasis">
+                                    <v-btn
+                                        size="x-small"
+                                        variant="tonal"
+                                        :color="isRepoSubscribed(repo.full_name) ? 'warning' : 'primary'"
+                                        :loading="isDirectSaveLoading(repo.full_name)"
+                                        :data-testid="`github-webhook-toggle-button-${toRepoTestId(repo.full_name)}`"
+                                        @click.stop.prevent="toggleRepoSubscriptionDirect(repo.full_name)"
+                                    >
+                                        {{ isRepoSubscribed(repo.full_name) ? 'Unsubscribe' : 'Subscribe' }}
+                                    </v-btn>
+                                    <v-chip
+                                        size="x-small"
+                                        :color="isRepoSubscribed(repo.full_name) ? 'success' : undefined"
+                                        variant="tonal"
+                                        data-testid="github-webhook-status-chip"
+                                    >
+                                        {{ isRepoSubscribed(repo.full_name) ? 'Subscribed' : 'Unsubscribed' }}
+                                    </v-chip>
                                     <span
                                         v-if="repo.language"
                                         class="d-flex align-center ga-1"
