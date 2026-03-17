@@ -94,8 +94,8 @@ function isDirectSaveLoading(fullName: string) {
 }
 
 async function persistWebhookSubscriptions() {
-    await $fetch('/api/github/webhook-subscriptions', {
-        method: 'PUT',
+    await $fetch('/api/github/webhook', {
+        method: 'POST',
         body: {
             subscriptions: subscribedRepos.value,
         },

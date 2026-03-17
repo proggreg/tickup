@@ -35,23 +35,27 @@ export default defineEventHandler(async (event) => {
     const supabase = await serverSupabaseClient<Database>(event);
     const { data: userData, error: userError } = await supabase
         .from('Users')
-        .select('github_installation_id')
+        .select('github_installation_id, github_webhook_subscriptions ')
         .eq('id', user.sub)
         .single();
 
-    // if (userError) {
-    //     throw createError({ statusCode: 500, message: userError.message });
-    // }
+    if (userError) {
+        throw createError({ statusCode: 500, message: userError.message });
+    }
 
-    // if (!userData?.github_installation_id) {
-    //     throw createError({ statusCode: 403, message: 'GitHub integration not connected.' });
-    // }
+    if (!userData?.github_installation_id) {
+        throw createError({ statusCode: 403, message: 'GitHub integration not connected.' });
+    }
 
-    // const previousSubscriptions = Array.isArray(userData.github_webhook_subscriptions)
-    //     ? userData.github_webhook_subscriptions.filter((item): item is string => typeof item === 'string')
-    //     : [];
+    const previousSubscriptions = Array.isArray(userData.github_webhook_subscriptions)
+        ? userData.github_webhook_subscriptions.filter((item): item is string => typeof item === 'string')
+        : [];
 
-    // const removedSubscriptions = previousSubscriptions.filter(repo => !subscriptions.includes(repo));
+    const removedSubscriptions = previousSubscriptions.filter(repo => !subscriptions.includes(repo));
+
+    if (!removedSubscriptions.length) {
+        throw createError({ status: 404, message: 'Repo subscription not found' });
+    }
 
     const requestUrl = getRequestURL(event);
     const webhookUrl = `${requestUrl.origin}/api/webhook`;
@@ -99,20 +103,6 @@ export default defineEventHandler(async (event) => {
                 });
             }
         }
-
-        // for (const fullName of removedSubscriptions) {
-        //     const { owner, repo } = toRepoParts(fullName);
-        //     const { data: hooks } = await octokit.rest.repos.listWebhooks({ owner, repo, per_page: 100 });
-        //     const existingHook = hooks.find(hook => hook.config?.url === webhookUrl);
-
-        //     if (existingHook) {
-        //         await octokit.rest.repos.deleteWebhook({
-        //             owner,
-        //             repo,
-        //             hook_id: existingHook.id,
-        //         });
-        //     }
-        // }
     }
     catch (error: any) {
         throw createError({
