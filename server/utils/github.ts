@@ -40,10 +40,10 @@ export async function listWebhooks(octokit) {
                 repo: repo.name,
             });
 
-            console.log(repo + ' webhooks', webhooks);
-
             const repoFullName = `${repo.owner.login}/${repo.name}`;
-            webhooks = webhooks.concat(data.map(hook => ({ ...hook, repoFullName })));
+
+            const repoHooks = data.filter(hook => hook.config.url.includes('tickup')).map(hook => ({ ...hook, repoFullName }));
+            webhooks = webhooks.concat(repoHooks);
         }
 
         return webhooks;
