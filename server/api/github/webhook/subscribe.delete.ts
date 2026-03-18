@@ -1,5 +1,5 @@
 import { App } from 'octokit';
-import { createError, defineEventHandler, readBody } from 'h3';
+import { createError, defineEventHandler, getRequestURL, readBody } from 'h3';
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
 import type { Database } from '~/types/database.types';
 import { toRepoParts } from './helpers';
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 400, message: 'subscriptions must be an array of repository full names' });
     }
 
-    const repoSubscriptions = Array.from(new Set(
+    const subscriptions = Array.from(new Set(
         rawSubscriptions
             .filter((item): item is string => typeof item === 'string')
             .map(item => item.trim())
@@ -39,9 +39,8 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 403, message: 'GitHub integration not connected.' });
     }
 
-    // const requestUrl = getRequestURL(event);
-    // const webhookUrl = `${requestUrl.origin}/api/github/webhook?userId=${user.sub}`;
-    const webhookUrl = `https://tickup-g2n5y92m9-greg-fields-projects.vercel.app/api/github/webhook?userId=${user.sub}`;
+    const requestUrl = getRequestURL(event);
+    const webhookUrl = `${requestUrl.origin}/api/github/webhook?userId=${user.sub}`;
 
     const config = useRuntimeConfig();
     const app = new App({
@@ -62,11 +61,10 @@ export default defineEventHandler(async (event) => {
     const previousSubscriptions = Array.isArray(userData?.github_webhook_subscriptions)
         ? userData.github_webhook_subscriptions.filter((item): item is string => typeof item === 'string')
         : [];
-    const deletedSubscriptions = previousSubscriptions.filter(fullName => !repoSubscriptions.includes(fullName));
-    const nextSubscriptions = new Set(previousSubscriptions);
+    const deletedSubscriptions = previousSubscriptions.filter(fullName => !subscriptions.includes(fullName));
 
     try {
-        for (const fullName of repoSubscriptions) {
+        for (const fullName of subscriptions) {
             const { owner, repo } = toRepoParts(fullName);
             const { data: hooks } = await octokit.rest.repos.listWebhooks({ owner, repo, per_page: 100 });
             const existingHook = hooks.find(hook => hook.config?.url === webhookUrl);
@@ -91,35 +89,15 @@ export default defineEventHandler(async (event) => {
                     config: hookConfig,
                 });
             }
-
-            nextSubscriptions.add(fullName);
         }
 
         for (const fullName of deletedSubscriptions) {
             const { owner, repo } = toRepoParts(fullName);
             const { data: hooks } = await octokit.rest.repos.listWebhooks({ owner, repo, per_page: 100 });
             const matchingHooks = hooks.filter(hook => hook.config?.url === webhookUrl);
-
             for (const hook of matchingHooks) {
-                const res = await octokit.rest.repos.deleteWebhook({ owner, repo, hook_id: hook.id });
-                console.log('deleted webhook res', res);
+                await octokit.rest.repos.deleteWebhook({ owner, repo, hook_id: hook.id });
             }
-
-            nextSubscriptions.delete(fullName);
-        }
-
-        const github_webhook_subscriptions
-            = Array.from(nextSubscriptions) as unknown as Database['public']['Tables']['Users']['Update']['github_webhook_subscriptions'];
-
-        const { error: updateError } = await supabase
-            .from('Users')
-            .upsert(
-                { id: user.sub, github_webhook_subscriptions },
-                { onConflict: 'id' },
-            );
-
-        if (updateError) {
-            throw updateError;
         }
     }
     catch (error: any) {
@@ -129,11 +107,17 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    const subscriptions = await listWebhooks(octokit);
+    const { error } = await supabase
+        .from('Users')
+        .update({ github_webhook_subscriptions: subscriptions })
+        .eq('id', user.sub);
+
+    if (error) {
+        throw createError({ statusCode: 500, message: error.message });
+    }
 
     return {
         success: true,
-        previousSubscriptions,
         subscriptions,
         deletedSubscriptions,
         webhookUrl,

@@ -29,11 +29,7 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 500, message: userError.message });
     }
 
-    const subscriptions = Array.isArray(userData?.github_webhook_subscriptions)
-        ? userData.github_webhook_subscriptions.filter((item): item is string => typeof item === 'string')
-        : [];
+    const subscriptions = await listWebhooks(octokit);
 
-    const webhooks = await listWebhooks(octokit);
-
-    return { subscriptions, webhooks };
+    return { subscriptions };
 });
