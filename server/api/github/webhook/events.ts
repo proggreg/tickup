@@ -1,17 +1,19 @@
-export async function handlePush(supabase, subscribedUserIds, branchName, repoMatchFilter) {
-    const { error } = await supabase
+export async function handlePush(supabase, subscribedUserIds, branchName) {
+    const { data, error } = await supabase
         .from('Todos')
         .update({ status: 'In Progress' })
         .in('user_id', subscribedUserIds)
         .eq('github_branch_name', branchName)
-        .or(repoMatchFilter);
+        .select();
+
+    console.log('todo updated', data);
 
     if (error) {
         console.error('Error updating todo status for push event:', error);
     }
 }
 
-export async function handlePullRequest(supabase, body, subscribedUserIds, branchName, repoMatchFilter) {
+export async function handlePullRequest(supabase, body, subscribedUserIds, branchName) {
     const pr = body.pull_request;
     const merged = pr.merged;
 
@@ -20,8 +22,7 @@ export async function handlePullRequest(supabase, body, subscribedUserIds, branc
             .from('Todos')
             .update({ status: 'Closed' })
             .in('user_id', subscribedUserIds)
-            .eq('github_branch_name', branchName)
-            .or(repoMatchFilter);
+            .eq('github_branch_name', branchName);
 
         if (error) {
             console.error('Error updating todo status for delete event:', error);
