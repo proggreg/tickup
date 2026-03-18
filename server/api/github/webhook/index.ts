@@ -83,12 +83,8 @@ export default defineEventHandler(async (event) => {
             };
         }
 
-        const repoMatchFilter = repoName
-            ? `github_repo.eq.${repoFullName},github_repo.eq.${repoName}`
-            : `github_repo.eq.${repoFullName}`;
-
         if (githubEvent === 'push') {
-            handlePush(supabase, subscribedUserIds, branchName, repoMatchFilter);
+            handlePush(supabase, subscribedUserIds, branchName);
 
             return {
                 status: 'success',
@@ -97,7 +93,7 @@ export default defineEventHandler(async (event) => {
         }
 
         if (githubEvent === 'pull_request') {
-            handlePullRequest(supabase, body, subscribedUserIds, branchName, repoMatchFilter);
+            handlePullRequest(supabase, body, subscribedUserIds, branchName);
 
             return {
                 status: 'success',
