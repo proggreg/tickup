@@ -41,6 +41,7 @@ export default defineEventHandler(async (event) => {
 
     const requestUrl = getRequestURL(event);
     const webhookUrl = `${requestUrl.origin}/api/github/webhook?userId=${user.sub}`;
+    // test
 
     const config = useRuntimeConfig();
     const app = new App({
