@@ -1,5 +1,5 @@
 import { defineEventHandler, readBody, getQuery } from 'h3';
-import { serverSupabaseClient } from '#supabase/server';
+import { serverSupabaseServiceRole } from '#supabase/server';
 import type { Database } from '~/types/database.types';
 import { handleDelete, handlePullRequest, handlePush } from './events';
 
@@ -15,7 +15,7 @@ type WebhookPayload = {
 };
 
 export default defineEventHandler(async (event) => {
-    const supabase = await serverSupabaseClient<Database>(event);
+    const supabase = await serverSupabaseServiceRole<Database>(event);
     const { userId } = await getQuery(event);
 
     if (event.method === 'GET') {
@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
         const { data: users, error: usersError } = await supabase
             .from('Users')
             .select('id, github_webhook_subscriptions')
-            .eq('id', userId || userId[0]);
+            .eq('id', userId);
 
         if (usersError || !users?.length) {
             return {
