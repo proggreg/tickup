@@ -39,9 +39,8 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 403, message: 'GitHub integration not connected.' });
     }
 
-    // const requestUrl = getRequestURL(event);
-    // const webhookUrl = `${requestUrl.origin}/api/github/webhook?userId=${user.sub}`;
-    const webhookUrl = `https://tickup-g2n5y92m9-greg-fields-projects.vercel.app/api/github/webhook?userId=${user.sub}`;
+    const requestUrl = getRequestURL(event);
+    const webhookUrl = `${requestUrl.origin}/api/github/webhook?userId=${user.sub}`;
 
     const config = useRuntimeConfig();
     const app = new App({
