@@ -9,10 +9,7 @@ type PullRequestEvent = EmitterWebhookEvent<'pull_request'>['payload'];
 type DeleteEvent = EmitterWebhookEvent<'delete'>['payload'];
 
 export default defineEventHandler(async (event) => {
-    const supabase = await serverSupabaseServiceRole<Database>(event);
-    const query = await getQuery(event);
-    const userIdValue = query.userId;
-    const userId = Array.isArray(userIdValue) ? userIdValue[0] : userIdValue;
+    const supabase = await serverSupabaseClient<Database>(event);
 
     if (event.method === 'GET') {
         const query = getQuery(event);
@@ -44,33 +41,12 @@ export default defineEventHandler(async (event) => {
 
     try {
         const githubEvent = event.headers.get('X-GitHub-Event');
-        if (!githubEvent || !['push', 'pull_request', 'delete'].includes(githubEvent)) {
-            return {
-                status: 'ignored',
-                message: `Unhandled GitHub event: ${githubEvent}`,
-            };
-        }
+        const branchName = body.ref?.split('/').pop();
+        const installationId = body.installation?.id || Number(event.headers.get('X-GitHub-Hook-Installation-Target-ID'));
+        const repoFullName = body.repository?.full_name;
+        const repoName = body.repository?.name;
 
-        let branchName: string | undefined;
-        let repoFullName: string | undefined;
-
-        if (githubEvent === 'push') {
-            const payload = body as PushEvent;
-            branchName = payload.ref?.split('/').pop();
-            repoFullName = payload.repository?.full_name;
-        }
-        else if (githubEvent === 'pull_request') {
-            const payload = body as PullRequestEvent;
-            branchName = payload.pull_request?.head?.ref;
-            repoFullName = payload.repository?.full_name;
-        }
-        else if (githubEvent === 'delete') {
-            const payload = body as DeleteEvent;
-            branchName = payload.ref?.split('/').pop();
-            repoFullName = payload.repository?.full_name;
-        }
-
-        if (!branchName || !repoFullName) {
+        if (!githubEvent || !branchName || !installationId || !repoFullName) {
             return {
                 status: 'ignored',
                 message: 'Missing required webhook metadata',
@@ -108,7 +84,7 @@ export default defineEventHandler(async (event) => {
         }
 
         if (githubEvent === 'push') {
-            handlePush(supabase, body as PushEvent, subscribedUserIds, branchName);
+            handlePush(supabase, subscribedUserIds, branchName, repoMatchFilter);
 
             return {
                 status: 'success',
@@ -117,7 +93,7 @@ export default defineEventHandler(async (event) => {
         }
 
         if (githubEvent === 'pull_request') {
-            handlePullRequest(supabase, body as PullRequestEvent, subscribedUserIds, branchName);
+            handlePullRequest(supabase, body, subscribedUserIds, branchName, repoMatchFilter);
 
             return {
                 status: 'success',

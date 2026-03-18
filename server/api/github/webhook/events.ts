@@ -19,7 +19,7 @@ export async function handlePush(supabase: any, _payload: PushEvent, subscribedU
     }
 }
 
-export async function handlePullRequest(supabase: any, body: PullRequestEvent, subscribedUserIds: string[], branchName: string) {
+export async function handlePullRequest(supabase, body, subscribedUserIds, branchName, repoMatchFilter) {
     const pr = body.pull_request;
     const merged = pr?.merged;
 
