@@ -12,9 +12,9 @@ const {
     repos,
     reposLoading,
     reposError,
-    webhooks,
     deletingWebhookIds,
     webhooksError,
+    subscribedRepos,
     subscriptionMenuOpen,
     subscriptionsLoading,
     subscriptionsSaving,
@@ -60,7 +60,7 @@ const {
                 <v-card-title>Webhooks</v-card-title>
                 <v-card-text>
                     <GithubSettingsWebhookList
-                        :webhooks="webhooks"
+                        :webhooks="subscribedRepos"
                         :loading="subscriptionsLoading"
                         :error="webhooksError"
                         :deleting-ids="deletingWebhookIds"

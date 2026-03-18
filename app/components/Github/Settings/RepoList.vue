@@ -136,14 +136,6 @@ function toRepoTestId(fullName: string): string {
                         >
                             {{ props.isRepoSubscribed(repo.full_name) ? 'Unsubscribe' : 'Subscribe' }}
                         </v-btn>
-                        <v-chip
-                            size="x-small"
-                            :color="props.isRepoSubscribed(repo.full_name) ? 'success' : undefined"
-                            variant="tonal"
-                            data-testid="github-webhook-status-chip"
-                        >
-                            {{ props.isRepoSubscribed(repo.full_name) ? 'Subscribed' : 'Unsubscribed' }}
-                        </v-chip>
                         <span
                             v-if="repo.language"
                             class="d-flex align-center ga-1"
