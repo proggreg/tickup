@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
         ? userData.github_webhook_subscriptions.filter((item): item is string => typeof item === 'string')
         : [];
 
-    const webhooks = listWebhooks(octokit);
+    const webhooks = await listWebhooks(octokit);
 
     return { subscriptions, webhooks };
 });
