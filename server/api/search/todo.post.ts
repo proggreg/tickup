@@ -6,8 +6,6 @@ export default defineEventHandler(async (event) => {
         const { query } = await readBody(event);
         const supabase = await serverSupabaseClient(event);
 
-        console.log('search query', query);
-
         // Use ilike for case-insensitive search in Supabase with snake_case fields
         const { data: todos, error } = await supabase
             .from('Todos')
@@ -17,8 +15,6 @@ export default defineEventHandler(async (event) => {
 
         const listIds = todos.filter(todo => todo.list_id).map(todo => todo.list_id);
 
-        console.log('list ids', listIds);
-
         const { data: lists } = await supabase.from('Lists').select('*').in('id', listIds);
 
         todos.forEach((todo) => {
@@ -26,8 +22,6 @@ export default defineEventHandler(async (event) => {
             const list = lists.find(list => list.id === todo.list_id);
             todo.list = list;
         });
-
-        console.log('related lists', lists);
 
         if (error) {
             console.error('Search error:', error);
