@@ -27,3 +27,29 @@ export async function getGithubInstallation(event): Promise<Octokit> {
     });
     return await app.getInstallationOctokit(userData.github_installation_id);
 }
+
+export async function listWebhooks(octokit) {
+    type RawWebhook = Awaited<ReturnType<(typeof octokit)['rest']['repos']['listWebhooks']>>['data'][number];
+    type Webhook = RawWebhook & { repoFullName: string };
+    let webhooks: Webhook[] = [];
+    try {
+        const { data: repos } = await octokit.rest.apps.listReposAccessibleToInstallation();
+        for (const repo of repos.repositories) {
+            const { data } = await octokit.rest.repos.listWebhooks({
+                owner: repo.owner.login,
+                repo: repo.name,
+            });
+
+            const repoFullName = `${repo.owner.login}/${repo.name}`;
+
+            const repoHooks = data.filter(hook => hook.config.url.includes('tickup')).map(hook => ({ ...hook, repoFullName }));
+            webhooks = webhooks.concat(repoHooks);
+        }
+
+        return webhooks;
+    }
+    catch (err) {
+        console.error(err);
+        return err;
+    }
+}

@@ -1,5 +1,5 @@
 import { defineEventHandler, readBody, getQuery } from 'h3';
-import { serverSupabaseClient } from '#supabase/server';
+import { serverSupabaseServiceRole } from '#supabase/server';
 import type { Database } from '~/types/database.types';
 import { handleDelete, handlePullRequest, handlePush } from './events';
 
@@ -15,7 +15,8 @@ type WebhookPayload = {
 };
 
 export default defineEventHandler(async (event) => {
-    const supabase = await serverSupabaseClient<Database>(event);
+    const supabase = await serverSupabaseServiceRole<Database>(event);
+    const { userId } = await getQuery(event);
 
     if (event.method === 'GET') {
         const query = getQuery(event);
@@ -41,11 +42,11 @@ export default defineEventHandler(async (event) => {
     try {
         const githubEvent = event.headers.get('X-GitHub-Event');
         const branchName = body.ref?.split('/').pop();
-        const installationId = body.installation?.id || Number(event.headers.get('X-GitHub-Hook-Installation-Target-ID'));
+
         const repoFullName = body.repository?.full_name;
         const repoName = body.repository?.name;
 
-        if (!githubEvent || !branchName || !installationId || !repoFullName) {
+        if (!githubEvent || !branchName || !repoFullName) {
             return {
                 status: 'ignored',
                 message: 'Missing required webhook metadata',
@@ -55,7 +56,7 @@ export default defineEventHandler(async (event) => {
         const { data: users, error: usersError } = await supabase
             .from('Users')
             .select('id, github_webhook_subscriptions')
-            .eq('github_installation_id', installationId);
+            .eq('id', userId);
 
         if (usersError || !users?.length) {
             return {
@@ -82,12 +83,8 @@ export default defineEventHandler(async (event) => {
             };
         }
 
-        const repoMatchFilter = repoName
-            ? `github_repo.eq.${repoFullName},github_repo.eq.${repoName}`
-            : `github_repo.eq.${repoFullName}`;
-
         if (githubEvent === 'push') {
-            handlePush(supabase, subscribedUserIds, branchName, repoMatchFilter);
+            handlePush(supabase, subscribedUserIds, branchName);
 
             return {
                 status: 'success',
@@ -96,7 +93,7 @@ export default defineEventHandler(async (event) => {
         }
 
         if (githubEvent === 'pull_request') {
-            handlePullRequest(supabase, body, subscribedUserIds, branchName, repoMatchFilter);
+            handlePullRequest(supabase, body, subscribedUserIds, branchName);
 
             return {
                 status: 'success',
