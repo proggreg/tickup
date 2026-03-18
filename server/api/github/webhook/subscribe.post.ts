@@ -63,6 +63,7 @@ export default defineEventHandler(async (event) => {
         : [];
     const deletedSubscriptions = previousSubscriptions.filter(fullName => !subscriptions.includes(fullName));
 
+    const newWebhooks = [];
     try {
         for (const fullName of subscriptions) {
             const { owner, repo } = toRepoParts(fullName);
@@ -80,7 +81,7 @@ export default defineEventHandler(async (event) => {
                 });
             }
             else {
-                await octokit.rest.repos.createWebhook({
+                const { data } = await octokit.rest.repos.createWebhook({
                     owner,
                     repo,
                     name: 'web',
@@ -88,16 +89,16 @@ export default defineEventHandler(async (event) => {
                     events: ['push', 'pull_request', 'delete'],
                     config: hookConfig,
                 });
+
+                newWebhooks.push(data);
             }
         }
 
-        console.log('deletedSubscriptions', deletedSubscriptions);
         for (const fullName of deletedSubscriptions) {
             const { owner, repo } = toRepoParts(fullName);
             const { data: hooks } = await octokit.rest.repos.listWebhooks({ owner, repo, per_page: 100 });
-            console.log('hooks', hooks);
             const matchingHooks = hooks.filter(hook => hook.config?.url === webhookUrl);
-            console.log('matchingHooks', matchingHooks);
+
             for (const hook of matchingHooks) {
                 const res = await octokit.rest.repos.deleteWebhook({ owner, repo, hook_id: hook.id });
                 console.log('deleted webhook res', res);
@@ -125,6 +126,7 @@ export default defineEventHandler(async (event) => {
         previousSubscriptions,
         subscriptions,
         deletedSubscriptions,
+        newWebhooks,
         webhookUrl,
     };
 });
