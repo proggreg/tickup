@@ -1,13 +1,8 @@
 <script setup lang="ts">
-// const supabase = serverSupaBaseClient()
 definePageMeta({
     layout: 'default',
 });
 useHead({ title: 'TickUp:Home' });
-
-// const user = supabase.auth.getUser();
-
-// console.log('user', user)
 
 const saveTodo = ref(false);
 const dialog = useDialog();

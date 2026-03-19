@@ -1,7 +1,5 @@
 <script setup lang="ts">
 const colorMode = useColorMode();
-const _show = ref(true);
-// const { isOnline, isSyncing, pendingCount, syncNow } = useOfflineSync()
 </script>
 
 <template>
@@ -15,7 +13,6 @@ const _show = ref(true);
                 <AppToolbar />
                 <AppNav />
                 <v-main>
-                    <!-- <v-snackbar width="10" v-model="show" location="bottom right" timeout="-1">isOnline {{ isOnline }}</v-snackbar> -->
                     <v-container
                         fluid
                         class="pa-0 fill-height"
