@@ -2,17 +2,11 @@ import { defineEventHandler, readBody, getQuery } from 'h3';
 import { serverSupabaseServiceRole } from '#supabase/server';
 import type { Database } from '~/types/database.types';
 import { handleDelete, handlePullRequest, handlePush } from './events';
+import type { EmitterWebhookEvent } from '@octokit/webhooks';
 
-type WebhookPayload = {
-    ref?: string;
-    repository?: {
-        name?: string;
-        full_name?: string;
-    };
-    installation?: {
-        id?: number;
-    };
-};
+type PushEvent = EmitterWebhookEvent<'push'>['payload'];
+type PullRequestEvent = EmitterWebhookEvent<'pull_request'>['payload'];
+type DeleteEvent = EmitterWebhookEvent<'delete'>['payload'];
 
 export default defineEventHandler(async (event) => {
     const supabase = await serverSupabaseServiceRole<Database>(event);
@@ -37,7 +31,14 @@ export default defineEventHandler(async (event) => {
         return data;
     }
 
-    const body = await readBody<WebhookPayload>(event);
+    if (typeof userId !== 'string') {
+        return {
+            status: 'error',
+            message: 'Missing required query parameter: userId',
+        };
+    }
+
+    const body = await readBody<unknown>(event);
 
     try {
         const githubEvent = event.headers.get('X-GitHub-Event');
@@ -102,7 +103,7 @@ export default defineEventHandler(async (event) => {
         }
 
         if (githubEvent === 'delete') {
-            handleDelete(supabase, subscribedUserIds, branchName, repoMatchFilter);
+            handleDelete(supabase, body as DeleteEvent, subscribedUserIds, branchName);
 
             return {
                 status: 'success',
