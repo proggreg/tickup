@@ -1,8 +1,10 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
+const dialog = useDialog();
 
 function addTodo() {
     listsStore.addTodo();
+    dialog.value.open = false;
 }
 </script>
 
