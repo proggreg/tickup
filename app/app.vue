@@ -83,6 +83,14 @@ if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.he
 </template>
 
 <style>
+* {
+    scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+    display: none;
+}
+
 .layout-enter-active,
   .layout-leave-active {
     transition: all 0.4s;
