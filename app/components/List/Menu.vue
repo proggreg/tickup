@@ -58,7 +58,6 @@ async function openMenu(event) {
     >
         <v-list
             bg-color="none"
-            class="bg-transparent"
             @click.stop
         >
             <v-list-item :to="`/list/${listId}/settings`">
