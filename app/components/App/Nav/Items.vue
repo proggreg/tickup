@@ -36,6 +36,7 @@ onBeforeMount(() => {
                         style="cursor: pointer;"
                         :data-test-id="item.name"
                         :to="`/list/${item.id}`"
+                        prepend-icon="mdi-format-list-bulleted"
                     >
                         <v-text-field
                             v-if="editListName === item.id"

@@ -45,7 +45,6 @@ export default defineEventHandler(async (event) => {
         const branchName = body.ref?.split('/').pop();
 
         const repoFullName = body.repository?.full_name;
-        const repoName = body.repository?.name;
 
         if (!githubEvent || !branchName || !repoFullName) {
             return {
@@ -85,7 +84,7 @@ export default defineEventHandler(async (event) => {
         }
 
         if (githubEvent === 'push') {
-            handlePush(supabase, subscribedUserIds, branchName);
+            handlePush(supabase, body as PushEvent, subscribedUserIds, branchName);
 
             return {
                 status: 'success',
@@ -94,7 +93,7 @@ export default defineEventHandler(async (event) => {
         }
 
         if (githubEvent === 'pull_request') {
-            handlePullRequest(supabase, body, subscribedUserIds, branchName);
+            handlePullRequest(supabase, body as PullRequestEvent, subscribedUserIds, branchName);
 
             return {
                 status: 'success',

@@ -170,6 +170,6 @@ function removeImage() {
   right: 0;
   width: 30%; /* adjust fade width */
   height: 100%;
-  background: linear-gradient(to right, transparent, white); /* match your background color */
+  background: linear-gradient(to right, transparent, rgb(var(--v-theme-surface)));
 }
 </style>
