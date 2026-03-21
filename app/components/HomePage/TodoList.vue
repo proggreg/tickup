@@ -214,7 +214,7 @@ const deleteTodo = async (todo: Todo) => {
                 :key="todo.id"
                 slim
                 class="align-center todo-list-item"
-                style="min-height: 40px; padding-top: 2px; padding-bottom: 2px;"
+                style="min-height: 40px; padding-top: 2px; padding-bottom: 2px; padding-left: 4px; padding-right: 4px;"
                 @click="selectTodo(todo)"
             >
                 <template #prepend>
@@ -295,6 +295,14 @@ const deleteTodo = async (todo: Todo) => {
     border-radius: 16px !important;
     margin-bottom: 2px;
     transition: background 0.2s;
+}
+
+.todo-list-item :deep(.v-list-item__prepend) {
+    margin-right: 8px;
+}
+
+.todo-list-item :deep(.v-checkbox) {
+    margin-right: 0;
 }
 
 .todo-list-item:hover {
