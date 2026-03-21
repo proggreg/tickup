@@ -212,6 +212,7 @@ const deleteTodo = async (todo: Todo) => {
             <v-list-item
                 v-for="todo in todos"
                 :key="todo.id"
+                slim
                 class="align-center todo-list-item"
                 @click="selectTodo(todo)"
             >

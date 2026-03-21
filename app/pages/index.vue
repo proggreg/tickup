@@ -25,7 +25,7 @@ const tab = ref('todo');
             </v-window-item>
             <v-window-item
                 value="todo"
-                class="fill-height px-4"
+                class="fill-height px-2"
             >
                 <HomePageToday />
             </v-window-item>
