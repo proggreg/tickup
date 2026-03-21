@@ -214,15 +214,18 @@ const deleteTodo = async (todo: Todo) => {
                 :key="todo.id"
                 slim
                 class="align-center todo-list-item"
+                style="min-height: 40px; padding-top: 2px; padding-bottom: 2px;"
                 @click="selectTodo(todo)"
             >
                 <template #prepend>
                     <v-checkbox
                         v-if="todo.status !== 'Closed'"
+                        density="compact"
                         @click.stop="handleSetClosedSimple(todo)"
                     />
                     <v-checkbox
                         v-else
+                        density="compact"
                         :model-value="true"
                         @click.stop="handleSetOpenSimple(todo)"
                     />
