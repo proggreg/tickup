@@ -245,6 +245,8 @@ const deleteTodo = async (todo: Todo) => {
                                 icon="mdi-dots-vertical"
                                 variant="text"
                                 size="small"
+                                :ripple="false"
+                                class="no-active"
                                 @click.stop
                             />
                         </template>
@@ -311,5 +313,9 @@ const deleteTodo = async (todo: Todo) => {
 
 .todo-title {
     font-size: 1.05rem !important;
+}
+
+.no-active:deep(.v-btn__overlay) {
+    display: none;
 }
 </style>
