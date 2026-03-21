@@ -1,8 +1,9 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
+const { isTodoClosed } = useTodoStatus();
 
 const todaysTodos = computed(() => {
-    return listsStore.todaysTodos.filter(todo => todo.status !== 'Closed');
+    return listsStore.todaysTodos.filter(todo => !isTodoClosed(todo.status));
 });
 </script>
 

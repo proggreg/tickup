@@ -25,7 +25,7 @@ INSERT INTO auth.users (
   gen_random_uuid(),
   'authenticated',
   'authenticated',
-  'test@example.com',
+  'testuser@example.com',
   crypt('password', gen_salt('bf')),
   NOW(),
   NOW(),

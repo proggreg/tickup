@@ -11,6 +11,7 @@ declare global {
         id?: string;
         dueDate?: Date;
         listId?: string;
+        list?: List;
         status: string;
         desc?: string;
         edit: boolean;
@@ -38,6 +39,8 @@ declare global {
         }[];
         notificationDateTime?: string | Date;
         notificationSent?: boolean;
+        createdAt?: string;
+        updatedAt?: string;
     }
 
     interface Status {

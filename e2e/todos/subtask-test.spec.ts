@@ -59,7 +59,7 @@
 //         await page.waitForLoadState('networkidle');
 
 //         // Add a subtask
-//         const subtaskInput = page.getByTestId('add-subtask-input').locator('input');
+//         const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
 //         const subtaskName = `Subtask ${uuidv4()}`;
 //         await subtaskInput.fill(subtaskName);
 //         // Wait a bit for the reactive state to update and button to become enabled
@@ -72,7 +72,7 @@
 //         await page.waitForLoadState('networkidle');
 
 //         // Verify the subtask appears in the list
-//         const subtasksList = page.getByTestId('subtasks-list');
+//         const subtasksList = page.getByTestId('subtasks-list').first();
 //         await expect(subtasksList).toBeVisible();
 
 //         const subtaskNameField = page.getByTestId('subtask-name-0').locator('input');
@@ -98,7 +98,7 @@
 //         await page.waitForLoadState('networkidle');
 
 //         // Add a subtask
-//         const subtaskInput = page.getByTestId('add-subtask-input').locator('input');
+//         const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
 //         const subtaskName = `Subtask to complete ${uuidv4()}`;
 //         await subtaskInput.fill(subtaskName);
 //         // Wait a bit for the reactive state to update and button to become enabled
@@ -140,7 +140,7 @@
 //     //     await page.waitForLoadState('networkidle');
 
 //     //     // Add a subtask
-//     //     const subtaskInput = page.getByTestId('add-subtask-input').locator('input');
+//     //     const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
 //     //     const subtaskName = `Subtask to delete ${uuidv4()}`;
 //     //     await subtaskInput.fill(subtaskName);
 //     //     // Wait a bit for the reactive state to update and button to become enabled
@@ -150,7 +150,7 @@
 //     //     await page.waitForLoadState('networkidle');
 
 //     //     // Verify subtask exists
-//     //     await expect(page.getByTestId('subtasks-list')).toBeVisible();
+//     //     await expect(page.getByTestId('subtasks-list').first()).toBeVisible();
 
 //     //     // Delete the subtask
 //     //     const deleteButton = page.getByTestId('subtask-delete-0');
@@ -159,7 +159,7 @@
 //     //     await page.waitForLoadState('networkidle');
 
 //     //     // Verify subtask list is gone (no subtasks left)
-//     //     await expect(page.getByTestId('subtasks-list')).not.toBeVisible();
+//     //     await expect(page.getByTestId('subtasks-list').first()).not.toBeVisible();
 //     // });
 
 //     // test('can add multiple subtasks', async ({ page, isMobile }) => {
@@ -181,7 +181,7 @@
 //     //     await page.waitForLoadState('networkidle');
 
 //     //     // Add first subtask
-//     //     const subtaskInput = page.getByTestId('add-subtask-input').locator('input');
+//     //     const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
 //     //     const subtask1Name = `First subtask ${uuidv4()}`;
 //     //     await subtaskInput.fill(subtask1Name);
 //     //     // Wait a bit for the reactive state to update and button to become enabled

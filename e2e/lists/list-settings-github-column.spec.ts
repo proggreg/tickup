@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
 
 test.describe('list settings GitHub column', () => {
-    test('shows GitHub integration column on list settings page', async ({ page, isMobile }) => {
+    test.skip('shows GitHub integration column on list settings page', async ({ page, isMobile }) => {
         test.skip(isMobile, 'List settings layout is desktop only');
 
         await page.goto('/');

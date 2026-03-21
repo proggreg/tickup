@@ -32,6 +32,7 @@ const showFab = computed(() => {
                         fluid
                     >
                         <NuxtPage />
+                        <AppNavMobile />
                     </v-container>
                 </v-main>
                 <v-btn
@@ -43,7 +44,6 @@ const showFab = computed(() => {
                     text="New"
                     @click="addEventHandler"
                 />
-                <AppNavMobile />
             </v-app>
         </v-theme-provider>
     </ColorScheme>

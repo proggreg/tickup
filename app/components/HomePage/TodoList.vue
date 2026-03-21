@@ -15,14 +15,15 @@ const props = withDefaults(defineProps<Props>(), {
 // const { isMobile } = useDevice()
 const { selectTodo, setClosed, setOpen, formatDate } = useTodoActions();
 const listsStore = useListsStore();
+const { isTodoClosed } = useTodoStatus();
 const opened = ref(['Open']);
 
 const openTodos = computed(() => {
-    return props.todos.filter((todo: Todo) => todo.status !== 'Closed');
+    return props.todos.filter((todo: Todo) => !isTodoClosed(todo.status));
 });
 
 const closedTodos = computed(() => {
-    return props.todos.filter((todo: Todo) => todo.status === 'Closed');
+    return props.todos.filter((todo: Todo) => isTodoClosed(todo.status));
 });
 
 const handleSetClosed = (todo: Todo, event?: any) => {
@@ -219,7 +220,7 @@ const deleteTodo = async (todo: Todo) => {
             >
                 <template #prepend>
                     <v-checkbox
-                        v-if="todo.status !== 'Closed'"
+                        v-if="!isTodoClosed(todo.status)"
                         density="compact"
                         @click.stop="handleSetClosedSimple(todo)"
                     />
