@@ -60,6 +60,7 @@ export default defineConfig({
             use: {
                 storageState: 'user.json',
             },
+            dependencies: ['setup'],
         },
         {
             name: 'chromium',
