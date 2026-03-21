@@ -65,6 +65,12 @@ export default defineNuxtConfig({
 
     ignore: [
         '**/.claude',
+        'e2e',
+        'e2e-screenshots',
+        'playwright',
+        'playwright-report',
+        'test',
+        'test-results',
     ],
 
     experimental: {
