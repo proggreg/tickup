@@ -25,11 +25,17 @@ function deleteList() {
     >
         <template #activator="{ props: menuProps }">
             <v-btn
-                icon="mdi-dots-vertical"
+                size="small"
                 :data-testid="`setting-button-${listId}`"
                 v-bind="menuProps"
+                class="mr-n2"
                 @click.stop.prevent
-            />
+            >
+                <v-icon
+                    icon="mdi-dots-vertical"
+                    size="18"
+                />
+            </v-btn>
         </template>
         <v-list>
             <v-list-item :to="`/list/${listId}/settings`">
