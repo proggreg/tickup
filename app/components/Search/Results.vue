@@ -14,8 +14,33 @@ function formatDate(dateStr: string) {
 </script>
 
 <template>
+    <v-list
+        v-if="store.loading"
+        class="px-3 bg-transparent"
+    >
+        <v-list-item
+            v-for="n in 5"
+            :key="n"
+            rounded="xl"
+            class="mb-2"
+            base-color="surface-variant"
+            variant="tonal"
+            min-height="62"
+        >
+            <template #prepend>
+                <v-skeleton-loader
+                    type="avatar"
+                    width="32"
+                    class="mr-3"
+                />
+            </template>
+            <v-skeleton-loader type="text" width="60%" />
+            <v-skeleton-loader type="text" width="35%" class="mt-1" />
+        </v-list-item>
+    </v-list>
+
     <div
-        v-if="store.results.length === 0 && store.searchQuery"
+        v-else-if="store.results.length === 0 && store.searchQuery"
         class="d-flex flex-column align-center justify-center flex-grow-1 pa-8 text-center"
     >
         <v-icon
