@@ -41,11 +41,11 @@ if (import.meta.client) {
         </v-btn>
 
         <v-btn
-            to="/account"
+            to="/settings"
             value="settings"
         >
-            <v-icon>mdi-account-circle</v-icon>
-            <span>Account</span>
+            <v-icon>mdi-cog</v-icon>
+            <span>Settings</span>
         </v-btn>
     </v-bottom-navigation>
 </template>
