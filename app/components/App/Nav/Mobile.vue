@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { smAndDown } = useDisplay();
 const isKeyboardOpen = ref(false);
 
 if (import.meta.client) {
@@ -12,6 +13,7 @@ if (import.meta.client) {
 
 <template>
     <v-bottom-navigation
+        v-if="smAndDown"
         grow
         app
         :active="!isKeyboardOpen"

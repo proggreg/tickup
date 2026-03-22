@@ -14,8 +14,10 @@ function addEventHandler() {
     dialog.value.open = true;
 }
 
+const { smAndDown } = useDisplay();
+
 const showFab = computed(() => {
-    return route.name === 'lists' || route.name === 'list-id' || route.name === 'index';
+    return smAndDown.value && (route.name === 'lists' || route.name === 'list-id' || route.name === 'index');
 });
 </script>
 
