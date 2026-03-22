@@ -57,17 +57,11 @@ onBeforeMount(() => {
                 min-height="62"
             >
                 <template #prepend>
-                    <v-avatar
-                        rounded="lg"
-                        size="36"
-                        variant="tonal"
+                    <v-icon
+                        :icon="item.icon || 'mdi-format-list-bulleted'"
+                        size="18"
                         class="mr-3"
-                    >
-                        <v-icon
-                            :icon="item.icon || 'mdi-format-list-bulleted'"
-                            size="18"
-                        />
-                    </v-avatar>
+                    />
                 </template>
 
                 <v-list-item-title class="font-weight-bold text-capitalize">
