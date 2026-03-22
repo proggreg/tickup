@@ -28,14 +28,10 @@ function formatDate(dateStr: string) {
             min-height="62"
         >
             <template #prepend>
-                <v-skeleton-loader
-                    type="avatar"
-                    width="32"
-                    class="mr-3"
-                />
+                <div class="skeleton-circle mr-3" />
             </template>
-            <v-skeleton-loader type="text" width="60%" />
-            <v-skeleton-loader type="text" width="35%" class="mt-1" />
+            <div class="skeleton-line mb-2" style="width: 60%;" />
+            <div class="skeleton-line" style="width: 35%;" />
         </v-list-item>
     </v-list>
 
@@ -127,3 +123,33 @@ function formatDate(dateStr: string) {
         </v-list-item>
     </v-list>
 </template>
+
+<style scoped>
+@keyframes shimmer {
+    0% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.4; }
+}
+
+.skeleton-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.2;
+    animation: shimmer 1.4s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+.skeleton-line {
+    height: 12px;
+    border-radius: 6px;
+    background: currentColor;
+    opacity: 0.2;
+    animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-line:nth-child(2) {
+    animation-delay: 0.1s;
+}
+</style>
