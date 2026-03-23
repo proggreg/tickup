@@ -25,11 +25,7 @@ const selectedIds = ref<Set<string>>(new Set());
 
 onMounted(async () => {
     await listsStore.getLists();
-    for (const list of listsStore.lists) {
-        if (list.id) {
-            await listsStore.getListTodos(list.id);
-        }
-    }
+    await Promise.all(listsStore.lists.filter(l => l.id).map(l => listsStore.getListTodos(l.id)));
 });
 
 const selectableItems = computed<SelectableItem[]>(() => {

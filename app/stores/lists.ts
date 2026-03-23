@@ -113,13 +113,17 @@ export const useListsStore = defineStore('lists', {
             this.currentList.todos = todos;
         },
         async getListTodos(listId?: string): Promise<Todo[]> {
-            console.log('getListTodos');
             if (!listId) {
                 listId = this.currentList.id;
             }
             const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { listId } });
-            console.log('getListTodos num of todos', todos.length);
-            this.currentList.todos = todos;
+            const list = this.lists.find(l => l.id === listId);
+            if (list) {
+                list.todos = todos;
+            }
+            if (this.currentList?.id === listId) {
+                this.currentList.todos = todos;
+            }
             return todos || [];
         },
         setCurrentList(list: List) {
