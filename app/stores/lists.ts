@@ -264,9 +264,15 @@ export const useListsStore = defineStore('lists', {
         async deleteTodo(id: string) {
             await $fetch(`/api/todo/${id}`, { method: 'DELETE' });
 
-            this.currentList.todos = this.currentList.todos.filter(
-                (todo: Todo) => todo.id !== id,
-            );
+            this.currentList.todos = this.currentList.todos.filter((todo: Todo) => todo.id !== id);
+            this.todaysTodos = this.todaysTodos.filter((todo: Todo) => todo.id !== id);
+            this.overdueTodos = this.overdueTodos.filter((todo: Todo) => todo.id !== id);
+            this.todos = this.todos.filter((todo: Todo) => todo.id !== id);
+            for (const list of this.lists) {
+                if (list.todos) {
+                    list.todos = list.todos.filter((todo: Todo) => todo.id !== id);
+                }
+            }
         },
         async getTodo(id: string) {
             const { data } = await useFetch<Todo>(`/api/todo/${id}`);

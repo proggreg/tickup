@@ -48,9 +48,18 @@ const handleSetOpenSimple = (todo: Todo) => {
     setOpen(todo);
 };
 
-const deleteTodo = async (todo: Todo) => {
+const deleteError = ref<string | null>(null);
+
+const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
     if (!todo.id) return;
-    await listsStore.deleteTodo(todo.id);
+    deleteError.value = null;
+    try {
+        await listsStore.deleteTodo(todo.id);
+        closeDialog?.();
+    }
+    catch {
+        deleteError.value = 'Failed to delete todo. Please try again.';
+    }
 };
 </script>
 
@@ -122,7 +131,7 @@ const deleteTodo = async (todo: Todo) => {
                                             <v-card-text>Are you sure you want to delete this todo?</v-card-text>
                                             <v-card-actions>
                                                 <v-spacer />
-                                                <v-btn color="red" @click="deleteTodo(todo); isActive.value = false">Yes</v-btn>
+                                                <v-btn color="red" @click="deleteTodo(todo, () => isActive.value = false)">Yes</v-btn>
                                                 <v-btn @click="isActive.value = false">No</v-btn>
                                             </v-card-actions>
                                         </v-card>
@@ -191,7 +200,7 @@ const deleteTodo = async (todo: Todo) => {
                                             <v-card-text>Are you sure you want to delete this todo?</v-card-text>
                                             <v-card-actions>
                                                 <v-spacer />
-                                                <v-btn color="red" @click="deleteTodo(todo); isActive.value = false">Yes</v-btn>
+                                                <v-btn color="red" @click="deleteTodo(todo, () => isActive.value = false)">Yes</v-btn>
                                                 <v-btn @click="isActive.value = false">No</v-btn>
                                             </v-card-actions>
                                         </v-card>
@@ -286,6 +295,15 @@ const deleteTodo = async (todo: Todo) => {
     >
         <AppEmptyState height="100%" />
     </v-card>
+
+    <v-snackbar
+        :model-value="!!deleteError"
+        color="error"
+        timeout="4000"
+        @update:model-value="deleteError = null"
+    >
+        {{ deleteError }}
+    </v-snackbar>
 </template>
 
 <style scoped>
