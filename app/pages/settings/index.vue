@@ -116,11 +116,11 @@ onMounted(async () => {
         </div>
 
         <div
-            class="px-3 flex-grow-1"
+            class="flex-grow-1"
             style="overflow-y: auto;"
         >
             <!-- Statuses -->
-            <div class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-2 mb-2">
+            <div class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-5 mb-2">
                 Statuses
             </div>
 
@@ -140,8 +140,7 @@ onMounted(async () => {
 
             <v-list
                 v-else
-                class="bg-transparent mb-2"
-                :lines="false"
+                class="px-3 bg-transparent mb-2"
             >
                 <v-list-item
                     v-for="status in store.statuses"
@@ -218,7 +217,7 @@ onMounted(async () => {
                 </v-list-item>
             </v-list>
 
-            <div class="d-flex ga-2 px-1 mb-6">
+            <div class="d-flex ga-2 px-4 mb-6">
                 <v-btn
                     variant="tonal"
                     prepend-icon="mdi-plus"
@@ -238,13 +237,12 @@ onMounted(async () => {
             </div>
 
             <!-- Integrations -->
-            <div class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-2 mb-2">
+            <div class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-5 mb-2">
                 Integrations
             </div>
 
             <v-list
-                class="bg-transparent px-0 mb-6"
-                :lines="false"
+                class="px-3 bg-transparent mb-6"
             >
                 <v-list-item
                     to="/settings/github"
@@ -258,7 +256,7 @@ onMounted(async () => {
                         <v-icon
                             icon="mdi-github"
                             size="18"
-                            class="mr-1"
+                            class="mr-3"
                         />
                     </template>
 
@@ -294,13 +292,12 @@ onMounted(async () => {
             </v-list>
 
             <!-- Account -->
-            <div class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-2 mb-2">
+            <div class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-5 mb-2">
                 Account
             </div>
 
             <v-list
-                class="bg-transparent px-0"
-                :lines="false"
+                class="px-3 bg-transparent"
             >
                 <v-list-item
                     rounded="xl"
@@ -313,7 +310,7 @@ onMounted(async () => {
                         <v-icon
                             icon="mdi-logout"
                             size="18"
-                            class="mr-1"
+                            class="mr-3"
                         />
                     </template>
                     <v-list-item-title class="font-weight-bold text-error">

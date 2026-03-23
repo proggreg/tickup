@@ -60,7 +60,7 @@ onBeforeMount(() => {
                     <v-icon
                         :icon="item.icon || 'mdi-format-list-bulleted'"
                         size="18"
-                        class="mr-1"
+                        class="mr-3"
                     />
                 </template>
 
