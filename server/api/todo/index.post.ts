@@ -6,7 +6,6 @@ export default defineEventHandler(async (event) => {
     const supabase = await serverSupabaseClient(event);
 
     delete body.edit;
-    delete body.userId;
     delete body.subtasks;
 
     if (body.parentId) {
