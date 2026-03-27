@@ -6,7 +6,6 @@ declare global {
     type ListType = 'simple' | 'table' | '';
 
     interface Todo {
-        userId?: string;
         name: string;
         id?: string;
         dueDate?: Date;
