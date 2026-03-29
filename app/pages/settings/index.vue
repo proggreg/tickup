@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-    layout: 'settings',
+    layout: 'mobile',
 });
 const supabase = useSupabaseClient();
 const { userId } = useCurrentUser();
@@ -110,143 +110,214 @@ onMounted(async () => {
 </script>
 
 <template>
-    <v-row>
-        <v-col cols="12">
-            <h2 class="text-center">
-                Settings
-            </h2>
-            <v-card
-                variant="flat"
-                class="pa-4"
+    <div class="d-flex flex-column h-100 pb-20">
+        <div class="d-flex align-center ga-3 px-5 pt-8 pb-4 flex-shrink-0">
+            <span class="text-h5 font-weight-bold">Settings</span>
+        </div>
+
+        <div
+            class="flex-grow-1"
+            style="overflow-y: auto;"
+        >
+            <!-- Statuses -->
+            <div class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-5 mb-2">
+                Statuses
+            </div>
+
+            <div
+                v-if="store.statuses.length === 0"
+                class="d-flex flex-column align-center justify-center pa-8 text-center mb-4"
             >
-                <v-list variant="tonal">
-                    <v-list-item
-                        v-for="status in store.statuses"
-                        :key="status.name"
-                        class="my-2"
-                        :base-color="status.color"
-                    >
-                        <template #prepend>
-                            <v-menu :close-on-content-click="false">
-                                <template #activator="{ props }">
-                                    <v-btn
-                                        v-bind="props"
-                                        min-width="20"
-                                        size="small"
-                                        :color="status.color"
-                                    />
-                                </template>
-                                <v-color-picker
-                                    v-model="status.color"
-                                    class="ma-4"
-                                    show-swatches
-                                />
-                            </v-menu>
-                        </template>
-                        <v-text-field
-                            v-if="status.Edit"
-                            v-model="status.name"
-                            class="mx-2"
-                            autofocus
-                        />
-                        <v-list-item-title
-                            v-else
-                            class="mx-2"
-                        >
-                            {{ status.name }}
-                        </v-list-item-title>
-                        <template #append>
-                            <v-menu>
-                                <template #activator="{ props }">
-                                    <v-btn
-                                        class="pa-0"
-                                        v-bind="props"
-                                        icon="mdi-dots-horizontal"
-                                        variant="text"
-                                    />
-                                </template>
-                                <v-list class="px-2">
-                                    <v-list-item
-                                        v-for="(option, index) in options"
-                                        :key="index"
-                                        :value="option.name"
-                                        :append-icon="option.icon"
-                                        :class="option.destructive ? 'text-red' : ''"
-                                        @click.passive="option.handler(status)"
-                                    >
-                                        <v-list-item-title class="text-body-2">
-                                            {{ option.name }}
-                                        </v-list-item-title>
-                                    </v-list-item>
-                                </v-list>
-                            </v-menu>
-                        </template>
-                    </v-list-item>
-                    <v-list-item
-                        width="200"
-                        variant="plain"
-                    >
-                        <v-btn @click="addStatus">
-                            Add Status
-                        </v-btn>
-                    </v-list-item>
-                </v-list>
-                <v-btn
-                    color="secondary"
-                    @click="cancel"
+                <v-icon
+                    icon="mdi-tag-outline"
+                    size="48"
+                    class="text-disabled mb-3"
+                />
+                <p class="text-body-2 text-disabled">
+                    No statuses yet
+                </p>
+            </div>
+
+            <v-list
+                v-else
+                class="px-3 bg-transparent mb-2"
+            >
+                <v-list-item
+                    v-for="status in store.statuses"
+                    :key="status.name"
+                    rounded="xl"
+                    class="mb-2"
+                    base-color="surface-variant"
+                    variant="tonal"
+                    min-height="62"
                 >
-                    Cancel
+                    <template #prepend>
+                        <v-menu :close-on-content-click="false">
+                            <template #activator="{ props }">
+                                <v-btn
+                                    v-bind="props"
+                                    min-width="28"
+                                    size="small"
+                                    :color="status.color"
+                                    class="mr-2"
+                                    rounded="lg"
+                                />
+                            </template>
+                            <v-color-picker
+                                v-model="status.color"
+                                class="ma-4"
+                                show-swatches
+                            />
+                        </v-menu>
+                    </template>
+
+                    <v-text-field
+                        v-if="status.Edit"
+                        v-model="status.name"
+                        density="compact"
+                        variant="plain"
+                        autofocus
+                        hide-details
+                        class="font-weight-bold"
+                    />
+                    <v-list-item-title
+                        v-else
+                        class="font-weight-bold"
+                    >
+                        {{ status.name }}
+                    </v-list-item-title>
+
+                    <template #append>
+                        <v-menu>
+                            <template #activator="{ props }">
+                                <v-btn
+                                    v-bind="props"
+                                    icon="mdi-dots-vertical"
+                                    variant="text"
+                                    size="small"
+                                    @click.stop
+                                />
+                            </template>
+                            <v-list>
+                                <v-list-item
+                                    v-for="(option, index) in options"
+                                    :key="index"
+                                    :value="option.name"
+                                    :append-icon="option.icon"
+                                    :class="option.destructive ? 'text-red' : ''"
+                                    @click.passive="option.handler(status)"
+                                >
+                                    <v-list-item-title class="text-body-2">
+                                        {{ option.name }}
+                                    </v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                    </template>
+                </v-list-item>
+            </v-list>
+
+            <div class="d-flex ga-2 px-4 mb-6">
+                <v-btn
+                    variant="tonal"
+                    prepend-icon="mdi-plus"
+                    rounded="xl"
+                    @click="addStatus"
+                >
+                    Add Status
                 </v-btn>
                 <v-btn
                     color="primary"
+                    variant="tonal"
+                    rounded="xl"
                     @click="save"
                 >
                     Save
                 </v-btn>
-                <v-btn
-                    class="text-body-2 py-0 ma-2"
-                    append-icon="mdi-logout"
+            </div>
+
+            <!-- Integrations -->
+            <div class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-5 mb-2">
+                Integrations
+            </div>
+
+            <v-list
+                class="px-3 bg-transparent mb-6"
+            >
+                <v-list-item
+                    to="/settings/github"
+                    rounded="xl"
+                    base-color="surface-variant"
+                    variant="tonal"
+                    min-height="62"
+                    class="mb-2"
+                >
+                    <template #prepend>
+                        <v-icon
+                            icon="mdi-github"
+                            size="18"
+                            class="mr-3"
+                        />
+                    </template>
+
+                    <v-list-item-title class="font-weight-bold">
+                        GitHub Integration
+                    </v-list-item-title>
+                    <v-list-item-subtitle
+                        v-if="githubLoading"
+                        class="text-caption"
+                    >
+                        Checking...
+                    </v-list-item-subtitle>
+                    <v-list-item-subtitle
+                        v-else-if="githubConnected"
+                        class="text-caption text-success"
+                    >
+                        Connected
+                    </v-list-item-subtitle>
+                    <v-list-item-subtitle
+                        v-else
+                        class="text-caption text-medium-emphasis"
+                    >
+                        Not connected
+                    </v-list-item-subtitle>
+
+                    <template #append>
+                        <v-icon
+                            icon="mdi-chevron-right"
+                            size="18"
+                        />
+                    </template>
+                </v-list-item>
+            </v-list>
+
+            <!-- Account -->
+            <div class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-5 mb-2">
+                Account
+            </div>
+
+            <v-list
+                class="px-3 bg-transparent"
+            >
+                <v-list-item
+                    rounded="xl"
+                    base-color="surface-variant"
+                    variant="tonal"
+                    min-height="62"
                     @click="signOut"
                 >
-                    Sign Out
-                </v-btn>
-            </v-card>
-
-            <v-card
-                variant="flat"
-                class="pa-4 mt-4"
-                to="/settings/github"
-            >
-                <v-card-text class="d-flex align-center justify-space-between">
-                    <div class="d-flex align-center ga-3">
-                        <v-icon>mdi-github</v-icon>
-                        <div>
-                            <div class="font-weight-medium">
-                                GitHub Integration
-                            </div>
-                            <div
-                                v-if="githubLoading"
-                                class="text-caption text-medium-emphasis"
-                            >
-                                Checking...
-                            </div>
-                            <div
-                                v-else-if="githubConnected"
-                                class="text-caption text-success"
-                            >
-                                Connected
-                            </div>
-                            <div
-                                v-else
-                                class="text-caption text-medium-emphasis"
-                            >
-                                Not connected
-                            </div>
-                        </div>
-                    </div>
-                    <v-icon>mdi-chevron-right</v-icon>
-                </v-card-text>
-            </v-card>
-        </v-col>
-    </v-row>
+                    <template #prepend>
+                        <v-icon
+                            icon="mdi-logout"
+                            size="18"
+                            class="mr-3"
+                        />
+                    </template>
+                    <v-list-item-title class="font-weight-bold text-error">
+                        Sign Out
+                    </v-list-item-title>
+                </v-list-item>
+            </v-list>
+        </div>
+    </div>
 </template>
