@@ -113,13 +113,17 @@ export const useListsStore = defineStore('lists', {
             this.currentList.todos = todos;
         },
         async getListTodos(listId?: string): Promise<Todo[]> {
-            console.log('getListTodos');
             if (!listId) {
                 listId = this.currentList.id;
             }
             const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { listId } });
-            console.log('getListTodos num of todos', todos.length);
-            this.currentList.todos = todos;
+            const list = this.lists.find(l => l.id === listId);
+            if (list) {
+                list.todos = todos;
+            }
+            if (this.currentList?.id === listId) {
+                this.currentList.todos = todos;
+            }
             return todos || [];
         },
         setCurrentList(list: List) {
@@ -260,9 +264,15 @@ export const useListsStore = defineStore('lists', {
         async deleteTodo(id: string) {
             await $fetch(`/api/todo/${id}`, { method: 'DELETE' });
 
-            this.currentList.todos = this.currentList.todos.filter(
-                (todo: Todo) => todo.id !== id,
-            );
+            this.currentList.todos = this.currentList.todos.filter((todo: Todo) => todo.id !== id);
+            this.todaysTodos = this.todaysTodos.filter((todo: Todo) => todo.id !== id);
+            this.overdueTodos = this.overdueTodos.filter((todo: Todo) => todo.id !== id);
+            this.todos = this.todos.filter((todo: Todo) => todo.id !== id);
+            for (const list of this.lists) {
+                if (list.todos) {
+                    list.todos = list.todos.filter((todo: Todo) => todo.id !== id);
+                }
+            }
         },
         async getTodo(id: string) {
             const { data } = await useFetch<Todo>(`/api/todo/${id}`);
