@@ -7,10 +7,16 @@ useHead({ title: 'TickUp:Home' });
 const saveTodo = ref(false);
 const dialog = useDialog();
 const tab = ref('todo');
+const { mdAndUp } = useDisplay();
 </script>
 
 <template>
+    <!-- Desktop dashboard -->
+    <HomePageDashboard v-if="mdAndUp" />
+
+    <!-- Mobile tabbed view -->
     <v-col
+        v-else
         cols="12"
         class="fill-height"
     >
