@@ -8,6 +8,7 @@ function toggleDarkMode() {
 <template>
     <v-btn
         variant="text"
+        data-testid="dark-mode-toggle"
         :icon="colorMode.preference === 'light' ? 'mdi-weather-night' : 'mdi-weather-sunny'"
         @click="toggleDarkMode"
     />

@@ -11,6 +11,8 @@ const props = withDefaults(defineProps<Props>(), {
     loading: false,
 });
 
+const theme = useTheme();
+
 const scrollContainer = ref<HTMLElement | null>(null);
 const isAtBottom = ref(true);
 const SCROLL_THRESHOLD = 60; // px from bottom to consider "at bottom"
@@ -55,30 +57,25 @@ onMounted(() => scrollToBottom('instant'));
             <div
                 v-for="(m, index) in messages"
                 :key="m.id ?? index"
-                class="chat-message"
-                :class="m.role === 'user' ? 'chat-message--user' : 'chat-message--assistant'"
+                class="d-flex flex-column chat-message"
+                :class="m.role === 'user' ? 'align-self-end align-items-end' : 'align-self-start align-items-start'"
                 data-testid="chat-message"
             >
-                <v-chip
-                    class="mb-1"
-                    :color="m.role === 'user' ? 'primary' : 'surface-variant'"
-                    size="x-small"
-                    label
-                >
-                    {{ m.role === 'user' ? 'You' : 'AI' }}
-                </v-chip>
-
                 <div
                     v-for="(part, partIndex) in m.parts"
                     :key="`${m.id}-${part.type}-${partIndex}`"
                 >
-                    <p
+                    <v-card
                         v-if="part.type === 'text'"
-                        class="chat-message__text"
+                        :color="m.role === 'user' ? 'primary' : (theme.current.value.dark ? 'grey-darken-3' : 'surface-variant')"
+                        variant="flat"
+                        rounded="xl"
+                        class="px-3 py-2 text-body-2"
+                        style="white-space: pre-wrap; word-break: break-word; line-height: 1.5;"
                         data-testid="chat-message-text"
                     >
                         {{ part.text }}
-                    </p>
+                    </v-card>
 
                     <ChatToolCall
                         v-else-if="isToolUIPart(part)"
@@ -90,17 +87,9 @@ onMounted(() => scrollToBottom('instant'));
             <!-- Typing indicator -->
             <div
                 v-if="loading"
-                class="chat-message chat-message--assistant"
+                class="d-flex flex-column align-self-start align-items-start chat-message"
                 data-testid="chat-message-loading"
             >
-                <v-chip
-                    class="mb-1"
-                    color="surface-variant"
-                    size="x-small"
-                    label
-                >
-                    AI
-                </v-chip>
                 <v-progress-linear
                     indeterminate
                     color="primary"
@@ -149,35 +138,7 @@ onMounted(() => scrollToBottom('instant'));
 }
 
 .chat-message {
-    display: flex;
-    flex-direction: column;
     max-width: 80%;
-}
-
-.chat-message--user {
-    align-self: flex-end;
-    align-items: flex-end;
-}
-
-.chat-message--assistant {
-    align-self: flex-start;
-    align-items: flex-start;
-}
-
-.chat-message__text {
-    margin: 0;
-    padding: 8px 12px;
-    border-radius: 12px;
-    background: rgb(var(--v-theme-surface-variant));
-    color: rgb(var(--v-theme-on-surface-variant));
-    white-space: pre-wrap;
-    word-break: break-word;
-    line-height: 1.5;
-}
-
-.chat-message--user .chat-message__text {
-    background: rgb(var(--v-theme-primary));
-    color: rgb(var(--v-theme-on-primary));
 }
 
 .chat-message-list__anchor {
