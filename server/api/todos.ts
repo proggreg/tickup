@@ -15,8 +15,7 @@ export default defineEventHandler(async (event) => {
                 .from('Todos')
                 .select('*')
                 .gte('due_date', start.toISOString())
-                .lt('due_date', end.toISOString())
-                .is('parent_id', null);
+                .lt('due_date', end.toISOString());
 
             if (error) {
                 console.error('Supabase error:', error);
@@ -30,6 +29,7 @@ export default defineEventHandler(async (event) => {
                 completedDate: todo.completed_date,
                 userId: todo.user_id,
                 listId: todo.list_id,
+                parentId: todo.parent_id,
                 githubBranchName: todo.github_branch_name,
                 notificationDateTime: todo.notification_date_time,
                 notificationSent: todo.notification_sent,
