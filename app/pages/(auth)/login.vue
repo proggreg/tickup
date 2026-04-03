@@ -72,11 +72,12 @@ async function resetPassword() {
                 width="100%"
             >
                 <v-card-item class="mb-4">
-                    <v-img
-                        class="mx-auto"
+                    <img
+                        class="mx-auto d-block"
                         width="50%"
-                        rounded="xl"
+                        style="border-radius: 12px"
                         src="/pwa-512x512.png"
+                        alt="Tickup"
                     />
                 </v-card-item>
 

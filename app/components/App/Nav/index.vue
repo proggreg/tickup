@@ -21,11 +21,12 @@ function deleteList() {
 <template>
     <v-app-bar extension-height="0">
         <template #prepend>
-            <v-img
+            <img
                 class="pa-6"
                 src="/android-chrome-512x512.png"
                 width="40"
                 style="border-radius: 50%"
+                alt="Tickup"
             />
         </template>
 

@@ -4,43 +4,13 @@ definePageMeta({
 });
 useHead({ title: 'TickUp:Home' });
 
-const tab = ref('todo');
 const { mdAndUp } = useDisplay();
 </script>
 
 <template>
-    <!-- Desktop dashboard -->
-    <HomePageDashboard v-if="mdAndUp" />
+    <!-- Desktop: Ledger dashboard (KPI cards + 8/4 col layout) -->
+    <HomePageLedgerDashboard v-if="mdAndUp" />
 
-    <!-- Mobile tabbed view -->
-    <v-col
-        v-else
-        cols="12"
-        class="fill-height"
-    >
-        <HomePageTabs v-model="tab" />
-        <v-window
-            v-model="tab"
-            class="fill-height"
-        >
-            <v-window-item
-                value="overdue"
-                class="fill-height px-4"
-            >
-                <HomePageOverDue />
-            </v-window-item>
-            <v-window-item
-                value="todo"
-                class="fill-height px-2"
-            >
-                <HomePageToday />
-            </v-window-item>
-            <v-window-item
-                value="done"
-                class="fill-height px-4"
-            >
-                <HomePageTodayClosed />
-            </v-window-item>
-        </v-window>
-    </v-col>
+    <!-- Mobile: bento grid + vertical sections + bottom nav -->
+    <HomePageMobileDashboard v-else />
 </template>
