@@ -77,8 +77,7 @@ function toggleExpanded() {
         <v-btn
             :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
             variant="text"
-            size="x-small"
-            density="compact"
+            size="small"
             class="ml-2"
             data-testid="subtasks-toggle"
             @click.stop="toggleExpanded"
