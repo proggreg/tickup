@@ -6,7 +6,7 @@ const listNameRef = ref(null);
 const listName = computed(() => {
     return store?.currentList?.name || 'Today';
 });
-const aiImage = ref('');
+;
 const imageGenerating = ref(false);
 
 watch(rename, (newVal: boolean) => {

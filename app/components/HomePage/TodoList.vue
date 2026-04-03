@@ -131,8 +131,15 @@ const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
                                             <v-card-text>Are you sure you want to delete this todo?</v-card-text>
                                             <v-card-actions>
                                                 <v-spacer />
-                                                <v-btn color="red" @click="deleteTodo(todo, () => isActive.value = false)">Yes</v-btn>
-                                                <v-btn @click="isActive.value = false">No</v-btn>
+                                                <v-btn
+                                                    color="red"
+                                                    @click="deleteTodo(todo, () => isActive.value = false)"
+                                                >
+                                                    Yes
+                                                </v-btn>
+                                                <v-btn @click="isActive.value = false">
+                                                    No
+                                                </v-btn>
                                             </v-card-actions>
                                         </v-card>
                                     </template>
@@ -200,8 +207,15 @@ const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
                                             <v-card-text>Are you sure you want to delete this todo?</v-card-text>
                                             <v-card-actions>
                                                 <v-spacer />
-                                                <v-btn color="red" @click="deleteTodo(todo, () => isActive.value = false)">Yes</v-btn>
-                                                <v-btn @click="isActive.value = false">No</v-btn>
+                                                <v-btn
+                                                    color="red"
+                                                    @click="deleteTodo(todo, () => isActive.value = false)"
+                                                >
+                                                    Yes
+                                                </v-btn>
+                                                <v-btn @click="isActive.value = false">
+                                                    No
+                                                </v-btn>
                                             </v-card-actions>
                                         </v-card>
                                     </template>
@@ -276,8 +290,15 @@ const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
                                         <v-card-text>Are you sure you want to delete this todo?</v-card-text>
                                         <v-card-actions>
                                             <v-spacer />
-                                            <v-btn color="red" @click="deleteTodo(todo); isActive.value = false">Yes</v-btn>
-                                            <v-btn @click="isActive.value = false">No</v-btn>
+                                            <v-btn
+                                                color="red"
+                                                @click="deleteTodo(todo); isActive.value = false"
+                                            >
+                                                Yes
+                                            </v-btn>
+                                            <v-btn @click="isActive.value = false">
+                                                No
+                                            </v-btn>
                                         </v-card-actions>
                                     </v-card>
                                 </template>

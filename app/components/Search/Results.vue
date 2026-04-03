@@ -30,8 +30,14 @@ function formatDate(dateStr: string) {
             <template #prepend>
                 <div class="skeleton-circle mr-3" />
             </template>
-            <div class="skeleton-line mb-2" style="width: 60%;" />
-            <div class="skeleton-line" style="width: 35%;" />
+            <div
+                class="skeleton-line mb-2"
+                style="width: 60%;"
+            />
+            <div
+                class="skeleton-line"
+                style="width: 35%;"
+            />
         </v-list-item>
     </v-list>
 
