@@ -6,7 +6,7 @@ const listsStore = useListsStore();
 const editLinks = ref([]);
 async function removeLink(link) {
     const newLinks = listsStore.currentTodo.links.filter((l) => {
-        return l.id !== link.id;
+        return l.url !== link.url;
     });
 
     listsStore.currentTodo.links = newLinks;
