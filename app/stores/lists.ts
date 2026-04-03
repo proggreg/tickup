@@ -1,20 +1,4 @@
-export const createNewListState = (): List => ({
-    name: '',
-    todos: [],
-    icon: 'mdi-format-list-bulleted',
-    listType: 'simple',
-});
-
-export const createNewTodoState = (): Todo => ({
-    name: '',
-    status: 'Open',
-    desc: '',
-    edit: false,
-    color: '#87909e',
-    links: [],
-    attachments: [],
-    priorityLev: '',
-});
+import { createNewTodoState, createNewListState } from './helpers';
 
 export const useListsStore = defineStore('lists', {
     state: (): listsState => ({

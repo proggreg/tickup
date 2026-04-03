@@ -156,6 +156,9 @@ importers:
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3
+      e2e:
+        specifier: link:@nuxt/test-utils/e2e
+        version: link:@nuxt/test-utils/e2e
       eslint:
         specifier: ^9.39.0
         version: 9.39.0(jiti@2.6.1)

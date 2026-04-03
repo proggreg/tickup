@@ -54,10 +54,17 @@ export default defineConfig({
             name: 'cleanup',
             testMatch: /global\.teardown\.ts/,
         },
-
-        // All other projects depend on the setup project
+        {
+            name: 'api',
+            testMatch: '**/api/**/*.spec.ts',
+            use: {
+                storageState: 'user.json',
+            },
+            dependencies: ['setup'],
+        },
         {
             name: 'chromium',
+            testIgnore: '**/api/**',
             use: {
                 ...devices['Desktop Chrome'],
                 storageState: 'user.json',
@@ -67,6 +74,7 @@ export default defineConfig({
 
         {
             name: 'pixel_7',
+            testIgnore: '**/api/**',
             use: {
                 ...devices['Pixel 7'],
                 storageState: 'user.json',
