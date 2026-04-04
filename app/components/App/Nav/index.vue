@@ -47,7 +47,10 @@ function deleteList() {
         class="font-weight-bold"
         data-testid="nav-bar"
     >
-        <v-list nav class="flex-shrink-0">
+        <v-list
+            nav
+            class="flex-shrink-0"
+        >
             <v-list-item
                 prepend-icon="mdi-home"
                 title="Home"
@@ -67,7 +70,10 @@ function deleteList() {
             <v-divider class="my-2" />
         </v-list>
 
-        <v-list nav class="overflow-y-auto flex-grow-1">
+        <v-list
+            nav
+            class="overflow-y-auto flex-grow-1"
+        >
             <ListNew
                 :open="dialog"
                 @close="dialog.open = false"
