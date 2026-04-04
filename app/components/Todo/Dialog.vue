@@ -5,25 +5,39 @@ const { notify } = useNotification();
 
 const isOpen = computed(() => dialog.value.open && dialog.value.page === 'todo');
 
+const name = ref('');
+const dueDate = ref<Date | undefined>(undefined);
 const selectedListId = ref<string | null>(null);
+
+const todo = computed<Todo>(() => ({
+    name: name.value,
+    dueDate: dueDate.value,
+    listId: selectedListId.value ?? undefined,
+    status: 'Open',
+    desc: '',
+    edit: false,
+    color: '#87909e',
+    links: [],
+    attachments: [],
+    priorityLev: '',
+}));
 
 function close() {
     dialog.value.open = false;
 }
 
 function resetState() {
-    dialog.value.open = false;
     dialog.value.page = '';
+    name.value = '';
+    dueDate.value = undefined;
     selectedListId.value = null;
-    listsStore.resetTodo();
 }
 
 async function addTodo() {
-    listsStore.newTodo.listId = selectedListId.value ?? undefined;
-    const todo = await listsStore.addTodo();
-    if (todo.id) {
+    const created = await listsStore.addTodo(todo.value);
+    if (created.id) {
         close();
-        notify('Todo Created', { link: `/todo/${todo.id}` });
+        notify('Todo Created', { link: `/todo/${created.id}` });
     }
 }
 </script>
@@ -65,7 +79,7 @@ async function addTodo() {
 
             <v-card-text class="px-6 pb-6 pt-2">
                 <v-text-field
-                    v-model="listsStore.newTodo.name"
+                    v-model="name"
                     variant="underlined"
                     placeholder="What needs to be done?"
                     data-testid="new-todo-input"
@@ -96,9 +110,9 @@ async function addTodo() {
                     </v-col>
                     <v-col cols="auto">
                         <AppDueDate
-                            :todo="listsStore.newTodo"
-                            :todo-due-date="listsStore.newTodo.dueDate"
-                            @set-date="(newDate: Date) => listsStore.newTodo.dueDate = newDate"
+                            :todo="todo"
+                            :todo-due-date="dueDate"
+                            @set-date="(newDate: Date) => dueDate = newDate"
                         />
                     </v-col>
                 </v-row>
@@ -120,7 +134,7 @@ async function addTodo() {
                 <v-btn
                     color="primary"
                     size="small"
-                    :disabled="listsStore.newTodo.name === ''"
+                    :disabled="name === ''"
                     data-testid="create-todo-button"
                     @click="addTodo"
                 >
