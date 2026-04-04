@@ -17,11 +17,22 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <v-container fluid class="pa-6">
+    <v-container
+        fluid
+        class="pa-6"
+    >
         <!-- Stats summary row -->
-        <v-row class="mb-6" dense>
+        <v-row
+            class="mb-6"
+            dense
+        >
             <v-col cols="3">
-                <v-card rounded="lg" color="error" variant="tonal" class="pa-4 text-center">
+                <v-card
+                    rounded="lg"
+                    color="error"
+                    variant="tonal"
+                    class="pa-4 text-center"
+                >
                     <div class="text-h3 font-weight-bold">
                         {{ listsStore.overdueTodos.length }}
                     </div>
@@ -31,7 +42,12 @@ onBeforeMount(() => {
                 </v-card>
             </v-col>
             <v-col cols="3">
-                <v-card rounded="lg" color="primary" variant="tonal" class="pa-4 text-center">
+                <v-card
+                    rounded="lg"
+                    color="primary"
+                    variant="tonal"
+                    class="pa-4 text-center"
+                >
                     <div class="text-h3 font-weight-bold">
                         {{ todayCount }}
                     </div>
@@ -41,7 +57,12 @@ onBeforeMount(() => {
                 </v-card>
             </v-col>
             <v-col cols="3">
-                <v-card rounded="lg" color="success" variant="tonal" class="pa-4 text-center">
+                <v-card
+                    rounded="lg"
+                    color="success"
+                    variant="tonal"
+                    class="pa-4 text-center"
+                >
                     <div class="text-h3 font-weight-bold">
                         {{ doneCount }}
                     </div>
@@ -51,7 +72,11 @@ onBeforeMount(() => {
                 </v-card>
             </v-col>
             <v-col cols="3">
-                <v-card rounded="lg" variant="tonal" class="pa-4 text-center">
+                <v-card
+                    rounded="lg"
+                    variant="tonal"
+                    class="pa-4 text-center"
+                >
                     <div class="text-h3 font-weight-bold">
                         {{ listsStore.lists.length }}
                     </div>
@@ -63,7 +88,10 @@ onBeforeMount(() => {
         </v-row>
 
         <!-- Main 3-column content -->
-        <v-row class="mb-6" align="stretch">
+        <v-row
+            class="mb-6"
+            align="stretch"
+        >
             <!-- Overdue column -->
             <v-col cols="4">
                 <v-card
@@ -72,7 +100,10 @@ onBeforeMount(() => {
                     class="dashboard-col"
                 >
                     <v-card-title class="d-flex align-center ga-2 pa-4 pb-3">
-                        <v-icon color="error" size="small">
+                        <v-icon
+                            color="error"
+                            size="small"
+                        >
                             mdi-clock-alert-outline
                         </v-icon>
                         <span>Overdue</span>
@@ -100,7 +131,10 @@ onBeforeMount(() => {
                     class="dashboard-col"
                 >
                     <v-card-title class="d-flex align-center ga-2 pa-4 pb-3">
-                        <v-icon color="primary" size="small">
+                        <v-icon
+                            color="primary"
+                            size="small"
+                        >
                             mdi-calendar-today
                         </v-icon>
                         <span>Today</span>
@@ -133,7 +167,10 @@ onBeforeMount(() => {
                     class="dashboard-col"
                 >
                     <v-card-title class="d-flex align-center ga-2 pa-4 pb-3">
-                        <v-icon color="success" size="small">
+                        <v-icon
+                            color="success"
+                            size="small"
+                        >
                             mdi-check-circle-outline
                         </v-icon>
                         <span>Done Today</span>
@@ -157,7 +194,10 @@ onBeforeMount(() => {
         <!-- My Lists section -->
         <v-row>
             <v-col cols="12">
-                <v-card rounded="lg" variant="outlined">
+                <v-card
+                    rounded="lg"
+                    variant="outlined"
+                >
                     <v-card-title class="d-flex align-center ga-2 pa-4 pb-3">
                         <v-icon size="small">
                             mdi-format-list-bulleted
