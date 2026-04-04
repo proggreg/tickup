@@ -184,10 +184,9 @@ export const useListsStore = defineStore('lists', {
             this.setNewTodoDueDate(now);
         },
         addListId(todo) {
-            console.log(this.currentList);
-            debugger;
-
-            todo.listId = this?.currentList?.id;
+            if (!todo.listId) {
+                todo.listId = this?.currentList?.id;
+            }
         },
         setNewTodoDueDate(newDueDate: Date) {
             this.newTodo.dueDate = newDueDate;
