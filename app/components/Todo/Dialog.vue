@@ -47,8 +47,8 @@ async function addTodo() {
     <v-dialog
         :model-value="isOpen"
         max-width="576"
-        :location="mobile ? 'top' : 'center'"
         :transition="mobile ? 'dialog-top-transition' : 'dialog-bottom-transition'"
+        :style="mobile ? 'align-items: flex-start;' : ''"
         @update:model-value="close"
         @after-leave="resetState"
     >
