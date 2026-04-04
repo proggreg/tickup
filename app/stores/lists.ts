@@ -134,8 +134,9 @@ export const useListsStore = defineStore('lists', {
             return valid;
         },
         async addTodo(newTodo?: Todo) {
-            const todo = newTodo !== undefined ? newTodo : this.newTodo;
+            const todo = newTodo !== undefined && !(newTodo instanceof Event) ? newTodo : this.newTodo;
             console.debug('Create Todo', todo);
+
             if (!this.validateTodo(todo)) {
                 return;
             }
@@ -176,25 +177,17 @@ export const useListsStore = defineStore('lists', {
             }
         },
         setTodoDetails(todo: Todo) {
-            const route = useRoute();
-            const isListRoute = route.path.includes('list');
+            this.addListId(todo);
 
-            if (isListRoute) {
-                this.addListId(route, todo);
-            }
-            else {
-                const now = new Date();
-                this.setNewTodoDueDate(now);
-            }
+            const now = new Date();
+
+            this.setNewTodoDueDate(now);
         },
-        addListId(route, todo) {
-            const listIdParam = route.params?.id;
-            if (Array.isArray(listIdParam)) {
-                todo.listId = listIdParam[0];
-            }
-            else {
-                todo.listId = listIdParam;
-            }
+        addListId(todo) {
+            console.log(this.currentList);
+            debugger;
+
+            todo.listId = this?.currentList?.id;
         },
         setNewTodoDueDate(newDueDate: Date) {
             this.newTodo.dueDate = newDueDate;
