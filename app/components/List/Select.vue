@@ -1,5 +1,9 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
+
+onUnmounted(() => {
+    listsStore.currentList.id = null;
+});
 </script>
 
 <template>

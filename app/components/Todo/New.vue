@@ -1,6 +1,12 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
 const dialog = useDialog();
+const placeholderText = computed(() => {
+    if (listsStore.currentList.name) {
+        return 'Add todo to ' + listsStore.currentList.name;
+    }
+    return 'Add todo';
+});
 
 function addTodo() {
     listsStore.addTodo();
@@ -10,12 +16,11 @@ function addTodo() {
 
 <template>
     <v-text-field
-        v-if="listsStore.currentList"
         v-model="listsStore.newTodo.name"
         min-width="150"
         width="100%"
         data-testid="new-todo-input"
-        :placeholder="'Add todo to ' + listsStore.currentList.name"
+        :placeholder="placeholderText"
         @keyup.enter="addTodo"
     >
         <template #append-inner>
@@ -24,16 +29,9 @@ function addTodo() {
                 :date="listsStore.newTodo.dueDate"
                 @set-date="(newDate: Date) => listsStore.newTodo.dueDate = newDate"
             />
-
-            <v-btn
-                :disabled="!listsStore.newTodo.name"
-                size="small"
-                variant="text"
-                icon="mdi-plus"
-                @click="addTodo"
-            />
         </template>
     </v-text-field>
+    <ListSelect />
 </template>
 
 <style>
