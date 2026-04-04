@@ -3,10 +3,11 @@ const listsStore = useListsStore();
 const _settingsStore = useSettingsStore();
 const config = useRuntimeConfig();
 const event = useRequestEvent();
+const dialog = useDialog();
+const error = useError();
+const { show: showNotification, message: notificationMessage, link: notificationLink, notify } = useNotification();
 
 useShortcutKeys();
-const error = useError();
-const { show: showNotification, message: notificationMessage } = useNotification();
 
 const showErrorToast = computed(() => !!error.value);
 const errorMessage = computed(() => {
@@ -33,6 +34,14 @@ function dismissError() {
 if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.headers.get('host')
     && !event?.headers.get('host')?.includes('tickup.gregfield.dev')) {
     navigateTo('https://tickup.gregfield.dev/login', { external: true });
+}
+
+async function addTodo() {
+    const todo = await listsStore.addTodo();
+    if (todo.id) {
+        dialog.value.open = false;
+        notify('Todo Created', { link: `/todo/${todo.id}` });
+    }
 }
 </script>
 
@@ -61,6 +70,17 @@ if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.he
             timeout="2000"
         >
             {{ notificationMessage }}
+            <template
+                v-if="notificationLink"
+                #actions
+            >
+                <v-btn
+                    variant="text"
+                    :to="notificationLink"
+                >
+                    View
+                </v-btn>
+            </template>
         </v-snackbar>
         <AppDialog
             page="todo"
@@ -71,8 +91,10 @@ if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.he
                 <v-btn
                     color="primary"
                     :disabled="listsStore.newTodo.name === ''"
+                    data-testid="create-todo-button"
+                    @click="addTodo"
                 >
-                    Save
+                    Create
                 </v-btn>
             </template>
         </AppDialog>
