@@ -1,11 +1,8 @@
 <script setup lang="ts">
-const listsStore = useListsStore();
-const _settingsStore = useSettingsStore();
 const config = useRuntimeConfig();
 const event = useRequestEvent();
-const dialog = useDialog();
 const error = useError();
-const { show: showNotification, message: notificationMessage, link: notificationLink, notify } = useNotification();
+const { show: showNotification, message: notificationMessage, link: notificationLink } = useNotification();
 
 useShortcutKeys();
 
@@ -34,14 +31,6 @@ function dismissError() {
 if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.headers.get('host')
     && !event?.headers.get('host')?.includes('tickup.gregfield.dev')) {
     navigateTo('https://tickup.gregfield.dev/login', { external: true });
-}
-
-async function addTodo() {
-    const todo = await listsStore.addTodo();
-    if (todo.id) {
-        dialog.value.open = false;
-        notify('Todo Created', { link: `/todo/${todo.id}` });
-    }
 }
 </script>
 
@@ -82,22 +71,7 @@ async function addTodo() {
                 </v-btn>
             </template>
         </v-snackbar>
-        <AppDialog
-            page="todo"
-            title="New Todo"
-        >
-            <TodoNew />
-            <template #buttons>
-                <v-btn
-                    color="primary"
-                    :disabled="listsStore.newTodo.name === ''"
-                    data-testid="create-todo-button"
-                    @click="addTodo"
-                >
-                    Create
-                </v-btn>
-            </template>
-        </AppDialog>
+        <TodoDialog />
         <NuxtLayout :name="useAppLayout()">
             <NuxtPage />
         </NuxtLayout>

@@ -31,7 +31,6 @@ function addTodo() {
             />
         </template>
     </v-text-field>
-    <ListSelect />
 </template>
 
 <style>
