@@ -31,6 +31,10 @@ const selectedId = computed({
     },
 });
 
+onBeforeMount(() => {
+    listsStore.getLists();
+});
+
 onUnmounted(() => {
     if (props.modelValue === undefined) {
         listsStore.currentList.id = null;
