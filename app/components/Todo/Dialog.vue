@@ -2,6 +2,7 @@
 const dialog = useDialog();
 const listsStore = useListsStore();
 const { notify } = useNotification();
+const { mobile } = useDisplay();
 
 const isOpen = computed(() => dialog.value.open && dialog.value.page === 'todo');
 
@@ -46,7 +47,8 @@ async function addTodo() {
     <v-dialog
         :model-value="isOpen"
         max-width="576"
-        transition="dialog-bottom-transition"
+        :location="mobile ? 'top' : 'center'"
+        :transition="mobile ? 'dialog-top-transition' : 'dialog-bottom-transition'"
         @update:model-value="close"
         @after-leave="resetState"
     >
