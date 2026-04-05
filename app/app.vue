@@ -1,12 +1,10 @@
 <script setup lang="ts">
-const listsStore = useListsStore();
-const _settingsStore = useSettingsStore();
 const config = useRuntimeConfig();
 const event = useRequestEvent();
+const error = useError();
+const { show: showNotification, message: notificationMessage, link: notificationLink } = useNotification();
 
 useShortcutKeys();
-const error = useError();
-const { show: showNotification, message: notificationMessage } = useNotification();
 
 const showErrorToast = computed(() => !!error.value);
 const errorMessage = computed(() => {
@@ -61,21 +59,19 @@ if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.he
             timeout="2000"
         >
             {{ notificationMessage }}
-        </v-snackbar>
-        <AppDialog
-            page="todo"
-            title="New Todo"
-        >
-            <TodoNew />
-            <template #buttons>
+            <template
+                v-if="notificationLink"
+                #actions
+            >
                 <v-btn
-                    color="primary"
-                    :disabled="listsStore.newTodo.name === ''"
+                    variant="text"
+                    :to="notificationLink"
                 >
-                    Save
+                    View
                 </v-btn>
             </template>
-        </AppDialog>
+        </v-snackbar>
+        <TodoDialog />
         <NuxtLayout :name="useAppLayout()">
             <NuxtPage />
         </NuxtLayout>
