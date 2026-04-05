@@ -1,9 +1,8 @@
 import { test, expect } from '../../fixtures/index';
-import { before } from 'node:test';
 import { v4 as uuidv4 } from 'uuid';
 
 let list: List;
-test.describe('creating a new todo and selecting a list', () => {
+test.describe('creating a new task and selecting a list', () => {
     test.beforeEach(async ({ listAPI, page }) => {
         const testId = uuidv4();
         list = await listAPI.new({
@@ -13,14 +12,14 @@ test.describe('creating a new todo and selecting a list', () => {
         await page.goto('/');
         await page.waitForLoadState('networkidle');
     });
-    test('it should create a todo with a list', async ({ page }) => {
+    test('it should create a task with a list', async ({ page }) => {
         const testId = uuidv4();
         const todoName = `Todo ${testId}`;
         await page.keyboard.press('t');
 
         await page.waitForTimeout(500);
         const dialogTitle = await page.getByTestId('dialog-title').textContent();
-        expect(dialogTitle).toBe('New Todo');
+        expect(dialogTitle).toBe('New Task');
         const newTodoInput = await page.getByTestId('new-todo-input').locator('input').first();
         await newTodoInput.fill(todoName);
 
