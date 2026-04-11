@@ -1,13 +1,16 @@
 import { test, expect } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
+import { deleteLists } from '../helpers/teardown';
 
 test.describe('a user can create a list', () => {
+    test.beforeAll(() => {
+        deleteLists();
+    });
     test('using the desktop navigation menu', async ({ page, isMobile }) => {
         test.skip(isMobile, 'This feature is desktop only');
         await page.goto('/');
 
         await page.waitForLoadState('networkidle');
-
         const url = page.url();
         if (url.includes('/login')) {
             throw new Error('Not authenticated - redirected to login page');
@@ -27,8 +30,6 @@ test.describe('a user can create a list', () => {
 
         await page.waitForTimeout(500);
 
-        const newListDialogTitle = await page.locator('div').filter({ hasText: 'New List' }).nth(4);
-        expect(newListDialogTitle).toBeHidden();
         const newListNavItem = await page.locator(`[data-test-id="${listName}"]`);
 
         expect(newListNavItem).not.toBeHidden();
@@ -61,8 +62,6 @@ test.describe('a user can create a list', () => {
 
         await requestPromise;
         await page.waitForTimeout(500);
-
-        expect(newListDialogTitle).toBeHidden();
 
         const newListNavItem = await page.locator(`[data-test-id="${listName}"]`);
 

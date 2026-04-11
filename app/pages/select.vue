@@ -55,8 +55,8 @@ const filteredItems = computed(() => {
     return selectableItems.value.filter((i) => {
         const matchesQuery
             = !query
-            || i.title.toLowerCase().includes(query)
-            || (i.subtitle?.toLowerCase().includes(query) ?? false);
+                || i.title.toLowerCase().includes(query)
+                || (i.subtitle?.toLowerCase().includes(query) ?? false);
 
         const matchesCategory = !category.value || i.category === category.value;
         return matchesQuery && matchesCategory;

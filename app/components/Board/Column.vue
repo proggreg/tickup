@@ -21,13 +21,14 @@ function addTodo(status: Status) {
     listsStore.newTodo.status = status.name;
     listsStore.addTodo();
 }
-function updateStatus(todo: Todo, status: Status) {
-    const index = statusStore.statuses.findIndex(s => s.name === status.name);
-    if (index < statusStore.statuses.length) {
-        todo.status = statusStore.statuses[index + 1].name;
-        listsStore.updateTodo(todo);
-    }
-}
+// TODO updateStatus is not implemented
+// function updateStatus(todo: Todo, status: Status) {
+//     const index = statusStore.statuses.findIndex(s => s.name === status.name);
+//     if (index < statusStore.statuses.length) {
+//         todo.status = statusStore.statuses[index + 1].name;
+//         listsStore.updateTodo(todo);
+//     }
+// }
 
 function handleBlur() {
     if (!listsStore.newTodo.name) {

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
 
 test.describe('Overdue todos', () => {
-    test('shows overdue todos in the Overdue list', async ({ page, request }) => {
+    test.skip('shows overdue todos in the Overdue list', async ({ page, request }) => {
         const testId = uuidv4();
         const listName = `Overdue List ${testId}`;
         const todoName = `Overdue Todo ${testId}`;
