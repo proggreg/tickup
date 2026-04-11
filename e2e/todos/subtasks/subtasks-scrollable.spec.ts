@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
 
 test.describe('subtasks are scrollable', () => {
-    test('subtasks list is scrollable when many subtasks exist', async ({ page, request, isMobile }) => {
+    test.skip('subtasks list is scrollable when many subtasks exist', async ({ page, request, isMobile }) => {
         test.skip(isMobile, 'This feature is desktop only');
 
         test.skip();
@@ -92,7 +92,7 @@ test.describe('subtasks are scrollable', () => {
         await expect(lastSubtask).toHaveText(subtaskNames[14]);
     });
 
-    test('subtasks maintain scroll position when interacting with them', async ({ page, request, isMobile }) => {
+    test.skip('subtasks maintain scroll position when interacting with them', async ({ page, request, isMobile }) => {
         test.skip(isMobile, 'This feature is desktop only');
         test.skip();
         // Create a test list

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 test.describe('a user can create a subtask and it persists after reload', () => {
     test.skip('creates a subtask, reloads the page, and verifies the subtask still exists', async ({ page, request, isMobile }) => {
         test.skip(isMobile, 'This feature is desktop only');
-
+        test.skip();
         // Create a test list
         const testId = uuidv4();
         const response = await request.post('/api/list', {

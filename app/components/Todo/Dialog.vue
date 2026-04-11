@@ -64,7 +64,7 @@ async function addTodo() {
                         style="letter-spacing: 0.1em;"
                         data-testid="dialog-title"
                     >
-                        New Task
+                    New Task
                     </span>
                 </template>
                 <template #append>
