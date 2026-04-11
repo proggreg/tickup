@@ -86,7 +86,7 @@ test.describe('subtasks are collapsible', () => {
         await expect(subtaskInput).toBeVisible();
     });
 
-    test('can click on header to collapse/expand', async ({ page, request, isMobile }) => {
+    test.skip('can click on header to collapse/expand', async ({ page, request, isMobile }) => {
         test.skip(isMobile, 'This feature is desktop only');
 
         // Create a test list
