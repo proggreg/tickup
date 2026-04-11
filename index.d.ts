@@ -11,6 +11,7 @@ declare global {
         id?: string;
         dueDate?: Date;
         listId?: string;
+        list?: List;
         status: string;
         desc?: string;
         edit: boolean;
@@ -38,6 +39,8 @@ declare global {
         }[];
         notificationDateTime?: string | Date;
         notificationSent?: boolean;
+        createdAt?: string;
+        updatedAt?: string;
     }
 
     interface Status {
@@ -48,13 +51,12 @@ declare global {
     }
 
     interface List {
-        userId?: string;
         name: string;
-        todos: Todo[];
+        todos?: Todo[];
         id?: string;
         image?: string;
         listType: ListType;
-        icon: string;
+        icon?: string;
         githubRepo?: string;
         /**
          * Default view when opening this list ("list" or "board").

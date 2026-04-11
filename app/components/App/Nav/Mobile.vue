@@ -1,7 +1,22 @@
+<script setup lang="ts">
+const { smAndDown } = useDisplay();
+const isKeyboardOpen = ref(false);
+
+if (import.meta.client) {
+    const onViewportResize = () => {
+        isKeyboardOpen.value = (window.visualViewport?.height ?? window.innerHeight) < window.innerHeight * 0.75;
+    };
+    window.visualViewport?.addEventListener('resize', onViewportResize);
+    onUnmounted(() => window.visualViewport?.removeEventListener('resize', onViewportResize));
+}
+</script>
+
 <template>
     <v-bottom-navigation
+        v-if="smAndDown"
         grow
         app
+        :active="!isKeyboardOpen"
     >
         <v-btn
             to="/"
@@ -28,19 +43,11 @@
         </v-btn>
 
         <v-btn
-            to="/chat"
-            value="chat"
-        >
-            <v-icon>mdi-creation</v-icon>
-            <span>Chat</span>
-        </v-btn>
-
-        <v-btn
-            to="/account"
+            to="/settings"
             value="settings"
         >
-            <v-icon>mdi-account-circle</v-icon>
-            <span>Account</span>
+            <v-icon>mdi-cog</v-icon>
+            <span>Settings</span>
         </v-btn>
     </v-bottom-navigation>
 </template>

@@ -36,9 +36,6 @@ export default defineNuxtConfig({
     },
 
     runtimeConfig: {
-
-        aiGatewayApiKey: process.env.NUXT_AI_GATEWAY_API_KEY,
-
         private: {
             vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
             github: {
@@ -46,6 +43,7 @@ export default defineNuxtConfig({
                 appId: process.env.GITHUB_APP_ID,
                 clientId: process.env.GITHUB_CLIENT_ID,
                 clientSecret: process.env.GITHUB_CLIENT_SECRET,
+                webhookSecret: process.env.GITHUB_WEBHOOK_SECRET,
             },
         },
 
@@ -67,6 +65,12 @@ export default defineNuxtConfig({
 
     ignore: [
         '**/.claude',
+        'e2e',
+        'e2e-screenshots',
+        'playwright',
+        'playwright-report',
+        'test',
+        'test-results',
     ],
 
     experimental: {

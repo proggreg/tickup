@@ -1,50 +1,43 @@
 <script setup lang="ts">
-// const supabase = serverSupaBaseClient()
 definePageMeta({
     layout: 'default',
 });
 useHead({ title: 'TickUp:Home' });
 
-// const user = supabase.auth.getUser();
-
-// console.log('user', user)
-
-const saveTodo = ref(false);
-const dialog = useDialog();
 const tab = ref('todo');
+const { mdAndUp } = useDisplay();
 </script>
 
 <template>
+    <!-- Desktop dashboard -->
+    <HomePageDashboard v-if="mdAndUp" />
+
+    <!-- Mobile tabbed view -->
     <v-col
+        v-else
         cols="12"
         class="fill-height"
     >
         <HomePageTabs v-model="tab" />
         <v-window
             v-model="tab"
-            class="fill-height px-4"
+            class="fill-height"
         >
             <v-window-item
                 value="overdue"
-                class="fill-height"
+                class="fill-height px-4"
             >
                 <HomePageOverDue />
             </v-window-item>
             <v-window-item
                 value="todo"
-                class="fill-height"
+                class="fill-height px-2"
             >
-                <div class="mb-4">
-                    <TodoNew
-                        :save-todo="saveTodo"
-                        @add-todo="dialog.open = false; saveTodo = false"
-                    />
-                </div>
                 <HomePageToday />
             </v-window-item>
             <v-window-item
                 value="done"
-                class="fill-height"
+                class="fill-height px-4"
             >
                 <HomePageTodayClosed />
             </v-window-item>

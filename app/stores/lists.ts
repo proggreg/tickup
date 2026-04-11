@@ -1,20 +1,4 @@
-export const createNewListState = (): List => ({
-    name: '',
-    todos: [],
-    icon: 'mdi-format-list-bulleted',
-    listType: 'simple',
-});
-
-export const createNewTodoState = (): Todo => ({
-    name: '',
-    status: 'Open',
-    desc: '',
-    edit: false,
-    color: '#87909e',
-    links: [],
-    attachments: [],
-    priorityLev: '',
-});
+import { createNewTodoState, createNewListState } from './helpers';
 
 export const useListsStore = defineStore('lists', {
     state: (): listsState => ({
@@ -113,13 +97,17 @@ export const useListsStore = defineStore('lists', {
             this.currentList.todos = todos;
         },
         async getListTodos(listId?: string): Promise<Todo[]> {
-            console.log('getListTodos');
             if (!listId) {
                 listId = this.currentList.id;
             }
             const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { listId } });
-            console.log('getListTodos num of todos', todos.length);
-            this.currentList.todos = todos;
+            const list = this.lists.find(l => l.id === listId);
+            if (list) {
+                list.todos = todos;
+            }
+            if (this.currentList?.id === listId) {
+                this.currentList.todos = todos;
+            }
             return todos || [];
         },
         setCurrentList(list: List) {
@@ -146,8 +134,9 @@ export const useListsStore = defineStore('lists', {
             return valid;
         },
         async addTodo(newTodo?: Todo) {
-            const todo = newTodo !== undefined ? newTodo : this.newTodo;
+            const todo = newTodo !== undefined && !(newTodo instanceof Event) ? newTodo : this.newTodo;
             console.debug('Create Todo', todo);
+
             if (!this.validateTodo(todo)) {
                 return;
             }
@@ -188,24 +177,15 @@ export const useListsStore = defineStore('lists', {
             }
         },
         setTodoDetails(todo: Todo) {
-            const route = useRoute();
-            const isListRoute = route.path.includes('list');
+            this.addListId(todo);
 
-            if (isListRoute) {
-                this.addListId(route, todo);
-            }
-            else {
-                const now = new Date();
-                this.setNewTodoDueDate(now);
-            }
+            const now = new Date();
+
+            this.setNewTodoDueDate(now);
         },
-        addListId(route, todo) {
-            const listIdParam = route.params?.id;
-            if (Array.isArray(listIdParam)) {
-                todo.listId = listIdParam[0];
-            }
-            else {
-                todo.listId = listIdParam;
+        addListId(todo) {
+            if (!todo.listId) {
+                todo.listId = this?.currentList?.id;
             }
         },
         setNewTodoDueDate(newDueDate: Date) {
@@ -224,7 +204,6 @@ export const useListsStore = defineStore('lists', {
             // Update local state to match server response
             if (this.currentTodo && this.currentTodo.id === updatedTodo.id) {
                 const existingSubtasks = this.currentTodo.subtasks;
-                this.currentTodo = updatedTodo;
                 if (existingSubtasks) this.currentTodo.subtasks = existingSubtasks;
             }
 
@@ -261,9 +240,15 @@ export const useListsStore = defineStore('lists', {
         async deleteTodo(id: string) {
             await $fetch(`/api/todo/${id}`, { method: 'DELETE' });
 
-            this.currentList.todos = this.currentList.todos.filter(
-                (todo: Todo) => todo.id !== id,
-            );
+            this.currentList.todos = this.currentList.todos.filter((todo: Todo) => todo.id !== id);
+            this.todaysTodos = this.todaysTodos.filter((todo: Todo) => todo.id !== id);
+            this.overdueTodos = this.overdueTodos.filter((todo: Todo) => todo.id !== id);
+            this.todos = this.todos.filter((todo: Todo) => todo.id !== id);
+            for (const list of this.lists) {
+                if (list.todos) {
+                    list.todos = list.todos.filter((todo: Todo) => todo.id !== id);
+                }
+            }
         },
         async getTodo(id: string) {
             const { data } = await useFetch<Todo>(`/api/todo/${id}`);
@@ -329,17 +314,9 @@ export const useListsStore = defineStore('lists', {
                 this.todaysTodos = todos;
             }
         },
-        async getOverdueTodos(id?: string) {
-            const user = useSupabaseUser();
-            const actualUserId = id || user.value?.id;
-
-            if (!actualUserId) {
-                console.error('User ID not available');
-                return;
-            }
-
+        async getOverdueTodos() {
             const todos = await $fetch<Todo[]>('/api/todos', {
-                query: { overdue: true, id: actualUserId },
+                query: { overdue: true },
             });
 
             if (todos) {

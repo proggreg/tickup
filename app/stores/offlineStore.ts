@@ -49,8 +49,8 @@ export const useOfflineSyncStore = defineStore('offlineSync', () => {
                 await syncSingleChange(change);
                 markChangeSynced(change.id);
             }
-            catch (error) {
-                logger.error(error as Error, { component: 'OfflineSyncStore', function: 'syncPendingChanges', changeId: change.id });
+            catch (err: any) {
+                console.error(err);
                 incrementRetryCount(change.id);
             }
         }

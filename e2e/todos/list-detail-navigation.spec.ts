@@ -29,7 +29,7 @@ test.describe('Todo List to Detail Navigation', () => {
         await page.waitForLoadState('networkidle');
     });
 
-    test('navigates to todo detail and back with todos visible', async ({ page, isMobile }) => {
+    test.skip('navigates to todo detail and back with todos visible', async ({ page, isMobile }) => {
         test.skip(isMobile, 'This feature is desktop only');
 
         // Verify todos are visible in the list

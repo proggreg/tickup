@@ -1,15 +1,13 @@
 <script setup lang="ts">
 const dialog = useDialog();
 const { smAndDown } = useDisplay();
-const { isDesktop } = useDevice();
 const user = useSupabaseUser();
 const loggedIn = computed(() => !!user.value);
 const contextMenuOpen = ref(false);
 const selectedList = ref<List>();
 const listsStore = useListsStore();
-const open = computed(() => isDesktop);
 
-function openContextMenu(event: MouseEvent, list: List) {
+function openContextMenu(_event: MouseEvent, list: List) {
     contextMenuOpen.value = true;
     selectedList.value = list;
 }
@@ -21,10 +19,7 @@ function deleteList() {
 </script>
 
 <template>
-    <v-app-bar
-        v-if="!smAndDown"
-        extension-height="0"
-    >
+    <v-app-bar extension-height="0">
         <template #prepend>
             <v-img
                 class="pa-6"
@@ -32,57 +27,6 @@ function deleteList() {
                 width="40"
                 style="border-radius: 50%"
             />
-
-            <template v-if="loggedIn">
-                <div
-                    class="ml-6"
-                    style="display: flex; justify-content: space-between;"
-                >
-                    <v-btn
-                        v-if="smAndDown"
-                        size="small"
-                        style="padding: 0;"
-                        elevation="0"
-                        @click="open = !open"
-                    >
-                        <v-icon
-                            class="text-h4"
-                            size="x-large"
-                        >
-                            mdi-menu
-                        </v-icon>
-                    </v-btn>
-                    <v-btn
-                        variant="plain"
-                        icon="mdi-home"
-                        to="/"
-                    />
-                    <v-btn
-                        variant="plain"
-                        icon="mdi-creation"
-                        to="/chat"
-                    />
-                    <v-btn
-                        variant="plain"
-                        icon="mdi-cog"
-                        to="/settings"
-                    />
-                    <v-btn
-                        variant="plain"
-                        icon="mdi-plus"
-                        data-testid="new-list-button"
-                        @click="dialog.page = 'list'; dialog.open = true;"
-                    />
-                </div>
-            </template>
-
-            <template v-else>
-                <v-img
-                    src="/android-chrome-512x512.png"
-                    width="50"
-                    style="border-radius: 50%"
-                />
-            </template>
         </template>
 
         <Search />
@@ -97,16 +41,43 @@ function deleteList() {
 
     <v-navigation-drawer
         v-if="loggedIn"
-        v-model="open"
+        :rail="smAndDown"
+        :expand-on-hover="smAndDown"
+        permanent
         class="font-weight-bold"
         data-testid="nav-bar"
     >
-        <v-list nav>
+        <v-list
+            nav
+            class="flex-shrink-0"
+        >
+            <v-list-item
+                prepend-icon="mdi-home"
+                title="Home"
+                to="/"
+            />
+            <v-list-item
+                prepend-icon="mdi-cog"
+                title="Settings"
+                to="/settings"
+            />
+            <v-list-item
+                prepend-icon="mdi-plus"
+                title="New List"
+                data-testid="new-list-button"
+                @click="dialog.page = 'list'; dialog.open = true;"
+            />
+            <v-divider class="my-2" />
+        </v-list>
+
+        <v-list
+            nav
+            class="overflow-y-auto flex-grow-1"
+        >
             <ListNew
                 :open="dialog"
                 @close="dialog.open = false"
             />
-
             <AppNavItems @open="openContextMenu" />
         </v-list>
 
@@ -133,21 +104,22 @@ function deleteList() {
 </template>
 
 <style scoped>
-  .nav-item-title {
+:deep(.v-navigation-drawer__content) {
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+}
+
+:deep(.v-virtual-scroll) {
+    scrollbar-width: none;
+}
+
+:deep(.v-virtual-scroll::-webkit-scrollbar) {
+    display: none;
+}
+
+:deep(.v-list-item-title) {
     text-transform: capitalize !important;
     font-weight: bold;
-
-    @media (min-width: 600px) {
-      font-size: 1rem !important;
-    }
-  }
-
-  :deep(.v-navigation-drawer__content) {
-    overflow-y: hidden !important;
-  }
-
-  :deep(.v-list-item-title) {
-    text-transform: capitalize !important;
-    font-weight: bold;
-  }
+}
 </style>

@@ -3,9 +3,15 @@ definePageMeta({ layout: 'chat' });
 </script>
 
 <template>
-    <div class="chat-page">
-        <Chat class="fill-height" />
-    </div>
+    <v-row
+        class="fill-height pa-6"
+        align="end"
+        justify="center"
+    >
+        <v-col>
+            <!-- <Chat /> -->
+        </v-col>
+    </v-row>
 </template>
 
 <style scoped>

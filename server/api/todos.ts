@@ -39,6 +39,7 @@ export default defineEventHandler(async (event) => {
                 completedDate: todo.completed_date,
                 userId: todo.user_id,
                 listId: todo.list_id,
+                parentId: todo.parent_id,
                 githubBranchName: todo.github_branch_name,
                 notificationDateTime: todo.notification_date_time,
                 notificationSent: todo.notification_sent,
@@ -55,13 +56,8 @@ export default defineEventHandler(async (event) => {
                 .from('Todos')
                 .select('*')
                 .lt('due_date', start.toISOString())
-                .is('parent_id', null);
-
-            if (searchTerm) {
-                todosQuery = todosQuery.ilike('name', `%${searchTerm}%`);
-            }
-
-            const { data, error } = await todosQuery.order('due_date', { ascending: false });
+                .is('parent_id', null)
+                .order('due_date', { ascending: false });
 
             if (error) {
                 console.error('Supabase error:', error);
@@ -88,12 +84,6 @@ export default defineEventHandler(async (event) => {
             .select('*')
             .eq('user_id', query.id)
             .is('parent_id', null);
-
-        if (searchTerm) {
-            todosQuery = todosQuery.ilike('name', `%${searchTerm}%`);
-        }
-
-        const { data, error } = await todosQuery;
 
         if (error) {
             console.error('Supabase error:', error);

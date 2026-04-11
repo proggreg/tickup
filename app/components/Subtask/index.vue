@@ -4,7 +4,8 @@ import { nextTick } from 'vue';
 const listsStore = useListsStore();
 const router = useRouter();
 const newSubtaskName = ref('');
-const subtasksExpanded = ref(true);
+const expandedPanel = ref<string | undefined>(undefined);
+const subtasksExpanded = computed(() => expandedPanel.value === 'subtasks');
 
 const activeCount = computed(() => {
     if (!listsStore.currentTodo.subtasks) return 0;
@@ -143,222 +144,234 @@ async function updatePriority(subtask: Todo, level: string) {
 </script>
 
 <template>
-    <div class="pa-4 rounded-lg">
-        <div class="d-flex align-center justify-space-between mb-2">
-            <div
-                class="text-subtitle-1 font-weight-bold d-flex align-center flex-grow-1"
-                style="cursor: pointer;"
-                data-testid="subtasks-header"
-                @click="subtasksExpanded = !subtasksExpanded"
-            >
-                <span class="mr-2">Subtasks</span>
-                <v-chip
-                    v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length"
-                    size="small"
-                    variant="tonal"
-                    color="primary"
-                >
-                    {{ activeCount }}/{{ listsStore.currentTodo.subtasks.length }}
-                </v-chip>
-            </div>
-            <SubtaskFilters
-                v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length"
-                v-model:filter="subtasksFilter"
-                v-model:sort-by="subtasksSortBy"
-                v-model:expanded="subtasksExpanded"
-                :has-subtasks="!!(listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length)"
-            />
-        </div>
-        <div
-            v-show="subtasksExpanded"
-            class="d-flex align-center my-4"
+    <v-expansion-panels
+        v-model="expandedPanel"
+        rounded="lg"
+        flat
+    >
+        <v-expansion-panel
+            value="subtasks"
+            elevation="0"
+            class="pa-0"
+            width="100%"
         >
-            <v-text-field
-                v-model="newSubtaskName"
-                label="Add subtask"
-                hide-details
-                variant="outlined"
-                class="me-2 flex-grow-1"
-                style="min-width: 120px;"
-                data-testid="add-subtask-input"
-                @keyup.enter="addSubtask"
-            />
-            <v-btn
-                icon="mdi-plus"
-                size="small"
-                variant="tonal"
-                color="primary"
-                :disabled="!newSubtaskName"
-                data-testid="add-subtask-button"
-                class="mr-2"
-                @click="addSubtask"
-            />
-            <v-menu
-                :width="400"
-                location="bottom"
+            <v-expansion-panel-title
+                hide-actions
+                class="pa-0"
+                data-testid="subtasks-header"
             >
-                <template #activator="{ props }">
-                    <v-btn
-                        v-bind="props"
-                        icon="mdi-link-plus"
-                        size="small"
-                        variant="text"
-                        color="primary"
-                        data-testid="link-subtask-button"
-                    />
-                </template>
-                <v-list density="compact">
-                    <v-list-item>
-                        <v-text-field
-                            v-model="linkSearch"
-                            placeholder="Search tasks"
-                            hide-details
-                            variant="outlined"
-                            density="compact"
-                            clearable
-                            data-testid="link-subtask-search"
-                            @click.stop
-                        />
-                    </v-list-item>
-                    <v-divider />
-                    <v-list-item
-                        v-for="todo in linkableTodos"
-                        :key="todo.id"
-                        :data-testid="`link-subtask-option-${todo.id}`"
-                        @click="linkExistingTodo(todo)"
-                    >
-                        <v-list-item-title>
-                            {{ todo.name }}
-                        </v-list-item-title>
-                    </v-list-item>
-                    <v-list-item v-if="!baseLinkableTodos.length">
-                        <v-list-item-title>
-                            No tasks available to link
-                        </v-list-item-title>
-                    </v-list-item>
-                    <v-list-item v-else-if="baseLinkableTodos.length && !linkableTodos.length">
-                        <v-list-item-title>
-                            No tasks match your search
-                        </v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
-        </div>
-        <v-expand-transition>
-            <v-virtual-scroll
-                v-show="subtasksExpanded"
-                height="300"
-                :items="filteredAndSortedSubtasks"
-                data-testid="subtasks-list"
-            >
-                <template #default="{ item: subtask, index }">
-                    <v-list-item
-                        :key="subtask.id"
-                        class="py-2 px-0 align-center"
-                        style="cursor: pointer;"
-                        :data-testid="`subtask-item-${index}`"
-                        @click="navigateToSubtask(subtask.id)"
-                    >
-                        <template #prepend>
-                            <div class="">
-                                <v-checkbox
-                                    v-model="subtask.status"
-                                    :true-value="'Closed'"
-                                    :false-value="'Open'"
-                                    density="compact"
-                                    class="mr-1"
-                                    :data-testid="`subtask-checkbox-${index}`"
-                                    @click.stop
-                                    @change="listsStore.updateTodo(subtask)"
-                                />
-                            </div>
-                        </template>
-                        <div
-                            v-if="subtask.status === 'Closed' || !isEditingSubtask(subtask.id)"
-                            :data-testid="`subtask-name-${index}`"
-                            class="subtask-name-readonly"
-                            :class="{ 'text-decoration-line-through text-disabled': subtask.status === 'Closed' }"
-                            @click.stop="navigateToSubtask(subtask.id)"
+                <div class="d-flex align-center justify-space-between w-100">
+                    <div class="text-subtitle-1 font-weight-bold d-flex align-center">
+                        <span class="mr-2">Subtasks</span>
+                        <v-chip
+                            v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length"
+                            size="small"
+                            variant="tonal"
+                            color="primary"
                         >
-                            {{ subtask.name }}
-                        </div>
-                        <v-text-field
-                            v-else
-                            :ref="el => subtaskNameRefs[index] = el"
-                            v-model="subtask.name"
-                            hide-details
-                            variant="plain"
-                            :class="{ 'text-decoration-line-through text-disabled': subtask.status === 'Closed' }"
-                            :data-testid="`subtask-name-input-${index}`"
-                            @blur="onSubtaskBlur(subtask)"
-                        />
-                        <template #append>
-                            <v-row
-                                class="d-flex align-center gap-4"
-                                min-width="500px"
-                            >
-                                <v-col>
-                                    <SubtaskPriority
-                                        :subtask="subtask"
-                                        :index="index"
-                                        @update-priority="(level) => updatePriority(subtask, level)"
-                                    />
-                                </v-col>
-                                <v-col>
-                                    <v-menu>
-                                        <template #activator="{ props }">
-                                            <v-btn
-                                                v-bind="props"
-                                                icon="mdi-dots-vertical"
-                                                size="small"
-                                                variant="text"
-                                                density="compact"
-                                                :data-testid="`subtask-menu-${index}`"
-                                                @click.stop
-                                            />
-                                        </template>
-                                        <v-list density="compact">
-                                            <v-list-item
-                                                :data-testid="`subtask-rename-${index}`"
-                                                @click="renameSubtask(subtask.id, index)"
-                                            >
-                                                <template #prepend>
-                                                    <v-icon>
-                                                        mdi-pencil
-                                                    </v-icon>
-                                                </template>
-                                                <v-list-item-title>
-                                                    Rename subtask
-                                                </v-list-item-title>
-                                            </v-list-item>
-                                            <v-list-item
-                                                :data-testid="`subtask-delete-${index}`"
-                                                @click="deleteSubtask(subtask.id)"
-                                            >
-                                                <template #prepend>
-                                                    <v-icon color="error">
-                                                        mdi-delete
-                                                    </v-icon>
-                                                </template>
-                                                <v-list-item-title>
-                                                    Delete subtask
-                                                </v-list-item-title>
-                                            </v-list-item>
-                                        </v-list>
-                                    </v-menu>
-                                </v-col>
-                            </v-row>
+                            {{ activeCount }}/{{ listsStore.currentTodo.subtasks.length }}
+                        </v-chip>
+                    </div>
+                    <SubtaskFilters
+                        v-if="listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length"
+                        v-model:filter="subtasksFilter"
+                        v-model:sort-by="subtasksSortBy"
+                        :expanded="subtasksExpanded"
+                        :has-subtasks="!!(listsStore.currentTodo.subtasks && listsStore.currentTodo.subtasks.length)"
+                        @update:expanded="expandedPanel = $event ? 'subtasks' : undefined"
+                    />
+                </div>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text class="subtasks-panel-text pa-0">
+                <div class="d-flex align-center">
+                    <v-text-field
+                        v-model="newSubtaskName"
+                        label="Add subtask"
+                        hide-details
+                        variant="outlined"
+                        class="my-4 flex-grow-1"
+                        style="min-width: 120px;"
+                        data-testid="add-subtask-input"
+                        @keyup.enter="addSubtask"
+                    />
+                    <v-btn
+                        icon="mdi-plus"
+                        size="small"
+                        variant="tonal"
+                        color="primary"
+                        :disabled="!newSubtaskName"
+                        data-testid="add-subtask-button"
+                        class="mr-2"
+                        @click="addSubtask"
+                    />
+                    <v-menu
+                        :width="400"
+                        location="bottom"
+                    >
+                        <template #activator="{ props }">
+                            <v-btn
+                                v-bind="props"
+                                icon="mdi-link-plus"
+                                size="small"
+                                variant="text"
+                                color="primary"
+                                data-testid="link-subtask-button"
+                            />
                         </template>
-                    </v-list-item>
-                </template>
-            </v-virtual-scroll>
-        </v-expand-transition>
-    </div>
+                        <v-list density="compact">
+                            <v-list-item>
+                                <v-text-field
+                                    v-model="linkSearch"
+                                    placeholder="Search tasks"
+                                    hide-details
+                                    variant="outlined"
+                                    density="compact"
+                                    clearable
+                                    data-testid="link-subtask-search"
+                                    @click.stop
+                                />
+                            </v-list-item>
+                            <v-divider />
+                            <v-list-item
+                                v-for="todo in linkableTodos"
+                                :key="todo.id"
+                                :data-testid="`link-subtask-option-${todo.id}`"
+                                @click="linkExistingTodo(todo)"
+                            >
+                                <v-list-item-title>
+                                    {{ todo.name }}
+                                </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item v-if="!baseLinkableTodos.length">
+                                <v-list-item-title>
+                                    No tasks available to link
+                                </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item v-else-if="baseLinkableTodos.length && !linkableTodos.length">
+                                <v-list-item-title>
+                                    No tasks match your search
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+                </div>
+                <v-virtual-scroll
+                    height="300"
+                    :items="filteredAndSortedSubtasks"
+                    data-testid="subtasks-list"
+                >
+                    <template #default="{ item: subtask, index }">
+                        <v-list-item
+                            :key="subtask.id"
+                            class="py-0 px-0 align-center"
+                            style="cursor: pointer;"
+                            :data-testid="`subtask-item-${index}`"
+                            @click="navigateToSubtask(subtask.id)"
+                        >
+                            <template #prepend>
+                                <div class="">
+                                    <v-checkbox
+                                        v-model="subtask.status"
+                                        :true-value="'Closed'"
+                                        :false-value="'Open'"
+                                        density="compact"
+                                        class="mr-1"
+                                        :data-testid="`subtask-checkbox-${index}`"
+                                        @click.stop
+                                        @change="listsStore.updateTodo(subtask)"
+                                    />
+                                </div>
+                            </template>
+                            <div
+                                v-if="subtask.status === 'Closed' || !isEditingSubtask(subtask.id)"
+                                :data-testid="`subtask-name-${index}`"
+                                class="subtask-name-readonly"
+                                :class="{ 'text-decoration-line-through text-disabled': subtask.status === 'Closed' }"
+                                @click.stop="navigateToSubtask(subtask.id)"
+                            >
+                                {{ subtask.name }}
+                            </div>
+                            <v-text-field
+                                v-else
+                                :ref="el => subtaskNameRefs[index] = el"
+                                v-model="subtask.name"
+                                hide-details
+                                variant="plain"
+                                :class="{ 'text-decoration-line-through text-disabled': subtask.status === 'Closed' }"
+                                :data-testid="`subtask-name-input-${index}`"
+                                @blur="onSubtaskBlur(subtask)"
+                            />
+                            <template #append>
+                                <v-row
+                                    class="d-flex align-center gap-4"
+                                    min-width="500px"
+                                >
+                                    <v-col>
+                                        <SubtaskPriority
+                                            :subtask="subtask"
+                                            :index="index"
+                                            @update-priority="(level) => updatePriority(subtask, level)"
+                                        />
+                                    </v-col>
+                                    <v-col>
+                                        <v-menu>
+                                            <template #activator="{ props }">
+                                                <v-btn
+                                                    v-bind="props"
+                                                    icon="mdi-dots-vertical"
+                                                    size="small"
+                                                    variant="text"
+                                                    density="compact"
+                                                    :data-testid="`subtask-menu-${index}`"
+                                                    @click.stop
+                                                />
+                                            </template>
+                                            <v-list density="compact">
+                                                <v-list-item
+                                                    :data-testid="`subtask-rename-${index}`"
+                                                    @click="renameSubtask(subtask.id, index)"
+                                                >
+                                                    <template #prepend>
+                                                        <v-icon>
+                                                            mdi-pencil
+                                                        </v-icon>
+                                                    </template>
+                                                    <v-list-item-title>
+                                                        Rename subtask
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item
+                                                    :data-testid="`subtask-delete-${index}`"
+                                                    @click="deleteSubtask(subtask.id)"
+                                                >
+                                                    <template #prepend>
+                                                        <v-icon color="error">
+                                                            mdi-delete
+                                                        </v-icon>
+                                                    </template>
+                                                    <v-list-item-title>
+                                                        Delete subtask
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                            </v-list>
+                                        </v-menu>
+                                    </v-col>
+                                </v-row>
+                            </template>
+                        </v-list-item>
+                    </template>
+                </v-virtual-scroll>
+            </v-expansion-panel-text>
+        </v-expansion-panel>
+    </v-expansion-panels>
 </template>
 
 <style scoped>
-.subtask-name-readonly {
-    cursor: pointer;
-    text-decoration: none;
+:deep(.v-expansion-panel-text__wrapper) {
+    padding: 0;
+}
+
+:deep(.v-expansion-panel-title:hover > .v-expansion-panel-title__overlay) {
+    opacity: 0;
 }
 </style>
