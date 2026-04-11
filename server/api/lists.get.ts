@@ -3,7 +3,7 @@ import { serverSupabaseClient } from '#supabase/server';
 export default defineEventHandler(async (event) => {
     try {
         const client = await serverSupabaseClient(event);
-        const { data, error } = await client.from('Lists').select('*');
+        const { data, error } = await client.from('Lists').select('*').order('id', { ascending: true });
 
         if (error) {
             throw createError({
