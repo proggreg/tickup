@@ -2,7 +2,10 @@ import * as cheerio from 'cheerio';
 import type { Meta } from '~/types/link.types';
 
 async function getTitle(url: string) {
-    return await $fetch(url as string).then((response: any) => {
+    return await $fetch(url, {
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...',
+        } }).then((response: any) => {
         try {
             const $ = cheerio.load(response);
             const title = $('title').text() as string;
