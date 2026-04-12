@@ -115,3 +115,5 @@ test-results/example-localhost-chromium/trace.zip
 *user.json
 tickup-github.2026-02-01.private-key.pem
 .gstack/
+
+.agents
