@@ -2,7 +2,6 @@
 const store = useListsStore();
 const editListName = ref('');
 const { isMobile } = useDevice();
-const router = useRouter();
 
 function renameList(list: List) {
     store.updateList(list);
@@ -13,16 +12,6 @@ function rename(list: List) {
     if (store.currentList.id === list.id) {
         store.currentList = list;
     }
-}
-
-function openList(listId: string) {
-    if (!listId) return;
-    router.push(`/list/${listId}`);
-}
-
-function deleteList(listId: string) {
-    if (!listId) return;
-    store.deleteList(listId);
 }
 
 onBeforeMount(() => {
