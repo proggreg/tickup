@@ -67,7 +67,7 @@ onMounted(() => scrollToBottom('instant'));
                 >
                     <v-card
                         v-if="part.type === 'text'"
-                        :color="m.role === 'user' ? 'primary' : (theme.current.value.dark ? 'grey-darken-3' : 'surface-variant')"
+                        :color="m.role === 'user' ? 'primary' : (theme?.current?.value?.dark ? 'grey-darken-3' : 'surface-variant')"
                         variant="flat"
                         rounded="xl"
                         class="px-3 py-2 text-body-2"
