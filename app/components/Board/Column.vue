@@ -45,16 +45,6 @@ function handleDragChange(evt: any) {
         }
     }
 }
-
-function handleDragChange(evt: any) {
-    if (evt?.added?.element) {
-        const todo = evt.added.element as Todo;
-        if (todo.status !== status.name) {
-            todo.status = status.name;
-            listsStore.updateTodo(todo);
-        }
-    }
-}
 </script>
 
 <template>
