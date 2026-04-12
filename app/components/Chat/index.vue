@@ -3,7 +3,7 @@ import { Chat } from '@ai-sdk/vue';
 import { DefaultChatTransport } from 'ai';
 
 const input = ref('');
-const selectedModel = useState('selectedModel', () => 'google/gemini-2.0-flash');
+const selectedModel = useState('selectedModel', () => '');
 
 const chat = new Chat({
     transport: new DefaultChatTransport({
