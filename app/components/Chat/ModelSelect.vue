@@ -25,8 +25,12 @@ const selected = computed({
 const { mobile } = useDisplay();
 
 const selectedModel = computed(() =>
-    models.value?.find((m) => m.id === selected.value),
+    models.value?.find(m => m.id === selected.value),
 );
+
+onMounted(() => {
+    selected.value = models.value[0].id;
+});
 </script>
 
 <template>
@@ -68,7 +72,10 @@ const selectedModel = computed(() =>
             />
         </template>
 
-        <v-list density="compact" min-width="200">
+        <v-list
+            density="compact"
+            min-width="200"
+        >
             <v-list-subheader>Model</v-list-subheader>
             <v-list-item
                 v-for="model in models ?? []"
