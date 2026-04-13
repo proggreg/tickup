@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button } from '@vuetify/v0';
+
 const { groupItem, isGroupOpen, columns, toggleGroup, sortBy, toggleSort, expanded: _expanded } = defineProps<{
     groupItem: Record<string, unknown>; // Using Record<string, unknown> for Vuetify's internal types
     isGroupOpen: (item: Record<string, unknown>) => boolean;
@@ -43,22 +45,21 @@ function isSortedIndex(sortBy: { key: string; order: string }[], column: { key: 
 <template>
     <tr v-if="groupItem.key === 'status'">
         <th :colspan="2">
-            <v-btn
-                class="mr-4"
-                style="font-size: 1.4rem"
-                variant="text"
-                :icon="isGroupOpen(groupItem) ? '$expand' : '$next'"
-                size="x-small"
+            <Button.Root
+                class="group-toggle-btn"
                 @click="toggleGroup(groupItem)"
-            />
-            <v-btn
-                size="x-small"
-                :color="getStatusColor(groupItem.value)"
-                variant="tonal"
-                :text="groupItem.value"
-                style="font-size: 1rem"
+            >
+                <Button.Icon>
+                    <i :class="`mdi ${isGroupOpen(groupItem) ? 'mdi-chevron-down' : 'mdi-chevron-right'}`" />
+                </Button.Icon>
+            </Button.Root>
+            <button
+                class="status-chip"
+                :style="{ background: `${getStatusColor(groupItem.value)}22`, color: getStatusColor(groupItem.value) }"
                 @click="toggleGroup(groupItem)"
-            />
+            >
+                {{ groupItem.value }}
+            </button>
         </th>
         <th colspan="8" />
     </tr>
@@ -66,7 +67,7 @@ function isSortedIndex(sortBy: { key: string; order: string }[], column: { key: 
         <tr v-if="mdAndUp">
             <th
                 colspan="1"
-                class="text-h6"
+                class="col-header"
             >
                 Status
             </th>
@@ -75,7 +76,7 @@ function isSortedIndex(sortBy: { key: string; order: string }[], column: { key: 
                 v-for="column in headerColumns"
                 :key="column.key"
             >
-                <v-hover
+                <th
                     v-if="column.key !== 'data-table-group'
                         && column.key !== 'data-table-expand'
                         && column.key !== 'status'
@@ -83,46 +84,41 @@ function isSortedIndex(sortBy: { key: string; order: string }[], column: { key: 
                         && column.key !== 'dueDate'
                         && column.key !== 'actions'
                     "
+                    colspan="1"
+                    class="col-header col-header--sortable"
+                    @click="toggleSort(column)"
                 >
-                    <template #default="{ isHovering, props }">
-                        <th
-                            :style="isHovering ? 'cursor: pointer' : ''"
-                            v-bind="props"
-                            colspan="1"
-                            class="table-header text-h6"
-                            @click="toggleSort(column)"
-                        >
-                            <div style="display: flex;">
-                                {{ column.title }} {{ column.key }}
-                                <div style="width: 42px">
-                                    <v-icon v-if="isHovering && !isSorted(sortBy, column)">
-                                        mdi-arrow-up
-                                    </v-icon>
+                    <div class="col-header__inner">
+                        {{ column.title }} {{ column.key }}
+                        <div class="col-header__sort">
+                            <i
+                                v-if="!isSorted(sortBy, column)"
+                                class="mdi mdi-arrow-up sort-hint"
+                            />
 
-                                    <template
-                                        v-for="sort in sortBy"
-                                        :key="sort.key"
-                                    >
-                                        <v-icon v-if="sort.key === column.key && sort.order === 'asc'">
-                                            mdi-arrow-up
-                                        </v-icon>
-                                        <v-icon v-if="sort.key === column.key && sort.order === 'desc'">
-                                            mdi-arrow-down
-                                        </v-icon>
-                                    </template>
+                            <template
+                                v-for="sort in sortBy"
+                                :key="sort.key"
+                            >
+                                <i
+                                    v-if="sort.key === column.key && sort.order === 'asc'"
+                                    class="mdi mdi-arrow-up"
+                                />
+                                <i
+                                    v-if="sort.key === column.key && sort.order === 'desc'"
+                                    class="mdi mdi-arrow-down"
+                                />
+                            </template>
 
-                                    <div
-                                        v-if="isSortedIndex(sortBy, column)"
-                                        class="v-data-table-header__sort-badge"
-                                    >
-                                        {{
-                                            isSortedIndex(sortBy, column) }}
-                                    </div>
-                                </div>
-                            </div>
-                        </th>
-                    </template>
-                </v-hover>
+                            <span
+                                v-if="isSortedIndex(sortBy, column)"
+                                class="sort-badge"
+                            >
+                                {{ isSortedIndex(sortBy, column) }}
+                            </span>
+                        </div>
+                    </div>
+                </th>
             </template>
 
             <th colspan="8" />
@@ -134,3 +130,95 @@ function isSortedIndex(sortBy: { key: string; order: string }[], column: { key: 
         <ListTableNewItem :group-item="groupItem" />
     </template>
 </template>
+
+<style scoped>
+.group-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 0;
+    margin-right: 8px;
+    color: inherit;
+    font-size: 1.4rem;
+}
+
+.group-toggle-btn:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.group-toggle-btn .mdi {
+    font-size: 18px;
+}
+
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: inherit;
+    transition: opacity 0.15s;
+}
+
+.status-chip:hover {
+    opacity: 0.8;
+}
+
+.col-header {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 8px;
+}
+
+.col-header--sortable {
+    cursor: pointer;
+}
+
+.col-header--sortable:hover {
+    background: rgba(var(--v-border-color), 0.06);
+}
+
+.col-header__inner {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.col-header__sort {
+    width: 42px;
+    display: flex;
+    align-items: center;
+}
+
+.col-header__sort .mdi {
+    font-size: 16px;
+}
+
+.sort-hint {
+    opacity: 0;
+}
+
+.col-header--sortable:hover .sort-hint {
+    opacity: 0.4;
+}
+
+.sort-badge {
+    font-size: 0.7rem;
+    background: rgba(var(--v-border-color), 0.15);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>

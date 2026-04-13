@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { Popover } from '@vuetify/v0';
+
 const listsStore = useListsStore();
 const { statuses } = useSettingsStore();
 const { smAndDown } = useDisplay();
@@ -23,65 +25,106 @@ function editTodo(todo: Todo, status: Status) {
 </script>
 
 <template>
-    <v-hover
+    <template
         v-for="(todo, index) in itemProps.todos"
         :key="index"
     >
-        <template #default="{ isHovering, props }">
-            <v-list-item
-                v-if="todo.status == itemProps.status"
-                v-bind="props"
-                rounded="lg"
-                :variant="isHovering ? 'tonal' : 'text'"
-                :class="isHovering ? 'mouseOver': ''"
-                @click="emit('TodoClicked')"
+        <div
+            v-if="todo.status == itemProps.status"
+            class="todo-item"
+            @click="emit('TodoClicked')"
+        >
+            <div class="todo-item__prepend">
+                <Popover.Root>
+                    <Popover.Activator>
+                        <span>
+                            <ListStatus :todo="todo" />
+                        </span>
+                    </Popover.Activator>
+                    <Popover.Content>
+                        <ul class="status-menu">
+                            <li
+                                v-for="statusItem in statuses"
+                                :key="statusItem.name"
+                                class="status-menu__item"
+                                @click.stop="editTodo(todo, statusItem)"
+                            >
+                                {{ statusItem.name }}
+                            </li>
+                        </ul>
+                    </Popover.Content>
+                </Popover.Root>
+            </div>
+
+            <div
+                class="todo-item__title"
+                @click="selectTodo(todo)"
             >
-                <template #prepend>
-                    <v-list-item-action start>
-                        <v-menu>
-                            <template #activator="{ props: statusProps }">
-                                <ListStatus
-                                    v-bind="statusProps"
-                                    :todo="todo"
-                                />
-                            </template>
-                            <v-list>
-                                <v-list-item
-                                    v-for="statusItem in statuses"
-                                    :key="statusItem.name"
-                                    @click="editTodo(todo, statusItem)"
-                                >
-                                    {{ statusItem.name }}
-                                </v-list-item>
-                            </v-list>
-                        </v-menu>
-                    </v-list-item-action>
-                </template>
+                {{ todo.name }}
+            </div>
 
-                <v-list-item-title @click="selectTodo(todo)">
-                    {{ todo.name }}
-                </v-list-item-title>
-
-                <template #append>
-                    <AppDueDate
-                        :todo="todo"
-                        :todo-due-date="todo.dueDate"
-                        :show-detail="!smAndDown"
-                    />
-
-                    <v-list-item-action end />
-                </template>
-            </v-list-item>
-        </template>
-    </v-hover>
+            <div class="todo-item__append">
+                <AppDueDate
+                    :todo="todo"
+                    :todo-due-date="todo.dueDate"
+                    :show-detail="!smAndDown"
+                />
+            </div>
+        </div>
+    </template>
 </template>
 
 <style scoped>
-.add-todo-field {
-  position: relative;
-  z-index: 1;
+.todo-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.1s;
 }
-.mouseOver {
-  cursor: pointer;
+
+.todo-item:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.todo-item__prepend {
+    flex-shrink: 0;
+}
+
+.todo-item__title {
+    flex: 1;
+    font-size: 0.9375rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.todo-item__append {
+    flex-shrink: 0;
+}
+
+.status-menu {
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+    min-width: 120px;
+    background: rgb(var(--v-theme-surface));
+    border: 1px solid rgba(var(--v-border-color), 0.12);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.status-menu__item {
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background 0.1s;
+}
+
+.status-menu__item:hover {
+    background: rgba(var(--v-border-color), 0.08);
 }
 </style>

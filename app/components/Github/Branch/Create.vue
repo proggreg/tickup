@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from '@vuetify/v0';
 import type { Endpoints } from '@octokit/types';
 
 const { notify } = useNotification();
@@ -21,7 +22,6 @@ async function createBranch() {
 
         if (response.ref) {
             if (response.alreadyExists) {
-                // Show confirmation dialog
                 pendingBranchResponse.value = response;
                 showLinkDialog.value = true;
             }
@@ -40,7 +40,6 @@ async function createBranch() {
         const errorMessage = error?.data?.message || error?.message || 'Failed to create branch';
         notify(errorMessage);
 
-        // If it's an auth error, suggest reconnecting
         if (error?.status === 401 || error?.statusCode === 401) {
             notify('Please reconnect GitHub in Settings');
         }
@@ -49,15 +48,48 @@ async function createBranch() {
 </script>
 
 <template>
-    <v-btn
+    <Button.Root
         v-if="!listStore.currentTodo.githubLink"
-        icon="mdi-plus"
-        size="small"
-        variant="tonal"
-        color="green"
-        width="30"
-        height="30"
+        class="icon-btn icon-btn--success"
+        aria-label="Create branch"
         :disabled="!selectedRepo || hasBranch"
         @click="createBranch"
-    />
+    >
+        <Button.Icon>
+            <i class="mdi mdi-plus" />
+        </Button.Icon>
+    </Button.Root>
 </template>
+
+<style scoped>
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    color: inherit;
+    padding: 0;
+}
+
+.icon-btn:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.icon-btn--success .mdi {
+    color: rgb(var(--v-theme-success));
+}
+
+.icon-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.icon-btn .mdi {
+    font-size: 16px;
+}
+</style>

@@ -39,59 +39,117 @@ function updateListType(listType) {
 </script>
 
 <template>
-    <v-container
-        fluid
-        class="fill-height"
-    >
-        <v-row class="fill-height">
-            <ListHeader />
-            <v-col
-                class="fill-height d-flex flex-column"
-                cols="12"
-            >
-                <v-tabs v-model="currentTab">
-                    <v-tab
-                        v-for="tab in tabs"
-                        :key="tab"
-                        :text="tab"
-                        :value="tab"
-                    />
-                </v-tabs>
-                <v-window
-                    v-model="currentTab"
-                    :touch="false"
-                    class="mt-4"
+    <div class="list-page">
+        <ListHeader />
+
+        <div class="list-body">
+            <!-- Tab bar -->
+            <div class="tab-bar">
+                <button
+                    v-for="tab in tabs"
+                    :key="tab"
+                    class="tab-btn"
+                    :class="{ 'tab-btn--active': currentTab === tab }"
+                    @click="currentTab = tab"
                 >
-                    <v-window-item
-                        value="board"
-                        class=""
-                    >
-                        <Board />
-                    </v-window-item>
-                    <v-window-item
-                        value="list"
-                        class="fill-height"
-                    >
-                        <v-row>
-                            <v-col>
-                                <TodoNew />
-                            </v-col>
-                            <v-col cols="auto">
-                                <ListType
-                                    :current-list-type="listsStore.currentList.listType"
-                                    @list-type-updated="(listType) => updateListType(listType)"
-                                />
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col>
-                                <ListTable v-if="listsStore.currentList.listType === 'table'" />
-                                <ListSimple v-else />
-                            </v-col>
-                        </v-row>
-                    </v-window-item>
-                </v-window>
-            </v-col>
-        </v-row>
-    </v-container>
+                    {{ tab }}
+                </button>
+            </div>
+
+            <!-- Board tab -->
+            <div
+                v-show="currentTab === 'board'"
+                class="tab-panel"
+            >
+                <Board />
+            </div>
+
+            <!-- List tab -->
+            <div
+                v-show="currentTab === 'list'"
+                class="tab-panel"
+            >
+                <div class="list-toolbar">
+                    <div class="list-toolbar__new">
+                        <TodoNew />
+                    </div>
+                    <div class="list-toolbar__type">
+                        <ListType
+                            :current-list-type="listsStore.currentList.listType"
+                            @list-type-updated="(listType) => updateListType(listType)"
+                        />
+                    </div>
+                </div>
+                <ListTable v-if="listsStore.currentList.listType === 'table'" />
+                <ListSimple v-else />
+            </div>
+        </div>
+    </div>
 </template>
+
+<style scoped>
+.list-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.list-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0 16px 16px;
+}
+
+.tab-bar {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid rgba(var(--v-border-color), 0.12);
+    margin-bottom: 16px;
+}
+
+.tab-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(var(--v-theme-on-surface), 0.6);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    text-transform: capitalize;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.tab-btn:hover {
+    color: rgb(var(--v-theme-on-surface));
+}
+
+.tab-btn--active {
+    color: rgb(var(--v-theme-primary));
+    border-bottom-color: rgb(var(--v-theme-primary));
+}
+
+.tab-panel {
+    flex: 1;
+}
+
+.list-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.list-toolbar__new {
+    flex: 1;
+}
+
+.list-toolbar__type {
+    flex-shrink: 0;
+}
+</style>

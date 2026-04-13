@@ -12,42 +12,86 @@ if (import.meta.client) {
 </script>
 
 <template>
-    <v-bottom-navigation
-        v-if="smAndDown"
-        grow
-        app
-        :active="!isKeyboardOpen"
+    <nav
+        v-if="smAndDown && !isKeyboardOpen"
+        class="mobile-nav"
+        role="navigation"
+        aria-label="Mobile navigation"
     >
-        <v-btn
+        <NuxtLink
             to="/"
-            value="home"
+            class="mobile-nav__item"
+            active-class="mobile-nav__item--active"
         >
-            <v-icon>mdi-home</v-icon>
+            <i class="mdi mdi-home" />
             <span>Home</span>
-        </v-btn>
+        </NuxtLink>
 
-        <v-btn
+        <NuxtLink
             to="/lists"
-            value="lists"
+            class="mobile-nav__item"
+            active-class="mobile-nav__item--active"
         >
-            <v-icon>mdi-format-list-bulleted</v-icon>
+            <i class="mdi mdi-format-list-bulleted" />
             <span>Lists</span>
-        </v-btn>
+        </NuxtLink>
 
-        <v-btn
+        <NuxtLink
             to="/search"
-            value="search"
+            class="mobile-nav__item"
+            active-class="mobile-nav__item--active"
         >
-            <v-icon>mdi-magnify</v-icon>
+            <i class="mdi mdi-magnify" />
             <span>Search</span>
-        </v-btn>
+        </NuxtLink>
 
-        <v-btn
+        <NuxtLink
             to="/settings"
-            value="settings"
+            class="mobile-nav__item"
+            active-class="mobile-nav__item--active"
         >
-            <v-icon>mdi-cog</v-icon>
+            <i class="mdi mdi-cog" />
             <span>Settings</span>
-        </v-btn>
-    </v-bottom-navigation>
+        </NuxtLink>
+    </nav>
 </template>
+
+<style scoped>
+.mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 56px;
+    background: rgb(var(--v-theme-surface));
+    border-top: 1px solid rgba(var(--v-border-color), 0.12);
+    z-index: 100;
+}
+
+.mobile-nav__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    flex: 1;
+    height: 100%;
+    color: rgba(var(--v-theme-on-surface), 0.6);
+    text-decoration: none;
+    font-size: 0.6875rem;
+    padding: 4px 0;
+    transition: color 0.15s;
+}
+
+.mobile-nav__item .mdi {
+    font-size: 22px;
+}
+
+.mobile-nav__item:hover,
+.mobile-nav__item--active {
+    color: rgb(var(--v-theme-primary));
+}
+</style>

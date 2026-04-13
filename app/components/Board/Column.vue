@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { Button, Checkbox, Input } from '@vuetify/v0';
+
 const isAddingTodo = ref(false);
 const listsStore = useListsStore();
-const statusStore = useSettingsStore();
 
 interface Props {
     status: Status;
@@ -21,14 +22,6 @@ function addTodo(status: Status) {
     listsStore.newTodo.status = status.name;
     listsStore.addTodo();
 }
-// TODO updateStatus is not implemented
-// function updateStatus(todo: Todo, status: Status) {
-//     const index = statusStore.statuses.findIndex(s => s.name === status.name);
-//     if (index < statusStore.statuses.length) {
-//         todo.status = statusStore.statuses[index + 1].name;
-//         listsStore.updateTodo(todo);
-//     }
-// }
 
 function handleBlur() {
     if (!listsStore.newTodo.name) {
@@ -48,32 +41,27 @@ function handleDragChange(evt: any) {
 </script>
 
 <template>
-    <v-card
-        :class="['mx-2 my-0 font-weight-bold', selectedClass, 'd-flex', 'flex-column', 'fill-height']"
-        width="100%"
-        :max-width="400"
-        variant="tonal"
-        :color="status.color"
+    <div
+        class="board-column"
+        :class="selectedClass"
+        :style="{ '--col-color': status.color }"
     >
-        <template #title>
-            <div class="d-flex align-center justify-space-between">
-                <div>
-                    {{ status.name }}
-                    <v-btn
-                        :ripple="false"
-                        class="pa-0 ma-0"
-                        width="20"
-                        size="small"
-                        variant="plain"
-                        :color="status.color"
-                        icon="mdi-plus"
-                        @click="isAddingTodo = !isAddingTodo"
-                    />
-                </div>
+        <div class="board-column__header">
+            <div class="board-column__title-row">
+                <span class="board-column__title">{{ status.name }}</span>
+                <Button.Root
+                    class="icon-btn"
+                    @click="isAddingTodo = !isAddingTodo"
+                >
+                    <Button.Icon>
+                        <i class="mdi mdi-plus" />
+                    </Button.Icon>
+                </Button.Root>
                 <BoardOptions :status="status" />
             </div>
-        </template>
-        <v-card-item class="flex-fill list">
+        </div>
+
+        <div class="board-column__body">
             <draggable
                 :list="todos"
                 item-key="id"
@@ -82,85 +70,196 @@ function handleDragChange(evt: any) {
                 @change="handleDragChange"
             >
                 <template #item="{ element: todo }">
-                    <v-card
+                    <NuxtLink
                         :key="todo.id"
-                        class="mb-2 pa-0"
-                        :color="status.color"
-                        style="cursor: pointer;"
-                        :max-width="'100%'"
                         :to="`/todo/${todo.id}`"
+                        class="todo-card"
+                        :style="{ '--card-color': status.color }"
                     >
-                        <v-card-item
-                            class="py-2 px-4"
-                        >
-                            <div class="d-flex align-center justify-space-between">
-                                <v-checkbox
-                                    v-model="todo.selected"
-                                    size="small"
-                                    density="compact"
-                                    hide-details
-                                    class="flex-shrink-0"
-                                    @click.stop
-                                />
-                                <span class="text-truncate text-body-1 font-weight-bold flex-grow-1 mr-2">{{ todo.name }}</span>
-                            </div>
-                        </v-card-item>
-                    </v-card>
+                        <div class="todo-card__inner">
+                            <Checkbox.Root
+                                v-model="todo.selected"
+                                class="todo-card__checkbox"
+                                @click.stop
+                            >
+                                <Checkbox.Indicator class="todo-card__checkbox-indicator">
+                                    <i class="mdi mdi-check" />
+                                </Checkbox.Indicator>
+                            </Checkbox.Root>
+                            <span class="todo-card__name">{{ todo.name }}</span>
+                        </div>
+                    </NuxtLink>
                 </template>
             </draggable>
-        </v-card-item>
-        <v-card-item v-if="isAddingTodo">
-            <v-card>
-                <v-card-item>
-                    <v-text-field
-                        v-model="listsStore.newTodo.name"
+        </div>
+
+        <div
+            v-if="isAddingTodo"
+            class="board-column__add"
+        >
+            <div class="add-todo-card">
+                <Input.Root v-model="listsStore.newTodo.name">
+                    <Input.Control
+                        class="add-todo-input"
                         placeholder="Add todo"
-                        hide-details
-                        class="ma-0 pa-0"
                         autofocus
-                        variant="plain"
                         @blur="handleBlur"
                         @keyup.enter.stop="addTodo(status)"
                     />
-                </v-card-item>
-            </v-card>
-        </v-card-item>
-    </v-card>
+                </Input.Root>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style scoped>
-  .ghost {
-    opacity: 0.5;
-    background-color: inherit;
-  }
+.board-column {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 8px;
+    background: rgba(var(--v-border-color), 0.06);
+    border-radius: 12px;
+    overflow: hidden;
+    font-weight: bold;
+}
 
-  :deep(.v-card-title) {
-    font-weight: bold !important;
-  }
+.board-column__header {
+    padding: 12px 12px 8px;
+    background: color-mix(in srgb, var(--col-color, transparent) 15%, transparent);
+    border-bottom: 1px solid rgba(var(--v-border-color), 0.08);
+}
 
-  .list :deep(.v-card-item__content:first-child) {
-    height: 100% !important;
+.board-column__title-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
 
-    .draggable-container {
-      min-height: 100%;
-      overflow-y: auto;
+.board-column__title {
+    flex: 1;
+    font-size: 0.9375rem;
+    font-weight: 700;
+}
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    color: var(--col-color, inherit);
+    padding: 0;
+    transition: background 0.1s;
+}
+
+.icon-btn:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.icon-btn .mdi {
+    font-size: 18px;
+}
+
+.board-column__body {
+    flex: 1;
+    padding: 8px;
+    overflow-y: auto;
+}
+
+.draggable-container {
+    min-height: 100%;
+}
+
+.todo-card {
+    display: block;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--card-color, transparent) 12%, rgb(var(--v-theme-surface)));
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+}
+
+.todo-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.todo-card__inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+}
+
+.todo-card__checkbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(var(--v-border-color), 0.4);
+    border-radius: 3px;
+    cursor: pointer;
+    background: transparent;
+    flex-shrink: 0;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.todo-card__checkbox:hover {
+    border-color: rgb(var(--v-theme-primary));
+}
+
+.todo-card__checkbox-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(var(--v-theme-primary));
+    font-size: 11px;
+}
+
+.todo-card__name {
+    flex: 1;
+    font-size: 1rem;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .board-column {
+        min-width: 0;
+        width: 100%;
     }
-  }
+}
 
-  /* Mobile-specific styles */
-  @media (max-width: 768px) {
-    :deep(.v-card) {
-      min-width: 0 !important;
-      width: 100% !important;
-    }
+.board-column__add {
+    padding: 8px;
+}
 
-    :deep(.v-card-item) {
-      padding: 8px 12px !important;
-    }
+.add-todo-card {
+    background: rgb(var(--v-theme-surface));
+    border-radius: 8px;
+    padding: 8px 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
 
-    :deep(.text-truncate) {
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
-  }
+.add-todo-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    font-family: inherit;
+    color: inherit;
+    padding: 2px 0;
+}
 </style>

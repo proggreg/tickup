@@ -4,19 +4,29 @@ const colorMode = useColorMode();
 
 <template>
     <ColorScheme>
-        <v-theme-provider
-            with-background
-            :theme="colorMode.preference"
+        <div
+            class="app-root"
+            :data-theme="colorMode.preference"
         >
-            <v-app>
-                <v-layout>
-                    <v-main>
-                        <v-container class="fill-height flex justify-center">
-                            <NuxtPage />
-                        </v-container>
-                    </v-main>
-                </v-layout>
-            </v-app>
-        </v-theme-provider>
+            <main class="app-main">
+                <NuxtPage />
+            </main>
+        </div>
     </ColorScheme>
 </template>
+
+<style scoped>
+.app-root {
+    min-height: 100dvh;
+    background: rgb(var(--v-theme-background));
+    color: rgb(var(--v-theme-on-background));
+}
+
+.app-main {
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+</style>

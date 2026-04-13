@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from '@vuetify/v0';
 import type { Endpoints } from '@octokit/types';
 
 const listStore = useListsStore();
@@ -32,12 +33,42 @@ async function linkBranch() {
 </script>
 
 <template>
-    <v-btn
+    <Button.Root
         v-if="selectedBranch"
-        icon="mdi-link"
-        variant="tonal"
-        size="x-small"
-        color="green"
+        class="icon-btn icon-btn--success"
+        aria-label="Link branch"
         @click="linkBranch"
-    />
+    >
+        <Button.Icon>
+            <i class="mdi mdi-link" />
+        </Button.Icon>
+    </Button.Root>
 </template>
+
+<style scoped>
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    color: inherit;
+    padding: 0;
+}
+
+.icon-btn:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.icon-btn--success .mdi {
+    color: rgb(var(--v-theme-success));
+}
+
+.icon-btn .mdi {
+    font-size: 14px;
+}
+</style>

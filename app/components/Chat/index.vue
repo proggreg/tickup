@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button, Input } from '@vuetify/v0';
 import { Chat } from '@ai-sdk/vue';
 import { DefaultChatTransport } from 'ai';
 
@@ -23,50 +24,51 @@ const handleSubmit = (e: Event) => {
 </script>
 
 <template>
-    <v-card
-        width="100%"
-        class="chat-container"
-        variant="flat"
-    >
-        <!-- Scrollable message list -->
+    <div class="chat-container">
         <ChatMessageList
             :messages="chat.messages"
             :loading="isLoading"
         />
 
-        <!-- Fixed / sticky input bar at the bottom -->
         <div class="chat-input-wrapper">
-            <v-divider />
-
-            <v-card-item class="chat-input-bar">
+            <hr class="divider" />
+            <div class="chat-input-bar">
                 <form
                     class="chat-input-form"
                     @submit="handleSubmit"
                 >
-                    <div class="chat-input-row d-flex align-center ga-3 py-2">
+                    <div class="chat-input-row">
                         <ChatModelSelect
                             v-model="selectedModel"
-                            class="flex-shrink-0"
-                            style="width: 140px;"
+                            class="model-select"
                         />
-                        <v-text-field
-                            v-model="input"
-                            :disabled="isLoading"
-                            class="chat-input-field"
-                            data-testid="chat-input"
-                            placeholder="Say something..."
-                            variant="outlined"
-                            density="compact"
-                            hide-details
-                            append-inner-icon="mdi-send"
-                            @click:append-inner="handleSubmit"
-                            @keydown.enter.exact.prevent="handleSubmit"
-                        />
+                        <div class="chat-field-wrap">
+                            <Input.Root v-model="input" class="chat-input-root">
+                                <Input.Control
+                                    class="chat-input-control"
+                                    data-testid="chat-input"
+                                    placeholder="Say something..."
+                                    :disabled="isLoading"
+                                    @keydown.enter.exact.prevent="handleSubmit"
+                                />
+                            </Input.Root>
+                            <Button.Root
+                                class="send-btn"
+                                aria-label="Send message"
+                                type="submit"
+                                :disabled="isLoading || !input.trim()"
+                                @click="handleSubmit"
+                            >
+                                <Button.Icon>
+                                    <i class="mdi mdi-send" />
+                                </Button.Icon>
+                            </Button.Root>
+                        </div>
                     </div>
                 </form>
-            </v-card-item>
+            </div>
         </div>
-    </v-card>
+    </div>
 </template>
 
 <style scoped>
@@ -76,6 +78,7 @@ const handleSubmit = (e: Event) => {
     flex: 1;
     min-height: 0;
     overflow: hidden;
+    width: 100%;
 }
 
 .chat-input-wrapper {
@@ -86,18 +89,87 @@ const handleSubmit = (e: Event) => {
     width: 100%;
 }
 
-.chat-input-bar,
+.divider {
+    border: none;
+    border-top: 1px solid rgba(var(--v-border-color), 0.12);
+    margin: 0;
+}
+
+.chat-input-bar {
+    width: 100%;
+    padding: 8px 16px;
+}
+
 .chat-input-form,
 .chat-input-row {
     width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.chat-input-field {
+.model-select {
+    flex-shrink: 0;
+    width: 140px;
+}
+
+.chat-field-wrap {
     flex: 1;
     min-width: 0;
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(var(--v-border-color), 0.38);
+    border-radius: 4px;
+    overflow: hidden;
 }
 
-:deep(.chat-input-bar .v-card-item__content) {
+.chat-field-wrap:focus-within {
+    border-color: rgb(var(--v-theme-primary));
+}
+
+.chat-input-root {
+    flex: 1;
+}
+
+.chat-input-control {
     width: 100%;
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-size: 0.875rem;
+    outline: none;
+}
+
+.chat-input-control:disabled {
+    opacity: 0.6;
+}
+
+.send-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 0;
+    color: inherit;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.send-btn:hover:not(:disabled) {
+    color: rgb(var(--v-theme-primary));
+}
+
+.send-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.send-btn .mdi {
+    font-size: 18px;
 }
 </style>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button } from '@vuetify/v0';
+
 const dialog = useDialog();
 const listsStore = useListsStore();
 const { notify } = useNotification();
@@ -41,130 +43,251 @@ async function addTodo() {
         notify('Todo Created', { link: `/todo/${created.id}` });
     }
 }
+
+// Programmatic dialog control via native <dialog> element
+const dialogEl = ref<HTMLDialogElement | null>(null);
+
+watch(isOpen, (val) => {
+    if (!dialogEl.value) return;
+    if (val) {
+        dialogEl.value.showModal();
+        nextTick(() => {
+            dialogEl.value?.querySelector<HTMLInputElement>('[data-testid="new-todo-input"]')?.focus();
+        });
+    }
+    else {
+        dialogEl.value.close();
+    }
+});
 </script>
 
 <template>
-    <v-dialog
-        :model-value="isOpen"
-        max-width="576"
-        :transition="mobile ? 'dialog-top-transition' : 'dialog-bottom-transition'"
-        :style="mobile ? 'align-items: flex-start;' : ''"
-        @update:model-value="close"
-        @after-leave="resetState"
+    <dialog
+        ref="dialogEl"
+        class="todo-dialog"
+        :class="{ 'todo-dialog--mobile': mobile }"
+        @close="resetState"
+        @click.self="close"
     >
-        <v-card
-            rounded="lg"
-            elevation="0"
-            style="border: 1px solid rgba(var(--v-theme-outline-variant), 0.3); box-shadow: 0 24px 40px -10px rgba(0, 90, 194, 0.08); overflow: hidden; position: relative;"
-        >
-            <v-card-item class="px-6 pt-5 pb-2">
-                <template #title>
-                    <span
-                        class="text-caption font-weight-bold text-uppercase"
-                        style="letter-spacing: 0.1em;"
-                        data-testid="dialog-title"
-                    >
+        <div class="todo-dialog__card">
+            <div class="todo-dialog__header">
+                <span
+                    class="todo-dialog__label"
+                    data-testid="dialog-title"
+                >
                     New Task
-                    </span>
-                </template>
-                <template #append>
-                    <v-btn
-                        icon="mdi-close"
-                        variant="text"
-                        size="small"
-                        density="compact"
-                        data-testid="dialog-close"
-                        @click="close"
-                    />
-                </template>
-            </v-card-item>
+                </span>
+                <Button.Root
+                    class="icon-btn"
+                    aria-label="Close"
+                    data-testid="dialog-close"
+                    @click="close"
+                >
+                    <Button.Icon>
+                        <i class="mdi mdi-close" />
+                    </Button.Icon>
+                </Button.Root>
+            </div>
 
-            <v-card-text class="px-6 pb-6 pt-2">
-                <v-text-field
+            <div class="todo-dialog__body">
+                <input
                     v-model="name"
-                    variant="underlined"
+                    class="todo-input"
                     placeholder="What needs to be done?"
                     data-testid="new-todo-input"
-                    class="mb-4"
-                    autofocus
-                    hide-details
                     @keyup.enter="addTodo"
                 />
 
-                <v-row>
-                    <v-col>
+                <div class="todo-dialog__row">
+                    <div class="todo-dialog__list-col">
                         <ListSelect
                             v-model="selectedListId"
                             label="List"
                             variant="plain"
                             density="compact"
-                        >
-                            <template #prepend-inner>
-                                <v-icon
-                                    size="16"
-                                    color="on-surface"
-                                    class="mr-1"
-                                >
-                                    mdi-format-list-bulleted
-                                </v-icon>
-                            </template>
-                        </ListSelect>
-                    </v-col>
-                    <v-col cols="auto">
+                        />
+                    </div>
+                    <div class="todo-dialog__date-col">
                         <AppDueDate
                             :todo="todo"
                             :todo-due-date="dueDate"
                             @set-date="(newDate: Date) => dueDate = newDate"
                         />
-                    </v-col>
-                </v-row>
-            </v-card-text>
+                    </div>
+                </div>
+            </div>
 
-            <v-card-actions
-                class="px-6 py-3"
-                style="background: rgba(var(--v-theme-surface-variant), 0.15);"
-            >
-                <v-spacer />
-                <v-btn
-                    variant="text"
-                    size="small"
-                    class="text-medium-emphasis"
+            <div class="todo-dialog__actions">
+                <Button.Root
+                    class="btn btn--subtle"
                     @click="close"
                 >
-                    Cancel
-                </v-btn>
-                <v-btn
-                    color="primary"
-                    size="small"
+                    <Button.Content>Cancel</Button.Content>
+                </Button.Root>
+                <Button.Root
+                    class="btn btn--primary"
                     :disabled="name === ''"
                     data-testid="create-todo-button"
                     @click="addTodo"
                 >
-                    Save Task
-                </v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
+                    <Button.Content>Save Task</Button.Content>
+                </Button.Root>
+            </div>
+        </div>
+    </dialog>
 </template>
 
 <style scoped>
-:deep(.v-text-field:not(.v-select) .v-field__input) {
-    font-size: 1.4rem;
-    font-weight: 500;
-    padding-top: 4px;
-    padding-bottom: 8px;
+.todo-dialog {
+    border: none;
+    border-radius: 12px;
+    padding: 0;
+    max-width: 576px;
+    width: 90vw;
+    background: transparent;
+    overflow: visible;
+    margin: auto;
 }
 
-:deep(.v-text-field:not(.v-select) input::placeholder) {
+.todo-dialog--mobile {
+    margin-top: 0;
+    align-self: flex-start;
+}
+
+.todo-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.todo-dialog__card {
+    background: rgb(var(--v-theme-surface));
+    color: rgb(var(--v-theme-on-surface));
+    border: 1px solid rgba(var(--v-theme-outline-variant), 0.3);
+    border-radius: 12px;
+    box-shadow: 0 24px 40px -10px rgba(0, 90, 194, 0.08);
+    overflow: hidden;
+    position: relative;
+}
+
+.todo-dialog__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 8px;
+}
+
+.todo-dialog__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    color: inherit;
+    padding: 0;
+}
+
+.icon-btn:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.icon-btn .mdi {
+    font-size: 16px;
+}
+
+.todo-dialog__body {
+    padding: 8px 24px 24px;
+}
+
+.todo-input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid rgba(var(--v-border-color), 0.24);
+    background: transparent;
+    color: rgb(var(--v-theme-on-surface));
+    font-size: 1.4rem;
+    font-weight: 500;
+    padding: 4px 0 8px;
+    margin-bottom: 16px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.todo-input::placeholder {
     color: rgb(var(--v-theme-outline));
     opacity: 1;
 }
 
-:deep(.v-select .v-field__clearable) {
-    align-self: center;
+.todo-input:focus {
+    border-bottom-color: rgb(var(--v-theme-primary));
 }
 
-:deep(.v-select .v-field__clearable .v-icon) {
-    --v-icon-size-multiplier: 0.75;
+.todo-dialog__row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.todo-dialog__list-col {
+    flex: 1;
+    min-width: 0;
+}
+
+.todo-dialog__date-col {
+    flex-shrink: 0;
+}
+
+.todo-dialog__actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: rgba(var(--v-theme-surface-variant), 0.15);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 14px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: inherit;
+}
+
+.btn--subtle {
+    color: rgba(var(--v-theme-on-surface), 0.6);
+}
+
+.btn--subtle:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.btn--primary {
+    background: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-on-primary, 255, 255, 255));
+}
+
+.btn--primary:hover {
+    opacity: 0.9;
+}
+
+.btn--primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 </style>

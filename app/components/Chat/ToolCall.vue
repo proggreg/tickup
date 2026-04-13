@@ -25,14 +25,14 @@ const stateIcon = computed(() => {
     }
 });
 
-const stateColor = computed(() => {
+const stateColorVar = computed(() => {
     switch (state.value) {
         case 'input-streaming':
-        case 'input-available': return 'primary';
-        case 'output-available': return 'success';
-        case 'output-error': return 'error';
-        case 'output-denied': return 'warning';
-        default: return 'primary';
+        case 'input-available': return '--v-theme-primary';
+        case 'output-available': return '--v-theme-success';
+        case 'output-error': return '--v-theme-error';
+        case 'output-denied': return '--v-theme-warning';
+        default: return '--v-theme-primary';
     }
 });
 
@@ -66,56 +66,43 @@ const errorText = computed(() => {
 </script>
 
 <template>
-    <v-card
-        class="chat-tool-call my-4 pa-2"
+    <div
+        class="chat-tool-call"
         data-testid="chat-tool-call"
-        elevation="0"
-        color="grey"
-        rounded="xl"
     >
-        <!-- Header row -->
-
         <div
-            class="chat-tool-call__header d-flex align-center ga-2"
+            class="chat-tool-call__header"
             @click="open = !open"
         >
-            <v-progress-circular
+            <span
                 v-if="isLoading"
-                :size="16"
-                :width="2"
-                indeterminate
-                :color="stateColor"
-                class="chat-tool-call__spinner"
+                class="spinner"
+                :style="{ borderTopColor: `rgb(var(${stateColorVar}))` }"
             />
-            <v-icon
+            <i
                 v-else
-                :color="stateColor"
-                size="16"
-            >
-                {{ stateIcon }}
-            </v-icon>
+                :class="`mdi ${stateIcon}`"
+                :style="{ color: `rgb(var(${stateColorVar}))`, fontSize: '16px' }"
+            />
 
             <span class="chat-tool-call__name">{{ toolName }}</span>
 
-            <span>{{ stateLabel }}</span>
+            <span class="chat-tool-call__status">{{ stateLabel }}</span>
 
-            <v-icon
-                size="14"
-                class="chat-tool-call__chevron"
+            <i
+                class="mdi mdi-chevron-down chat-tool-call__chevron"
                 :class="{ 'chat-tool-call__chevron--open': open }"
-            >
-                mdi-chevron-down
-            </v-icon>
+                style="font-size: 14px;"
+            />
         </div>
 
-        <!-- Expandable detail -->
-        <v-expand-transition>
+        <Transition name="expand">
             <div
                 v-if="open"
-                class="d-flex flex-column ga-1 pa-3"
+                class="chat-tool-call__body"
             >
                 <template v-if="input !== undefined">
-                    <p>
+                    <p class="chat-tool-call__label">
                         Input
                     </p>
                     <pre
@@ -125,7 +112,7 @@ const errorText = computed(() => {
                 </template>
 
                 <template v-if="output !== undefined">
-                    <p>
+                    <p class="chat-tool-call__label">
                         Output
                     </p>
                     <pre
@@ -144,8 +131,8 @@ const errorText = computed(() => {
                     >{{ errorText }}</pre>
                 </template>
             </div>
-        </v-expand-transition>
-    </v-card>
+        </Transition>
+    </div>
 </template>
 
 <style scoped>
@@ -153,9 +140,16 @@ const errorText = computed(() => {
     overflow: hidden;
     font-size: 0.8rem;
     max-width: 320px;
+    background: rgba(var(--v-border-color), 0.08);
+    border-radius: 12px;
+    margin: 16px 0;
+    padding: 8px;
 }
 
 .chat-tool-call__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     padding: 6px 10px;
     cursor: pointer;
     user-select: none;
@@ -184,6 +178,13 @@ const errorText = computed(() => {
     transform: rotate(180deg);
 }
 
+.chat-tool-call__body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+}
+
 .chat-tool-call__label {
     margin: 0;
     font-size: 0.7rem;
@@ -210,5 +211,32 @@ const errorText = computed(() => {
 .chat-tool-call__json--error {
     background: rgba(var(--v-theme-error), 0.08);
     color: rgb(var(--v-theme-error));
+}
+
+.spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.expand-enter-active,
+.expand-leave-active {
+    transition: opacity 0.2s, max-height 0.25s;
+    max-height: 400px;
+    overflow: hidden;
+}
+
+.expand-enter-from,
+.expand-leave-to {
+    opacity: 0;
+    max-height: 0;
 }
 </style>

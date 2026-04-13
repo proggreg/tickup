@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button } from '@vuetify/v0';
+
 const listsStore = useListsStore();
 const dialog = useDialog();
 const saveTodo = ref(false);
@@ -17,254 +19,342 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <v-container
-        fluid
-        class="pa-6"
-    >
+    <div class="dashboard">
         <!-- Stats summary row -->
-        <v-row
-            class="mb-6"
-            dense
-        >
-            <v-col cols="3">
-                <v-card
-                    rounded="lg"
-                    color="error"
-                    variant="tonal"
-                    class="pa-4 text-center"
-                >
-                    <div class="text-h3 font-weight-bold">
-                        {{ listsStore.overdueTodos.length }}
-                    </div>
-                    <div class="text-body-2 mt-1 text-medium-emphasis">
-                        Overdue
-                    </div>
-                </v-card>
-            </v-col>
-            <v-col cols="3">
-                <v-card
-                    rounded="lg"
-                    color="primary"
-                    variant="tonal"
-                    class="pa-4 text-center"
-                >
-                    <div class="text-h3 font-weight-bold">
-                        {{ todayCount }}
-                    </div>
-                    <div class="text-body-2 mt-1 text-medium-emphasis">
-                        Due Today
-                    </div>
-                </v-card>
-            </v-col>
-            <v-col cols="3">
-                <v-card
-                    rounded="lg"
-                    color="success"
-                    variant="tonal"
-                    class="pa-4 text-center"
-                >
-                    <div class="text-h3 font-weight-bold">
-                        {{ doneCount }}
-                    </div>
-                    <div class="text-body-2 mt-1 text-medium-emphasis">
-                        Done Today
-                    </div>
-                </v-card>
-            </v-col>
-            <v-col cols="3">
-                <v-card
-                    rounded="lg"
-                    variant="tonal"
-                    class="pa-4 text-center"
-                >
-                    <div class="text-h3 font-weight-bold">
-                        {{ listsStore.lists.length }}
-                    </div>
-                    <div class="text-body-2 mt-1 text-medium-emphasis">
-                        Lists
-                    </div>
-                </v-card>
-            </v-col>
-        </v-row>
+        <div class="stats-row">
+            <div class="stat-card stat-card--error">
+                <div class="stat-card__number">{{ listsStore.overdueTodos.length }}</div>
+                <div class="stat-card__label">Overdue</div>
+            </div>
+            <div class="stat-card stat-card--primary">
+                <div class="stat-card__number">{{ todayCount }}</div>
+                <div class="stat-card__label">Due Today</div>
+            </div>
+            <div class="stat-card stat-card--success">
+                <div class="stat-card__number">{{ doneCount }}</div>
+                <div class="stat-card__label">Done Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__number">{{ listsStore.lists.length }}</div>
+                <div class="stat-card__label">Lists</div>
+            </div>
+        </div>
 
         <!-- Main 3-column content -->
-        <v-row
-            class="mb-6"
-            align="stretch"
-        >
+        <div class="content-row">
             <!-- Overdue column -->
-            <v-col cols="4">
-                <v-card
-                    rounded="lg"
-                    variant="outlined"
-                    class="dashboard-col"
-                >
-                    <v-card-title class="d-flex align-center ga-2 pa-4 pb-3">
-                        <v-icon
-                            color="error"
-                            size="small"
-                        >
-                            mdi-clock-alert-outline
-                        </v-icon>
-                        <span>Overdue</span>
-                        <v-chip
+            <div class="content-col">
+                <div class="content-card">
+                    <div class="content-card__header">
+                        <i class="mdi mdi-clock-alert-outline content-card__icon content-card__icon--error" />
+                        <span class="content-card__title">Overdue</span>
+                        <span
                             v-if="listsStore.overdueTodos.length"
-                            color="error"
-                            size="small"
-                            class="ml-auto"
+                            class="content-badge content-badge--error"
                         >
                             {{ listsStore.overdueTodos.length }}
-                        </v-chip>
-                    </v-card-title>
-                    <v-divider />
-                    <div class="dashboard-col-content pa-2">
+                        </span>
+                    </div>
+                    <hr class="content-card__divider">
+                    <div class="content-card__body">
                         <HomePageOverDue />
                     </div>
-                </v-card>
-            </v-col>
+                </div>
+            </div>
 
             <!-- Today column -->
-            <v-col cols="4">
-                <v-card
-                    rounded="lg"
-                    variant="outlined"
-                    class="dashboard-col"
-                >
-                    <v-card-title class="d-flex align-center ga-2 pa-4 pb-3">
-                        <v-icon
-                            color="primary"
-                            size="small"
-                        >
-                            mdi-calendar-today
-                        </v-icon>
-                        <span>Today</span>
-                        <v-chip
+            <div class="content-col">
+                <div class="content-card">
+                    <div class="content-card__header">
+                        <i class="mdi mdi-calendar-today content-card__icon content-card__icon--primary" />
+                        <span class="content-card__title">Today</span>
+                        <span
                             v-if="todayCount"
-                            color="primary"
-                            size="small"
-                            class="ml-auto"
+                            class="content-badge content-badge--primary"
                         >
                             {{ todayCount }}
-                        </v-chip>
-                    </v-card-title>
-                    <v-divider />
-                    <div class="dashboard-col-content pa-4">
+                        </span>
+                    </div>
+                    <hr class="content-card__divider">
+                    <div class="content-card__body content-card__body--padded">
                         <TodoNew
                             :save-todo="saveTodo"
-                            class="mb-4"
+                            class="mb-field"
                             @add-todo="dialog.open = false; saveTodo = false"
                         />
                         <HomePageToday />
                     </div>
-                </v-card>
-            </v-col>
+                </div>
+            </div>
 
             <!-- Done column -->
-            <v-col cols="4">
-                <v-card
-                    rounded="lg"
-                    variant="outlined"
-                    class="dashboard-col"
-                >
-                    <v-card-title class="d-flex align-center ga-2 pa-4 pb-3">
-                        <v-icon
-                            color="success"
-                            size="small"
-                        >
-                            mdi-check-circle-outline
-                        </v-icon>
-                        <span>Done Today</span>
-                        <v-chip
+            <div class="content-col">
+                <div class="content-card">
+                    <div class="content-card__header">
+                        <i class="mdi mdi-check-circle-outline content-card__icon content-card__icon--success" />
+                        <span class="content-card__title">Done Today</span>
+                        <span
                             v-if="doneCount"
-                            color="success"
-                            size="small"
-                            class="ml-auto"
+                            class="content-badge content-badge--success"
                         >
                             {{ doneCount }}
-                        </v-chip>
-                    </v-card-title>
-                    <v-divider />
-                    <div class="dashboard-col-content pa-2">
+                        </span>
+                    </div>
+                    <hr class="content-card__divider">
+                    <div class="content-card__body">
                         <HomePageTodayClosed />
                     </div>
-                </v-card>
-            </v-col>
-        </v-row>
+                </div>
+            </div>
+        </div>
 
         <!-- My Lists section -->
-        <v-row>
-            <v-col cols="12">
-                <v-card
-                    rounded="lg"
-                    variant="outlined"
-                >
-                    <v-card-title class="d-flex align-center ga-2 pa-4 pb-3">
-                        <v-icon size="small">
-                            mdi-format-list-bulleted
-                        </v-icon>
-                        <span>My Lists</span>
-                        <v-btn
-                            variant="text"
-                            size="small"
-                            to="/lists"
-                            class="ml-auto text-caption"
+        <div class="lists-section">
+            <div class="content-card">
+                <div class="content-card__header">
+                    <i class="mdi mdi-format-list-bulleted content-card__icon" />
+                    <span class="content-card__title">My Lists</span>
+                    <Button.Root
+                        class="view-all-btn"
+                        :to="'/lists'"
+                    >
+                        View all
+                    </Button.Root>
+                </div>
+                <hr class="content-card__divider">
+                <div class="content-card__body content-card__body--padded">
+                    <div
+                        v-if="listsStore.lists.length"
+                        class="lists-grid"
+                    >
+                        <NuxtLink
+                            v-for="list in listsStore.lists"
+                            :key="list.id"
+                            :to="`/list/${list.id}`"
+                            class="list-card"
                         >
-                            View all
-                        </v-btn>
-                    </v-card-title>
-                    <v-divider />
-                    <v-card-text class="pa-4">
-                        <v-row
-                            v-if="listsStore.lists.length"
-                            dense
-                        >
-                            <v-col
-                                v-for="list in listsStore.lists"
-                                :key="list.id"
-                                cols="6"
-                                sm="4"
-                                md="3"
-                                lg="2"
-                            >
-                                <v-card
-                                    rounded="lg"
-                                    variant="tonal"
-                                    :to="`/list/${list.id}`"
-                                    class="pa-3"
-                                >
-                                    <div class="d-flex align-center ga-2">
-                                        <v-icon
-                                            :icon="list.icon || 'mdi-format-list-bulleted'"
-                                            size="small"
-                                        />
-                                        <span class="text-body-2 font-weight-medium text-truncate">
-                                            {{ list.name }}
-                                        </span>
-                                    </div>
-                                </v-card>
-                            </v-col>
-                        </v-row>
-                        <AppEmptyState
-                            v-else
-                            height="80px"
-                        />
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
-    </v-container>
+                            <i
+                                :class="`mdi ${list.icon || 'mdi-format-list-bulleted'} list-card__icon`"
+                            />
+                            <span class="list-card__name">{{ list.name }}</span>
+                        </NuxtLink>
+                    </div>
+                    <AppEmptyState
+                        v-else
+                        height="80px"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style scoped>
-.dashboard-col {
-    height: 100%;
+.dashboard {
+    padding: 24px;
     display: flex;
     flex-direction: column;
+    gap: 24px;
 }
 
-.dashboard-col-content {
+/* Stats row */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.stat-card {
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    background: rgba(var(--v-border-color), 0.06);
+}
+
+.stat-card--error {
+    background: rgba(var(--v-theme-error), 0.1);
+}
+
+.stat-card--primary {
+    background: rgba(var(--v-theme-primary), 0.1);
+}
+
+.stat-card--success {
+    background: rgba(var(--v-theme-success), 0.1);
+}
+
+.stat-card__number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.stat-card--error .stat-card__number {
+    color: rgb(var(--v-theme-error));
+}
+
+.stat-card--primary .stat-card__number {
+    color: rgb(var(--v-theme-primary));
+}
+
+.stat-card--success .stat-card__number {
+    color: rgb(var(--v-theme-success));
+}
+
+.stat-card__label {
+    font-size: 0.8125rem;
+    margin-top: 4px;
+    color: rgba(var(--v-theme-on-surface), 0.6);
+}
+
+/* Content columns */
+.content-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    align-items: stretch;
+}
+
+.content-col {
+    display: flex;
+}
+
+.content-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 1px solid rgba(var(--v-border-color), 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.content-card__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 16px 12px;
+}
+
+.content-card__icon {
+    font-size: 18px;
+    opacity: 0.7;
+}
+
+.content-card__icon--error { color: rgb(var(--v-theme-error)); }
+.content-card__icon--primary { color: rgb(var(--v-theme-primary)); }
+.content-card__icon--success { color: rgb(var(--v-theme-success)); }
+
+.content-card__title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    flex: 1;
+}
+
+.content-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: auto;
+}
+
+.content-badge--error {
+    background: rgba(var(--v-theme-error), 0.12);
+    color: rgb(var(--v-theme-error));
+}
+
+.content-badge--primary {
+    background: rgba(var(--v-theme-primary), 0.12);
+    color: rgb(var(--v-theme-primary));
+}
+
+.content-badge--success {
+    background: rgba(var(--v-theme-success), 0.12);
+    color: rgb(var(--v-theme-success));
+}
+
+.content-card__divider {
+    border: none;
+    border-top: 1px solid rgba(var(--v-border-color), 0.12);
+    margin: 0;
+}
+
+.content-card__body {
     flex: 1;
     overflow-y: auto;
     max-height: 480px;
+}
+
+.content-card__body--padded {
+    padding: 16px;
+}
+
+.mb-field {
+    margin-bottom: 16px;
+}
+
+/* View all button */
+.view-all-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 4px;
+    color: rgba(var(--v-theme-on-surface), 0.6);
+    font-size: 0.75rem;
+    font-family: inherit;
+    margin-left: auto;
+    text-decoration: none;
+    transition: color 0.15s;
+}
+
+.view-all-btn:hover {
+    color: rgb(var(--v-theme-primary));
+}
+
+/* Lists section */
+.lists-section {
+    width: 100%;
+}
+
+.lists-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+}
+
+.list-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(var(--v-border-color), 0.06);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.list-card:hover {
+    background: rgba(var(--v-border-color), 0.12);
+}
+
+.list-card__icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.list-card__name {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 </style>

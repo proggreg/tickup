@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Checkbox } from '@vuetify/v0';
 import AppDeleteButton from '../App/DeleteButton.vue';
 import type { Column, GroupItem, TableItem } from '../../types/table-item.types';
 import ListStatus from './Status.vue';
@@ -40,43 +41,37 @@ function formatDate(date: Date) {
                 <td
                     v-if="column.key === 'name'"
                     colspan="6"
-                    class="text-h6"
+                    class="name-cell"
                 >
-                    <v-text
-                        class="text-h6 text-truncate"
+                    <span
+                        class="cell-text"
                         data-testid="todo-title"
-                        style="max-width: 250px; display: block;"
-                        lines="1"
                     >
                         {{ item.columns[column.key] }}
-                    </v-text>
+                    </span>
                 </td>
                 <td
                     v-else-if="column.key === 'dueDate' && !xs"
                     colspan="2"
-                    class="text-h6"
+                    class="date-cell"
                 >
-                    <v-text
-                        class="text-h6 text-truncate"
-                        style="max-width: 120px; display: block;"
-                        lines="1"
-                    >
-                        {{ formatDate(item.columns[column.key]) }}
-                    </v-text>
+                    <span class="cell-text">{{ formatDate(item.columns[column.key]) }}</span>
                 </td>
                 <td
                     v-else-if="column.key === 'actions' && !xs"
                     colspan="4"
-                    class="text-h6"
+                    class="actions-cell"
                 >
-                    <div class="d-flex justify-end">
-                        <v-checkbox
+                    <div class="actions-cell__inner">
+                        <Checkbox.Root
                             v-model="item.raw.selected"
-                            size="small"
-                            density="compact"
-                            hide-details
+                            class="row-checkbox"
                             @click.stop
-                        />
+                        >
+                            <Checkbox.Indicator class="row-checkbox__indicator">
+                                <i class="mdi mdi-check" />
+                            </Checkbox.Indicator>
+                        </Checkbox.Root>
                         <AppDeleteButton :todo="item.raw" />
                     </div>
                 </td>
@@ -87,9 +82,72 @@ function formatDate(date: Date) {
 
 <style scoped>
 .table-row {
-  cursor: pointer;
+    cursor: pointer;
 }
+
+.table-row:hover {
+    background: rgba(var(--v-border-color), 0.06);
+}
+
 .status-cell {
-  width: 10px;
+    width: 10px;
+}
+
+.name-cell {
+    font-size: 1rem;
+}
+
+.date-cell {
+    font-size: 1rem;
+}
+
+.cell-text {
+    font-size: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    max-width: 250px;
+}
+
+.date-cell .cell-text {
+    max-width: 120px;
+}
+
+.actions-cell {
+    font-size: 1rem;
+}
+
+.actions-cell__inner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+}
+
+.row-checkbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(var(--v-border-color), 0.4);
+    border-radius: 3px;
+    cursor: pointer;
+    background: transparent;
+    flex-shrink: 0;
+    transition: border-color 0.15s;
+}
+
+.row-checkbox:hover {
+    border-color: rgb(var(--v-theme-primary));
+}
+
+.row-checkbox__indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(var(--v-theme-primary));
+    font-size: 11px;
 }
 </style>

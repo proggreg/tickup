@@ -3,24 +3,20 @@ definePageMeta({ layout: 'chat' });
 </script>
 
 <template>
-    <v-row
-        class="fill-height pa-6"
-        align="end"
-        justify="center"
-    >
-        <v-col>
-            <!-- <Chat /> -->
-        </v-col>
-    </v-row>
+    <div class="chat-page">
+        <!-- <Chat /> -->
+    </div>
 </template>
 
 <style scoped>
 .chat-page {
     width: 100%;
-    height: calc(100dvh - var(--v-layout-top) - var(--v-layout-bottom));
+    height: calc(100dvh - 64px);
     padding: 24px;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
     box-sizing: border-box;
     overflow: hidden;
 }

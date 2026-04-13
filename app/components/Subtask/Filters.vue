@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button, Tooltip } from '@vuetify/v0';
+
 const props = defineProps<{
     filter: 'all' | 'active';
     sortBy: 'none' | 'priority';
@@ -28,59 +30,136 @@ function toggleExpanded() {
 <template>
     <div
         v-if="hasSubtasks"
-        class="d-flex align-center"
+        class="filters"
     >
-        <v-tooltip location="bottom">
-            <template #activator="{ props: tooltipProps }">
-                <v-btn
-                    v-bind="tooltipProps"
-                    :icon="sortBy === 'priority' ? 'mdi-sort-variant' : 'mdi-sort-variant'"
-                    :color="sortBy === 'priority' ? 'primary' : 'grey-darken-1'"
-                    variant="tonal"
-                    size="x-small"
-                    class="mx-2"
+        <Tooltip.Root>
+            <Tooltip.Activator>
+                <Button.Root
+                    class="icon-btn"
+                    :class="sortBy === 'priority' ? 'icon-btn--active' : ''"
                     data-testid="subtasks-sort-button"
                     @click.stop="toggleSort"
-                />
-            </template>
-            <span>{{ sortBy === 'priority' ? 'Sorted by priority (click to unsort)' : 'Click to sort by priority' }}</span>
-        </v-tooltip>
+                >
+                    <Button.Icon>
+                        <i class="mdi mdi-sort-variant" />
+                    </Button.Icon>
+                </Button.Root>
+            </Tooltip.Activator>
+            <Tooltip.Content class="tooltip">
+                {{ sortBy === 'priority' ? 'Sorted by priority (click to unsort)' : 'Click to sort by priority' }}
+            </Tooltip.Content>
+        </Tooltip.Root>
 
-        <v-spacer />
+        <div class="spacer" />
 
         <div
-            class="d-flex align-center"
+            class="filter-group"
             data-testid="subtasks-filter"
         >
-            <v-btn
-                :variant="filter === 'all' ? 'tonal' : 'outlined'"
-                :color="filter === 'all' ? 'primary' : undefined"
-                size="small"
+            <Button.Root
+                class="filter-btn"
+                :class="filter === 'all' ? 'filter-btn--active' : ''"
                 data-testid="filter-all"
-                class="px-3"
                 @click.stop="setFilter('all')"
             >
-                All
-            </v-btn>
-            <v-btn
-                :variant="filter === 'active' ? 'tonal' : 'outlined'"
-                :color="filter === 'active' ? 'primary' : undefined"
-                size="small"
+                <Button.Content>All</Button.Content>
+            </Button.Root>
+            <Button.Root
+                class="filter-btn"
+                :class="filter === 'active' ? 'filter-btn--active' : ''"
                 data-testid="filter-active"
-                class="px-3 ml-2"
                 @click.stop="setFilter('active')"
             >
-                Active
-            </v-btn>
+                <Button.Content>Active</Button.Content>
+            </Button.Root>
         </div>
 
-        <v-btn
-            :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-            variant="text"
-            size="small"
-            class="ml-2"
+        <Button.Root
+            class="icon-btn"
+            :aria-label="expanded ? 'Collapse subtasks' : 'Expand subtasks'"
             data-testid="subtasks-toggle"
             @click.stop="toggleExpanded"
-        />
+        >
+            <Button.Icon>
+                <i :class="expanded ? 'mdi mdi-chevron-up' : 'mdi mdi-chevron-down'" />
+            </Button.Icon>
+        </Button.Root>
     </div>
 </template>
+
+<style scoped>
+.filters {
+    display: flex;
+    align-items: center;
+}
+
+.spacer {
+    flex: 1;
+}
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    color: inherit;
+    padding: 0;
+    margin: 0 4px;
+}
+
+.icon-btn:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.icon-btn--active .mdi {
+    color: rgb(var(--v-theme-primary));
+}
+
+.icon-btn .mdi {
+    font-size: 16px;
+}
+
+.filter-group {
+    display: flex;
+    gap: 4px;
+}
+
+.filter-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    border: 1px solid rgba(var(--v-border-color), 0.24);
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: inherit;
+}
+
+.filter-btn:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.filter-btn--active {
+    background: rgba(var(--v-theme-primary), 0.12);
+    border-color: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-primary));
+}
+
+.tooltip {
+    background: rgb(var(--v-theme-on-surface));
+    color: rgb(var(--v-theme-surface));
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    pointer-events: none;
+}
+</style>

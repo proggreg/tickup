@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import { Button } from '@vuetify/v0';
+
 const store = useListsStore();
 const rename = ref(true);
 const router = useRoute();
-const listNameRef = ref(null);
+const listNameRef = ref<HTMLInputElement | null>(null);
 const listName = computed(() => {
     return store?.currentList?.name || 'Today';
 });
-;
+
 const imageGenerating = ref(false);
 
 watch(rename, (newVal: boolean) => {
@@ -74,102 +76,158 @@ function removeImage() {
 </script>
 
 <template>
-    <v-col
-        cols="12"
-        class="pt-0"
-    >
-        <v-card
-            rounded="0"
-            height="100%"
-            :image="store.currentList.image"
-            class="pa-2"
-            elevation="0"
+    <div class="list-header">
+        <div
+            class="list-header__card"
+            :style="store.currentList.image ? `background-image: url('${store.currentList.image}')` : ''"
         >
-            <div :class="[store.currentList.image ? 'tint ma-n4 py-4 px-4' : '']">
-                <v-row class="text-truncate">
-                    <v-text-field
+            <div :class="['list-header__inner', store.currentList.image ? 'list-header__inner--tint' : '']">
+                <div class="list-header__title-row">
+                    <input
                         ref="listNameRef"
                         v-model="store.currentList.name"
-                        class="px-2 text-truncate fade-text"
-                        validate-on="blur eager"
-                        :rules="[validateListName]"
+                        class="list-name-input"
+                        :class="store.currentList.image ? 'list-name-input--light' : ''"
                         placeholder="My List"
-                        variant="plain"
                         :readonly="!rename"
-                        auto
-                        width="auto"
                         @click="rename = !rename"
                         @keyup.enter="store.currentList.name ? rename = false : null"
                         @blur="store.currentList.name ? rename = false : null"
                     />
-                    <div
-                        class="pt-2"
-                        style="width: 14px;"
-                    >
-                        <ListMenu :list-id="router.params.id as string" />
-                    </div>
-                </v-row>
+                    <ListMenu :list-id="router.params.id as string" />
+                </div>
 
-                <v-card-actions
-                    class="px-2"
-                    :class="['text-capitalize', store.currentList.image ? 'text-white' : '']"
+                <div
+                    class="list-header__actions"
+                    :class="store.currentList.image ? 'list-header__actions--light' : ''"
                 >
-                    <v-btn
-                        size="small"
-                        class="mr-2"
+                    <Button.Root
+                        class="icon-btn"
                         :disabled="imageGenerating"
+                        aria-label="Generate image"
                         @click="generateImage"
                     >
-                        <v-icon start>
-                            mdi-creation
-                        </v-icon><v-icon start>
-                            mdi-image
-                        </v-icon>
-                    </v-btn>
+                        <Button.Icon>
+                            <i class="mdi mdi-creation" />
+                        </Button.Icon>
+                        <Button.Icon>
+                            <i class="mdi mdi-image" />
+                        </Button.Icon>
+                    </Button.Root>
 
-                    <v-btn
+                    <Button.Root
                         v-if="store.currentList.image"
-                        class=""
-                        icon="mdi-trash-can"
-                        size="small"
+                        class="icon-btn"
+                        aria-label="Remove image"
                         @click="removeImage"
-                    />
-                </v-card-actions>
+                    >
+                        <Button.Icon>
+                            <i class="mdi mdi-trash-can" />
+                        </Button.Icon>
+                    </Button.Root>
+                </div>
             </div>
-        </v-card>
-    </v-col>
+        </div>
+    </div>
 </template>
 
 <style scoped>
-  .v-text-field :deep(.v-field__input) {
-    @media (min-width: 600px) {
-      font-size: 2.5rem;
-    }
-
-    font-size: 1.75rem;
-    text-transform: capitalize;
-    font-weight: bold;
-  }
-
-  .tint {
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 0.5rem;
-    border-radius: 4px;
-  }
-
-.fade-text {
-  position: relative;
-  overflow: hidden;
-  white-space: nowrap;
+.list-header {
+    width: 100%;
+    padding-top: 0;
 }
 
-.fade-text::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 30%; /* adjust fade width */
-  height: 100%;
-  background: linear-gradient(to right, transparent, rgb(var(--v-theme-surface)));
+.list-header__card {
+    background-size: cover;
+    background-position: center;
+    border-radius: 0;
+    padding: 8px;
+}
+
+.list-header__inner {
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.list-header__inner--tint {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.list-header__title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.list-name-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1.75rem;
+    font-weight: bold;
+    text-transform: capitalize;
+    color: inherit;
+    font-family: inherit;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    padding: 4px 0;
+}
+
+@media (min-width: 600px) {
+    .list-name-input {
+        font-size: 2.5rem;
+    }
+}
+
+.list-name-input--light {
+    color: #fff;
+}
+
+.list-name-input[readonly] {
+    cursor: pointer;
+}
+
+.list-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 0;
+}
+
+.list-header__actions--light .icon-btn {
+    color: #fff;
+}
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 10px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    color: inherit;
+    font-size: 0.8125rem;
+    transition: background 0.15s;
+}
+
+.icon-btn:hover:not(:disabled) {
+    background: rgba(var(--v-border-color), 0.1);
+}
+
+.icon-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.icon-btn .mdi {
+    font-size: 18px;
 }
 </style>

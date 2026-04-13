@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button } from '@vuetify/v0';
+
 const colorMode = useColorMode();
 const route = useRoute();
 const dialog = useDialog();
@@ -23,46 +25,71 @@ const showFab = computed(() => {
 
 <template>
     <ColorScheme>
-        <v-theme-provider
-            with-background
-            :theme="colorMode.preference"
+        <div
+            class="app-root"
+            :data-theme="colorMode.preference"
         >
-            <v-app>
-                <v-main>
-                    <v-container
-                        class="pa-0"
-                        fluid
-                    >
-                        <NuxtPage />
-                        <AppNavMobile />
-                    </v-container>
-                </v-main>
-                <v-btn
-                    v-if="showFab"
-                    class="new-todo-fab"
-                    rounded="pill"
-                    color="primary"
-                    prepend-icon="mdi-plus"
-                    text="New"
-                    @click="addEventHandler"
-                />
-            </v-app>
-        </v-theme-provider>
+            <div class="app-content">
+                <NuxtPage />
+                <AppNavMobile />
+            </div>
+            <Button.Root
+                v-if="showFab"
+                class="fab"
+                @click="addEventHandler"
+            >
+                <i class="mdi mdi-plus fab__icon" />
+                <span class="fab__label">New</span>
+            </Button.Root>
+        </div>
     </ColorScheme>
 </template>
 
 <style scoped>
-.new-todo-fab {
+.app-root {
+    min-height: 100dvh;
+    background: rgb(var(--v-theme-background));
+    color: rgb(var(--v-theme-on-background));
+    position: relative;
+}
+
+.app-content {
+    min-height: 100dvh;
+    box-sizing: border-box;
+}
+
+.fab {
     position: fixed;
     bottom: 80px;
     right: 20px;
-    font-size: 1rem !important;
-    font-weight: 600 !important;
-    letter-spacing: 0 !important;
-    text-transform: none !important;
-    padding: 0 24px !important;
-    height: 48px !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25) !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 24px;
+    height: 48px;
+    border: none;
+    border-radius: 24px;
+    background: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-on-primary));
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
     z-index: 10;
+    transition: background 0.15s;
+}
+
+.fab:hover {
+    background: rgba(var(--v-theme-primary), 0.9);
+}
+
+.fab__icon {
+    font-size: 20px;
+}
+
+.fab__label {
+    letter-spacing: 0;
+    text-transform: none;
 }
 </style>

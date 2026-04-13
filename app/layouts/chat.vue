@@ -4,24 +4,37 @@ const colorMode = useColorMode();
 
 <template>
     <ColorScheme>
-        <v-theme-provider
-            with-background
-            :theme="colorMode.preference"
-            class="overflow-auto"
+        <div
+            class="app-root"
+            :data-theme="colorMode.preference"
         >
-            <v-app full-height>
-                <AppToolbar />
-                <AppNav />
-                <v-main>
-                    <v-container
-                        fluid
-                        class="pa-0 fill-height"
-                    >
-                        <AppSettings />
-                        <NuxtPage />
-                    </v-container>
-                </v-main>
-            </v-app>
-        </v-theme-provider>
+            <AppToolbar />
+            <AppNav />
+            <main class="app-main">
+                <AppSettings />
+                <NuxtPage />
+            </main>
+        </div>
     </ColorScheme>
 </template>
+
+<style scoped>
+.app-root {
+    min-height: 100dvh;
+    background: rgb(var(--v-theme-background));
+    color: rgb(var(--v-theme-on-background));
+}
+
+.app-main {
+    padding-top: 64px;
+    padding-left: 256px;
+    min-height: 100dvh;
+    box-sizing: border-box;
+}
+
+@media (max-width: 959px) {
+    .app-main {
+        padding-left: 56px;
+    }
+}
+</style>

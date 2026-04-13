@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from '@vuetify/v0';
 import type { UIMessage } from 'ai';
 import { isToolUIPart } from 'ai';
 
@@ -11,11 +12,11 @@ const props = withDefaults(defineProps<Props>(), {
     loading: false,
 });
 
-const theme = useTheme();
+const colorMode = useColorMode();
 
 const scrollContainer = ref<HTMLElement | null>(null);
 const isAtBottom = ref(true);
-const SCROLL_THRESHOLD = 60; // px from bottom to consider "at bottom"
+const SCROLL_THRESHOLD = 60;
 
 function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
     const el = scrollContainer.value;
@@ -30,7 +31,6 @@ function onScroll() {
     isAtBottom.value = distanceFromBottom <= SCROLL_THRESHOLD;
 }
 
-// Auto-scroll when messages change, but only if already at the bottom
 watch(
     () => props.messages,
     () => {
@@ -41,13 +41,11 @@ watch(
     { deep: true },
 );
 
-// Scroll to bottom instantly on first load
 onMounted(() => scrollToBottom('instant'));
 </script>
 
 <template>
     <div class="chat-message-list-wrapper">
-        <!-- Scrollable message area -->
         <div
             ref="scrollContainer"
             class="chat-message-list"
@@ -57,25 +55,22 @@ onMounted(() => scrollToBottom('instant'));
             <div
                 v-for="(m, index) in messages"
                 :key="m.id ?? index"
-                class="d-flex flex-column chat-message"
-                :class="m.role === 'user' ? 'align-self-end align-items-end' : 'align-self-start align-items-start'"
+                class="chat-message"
+                :class="m.role === 'user' ? 'chat-message--user' : 'chat-message--assistant'"
                 data-testid="chat-message"
             >
                 <div
                     v-for="(part, partIndex) in m.parts"
                     :key="`${m.id}-${part.type}-${partIndex}`"
                 >
-                    <v-card
+                    <div
                         v-if="part.type === 'text'"
-                        :color="m.role === 'user' ? 'primary' : (theme?.current?.value?.dark ? 'grey-darken-3' : 'surface-variant')"
-                        variant="flat"
-                        rounded="xl"
-                        class="px-3 py-2 text-body-2"
-                        style="white-space: pre-wrap; word-break: break-word; line-height: 1.5;"
+                        class="chat-bubble"
+                        :class="m.role === 'user' ? 'chat-bubble--user' : 'chat-bubble--assistant'"
                         data-testid="chat-message-text"
                     >
                         {{ part.text }}
-                    </v-card>
+                    </div>
 
                     <ChatToolCall
                         v-else-if="isToolUIPart(part)"
@@ -84,37 +79,33 @@ onMounted(() => scrollToBottom('instant'));
                 </div>
             </div>
 
-            <!-- Typing indicator -->
             <div
                 v-if="loading"
-                class="d-flex flex-column align-self-start align-items-start chat-message"
+                class="chat-message chat-message--assistant"
                 data-testid="chat-message-loading"
             >
-                <v-progress-linear
-                    indeterminate
-                    color="primary"
-                    height="2"
-                    class="mt-1"
-                    style="max-width: 80px;"
-                />
+                <div class="chat-typing">
+                    <span />
+                    <span />
+                    <span />
+                </div>
             </div>
 
-            <!-- Bottom anchor -->
             <div class="chat-message-list__anchor" />
         </div>
 
-        <!-- Scroll to bottom button -->
         <Transition name="fade">
-            <v-btn
+            <Button.Root
                 v-if="!isAtBottom"
                 class="chat-scroll-btn"
-                color="primary"
-                icon="mdi-chevron-down"
-                size="small"
-                elevation="4"
+                aria-label="Scroll to bottom"
                 data-testid="chat-scroll-to-bottom"
                 @click="scrollToBottom()"
-            />
+            >
+                <Button.Icon>
+                    <i class="mdi mdi-chevron-down" />
+                </Button.Icon>
+            </Button.Root>
         </Transition>
     </div>
 </template>
@@ -130,7 +121,7 @@ onMounted(() => scrollToBottom('instant'));
     height: 100%;
     overflow-y: auto;
     padding: 16px;
-    padding-bottom: 96px; /* keep last messages visible above the fixed input bar */
+    padding-bottom: 96px;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -139,6 +130,65 @@ onMounted(() => scrollToBottom('instant'));
 
 .chat-message {
     max-width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-message--user {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.chat-message--assistant {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.chat-bubble {
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+}
+
+.chat-bubble--user {
+    background: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-on-primary, 255, 255, 255));
+    border-radius: 12px 12px 2px 12px;
+}
+
+.chat-bubble--assistant {
+    background: rgba(var(--v-border-color), 0.1);
+    color: rgb(var(--v-theme-on-surface));
+    border-radius: 12px 12px 12px 2px;
+}
+
+.chat-typing {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: rgba(var(--v-border-color), 0.1);
+    border-radius: 12px 12px 12px 2px;
+}
+
+.chat-typing span {
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(var(--v-theme-on-surface), 0.4);
+    animation: typing 1.2s ease-in-out infinite;
+}
+
+.chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+.chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+    0%, 60%, 100% { opacity: 0.4; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(-4px); }
 }
 
 .chat-message-list__anchor {
@@ -151,6 +201,25 @@ onMounted(() => scrollToBottom('instant'));
     bottom: 12px;
     left: 50%;
     transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-on-primary, 255, 255, 255));
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.chat-scroll-btn:hover {
+    opacity: 0.9;
+}
+
+.chat-scroll-btn .mdi {
+    font-size: 18px;
 }
 
 .fade-enter-active,

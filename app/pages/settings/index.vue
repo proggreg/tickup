@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button, Input, Popover } from '@vuetify/v0';
+
 definePageMeta({
     layout: 'mobile',
 });
@@ -82,7 +84,6 @@ async function signOut() {
 }
 
 onMounted(async () => {
-    // Handle pending GitHub connection (redirected from callback when server-side auth wasn't available)
     if (route.query.github === 'pending' && route.query.installation_id) {
         githubLoading.value = true;
         try {
@@ -110,214 +111,462 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="d-flex flex-column h-100 pb-20">
-        <div class="d-flex align-center ga-3 px-5 pt-8 pb-4 flex-shrink-0">
-            <span class="text-h5 font-weight-bold">Settings</span>
+    <div class="settings-page">
+        <div class="settings-page__heading">
+            <span class="settings-page__title">Settings</span>
         </div>
 
-        <div
-            class="flex-grow-1"
-            style="overflow-y: auto;"
-        >
+        <div class="settings-page__body">
             <!-- Statuses -->
-            <div class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-5 mb-2">
-                Statuses
-            </div>
+            <div class="section-label">Statuses</div>
 
             <div
                 v-if="store.statuses.length === 0"
-                class="d-flex flex-column align-center justify-center pa-8 text-center mb-4"
+                class="empty-state"
             >
-                <v-icon
-                    icon="mdi-tag-outline"
-                    size="48"
-                    class="text-disabled mb-3"
-                />
-                <p class="text-body-2 text-disabled">
-                    No statuses yet
-                </p>
+                <i class="mdi mdi-tag-outline empty-state__icon" />
+                <p class="empty-state__text">No statuses yet</p>
             </div>
 
-            <v-list
+            <ul
                 v-else
-                class="px-3 bg-transparent mb-2"
+                class="status-list"
             >
-                <v-list-item
+                <li
                     v-for="status in store.statuses"
                     :key="status.name"
-                    rounded="xl"
-                    class="mb-2"
-                    base-color="surface-variant"
-                    variant="tonal"
-                    min-height="62"
+                    class="status-item"
                 >
-                    <template #prepend>
-                        <v-menu :close-on-content-click="false">
-                            <template #activator="{ props }">
-                                <v-btn
-                                    v-bind="props"
-                                    min-width="28"
-                                    size="small"
-                                    :color="status.color"
-                                    class="mr-2"
-                                    rounded="lg"
-                                />
-                            </template>
-                            <v-color-picker
-                                v-model="status.color"
-                                class="ma-4"
-                                show-swatches
+                    <Popover.Root :close-on-content-click="false">
+                        <Popover.Activator>
+                            <button
+                                class="color-swatch"
+                                :style="{ background: status.color }"
+                                aria-label="Pick color"
                             />
-                        </v-menu>
-                    </template>
+                        </Popover.Activator>
+                        <Popover.Content>
+                            <div class="color-picker-popup">
+                                <input
+                                    v-model="status.color"
+                                    type="color"
+                                    class="color-native-picker"
+                                >
+                            </div>
+                        </Popover.Content>
+                    </Popover.Root>
 
-                    <v-text-field
+                    <Input.Root
                         v-if="status.Edit"
                         v-model="status.name"
-                        density="compact"
-                        variant="plain"
-                        autofocus
-                        hide-details
-                        class="font-weight-bold"
-                    />
-                    <v-list-item-title
-                        v-else
-                        class="font-weight-bold"
                     >
-                        {{ status.name }}
-                    </v-list-item-title>
+                        <Input.Control
+                            class="status-name-input"
+                            autofocus
+                        />
+                    </Input.Root>
+                    <span
+                        v-else
+                        class="status-name"
+                    >{{ status.name }}</span>
 
-                    <template #append>
-                        <v-menu>
-                            <template #activator="{ props }">
-                                <v-btn
-                                    v-bind="props"
-                                    icon="mdi-dots-vertical"
-                                    variant="text"
-                                    size="small"
+                    <div class="status-item__actions">
+                        <Popover.Root>
+                            <Popover.Activator>
+                                <Button.Root
+                                    class="icon-btn"
                                     @click.stop
-                                />
-                            </template>
-                            <v-list>
-                                <v-list-item
-                                    v-for="(option, index) in options"
-                                    :key="index"
-                                    :value="option.name"
-                                    :append-icon="option.icon"
-                                    :class="option.destructive ? 'text-red' : ''"
-                                    @click.passive="option.handler(status)"
                                 >
-                                    <v-list-item-title class="text-body-2">
+                                    <Button.Icon>
+                                        <i class="mdi mdi-dots-vertical" />
+                                    </Button.Icon>
+                                </Button.Root>
+                            </Popover.Activator>
+                            <Popover.Content>
+                                <ul class="menu-list">
+                                    <li
+                                        v-for="(option, index) in options"
+                                        :key="index"
+                                        class="menu-item"
+                                        :class="{ 'menu-item--danger': option.destructive }"
+                                        @click="option.handler(status)"
+                                    >
+                                        <i :class="`mdi ${option.icon}`" />
                                         {{ option.name }}
-                                    </v-list-item-title>
-                                </v-list-item>
-                            </v-list>
-                        </v-menu>
-                    </template>
-                </v-list-item>
-            </v-list>
+                                    </li>
+                                </ul>
+                            </Popover.Content>
+                        </Popover.Root>
+                    </div>
+                </li>
+            </ul>
 
-            <div class="d-flex ga-2 px-4 mb-6">
-                <v-btn
-                    variant="tonal"
-                    prepend-icon="mdi-plus"
-                    rounded="xl"
+            <div class="status-actions">
+                <Button.Root
+                    class="btn"
                     @click="addStatus"
                 >
+                    <Button.Icon>
+                        <i class="mdi mdi-plus" />
+                    </Button.Icon>
                     Add Status
-                </v-btn>
-                <v-btn
-                    color="primary"
-                    variant="tonal"
-                    rounded="xl"
+                </Button.Root>
+                <Button.Root
+                    class="btn btn--primary"
                     @click="save"
                 >
                     Save
-                </v-btn>
+                </Button.Root>
             </div>
 
             <!-- Integrations -->
-            <div class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-5 mb-2">
-                Integrations
-            </div>
+            <div class="section-label">Integrations</div>
 
-            <v-list
-                class="px-3 bg-transparent mb-6"
-            >
-                <v-list-item
-                    to="/settings/github"
-                    rounded="xl"
-                    base-color="surface-variant"
-                    variant="tonal"
-                    min-height="62"
-                    class="mb-2"
-                >
-                    <template #prepend>
-                        <v-icon
-                            icon="mdi-github"
-                            size="18"
-                            class="mr-3"
-                        />
-                    </template>
-
-                    <v-list-item-title class="font-weight-bold">
-                        GitHub Integration
-                    </v-list-item-title>
-                    <v-list-item-subtitle
-                        v-if="githubLoading"
-                        class="text-caption"
+            <ul class="integration-list">
+                <li class="integration-item">
+                    <NuxtLink
+                        to="/settings/github"
+                        class="integration-link"
                     >
-                        Checking...
-                    </v-list-item-subtitle>
-                    <v-list-item-subtitle
-                        v-else-if="githubConnected"
-                        class="text-caption text-success"
-                    >
-                        Connected
-                    </v-list-item-subtitle>
-                    <v-list-item-subtitle
-                        v-else
-                        class="text-caption text-medium-emphasis"
-                    >
-                        Not connected
-                    </v-list-item-subtitle>
-
-                    <template #append>
-                        <v-icon
-                            icon="mdi-chevron-right"
-                            size="18"
-                        />
-                    </template>
-                </v-list-item>
-            </v-list>
+                        <i class="mdi mdi-github integration-link__icon" />
+                        <div class="integration-link__body">
+                            <span class="integration-link__title">GitHub Integration</span>
+                            <span
+                                v-if="githubLoading"
+                                class="integration-link__status"
+                            >Checking...</span>
+                            <span
+                                v-else-if="githubConnected"
+                                class="integration-link__status integration-link__status--success"
+                            >Connected</span>
+                            <span
+                                v-else
+                                class="integration-link__status"
+                            >Not connected</span>
+                        </div>
+                        <i class="mdi mdi-chevron-right integration-link__chevron" />
+                    </NuxtLink>
+                </li>
+            </ul>
 
             <!-- Account -->
-            <div class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-5 mb-2">
-                Account
-            </div>
+            <div class="section-label">Account</div>
 
-            <v-list
-                class="px-3 bg-transparent"
-            >
-                <v-list-item
-                    rounded="xl"
-                    base-color="surface-variant"
-                    variant="tonal"
-                    min-height="62"
-                    @click="signOut"
-                >
-                    <template #prepend>
-                        <v-icon
-                            icon="mdi-logout"
-                            size="18"
-                            class="mr-3"
-                        />
-                    </template>
-                    <v-list-item-title class="font-weight-bold text-error">
-                        Sign Out
-                    </v-list-item-title>
-                </v-list-item>
-            </v-list>
+            <ul class="integration-list">
+                <li class="integration-item">
+                    <button
+                        class="integration-link integration-link--btn"
+                        @click="signOut"
+                    >
+                        <i class="mdi mdi-logout integration-link__icon" />
+                        <span class="integration-link__title integration-link__title--danger">Sign Out</span>
+                    </button>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
+
+<style scoped>
+.settings-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-bottom: 80px;
+}
+
+.settings-page__heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 32px 20px 16px;
+    flex-shrink: 0;
+}
+
+.settings-page__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.settings-page__body {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.section-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(var(--v-theme-on-surface), 0.5);
+    padding: 0 20px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.empty-state__icon {
+    font-size: 48px;
+    color: rgba(var(--v-theme-on-surface), 0.3);
+    margin-bottom: 8px;
+}
+
+.empty-state__text {
+    font-size: 0.875rem;
+    color: rgba(var(--v-theme-on-surface), 0.4);
+    margin: 0;
+}
+
+.status-list {
+    list-style: none;
+    margin: 0;
+    padding: 0 12px;
+    margin-bottom: 8px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(var(--v-border-color), 0.06);
+    margin-bottom: 8px;
+    min-height: 62px;
+}
+
+.color-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 2px solid rgba(var(--v-border-color), 0.2);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+
+.color-picker-popup {
+    padding: 12px;
+    background: rgb(var(--v-theme-surface));
+    border: 1px solid rgba(var(--v-border-color), 0.12);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.color-native-picker {
+    width: 200px;
+    height: 160px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+}
+
+.status-name {
+    flex: 1;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.status-name-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: inherit;
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(var(--v-border-color), 0.38);
+}
+
+.status-item__actions {
+    flex-shrink: 0;
+}
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    color: inherit;
+    padding: 0;
+    transition: background 0.1s;
+}
+
+.icon-btn:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.icon-btn .mdi {
+    font-size: 18px;
+}
+
+.menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+    min-width: 120px;
+    background: rgb(var(--v-theme-surface));
+    border: 1px solid rgba(var(--v-border-color), 0.12);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    border-radius: 4px;
+    transition: background 0.1s;
+}
+
+.menu-item:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.menu-item--danger {
+    color: rgb(var(--v-theme-error));
+}
+
+.menu-item--danger:hover {
+    background: rgba(var(--v-theme-error), 0.08);
+}
+
+.status-actions {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px 24px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    background: rgba(var(--v-border-color), 0.1);
+    color: inherit;
+    transition: background 0.15s;
+}
+
+.btn:hover {
+    background: rgba(var(--v-border-color), 0.18);
+}
+
+.btn--primary {
+    background: rgba(var(--v-theme-primary), 0.12);
+    color: rgb(var(--v-theme-primary));
+}
+
+.btn--primary:hover {
+    background: rgba(var(--v-theme-primary), 0.2);
+}
+
+.btn .mdi {
+    font-size: 18px;
+}
+
+/* Integration list */
+.integration-list {
+    list-style: none;
+    margin: 0;
+    padding: 0 12px;
+    margin-bottom: 24px;
+}
+
+.integration-item {
+    margin-bottom: 8px;
+}
+
+.integration-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    background: rgba(var(--v-border-color), 0.06);
+    min-height: 62px;
+    cursor: pointer;
+    transition: background 0.1s;
+    width: 100%;
+}
+
+.integration-link--btn {
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    text-align: left;
+}
+
+.integration-link:hover {
+    background: rgba(var(--v-border-color), 0.1);
+}
+
+.integration-link__icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.integration-link__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.integration-link__title {
+    font-weight: 700;
+    font-size: 0.9375rem;
+}
+
+.integration-link__title--danger {
+    color: rgb(var(--v-theme-error));
+}
+
+.integration-link__status {
+    font-size: 0.75rem;
+    color: rgba(var(--v-theme-on-surface), 0.5);
+}
+
+.integration-link__status--success {
+    color: rgb(var(--v-theme-success));
+}
+
+.integration-link__chevron {
+    font-size: 18px;
+    opacity: 0.5;
+}
+</style>

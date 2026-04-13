@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button } from '@vuetify/v0';
+
 const route = useRoute();
 const listsStore = useListsStore();
 const parentTodo = ref<Todo | null>(null);
@@ -12,10 +14,8 @@ async function loadTodo(id: string | string[]) {
         const todo = await $fetch<Todo>(`/api/todo/${id}`);
         listsStore.setCurrentTodo(todo);
 
-        // Explicitly fetch subtasks for this todo
         await listsStore.fetchSubtasks(id as string);
 
-        // If this is a subtask, ensure we have the correct parent todo
         if (todo.parentId) {
             const needsNewParent = !parentTodo.value || parentTodo.value.id !== todo.parentId;
             if (needsNewParent) {
@@ -23,7 +23,6 @@ async function loadTodo(id: string | string[]) {
             }
         }
         else {
-            // No parent for this todo
             parentTodo.value = null;
         }
 
@@ -32,8 +31,6 @@ async function loadTodo(id: string | string[]) {
             listsStore.setCurrentList(list);
         }
 
-        // Only bump the transition key once everything for this todo is loaded,
-        // so the fade happens between fully-rendered states.
         transitionKey.value++;
     }
     finally {
@@ -53,54 +50,111 @@ watch(
 <template>
     <NuxtErrorBoundary>
         <template #error="{ error }">
-            <v-alert type="error">
+            <div class="error-alert">
+                <i class="mdi mdi-alert-circle error-alert__icon" />
                 {{ error }}
-            </v-alert>
+            </div>
         </template>
-        <v-col
-            cols="12"
-            style="height: 60px"
-        >
-            <v-btn
+        <div class="todo-page-nav">
+            <Button.Root
                 v-if="parentTodo"
+                class="back-btn"
                 data-testid="nav-back-parent"
                 :to="`/todo/${parentTodo.id}`"
             >
-                <template #prepend>
-                    <v-icon>mdi-arrow-left</v-icon>
-                </template>
+                <Button.Icon>
+                    <i class="mdi mdi-arrow-left" />
+                </Button.Icon>
                 {{ parentTodo.name }}
-            </v-btn>
-            <v-btn
+            </Button.Root>
+            <Button.Root
                 v-else-if="listsStore.currentTodo?.listId && listsStore.currentList?.id"
+                class="back-btn"
                 data-testid="nav-back-list"
                 :to="`/list/${listsStore.currentTodo.listId}`"
             >
-                <template #prepend>
-                    <v-icon>mdi-arrow-left</v-icon>
-                </template>
+                <Button.Icon>
+                    <i class="mdi mdi-arrow-left" />
+                </Button.Icon>
                 {{ listsStore.currentList.name }}
-            </v-btn>
-            <v-btn
+            </Button.Root>
+            <Button.Root
                 v-else-if="!isLoading"
+                class="back-btn"
                 data-testid="nav-back-home"
                 to="/"
             >
-                <template #prepend>
-                    <v-icon>mdi-arrow-left</v-icon>
-                </template>
+                <Button.Icon>
+                    <i class="mdi mdi-arrow-left" />
+                </Button.Icon>
                 Home
-            </v-btn>
-        </v-col>
-        <v-col>
+            </Button.Root>
+        </div>
+        <div class="todo-page-content">
             <Transition name="todo-fade">
                 <TodoDetail :key="transitionKey" />
             </Transition>
-        </v-col>
+        </div>
     </NuxtErrorBoundary>
 </template>
 
 <style scoped>
+.error-alert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: rgba(var(--v-theme-error), 0.1);
+    color: rgb(var(--v-theme-error));
+    font-size: 0.875rem;
+    margin: 16px;
+}
+
+.error-alert__icon {
+    font-size: 20px;
+}
+
+.todo-page-nav {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    color: inherit;
+    font-size: 0.9375rem;
+    font-family: inherit;
+    transition: background 0.1s;
+    text-decoration: none;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.back-btn:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.back-btn .mdi {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.todo-page-content {
+    padding: 0 8px;
+}
+
 .todo-fade-enter-active {
     transition: opacity 0.18s ease;
 }

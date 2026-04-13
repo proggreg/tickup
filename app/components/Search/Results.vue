@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button } from '@vuetify/v0';
+
 const store = useSearchStore();
 const props = withDefaults(defineProps<{ disableStatusButton?: boolean }>(), {
     disableStatusButton: false,
@@ -14,120 +16,93 @@ function formatDate(dateStr: string) {
 </script>
 
 <template>
-    <v-list
+    <ul
         v-if="store.loading"
-        class="px-3 bg-transparent"
+        class="results-list"
     >
-        <v-list-item
+        <li
             v-for="n in 5"
             :key="n"
-            rounded="xl"
-            class="mb-2"
-            base-color="surface-variant"
-            variant="tonal"
-            min-height="62"
+            class="skeleton-item"
         >
-            <template #prepend>
-                <div class="skeleton-circle mr-3" />
-            </template>
-            <div
-                class="skeleton-line mb-2"
-                style="width: 60%;"
-            />
-            <div
-                class="skeleton-line"
-                style="width: 35%;"
-            />
-        </v-list-item>
-    </v-list>
+            <div class="skeleton-circle" />
+            <div class="skeleton-body">
+                <div
+                    class="skeleton-line"
+                    style="width: 60%;"
+                />
+                <div
+                    class="skeleton-line"
+                    style="width: 35%;"
+                />
+            </div>
+        </li>
+    </ul>
 
     <div
         v-else-if="store.results.length === 0 && store.searchQuery"
-        class="d-flex flex-column align-center justify-center flex-grow-1 pa-8 text-center"
+        class="empty-state"
     >
-        <v-icon
-            icon="mdi-magnify-remove-outline"
-            size="56"
-            class="text-disabled mb-3"
-        />
-        <p class="text-body-1 font-weight-medium text-medium-emphasis mb-1">
-            No results found
-        </p>
-        <p class="text-body-2 text-disabled">
-            Try searching with different keywords
-        </p>
+        <i class="mdi mdi-magnify-remove-outline empty-state__icon" />
+        <p class="empty-state__title">No results found</p>
+        <p class="empty-state__subtitle">Try searching with different keywords</p>
     </div>
 
     <div
         v-else-if="store.results.length === 0"
-        class="d-flex flex-column align-center justify-center flex-grow-1 pa-8 text-center"
+        class="empty-state"
     >
-        <v-icon
-            icon="mdi-magnify"
-            size="56"
-            class="text-disabled mb-3"
-        />
-        <p class="text-body-1 font-weight-medium text-medium-emphasis mb-1">
-            Search your todos
-        </p>
-        <p class="text-body-2 text-disabled">
-            Type above to find anything
-        </p>
+        <i class="mdi mdi-magnify empty-state__icon" />
+        <p class="empty-state__title">Search your todos</p>
+        <p class="empty-state__subtitle">Type above to find anything</p>
     </div>
 
-    <v-list
+    <ul
         v-else
-        class="px-3 flex-grow-1 bg-transparent"
-        style="overflow-y: auto;"
+        class="results-list"
     >
-        <v-list-item
+        <li
             v-for="item in store.results"
             :key="item.id"
-            :to="`/todo/${item.id}`"
-            rounded="xl"
-            class="mb-2"
-            base-color="surface-variant"
-            variant="tonal"
-            min-height="62"
+            class="result-item"
         >
-            <template #prepend>
-                <div class="mr-3">
+            <NuxtLink
+                :to="`/todo/${item.id}`"
+                class="result-item__link"
+            >
+                <div class="result-item__status">
                     <ListStatus
                         :todo="item"
                         :disabled="props.disableStatusButton"
                     />
                 </div>
-            </template>
-
-            <v-list-item-title class="font-weight-bold">
-                {{ item.name }}
-            </v-list-item-title>
-
-            <v-list-item-subtitle class="d-flex align-center ga-2 mt-1">
-                <v-chip
-                    v-if="item.list"
-                    size="x-small"
-                    variant="tonal"
-                    label
+                <div class="result-item__body">
+                    <span class="result-item__name">{{ item.name }}</span>
+                    <div class="result-item__meta">
+                        <span
+                            v-if="item.list"
+                            class="result-item__badge"
+                        >{{ item.list.name }}</span>
+                        <span class="result-item__date">{{ formatDate(item.updatedAt) }}</span>
+                    </div>
+                </div>
+                <div
+                    v-if="!isMobile"
+                    class="result-item__action"
                 >
-                    {{ item.list.name }}
-                </v-chip>
-                <span class="text-caption text-disabled">{{ formatDate(item.updatedAt) }}</span>
-            </v-list-item-subtitle>
-
-            <template
-                v-if="!isMobile"
-                #append
-            >
-                <v-btn
-                    :to="`/todo/${item.id}`"
-                    icon="mdi-open-in-new"
-                    variant="text"
-                    size="small"
-                />
-            </template>
-        </v-list-item>
-    </v-list>
+                    <Button.Root
+                        :to="`/todo/${item.id}`"
+                        class="icon-btn"
+                        aria-label="Open todo"
+                    >
+                        <Button.Icon>
+                            <i class="mdi mdi-open-in-new" />
+                        </Button.Icon>
+                    </Button.Root>
+                </div>
+            </NuxtLink>
+        </li>
+    </ul>
 </template>
 
 <style scoped>
@@ -135,6 +110,25 @@ function formatDate(dateStr: string) {
     0% { opacity: 0.4; }
     50% { opacity: 0.8; }
     100% { opacity: 0.4; }
+}
+
+.results-list {
+    list-style: none;
+    margin: 0;
+    padding: 12px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.skeleton-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    background: rgba(var(--v-border-color), 0.06);
+    min-height: 62px;
 }
 
 .skeleton-circle {
@@ -147,6 +141,13 @@ function formatDate(dateStr: string) {
     flex-shrink: 0;
 }
 
+.skeleton-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
 .skeleton-line {
     height: 12px;
     border-radius: 6px;
@@ -157,5 +158,121 @@ function formatDate(dateStr: string) {
 
 .skeleton-line:nth-child(2) {
     animation-delay: 0.1s;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 32px;
+    text-align: center;
+}
+
+.empty-state__icon {
+    font-size: 56px;
+    color: rgba(var(--v-theme-on-surface), 0.3);
+    margin-bottom: 12px;
+}
+
+.empty-state__title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(var(--v-theme-on-surface), 0.6);
+    margin: 0 0 4px;
+}
+
+.empty-state__subtitle {
+    font-size: 0.875rem;
+    color: rgba(var(--v-theme-on-surface), 0.4);
+    margin: 0;
+}
+
+.result-item {
+    margin-bottom: 8px;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: background 0.1s;
+}
+
+.result-item:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.result-item__link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    text-decoration: none;
+    color: inherit;
+    min-height: 62px;
+}
+
+.result-item__status {
+    flex-shrink: 0;
+}
+
+.result-item__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.result-item__name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.result-item__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.result-item__badge {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    background: rgba(var(--v-border-color), 0.1);
+    color: rgba(var(--v-theme-on-surface), 0.7);
+}
+
+.result-item__date {
+    font-size: 0.75rem;
+    color: rgba(var(--v-theme-on-surface), 0.4);
+}
+
+.result-item__action {
+    flex-shrink: 0;
+}
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    color: inherit;
+    padding: 0;
+}
+
+.icon-btn:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.icon-btn .mdi {
+    font-size: 18px;
 }
 </style>

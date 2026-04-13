@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Input } from '@vuetify/v0';
+
 const listsStore = useListsStore();
 const hasGithub = await useHasGithub();
 
@@ -14,82 +16,147 @@ function updateName() {
 </script>
 
 <template>
-    <v-card
-        width="100%"
-        elevation="0"
-        class="pa-0 d-flex flex-column rounded-lg todo-detail-card"
-    >
-        <v-card-title>
-            <v-text-field
+    <div class="todo-detail">
+        <div class="todo-detail__title-section">
+            <Input.Root
                 v-model="listsStore.currentTodo.name"
                 label="Title"
-                hide-details
-                variant="outlined"
-                class="rounded-lg"
-                data-testid="todo-detail-title"
-                @blur="updateName"
-            />
-        </v-card-title>
-        <v-card-item>
-            <v-row align="center">
-                <v-col cols="auto">
-                    <TodoStatus />
-                </v-col>
-                <v-col cols="auto">
-                    <GithubButton
-                        v-if="hasGithub"
-                        :todo="listsStore.currentTodo"
-                    />
-                </v-col>
-                <v-col />
-                <v-spacer />
+            >
+                <Input.Control
+                    class="title-input"
+                    data-testid="todo-detail-title"
+                    @blur="updateName"
+                />
+            </Input.Root>
+        </div>
 
-                <v-col
-                    sm="4"
-                    md="4"
-                    cols="6"
-                >
+        <div class="todo-detail__meta">
+            <div class="todo-detail__meta-row">
+                <TodoStatus />
+                <GithubButton
+                    v-if="hasGithub"
+                    :todo="listsStore.currentTodo"
+                />
+                <div class="spacer" />
+                <div class="todo-detail__due-date">
                     <AppDueDate
                         :todo-due-date="listsStore.currentTodo.dueDate"
                         :todo="listsStore.currentTodo"
                         :show-detail="true"
                         @set-date="updateDueDate"
                     />
-                </v-col>
-            </v-row>
-        </v-card-item>
-        <v-card-item>
-            <v-textarea
+                </div>
+            </div>
+        </div>
+
+        <div class="todo-detail__desc">
+            <textarea
                 v-model="listsStore.currentTodo.desc"
-                auto-grow
-                class="mt-2 rounded-lg"
-                hide-details
-                max-rows="20"
-                variant="outlined"
+                class="desc-textarea"
+                rows="6"
                 @input="listsStore.debounceUpdateTodo(listsStore.currentTodo)"
                 @blur="listsStore.updateTodo(listsStore.currentTodo)"
             />
-        </v-card-item>
-        <v-card-item>
+        </div>
+
+        <div class="todo-detail__subtasks">
             <Subtask />
-        </v-card-item>
-        <v-card-item>
+        </div>
+
+        <div class="todo-detail__links">
             <TodoLinks />
-        </v-card-item>
-        <!-- TODO  add db table and implement API -->
-        <!-- <v-card-item>
-            <TodoAttachments />
-        </v-card-item> -->
-        <v-card-actions class="py-6 px-6 d-flex flex-wrap gap-4 align-center justify-space-between">
-            <div class="d-flex align-center gap-2 flex-wrap">
-                <AppDeleteButton :todo="listsStore.currentTodo" />
-            </div>
-        </v-card-actions>
-    </v-card>
+        </div>
+
+        <div class="todo-detail__footer">
+            <AppDeleteButton :todo="listsStore.currentTodo" />
+        </div>
+    </div>
 </template>
 
 <style scoped>
-.todo-detail-card {
+.todo-detail {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     min-height: 360px;
+    gap: 0;
+}
+
+.todo-detail__title-section {
+    padding: 16px 16px 8px;
+}
+
+.title-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid rgba(var(--v-border-color), 0.38);
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.title-input:focus {
+    border-color: rgb(var(--v-theme-primary));
+}
+
+.todo-detail__meta {
+    padding: 8px 16px;
+}
+
+.todo-detail__meta-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.spacer {
+    flex: 1;
+}
+
+.todo-detail__due-date {
+    flex-shrink: 0;
+}
+
+.todo-detail__desc {
+    padding: 8px 16px;
+}
+
+.desc-textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid rgba(var(--v-border-color), 0.38);
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font-size: 0.875rem;
+    outline: none;
+    resize: vertical;
+    min-height: 120px;
+    max-height: 480px;
+    font-family: inherit;
+    box-sizing: border-box;
+    line-height: 1.5;
+}
+
+.desc-textarea:focus {
+    border-color: rgb(var(--v-theme-primary));
+}
+
+.todo-detail__subtasks,
+.todo-detail__links {
+    padding: 8px 16px;
+}
+
+.todo-detail__footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 24px;
+    justify-content: space-between;
 }
 </style>

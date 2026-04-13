@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button } from '@vuetify/v0';
+
 definePageMeta({
     title: 'Account',
     description: 'Account page',
@@ -14,49 +16,92 @@ const logout = async () => {
 </script>
 
 <template>
-    <v-row
-        no-gutters
-        class="d-flex "
-        style="height: 100%;"
-    >
-        <v-col
-            class="d-flex justify-center"
-            cols="12"
-        >
-            <h1> My Account</h1>
-            <div style="position: absolute; right: 25px">
+    <div class="account-page">
+        <div class="account-header">
+            <h1>My Account</h1>
+            <div class="account-header__dark-mode">
                 <AppDarkMode />
             </div>
-        </v-col>
-        <v-col
-            class="d-flex justify-center"
-            cols="12"
-        >
-            <h4>{{ user?.email }}</h4>
-        </v-col>
+        </div>
 
-        <v-col
-            class="d-flex flex-column-reverse py-6"
-            cols="12"
-        >
-            <div>
-                <v-btn
-                    block
-                    class="my-2"
-                    variant="tonal"
-                    to="settings"
-                >
-                    settings
-                </v-btn>
-                <v-btn
-                    block
-                    class="my-auto"
-                    variant="tonal"
-                    @click="logout"
-                >
-                    Logout
-                </v-btn>
-            </div>
-        </v-col>
-    </v-row>
-</template>s
+        <div class="account-email">
+            <h4>{{ user?.email }}</h4>
+        </div>
+
+        <div class="account-actions">
+            <Button.Root
+                class="btn btn--block"
+                to="settings"
+            >
+                settings
+            </Button.Root>
+            <Button.Root
+                class="btn btn--block"
+                @click="logout"
+            >
+                Logout
+            </Button.Root>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+.account-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 24px;
+}
+
+.account-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.account-header__dark-mode {
+    position: absolute;
+    right: 0;
+}
+
+.account-email {
+    display: flex;
+    justify-content: center;
+    margin-bottom: auto;
+}
+
+.account-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 24px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    background: rgba(var(--v-border-color), 0.1);
+    color: inherit;
+    text-decoration: none;
+    text-transform: capitalize;
+    transition: background 0.15s;
+}
+
+.btn:hover {
+    background: rgba(var(--v-border-color), 0.18);
+}
+
+.btn--block {
+    width: 100%;
+}
+</style>

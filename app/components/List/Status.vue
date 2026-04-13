@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button, Popover } from '@vuetify/v0';
+
 const settings = useSettingsStore();
 const store = useListsStore();
 const statusProps = withDefaults(defineProps<{ todo: Todo; disabled?: boolean }>(), {
@@ -21,50 +23,89 @@ const updateStatus = (status: string) => {
 </script>
 
 <template>
-    <v-menu :disabled="statusProps.disabled">
-        <template #activator="{ props }">
-            <v-btn
-                v-bind="props"
+    <Popover.Root :disabled="statusProps.disabled">
+        <Popover.Activator>
+            <button
+                class="status-dot"
                 data-testid="status-button"
-                min-width="20px"
-                size="x-small"
-                rounded="xl"
                 :disabled="statusProps.disabled"
-                :style="{
-                    backgroundColor: getStatusColor(statusProps.todo.status),
-                }"
+                :style="{ backgroundColor: getStatusColor(statusProps.todo.status) }"
+                :aria-label="`Status: ${statusProps.todo.status}`"
             />
-        </template>
-        <v-list min-width="200px">
-            <v-list-item
-                v-for="(status, index) in statuses"
-                :key="index"
-                :value="status.name"
-                @click="updateStatus(status.name)"
-            >
-                <template #prepend>
-                    <v-btn
-                        size="x-small"
-                        rounded="xl"
-                        min-width="20px"
-                        :style="{
-                            backgroundColor: status.color,
-                            marginRight: '8px',
-                        }"
+        </Popover.Activator>
+        <Popover.Content class="menu-content">
+            <ul class="menu-list">
+                <li
+                    v-for="(status, index) in statuses"
+                    :key="index"
+                    class="menu-item"
+                    @click="updateStatus(status.name)"
+                >
+                    <button
+                        class="status-dot status-dot--sm"
+                        :style="{ backgroundColor: status.color }"
                     />
-                </template>
-                <v-list-item-title class="text-body-2">
-                    {{ status.name }}
-                </v-list-item-title>
-            </v-list-item>
-        </v-list>
-    </v-menu>
+                    <span class="menu-item__label">{{ status.name }}</span>
+                </li>
+            </ul>
+        </Popover.Content>
+    </Popover.Root>
 </template>
 
 <style scoped>
-.status-icon {
-  width: 1.5em;
-  height: 1.5em;
-  border-radius: 50%;
+.status-dot {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.status-dot--sm {
+    width: 14px;
+    height: 14px;
+    cursor: default;
+}
+
+.status-dot:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.menu-content {
+    background: rgb(var(--v-theme-surface));
+    border: 1px solid rgba(var(--v-border-color), 0.12);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    padding: 4px;
+    min-width: 200px;
+    z-index: 100;
+}
+
+.menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    border-radius: 4px;
+    color: rgb(var(--v-theme-on-surface));
+}
+
+.menu-item:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.menu-item__label {
+    font-size: 0.875rem;
 }
 </style>

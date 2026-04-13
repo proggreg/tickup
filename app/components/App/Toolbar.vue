@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button } from '@vuetify/v0';
+
 const on = useToolbar();
 const store = useListsStore();
 
@@ -8,7 +10,6 @@ const toolbarOn = computed(() => {
 });
 
 function deleteSelected() {
-    // TODO use delete many
     const deleteTodos = store.currentList.todos.filter(todo => todo.selected);
     for (const todo of deleteTodos) {
         if (!todo.id) continue;
@@ -21,19 +22,81 @@ function deleteSelected() {
 </script>
 
 <template>
-    <v-snackbar
-        v-model="toolbarOn"
-        timeout="-1"
-    >
-        <template #text>
-            <v-btn @click="on = false">
-                Dismiss
-            </v-btn>
-        </template>
-        <template #actions>
-            <v-btn @click="deleteSelected">
-                Delete
-            </v-btn>
-        </template>
-    </v-snackbar>
+    <Teleport to="body">
+        <Transition name="toolbar">
+            <div
+                v-if="toolbarOn"
+                class="selection-toolbar"
+                role="status"
+            >
+                <Button.Root
+                    class="toolbar-btn"
+                    @click="on = false"
+                >
+                    <Button.Content>Dismiss</Button.Content>
+                </Button.Root>
+                <Button.Root
+                    class="toolbar-btn toolbar-btn--danger"
+                    @click="deleteSelected"
+                >
+                    <Button.Content>Delete</Button.Content>
+                </Button.Root>
+            </div>
+        </Transition>
+    </Teleport>
 </template>
+
+<style scoped>
+.selection-toolbar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgb(var(--v-theme-surface));
+    border: 1px solid rgba(var(--v-border-color), 0.2);
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+    z-index: 1000;
+}
+
+.toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: inherit;
+}
+
+.toolbar-btn:hover {
+    background: rgba(var(--v-border-color), 0.08);
+}
+
+.toolbar-btn--danger {
+    color: rgb(var(--v-theme-error));
+}
+
+.toolbar-btn--danger:hover {
+    background: rgba(var(--v-theme-error), 0.08);
+}
+
+.toolbar-enter-active,
+.toolbar-leave-active {
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.toolbar-enter-from,
+.toolbar-leave-to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+}
+</style>
