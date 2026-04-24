@@ -56,10 +56,11 @@ function deleteSelected() {
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: rgb(var(--v-theme-surface));
-    border: 1px solid rgba(var(--v-border-color), 0.2);
+    background: rgba(247, 249, 251, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 12px 40px rgba(42, 52, 57, 0.12);
     z-index: 1000;
 }
 

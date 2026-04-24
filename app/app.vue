@@ -85,6 +85,20 @@ if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.he
 </template>
 
 <style>
+/* Design system: The Architectural Ledger (Stitch "App UI Redesign") */
+/* Headlines: Manrope — editorial authority */
+/* Body/Labels: Inter — functional legibility */
+.v-application {
+    font-family: 'Inter', sans-serif !important;
+}
+
+.v-toolbar-title,
+.v-card-title,
+.text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-h6,
+.text-headline, .text-display-1, .text-display-2, .text-display-3, .text-display-4 {
+    font-family: 'Manrope', sans-serif !important;
+}
+
 * {
     scrollbar-width: none;
 }

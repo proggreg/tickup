@@ -34,8 +34,6 @@ onBeforeMount(() => {
                     active-class="nav-list-link--active"
                     :data-test-id="item.name"
                 >
-                    <i class="mdi mdi-format-list-bulleted nav-list-icon" />
-
                     <Input.Root
                         v-if="editListName === item.id"
                         v-model="item.name"
@@ -101,19 +99,14 @@ onBeforeMount(() => {
 }
 
 .nav-list-link:hover {
-    background: rgba(var(--v-border-color), 0.08);
+    background: rgb(var(--v-theme-surface-container-highest));
 }
 
 .nav-list-link--active {
-    background: rgba(var(--v-theme-primary), 0.1);
-    color: rgb(var(--v-theme-primary));
+    background: rgb(var(--v-theme-primary-container));
+    color: rgb(var(--v-theme-on-primary-container));
 }
 
-.nav-list-icon {
-    font-size: 20px;
-    flex-shrink: 0;
-    opacity: 0.7;
-}
 
 @media (max-width: 600px) {
     .nav-list-link {
@@ -166,7 +159,6 @@ onBeforeMount(() => {
 
 .nav-divider {
     border: none;
-    border-top: 1px solid rgba(var(--v-border-color), 0.1);
     margin: 2px 0;
 }
 </style>

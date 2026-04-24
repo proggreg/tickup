@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { Select } from '@vuetify/v0';
 
-const listTypeOptions = ref<ListType[]>(['table', 'simple']);
+const listTypeOptions = ref<{ value: ListType; icon: string; label: string }[]>([
+    { value: 'simple', icon: 'mdi-format-list-bulleted', label: 'List' },
+    { value: 'table', icon: 'mdi-table', label: 'Table' },
+]);
 const props = defineProps<{ currentListType?: ListType }>();
 const selectedType = ref<ListType>(props.currentListType && props.currentListType !== '' ? props.currentListType : 'simple');
 const emit = defineEmits<{
@@ -31,18 +34,19 @@ watch(selectedType, (newVal: ListType, oldVal: ListType) => {
     >
         <Select.Activator>
             <button class="type-select-trigger">
-                <Select.Value placeholder="simple" />
-                <i class="mdi mdi-chevron-down" />
+                <i :class="`mdi ${listTypeOptions.find(o => o.value === selectedType)?.icon ?? 'mdi-format-list-bulleted'}`" class="trigger-icon" />
+                <i class="mdi mdi-chevron-down trigger-chevron" />
             </button>
         </Select.Activator>
         <Select.Content>
             <Select.Item
                 v-for="option in listTypeOptions"
-                :key="option"
-                :value="option"
+                :key="option.value"
+                :value="option.value"
                 class="select-item"
             >
-                <span class="select-item__text">{{ option }}</span>
+                <i :class="`mdi ${option.icon} select-item__icon`" />
+                <span class="select-item__text">{{ option.label }}</span>
                 <Select.ItemIndicator>
                     <i class="mdi mdi-check select-item__check" />
                 </Select.ItemIndicator>
@@ -55,34 +59,35 @@ watch(selectedType, (newVal: ListType, oldVal: ListType) => {
 .type-select-trigger {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border: 1px solid rgba(var(--v-border-color), 0.38);
+    gap: 4px;
+    padding: 6px 10px;
+    border: none;
     border-radius: 6px;
-    background: transparent;
+    background: rgba(var(--v-border-color), 0.06);
     color: inherit;
     font-size: 0.875rem;
     font-family: inherit;
     cursor: pointer;
-    min-width: 60px;
-    max-width: 150px;
     white-space: nowrap;
 }
 
 .type-select-trigger:hover {
-    border-color: rgba(var(--v-border-color), 0.6);
+    background: rgba(var(--v-border-color), 0.12);
 }
 
-.type-select-trigger .mdi {
-    font-size: 16px;
-    opacity: 0.6;
-    margin-left: auto;
+.trigger-icon {
+    font-size: 17px;
+}
+
+.trigger-chevron {
+    font-size: 14px;
+    opacity: 0.5;
 }
 
 .select-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 8px;
     padding: 8px 12px;
     cursor: pointer;
     font-size: 0.875rem;
@@ -94,9 +99,13 @@ watch(selectedType, (newVal: ListType, oldVal: ListType) => {
     background: rgba(var(--v-border-color), 0.08);
 }
 
+.select-item__icon {
+    font-size: 16px;
+    opacity: 0.7;
+}
+
 .select-item__text {
     flex: 1;
-    text-transform: capitalize;
 }
 
 .select-item__check {

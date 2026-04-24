@@ -55,7 +55,6 @@ onBeforeMount(() => {
                             {{ listsStore.overdueTodos.length }}
                         </span>
                     </div>
-                    <hr class="content-card__divider">
                     <div class="content-card__body">
                         <HomePageOverDue />
                     </div>
@@ -75,7 +74,6 @@ onBeforeMount(() => {
                             {{ todayCount }}
                         </span>
                     </div>
-                    <hr class="content-card__divider">
                     <div class="content-card__body content-card__body--padded">
                         <TodoNew
                             :save-todo="saveTodo"
@@ -100,7 +98,6 @@ onBeforeMount(() => {
                             {{ doneCount }}
                         </span>
                     </div>
-                    <hr class="content-card__divider">
                     <div class="content-card__body">
                         <HomePageTodayClosed />
                     </div>
@@ -121,7 +118,6 @@ onBeforeMount(() => {
                         View all
                     </Button.Root>
                 </div>
-                <hr class="content-card__divider">
                 <div class="content-card__body content-card__body--padded">
                     <div
                         v-if="listsStore.lists.length"
@@ -165,32 +161,23 @@ onBeforeMount(() => {
 }
 
 .stat-card {
-    padding: 16px;
+    padding: 20px 16px;
     border-radius: 8px;
     text-align: center;
-    background: rgba(var(--v-border-color), 0.06);
-}
-
-.stat-card--error {
-    background: rgba(var(--v-theme-error), 0.1);
-}
-
-.stat-card--primary {
-    background: rgba(var(--v-theme-primary), 0.1);
-}
-
-.stat-card--success {
-    background: rgba(var(--v-theme-success), 0.1);
+    background: rgb(var(--v-theme-surface-container-lowest));
+    box-shadow: 0 8px 32px rgba(42, 52, 57, 0.06);
 }
 
 .stat-card__number {
+    font-family: 'Manrope', sans-serif;
     font-size: 2.5rem;
     font-weight: 700;
     line-height: 1;
+    color: rgb(var(--v-theme-on-surface));
 }
 
 .stat-card--error .stat-card__number {
-    color: rgb(var(--v-theme-error));
+    color: rgb(var(--v-theme-tertiary));
 }
 
 .stat-card--primary .stat-card__number {
@@ -198,13 +185,16 @@ onBeforeMount(() => {
 }
 
 .stat-card--success .stat-card__number {
-    color: rgb(var(--v-theme-success));
+    color: rgb(var(--v-theme-secondary));
 }
 
 .stat-card__label {
-    font-size: 0.8125rem;
-    margin-top: 4px;
-    color: rgba(var(--v-theme-on-surface), 0.6);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    color: rgb(var(--v-theme-on-surface-variant));
 }
 
 /* Content columns */
@@ -223,16 +213,17 @@ onBeforeMount(() => {
     display: flex;
     flex-direction: column;
     width: 100%;
-    border: 1px solid rgba(var(--v-border-color), 0.15);
+    background: rgb(var(--v-theme-surface-container-lowest));
     border-radius: 8px;
     overflow: hidden;
+    box-shadow: 0 8px 32px rgba(42, 52, 57, 0.06);
 }
 
 .content-card__header {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 14px 16px 12px;
+    padding: 16px 16px 14px;
 }
 
 .content-card__icon {
@@ -245,8 +236,9 @@ onBeforeMount(() => {
 .content-card__icon--success { color: rgb(var(--v-theme-success)); }
 
 .content-card__title {
+    font-family: 'Manrope', sans-serif;
     font-size: 0.9375rem;
-    font-weight: 600;
+    font-weight: 700;
     flex: 1;
 }
 
@@ -261,24 +253,18 @@ onBeforeMount(() => {
 }
 
 .content-badge--error {
-    background: rgba(var(--v-theme-error), 0.12);
-    color: rgb(var(--v-theme-error));
+    background: rgba(var(--v-theme-tertiary), 0.1);
+    color: rgb(var(--v-theme-tertiary));
 }
 
 .content-badge--primary {
-    background: rgba(var(--v-theme-primary), 0.12);
-    color: rgb(var(--v-theme-primary));
+    background: rgb(var(--v-theme-primary-container));
+    color: rgb(var(--v-theme-on-primary-container));
 }
 
 .content-badge--success {
-    background: rgba(var(--v-theme-success), 0.12);
-    color: rgb(var(--v-theme-success));
-}
-
-.content-card__divider {
-    border: none;
-    border-top: 1px solid rgba(var(--v-border-color), 0.12);
-    margin: 0;
+    background: rgb(var(--v-theme-secondary-container));
+    color: rgb(var(--v-theme-on-secondary-container));
 }
 
 .content-card__body {
@@ -333,15 +319,15 @@ onBeforeMount(() => {
     gap: 8px;
     padding: 12px;
     border-radius: 8px;
-    background: rgba(var(--v-border-color), 0.06);
+    background: rgb(var(--v-theme-surface-container-low));
     text-decoration: none;
     color: inherit;
     cursor: pointer;
-    transition: background 0.1s;
+    transition: background 0.15s;
 }
 
 .list-card:hover {
-    background: rgba(var(--v-border-color), 0.12);
+    background: rgb(var(--v-theme-surface-container));
 }
 
 .list-card__icon {

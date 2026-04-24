@@ -342,8 +342,6 @@ const deleteTodo = async (todo: Todo) => {
 
 <style scoped>
 .todo-list-card {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
     padding: 4px 0;
 }
 
@@ -374,7 +372,7 @@ const deleteTodo = async (todo: Todo) => {
 }
 
 .group__header:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgb(var(--v-theme-surface-container-low));
 }
 
 .group__chevron {
@@ -402,16 +400,16 @@ const deleteTodo = async (todo: Todo) => {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 2px 16px;
-    border-radius: 16px;
-    margin-bottom: 2px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-bottom: 4px;
     cursor: pointer;
-    min-height: 40px;
-    transition: background 0.2s;
+    min-height: 44px;
+    transition: background 0.15s;
 }
 
 .todo-list-item:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgb(var(--v-theme-surface-container-low));
 }
 
 .todo-checkbox {
@@ -501,10 +499,9 @@ const deleteTodo = async (todo: Todo) => {
     margin: 0;
     padding: 4px;
     min-width: 120px;
-    background: rgb(var(--v-theme-surface));
-    border: 1px solid rgba(var(--v-border-color), 0.12);
+    background: rgb(var(--v-theme-surface-container-lowest));
     border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 32px rgba(42, 52, 57, 0.1);
 }
 
 .menu-item {

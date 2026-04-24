@@ -27,8 +27,12 @@ onBeforeMount(() => {
             class="lists-page__empty"
         >
             <i class="mdi mdi-playlist-plus empty-icon" />
-            <p class="empty-title">No lists yet</p>
-            <p class="empty-subtitle">Tap the button below to create your first list</p>
+            <p class="empty-title">
+                No lists yet
+            </p>
+            <p class="empty-subtitle">
+                Tap the button below to create your first list
+            </p>
         </div>
 
         <ul

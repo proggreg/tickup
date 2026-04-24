@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { Button } from '@vuetify/v0';
+import { useTheme } from 'vuetify';
 
 const colorMode = useColorMode();
+const theme = useTheme();
+
+onMounted(() => {
+    theme.global.name.value = colorMode.value === 'dark' ? 'dark' : 'light';
+});
+
 function toggleDarkMode() {
-    colorMode.preference = colorMode.preference === 'light' ? 'dark' : 'light';
+    const newMode = colorMode.value === 'dark' ? 'light' : 'dark';
+    colorMode.preference = newMode;
+    theme.global.name.value = newMode;
 }
 </script>
 

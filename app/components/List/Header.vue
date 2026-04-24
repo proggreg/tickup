@@ -97,35 +97,6 @@ function removeImage() {
                     <ListMenu :list-id="router.params.id as string" />
                 </div>
 
-                <div
-                    class="list-header__actions"
-                    :class="store.currentList.image ? 'list-header__actions--light' : ''"
-                >
-                    <Button.Root
-                        class="icon-btn"
-                        :disabled="imageGenerating"
-                        aria-label="Generate image"
-                        @click="generateImage"
-                    >
-                        <Button.Icon>
-                            <i class="mdi mdi-creation" />
-                        </Button.Icon>
-                        <Button.Icon>
-                            <i class="mdi mdi-image" />
-                        </Button.Icon>
-                    </Button.Root>
-
-                    <Button.Root
-                        v-if="store.currentList.image"
-                        class="icon-btn"
-                        aria-label="Remove image"
-                        @click="removeImage"
-                    >
-                        <Button.Icon>
-                            <i class="mdi mdi-trash-can" />
-                        </Button.Icon>
-                    </Button.Root>
-                </div>
             </div>
         </div>
     </div>

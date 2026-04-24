@@ -8,102 +8,72 @@ const { title, page } = defineProps<{
 const dialog = useDialog();
 const listsStore = useListsStore();
 
-const isOpen = computed(() => dialog.value.open && dialog.value.page === page);
-
-function close() {
-    dialog.value.open = false;
-}
-
-function resetState() {
-    dialog.value.open = false;
-    dialog.value.page = '';
-    listsStore.resetTodo();
-}
-
-// Use a watcher to open/close the native dialog element programmatically
-const dialogEl = ref<HTMLDialogElement | null>(null);
-
-watch(isOpen, (val) => {
-    if (!dialogEl.value) return;
-    if (val) {
-        dialogEl.value.showModal();
-    }
-    else {
-        dialogEl.value.close();
-    }
+const isOpen = computed({
+    get: () => dialog.value.open && dialog.value.page === page,
+    set: (val) => {
+        if (!val) {
+            dialog.value.open = false;
+            dialog.value.page = '';
+            listsStore.resetTodo();
+        }
+    },
 });
 </script>
 
 <template>
     <slot name="open" />
 
-    <dialog
-        ref="dialogEl"
-        class="app-dialog"
-        @close="resetState"
-        @click.self="close"
-    >
-        <div class="app-dialog__card">
-            <div class="app-dialog__header">
-                <h2
-                    class="app-dialog__title font-weight-bold"
-                    data-testid="dialog-title"
-                >
-                    {{ title }}
-                </h2>
-                <Button.Root
-                    class="icon-btn"
-                    aria-label="Close dialog"
-                    data-testid="dialog-close"
-                    @click="close"
-                >
-                    <Button.Icon>
+    <Dialog.Root v-model="isOpen">
+        <Dialog.Content class="app-dialog">
+            <div class="app-dialog__card">
+                <div class="app-dialog__header">
+                    <h2
+                        class="app-dialog__title"
+                        data-testid="dialog-title"
+                    >
+                        {{ title }}
+                    </h2>
+                    <Dialog.Close class="icon-btn" aria-label="Close dialog" data-testid="dialog-close">
                         <i class="mdi mdi-close" />
-                    </Button.Icon>
-                </Button.Root>
-            </div>
+                    </Dialog.Close>
+                </div>
 
-            <div class="app-dialog__body">
-                <slot />
-            </div>
+                <div class="app-dialog__body">
+                    <slot />
+                </div>
 
-            <div class="app-dialog__actions">
-                <Button.Root
-                    class="btn"
-                    @click="close"
-                >
-                    <Button.Content>Close</Button.Content>
-                </Button.Root>
-                <slot name="buttons" />
+                <div class="app-dialog__actions">
+                    <Dialog.Close class="btn">
+                        Close
+                    </Dialog.Close>
+                    <slot name="buttons" />
+                </div>
             </div>
-        </div>
-    </dialog>
+        </Dialog.Content>
+    </Dialog.Root>
 </template>
 
 <style scoped>
+/* Do NOT set display: flex here — it would override dialog's native display:none when closed */
 .app-dialog {
     border: none;
-    border-radius: 12px;
     padding: 0;
     max-width: 500px;
     width: 90vw;
+    margin: auto;
     background: transparent;
     overflow: visible;
 }
 
-.app-dialog::backdrop {
-    background: rgba(0, 0, 0, 0.5);
-}
-
 .app-dialog__card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     background: rgb(var(--v-theme-surface));
     color: rgb(var(--v-theme-on-surface));
     border-radius: 12px;
     padding: 20px 24px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
 }
 
 .app-dialog__header {
@@ -162,9 +132,17 @@ watch(isOpen, (val) => {
     font-size: 0.875rem;
     font-weight: 500;
     color: inherit;
+    font-family: inherit;
 }
 
 .btn:hover {
     background: rgba(var(--v-border-color), 0.08);
+}
+</style>
+
+<style>
+/* ::backdrop can't be scoped — must be global */
+.app-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
 }
 </style>

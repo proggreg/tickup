@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button, Tooltip } from '@vuetify/v0';
+import { Button } from '@vuetify/v0';
 
 const props = defineProps<{
     filter: 'all' | 'active';
@@ -32,23 +32,17 @@ function toggleExpanded() {
         v-if="hasSubtasks"
         class="filters"
     >
-        <Tooltip.Root>
-            <Tooltip.Activator>
-                <Button.Root
-                    class="icon-btn"
-                    :class="sortBy === 'priority' ? 'icon-btn--active' : ''"
-                    data-testid="subtasks-sort-button"
-                    @click.stop="toggleSort"
-                >
-                    <Button.Icon>
-                        <i class="mdi mdi-sort-variant" />
-                    </Button.Icon>
-                </Button.Root>
-            </Tooltip.Activator>
-            <Tooltip.Content class="tooltip">
-                {{ sortBy === 'priority' ? 'Sorted by priority (click to unsort)' : 'Click to sort by priority' }}
-            </Tooltip.Content>
-        </Tooltip.Root>
+        <Button.Root
+            class="icon-btn"
+            :class="sortBy === 'priority' ? 'icon-btn--active' : ''"
+            :title="sortBy === 'priority' ? 'Sorted by priority (click to unsort)' : 'Click to sort by priority'"
+            data-testid="subtasks-sort-button"
+            @click.stop="toggleSort"
+        >
+            <Button.Icon>
+                <i class="mdi mdi-sort-variant" />
+            </Button.Icon>
+        </Button.Root>
 
         <div class="spacer" />
 
@@ -153,13 +147,5 @@ function toggleExpanded() {
     color: rgb(var(--v-theme-primary));
 }
 
-.tooltip {
-    background: rgb(var(--v-theme-on-surface));
-    color: rgb(var(--v-theme-surface));
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    pointer-events: none;
-}
+
 </style>

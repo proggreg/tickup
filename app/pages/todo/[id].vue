@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button } from '@vuetify/v0';
 
 const route = useRoute();
 const listsStore = useListsStore();
@@ -56,39 +55,33 @@ watch(
             </div>
         </template>
         <div class="todo-page-nav">
-            <Button.Root
+            <NuxtLink
                 v-if="parentTodo"
                 class="back-btn"
                 data-testid="nav-back-parent"
                 :to="`/todo/${parentTodo.id}`"
             >
-                <Button.Icon>
-                    <i class="mdi mdi-arrow-left" />
-                </Button.Icon>
+                <i class="mdi mdi-arrow-left" />
                 {{ parentTodo.name }}
-            </Button.Root>
-            <Button.Root
+            </NuxtLink>
+            <NuxtLink
                 v-else-if="listsStore.currentTodo?.listId && listsStore.currentList?.id"
                 class="back-btn"
                 data-testid="nav-back-list"
                 :to="`/list/${listsStore.currentTodo.listId}`"
             >
-                <Button.Icon>
-                    <i class="mdi mdi-arrow-left" />
-                </Button.Icon>
+                <i class="mdi mdi-arrow-left" />
                 {{ listsStore.currentList.name }}
-            </Button.Root>
-            <Button.Root
+            </NuxtLink>
+            <NuxtLink
                 v-else-if="!isLoading"
                 class="back-btn"
                 data-testid="nav-back-home"
                 to="/"
             >
-                <Button.Icon>
-                    <i class="mdi mdi-arrow-left" />
-                </Button.Icon>
+                <i class="mdi mdi-arrow-left" />
                 Home
-            </Button.Root>
+            </NuxtLink>
         </div>
         <div class="todo-page-content">
             <Transition name="todo-fade">

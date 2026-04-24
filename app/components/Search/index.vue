@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { Input } from '@vuetify/v0';
+import { Dialog, Input } from '@vuetify/v0';
 
 const searchStore = useSearchStore();
 const router = useRouter();
 const { isMobile } = useDevice();
 const open = ref(false);
-const dialogEl = ref<HTMLDialogElement | null>(null);
 
 function onKeyDown(e: KeyboardEvent) {
     if (!isMobile && e.ctrlKey && e.key === 'k') {
@@ -26,12 +25,6 @@ onBeforeUnmount(() => {
 
 router.beforeResolve(() => {
     open.value = false;
-});
-
-watch(open, (val) => {
-    if (!dialogEl.value) return;
-    if (val) { dialogEl.value.showModal(); }
-    else { dialogEl.value.close(); }
 });
 
 watch(() => searchStore.searchQuery, () => {
@@ -72,14 +65,9 @@ onMounted(() => {
             <span>ctrl + k</span>
         </button>
 
-        <Teleport to="body">
-            <dialog
-                ref="dialogEl"
-                class="search-dialog"
-                @close="open = false"
-                @click.self="open = false"
-            >
-                <div class="search-dialog__content">
+        <Dialog.Root v-model="open">
+            <Dialog.Content class="search-dialog">
+                <div class="search-dialog__inner">
                     <div class="search-dialog__header">
                         <Input.Root v-model="searchStore.searchQuery">
                             <Input.Control
@@ -89,13 +77,12 @@ onMounted(() => {
                             />
                         </Input.Root>
                     </div>
-                    <hr class="search-dialog__divider">
                     <div class="search-dialog__results">
                         <SearchResults />
                     </div>
                 </div>
-            </dialog>
-        </Teleport>
+            </Dialog.Content>
+        </Dialog.Root>
     </template>
 </template>
 
@@ -109,9 +96,9 @@ onMounted(() => {
 .search-input {
     width: 100%;
     padding: 8px 36px 8px 12px;
-    border: 1px solid rgba(var(--v-border-color), 0.38);
+    border: none;
     border-radius: 8px;
-    background: transparent;
+    background: rgb(var(--v-theme-surface-container-low));
     color: inherit;
     font-size: 0.875rem;
     outline: none;
@@ -120,7 +107,7 @@ onMounted(() => {
 }
 
 .search-input:focus {
-    border-color: rgb(var(--v-theme-primary));
+    background: rgb(var(--v-theme-surface-container));
 }
 
 .search-icon {
@@ -136,65 +123,75 @@ onMounted(() => {
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    margin: 0 24px;
-    border: 1px solid rgba(var(--v-border-color), 0.38);
+    border: 1px solid rgb(var(--v-theme-outline));
     border-radius: 8px;
-    background: transparent;
-    color: rgba(var(--v-theme-on-surface), 0.5);
+    background: rgb(var(--v-theme-surface-container-low));
+    color: rgb(var(--v-theme-on-surface));
     font-size: 0.875rem;
     font-family: inherit;
     cursor: pointer;
-    transition: border-color 0.15s;
+    transition: background 0.15s;
+    width: 100%;
+    max-width: 480px;
 }
 
 .search-trigger:hover {
-    border-color: rgba(var(--v-border-color), 0.6);
-    color: rgba(var(--v-theme-on-surface), 0.8);
+    background: rgb(var(--v-theme-surface-container));
 }
 
 .search-trigger .mdi {
     font-size: 18px;
 }
 
+/* Do NOT set display here — overrides dialog's native display:none when closed */
 .search-dialog {
     border: none;
-    border-radius: 12px;
-    background: rgb(var(--v-theme-surface));
     padding: 0;
-    width: 500px;
+    width: 640px;
     max-width: calc(100vw - 48px);
-    min-height: 300px;
     max-height: 80vh;
+    background: transparent;
+    overflow: visible;
+    margin: auto;
+}
+
+/* Background on inner div, not on the <dialog> element */
+.search-dialog__inner {
     display: flex;
     flex-direction: column;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    background: rgb(var(--v-theme-surface));
+    border-radius: 12px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.32);
     overflow: hidden;
-}
-
-.search-dialog::backdrop {
-    background: rgba(0, 0, 0, 0.4);
-}
-
-.search-dialog__content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
     min-height: 300px;
     max-height: 80vh;
 }
 
 .search-dialog__header {
-    padding: 16px;
+    padding: 20px 24px 16px;
 }
 
 .search-input--dialog {
-    font-size: 1rem;
+    font-size: 1.4rem;
+    font-weight: 500;
+    padding: 4px 0 8px;
+    background: transparent;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(var(--v-border-color), 0.24);
+    color: rgb(var(--v-theme-on-surface));
+    width: 100%;
+    outline: none;
+    font-family: inherit;
+    box-sizing: border-box;
 }
 
-.search-dialog__divider {
-    border: none;
-    border-top: 1px solid rgba(var(--v-border-color), 0.12);
-    margin: 0;
+.search-input--dialog::placeholder {
+    color: rgb(var(--v-theme-outline));
+    opacity: 1;
+}
+
+.search-input--dialog:focus {
+    border-bottom-color: rgb(var(--v-theme-primary));
 }
 
 .search-dialog__results {
@@ -202,5 +199,12 @@ onMounted(() => {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+}
+</style>
+
+<style>
+/* ::backdrop can't be scoped */
+.search-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.4);
 }
 </style>
