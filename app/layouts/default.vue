@@ -1,6 +1,18 @@
 <script setup lang="ts">
+import { useTheme } from 'vuetify';
+
 const colorMode = useColorMode();
-const vuetifyThemeClass = computed(() => `v-theme--${colorMode.value === 'dark' ? 'dark' : 'light'}`);
+const theme = useTheme();
+
+const vuetifyThemeClass = computed(() => `v-theme--${theme.global.name.value}`);
+
+// Keep <html> in sync so all elements (including fixed/teleported) inherit CSS vars
+if (import.meta.client) {
+    watch(vuetifyThemeClass, (cls) => {
+        document.documentElement.classList.remove('v-theme--light', 'v-theme--dark');
+        document.documentElement.classList.add(cls);
+    }, { immediate: true });
+}
 </script>
 
 <template>
