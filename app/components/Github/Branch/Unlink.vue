@@ -1,19 +1,16 @@
 <script setup lang="ts">
 import { Button } from '@vuetify/v0';
-import type { Endpoints } from '@octokit/types';
 
-type ListBranchesData = Endpoints['GET /repos/{owner}/{repo}/branches']['response']['data'];
-type BranchItem = ListBranchesData[number];
 const listStore = useListsStore();
 const selectedBranch = useState('githubBranch');
-const { branches } = defineProps<{ branches: BranchItem[] }>();
-const githubBranchName = useState('githubBranchName');
 
 async function unlinkBranch() {
-    selectedBranch.value = branches.find(branch => branch.name === githubBranchName.value);
-    listStore.currentTodo.githubBranchName = null;
-    listStore.currentTodo.githubLink = null;
-    listStore.updateTodo();
+    selectedBranch.value = null;
+    if (listStore.currentTodo.githubBranchName) {
+        listStore.currentTodo.githubBranchName = null;
+        listStore.currentTodo.githubLink = null;
+        listStore.updateTodo();
+    }
 }
 </script>
 
@@ -34,25 +31,24 @@ async function unlinkBranch() {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
     border: none;
     background: transparent;
     cursor: pointer;
     border-radius: 6px;
-    color: inherit;
+    color: rgba(var(--v-theme-on-surface), 0.55);
     padding: 0;
+    flex-shrink: 0;
+    transition: background 0.12s, color 0.12s;
 }
 
-.icon-btn:hover {
-    background: rgba(var(--v-border-color), 0.08);
-}
-
-.icon-btn--danger .mdi {
+.icon-btn--danger:hover {
+    background: rgba(var(--v-theme-error), 0.07);
     color: rgb(var(--v-theme-error));
 }
 
 .icon-btn .mdi {
-    font-size: 16px;
+    font-size: 15px;
 }
 </style>

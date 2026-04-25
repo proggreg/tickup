@@ -46,21 +46,23 @@ const copyToClipBoard = () => {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     border: none;
     background: transparent;
     cursor: pointer;
     border-radius: 6px;
-    color: inherit;
+    color: rgba(var(--v-theme-on-surface), 0.55);
     padding: 0;
+    flex-shrink: 0;
+    transition: background 0.12s, color 0.12s;
 }
 
 .icon-btn:hover {
-    background: rgba(var(--v-border-color), 0.08);
+    background: rgba(var(--v-border-color), 0.11);
 }
 
 .icon-btn .mdi {
-    font-size: 16px;
+    font-size: 15px;
 }
 </style>

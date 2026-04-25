@@ -107,6 +107,13 @@ if (import.meta.server && config.public.VERCEL_ENV === 'production' && event?.he
     display: none;
 }
 
+[popover] {
+    border: none;
+    background: transparent;
+    padding: 0;
+    overflow: visible;
+}
+
 .layout-enter-active,
   .layout-leave-active {
     transition: all 0.4s;
