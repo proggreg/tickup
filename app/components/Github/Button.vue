@@ -85,26 +85,31 @@ onUnmounted(() => {
         </Popover.Activator>
         <Popover.Content>
             <div class="github-menu">
-                <div class="github-menu-item">
-                    <div class="github-command-field">
-                        <span class="github-command-text">{{ githubBranchCommand }}</span>
-                        <div class="github-command-actions">
-                            <GithubBranchCopy />
-                            <GithubBranchOpen />
-                            <GithubBranchOpenInIde />
-                            <GithubBranchCreate />
-                        </div>
+                <div class="github-command-row">
+                    <span class="github-command-text">{{ githubBranchCommand }}</span>
+                    <div class="github-command-actions">
+                        <GithubBranchCopy />
                     </div>
                 </div>
-                <div class="github-menu-item">
-                    <div class="github-menu-row">
-                        <div class="github-repo-col">
-                            <GithubRepoSelect />
-                        </div>
-                        <div class="github-branch-col">
-                            <GithubBranchSelect :branch-name="githubBranchName" />
-                        </div>
+                <div class="github-menu-row">
+                    <div class="github-repo-col">
+                        <GithubRepoSelect />
                     </div>
+                    <div class="github-branch-col">
+                        <GithubBranchSelect :branch-name="githubBranchName" />
+                    </div>
+                </div>
+                <div
+                    v-if="listStore.currentTodo.githubLink"
+                    class="github-linked-status"
+                >
+                    <i class="mdi mdi-check-circle-outline github-linked-status__icon" />
+                    <span class="github-linked-status__label">Branch linked</span>
+                    <a
+                        :href="listStore.currentTodo.githubLink"
+                        target="_blank"
+                        class="github-linked-status__link"
+                    >View on GitHub</a>
                 </div>
             </div>
         </Popover.Content>
@@ -168,61 +173,91 @@ onUnmounted(() => {
 }
 
 .github-menu {
-    padding: 6px 8px;
-    min-width: 420px;
+    padding: 10px;
+    width: 420px;
     overflow: visible;
     background: rgb(var(--v-theme-surface));
-    border: 1px solid rgba(var(--v-border-color), 0.12);
     border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 12px 36px rgba(15, 30, 53, 0.12), 0 3px 8px rgba(15, 30, 53, 0.07);
 }
 
-.github-menu-item {
-    padding: 4px 0;
-    overflow: visible;
-}
-
-.github-command-field {
+.github-command-row {
     display: flex;
     align-items: center;
-    padding: 6px 10px;
-    border: 1px solid rgba(var(--v-border-color), 0.38);
-    border-radius: 8px;
     gap: 6px;
-    min-height: 36px;
+    padding: 9px 12px;
+    background: rgba(var(--v-border-color), 0.07);
+    border-radius: 8px;
+    border: 1px solid rgba(var(--v-border-color), 0.14);
+    margin-bottom: 8px;
 }
 
 .github-command-text {
     flex: 1;
-    font-size: 14px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 13px;
     font-weight: 600;
+    letter-spacing: -0.01em;
+    color: rgb(var(--v-theme-on-surface));
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    font-family: monospace;
-    color: rgba(var(--v-theme-on-surface), 0.8);
 }
 
 .github-command-actions {
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 1px;
     flex-shrink: 0;
 }
 
 .github-menu-row {
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 
 .github-repo-col {
-    flex: 0 0 41.66%;
+    flex: 0 0 42%;
     min-width: 0;
 }
 
 .github-branch-col {
     flex: 1;
-    min-width: 160px;
+    min-width: 0;
+}
+
+.github-linked-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 8px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: rgba(26, 122, 74, 0.09);
+}
+
+.github-linked-status__icon {
+    font-size: 13px;
+    color: #1a7a4a;
+    flex-shrink: 0;
+}
+
+.github-linked-status__label {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: #1a7a4a;
+}
+
+.github-linked-status__link {
+    margin-left: auto;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: rgb(var(--v-theme-primary));
+    text-decoration: none;
+}
+
+.github-linked-status__link:hover {
+    text-decoration: underline;
 }
 
 /* Confirmation dialog */

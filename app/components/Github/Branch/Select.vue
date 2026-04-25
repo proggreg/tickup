@@ -110,12 +110,12 @@ onUnmounted(() => {
 <template>
     <!-- Linked branch chip -->
     <div
-        v-if="listStore.currentTodo.githubBranchName"
+        v-if="selectedBranch || listStore.currentTodo.githubBranchName"
         class="branch-chip"
     >
         <i class="mdi mdi-source-branch branch-chip__icon" />
-        <span class="branch-chip__name">{{ listStore.currentTodo.githubBranchName }}</span>
-        <GithubBranchUnlink :branches="branches" />
+        <span class="branch-chip__name">{{ selectedBranch?.name || listStore.currentTodo.githubBranchName }}</span>
+        <GithubBranchUnlink />
     </div>
 
     <!-- Branch search autocomplete -->
@@ -186,26 +186,35 @@ onUnmounted(() => {
 
 <style scoped>
 .branch-chip {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 12px;
-    background: rgba(var(--v-border-color), 0.1);
-    font-size: 0.8125rem;
-    font-weight: 500;
+    gap: 5px;
+    padding: 5px 8px 5px 9px;
+    border-radius: 7px;
+    border: 1px solid rgba(var(--v-border-color), 0.14);
+    background: transparent;
+    transition: background 0.12s;
+    min-width: 0;
+}
+
+.branch-chip:hover {
+    background: rgba(var(--v-border-color), 0.07);
 }
 
 .branch-chip__icon {
-    font-size: 14px;
-    opacity: 0.7;
+    font-size: 13px;
+    color: rgb(var(--v-theme-primary));
+    flex-shrink: 0;
 }
 
 .branch-chip__name {
+    flex: 1;
+    font-size: 12.5px;
+    font-weight: 500;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 120px;
+    min-width: 0;
 }
 
 .autocomplete {
@@ -215,20 +224,27 @@ onUnmounted(() => {
 .autocomplete__field {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    border: 1px solid rgba(var(--v-border-color), 0.38);
-    border-radius: 6px;
+    gap: 6px;
+    padding: 6px 8px;
+    border-radius: 7px;
+    border: 1px solid rgba(var(--v-border-color), 0.14);
     background: transparent;
-    transition: border-color 0.15s;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.autocomplete__field:hover {
+    border-color: rgba(var(--v-border-color), 0.22);
+    background: rgba(var(--v-border-color), 0.07);
 }
 
 .autocomplete__field:focus-within {
     border-color: rgb(var(--v-theme-primary));
+    background: rgba(var(--v-theme-primary), 0.025);
 }
 
 .autocomplete__icon {
-    font-size: 16px;
+    font-size: 14px;
     opacity: 0.5;
     flex-shrink: 0;
 }
@@ -238,51 +254,60 @@ onUnmounted(() => {
     background: transparent;
     border: none;
     outline: none;
-    font-size: 0.8125rem;
+    font-size: 12.5px;
     font-family: inherit;
-    color: inherit;
+    color: rgb(var(--v-theme-on-surface));
     min-width: 0;
-    padding: 2px 0;
+    padding: 0;
+    font-weight: 500;
+}
+
+.autocomplete__input::placeholder {
+    font-weight: 400;
+    color: rgba(var(--v-theme-on-surface), 0.35);
 }
 
 .clear-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     border: none;
     background: transparent;
     cursor: pointer;
-    border-radius: 3px;
-    color: rgba(var(--v-theme-on-surface), 0.5);
+    border-radius: 4px;
+    color: rgba(var(--v-theme-on-surface), 0.35);
     padding: 0;
     flex-shrink: 0;
+    transition: background 0.12s, color 0.12s;
 }
 
 .clear-btn:hover {
-    background: rgba(var(--v-border-color), 0.1);
+    background: rgba(var(--v-border-color), 0.22);
+    color: rgb(var(--v-theme-on-surface));
 }
 
 .clear-btn .mdi {
-    font-size: 13px;
+    font-size: 11px;
 }
 
 .autocomplete__dropdown {
     width: 320px;
     max-width: calc(100vw - 32px);
     background: rgb(var(--v-theme-surface));
-    border: 1px solid rgba(var(--v-border-color), 0.12);
-    border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(var(--v-border-color), 0.14);
+    border-radius: 9px;
+    box-shadow: 0 8px 24px rgba(15, 30, 53, 0.10), 0 2px 6px rgba(15, 30, 53, 0.06);
+    padding: 4px;
     overflow: hidden;
 }
 
 .autocomplete__list {
     list-style: none;
     margin: 0;
-    padding: 4px;
-    max-height: 200px;
+    padding: 0;
+    max-height: 196px;
     overflow-y: auto;
 }
 
@@ -291,27 +316,28 @@ onUnmounted(() => {
     align-items: baseline;
     justify-content: space-between;
     gap: 8px;
-    padding: 8px 12px;
+    padding: 7px 10px;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 6px;
     transition: background 0.1s;
 }
 
 .autocomplete__item:hover {
-    background: rgba(var(--v-border-color), 0.08);
+    background: rgba(var(--v-border-color), 0.07);
 }
 
 .autocomplete__item-title {
-    font-size: 0.875rem;
+    font-size: 13px;
+    font-weight: 500;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .autocomplete__item-sub {
-    font-size: 0.75rem;
+    font-size: 11px;
     font-family: monospace;
-    color: rgba(var(--v-theme-on-surface), 0.5);
+    color: rgba(var(--v-theme-on-surface), 0.45);
     flex-shrink: 0;
 }
 

@@ -53,6 +53,12 @@ function handleRepoSelect(value: Repo) {
 function clearRepo() {
     selectedRepo.value = null;
     searchQuery.value = '';
+    if (listStore.currentTodo.githubLink) {
+        listStore.currentTodo.githubRepo = null;
+        listStore.currentTodo.githubBranchName = null;
+        listStore.currentTodo.githubLink = null;
+        listStore.updateTodo();
+    }
 }
 
 onBeforeMount(async () => {
@@ -80,11 +86,18 @@ watch(() => liststore.currentList.githubRepo, (repo) => {
 <template>
     <!-- Linked repo chip -->
     <div
-        v-if="listStore.currentTodo.githubRepo && listStore.currentTodo.githubLink"
+        v-if="selectedRepo"
         class="repo-chip"
     >
         <i class="mdi mdi-source-repository repo-chip__icon" />
-        <span class="repo-chip__name">{{ listStore.currentTodo.githubRepo }}</span>
+        <span class="repo-chip__name">{{ selectedRepo.name }}</span>
+        <button
+            class="repo-chip__unlink"
+            aria-label="Unlink repository"
+            @click="clearRepo"
+        >
+            <i class="mdi mdi-link-off" />
+        </button>
     </div>
 
     <!-- Repo search autocomplete -->
@@ -161,26 +174,60 @@ watch(() => liststore.currentList.githubRepo, (repo) => {
 
 <style scoped>
 .repo-chip {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 12px;
-    background: rgba(var(--v-border-color), 0.1);
-    font-size: 0.8125rem;
-    font-weight: 500;
+    gap: 5px;
+    padding: 5px 8px 5px 9px;
+    border-radius: 7px;
+    border: 1px solid rgba(var(--v-border-color), 0.14);
+    background: transparent;
+    transition: background 0.12s;
+    min-width: 0;
+}
+
+.repo-chip:hover {
+    background: rgba(var(--v-border-color), 0.07);
 }
 
 .repo-chip__icon {
-    font-size: 14px;
-    opacity: 0.7;
+    font-size: 13px;
+    color: rgb(var(--v-theme-primary));
+    flex-shrink: 0;
 }
 
 .repo-chip__name {
+    flex: 1;
+    font-size: 12.5px;
+    font-weight: 500;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 100px;
+    min-width: 0;
+}
+
+.repo-chip__unlink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    color: rgba(var(--v-theme-on-surface), 0.55);
+    padding: 0;
+    flex-shrink: 0;
+    transition: background 0.12s, color 0.12s;
+}
+
+.repo-chip__unlink:hover {
+    background: rgba(var(--v-theme-error), 0.07);
+    color: rgb(var(--v-theme-error));
+}
+
+.repo-chip__unlink .mdi {
+    font-size: 15px;
 }
 
 .autocomplete {
@@ -190,20 +237,27 @@ watch(() => liststore.currentList.githubRepo, (repo) => {
 .autocomplete__field {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    border: 1px solid rgba(var(--v-border-color), 0.38);
-    border-radius: 6px;
+    gap: 6px;
+    padding: 6px 8px;
+    border-radius: 7px;
+    border: 1px solid rgba(var(--v-border-color), 0.14);
     background: transparent;
-    transition: border-color 0.15s;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.autocomplete__field:hover {
+    border-color: rgba(var(--v-border-color), 0.22);
+    background: rgba(var(--v-border-color), 0.07);
 }
 
 .autocomplete__field:focus-within {
     border-color: rgb(var(--v-theme-primary));
+    background: rgba(var(--v-theme-primary), 0.025);
 }
 
 .autocomplete__icon {
-    font-size: 16px;
+    font-size: 14px;
     opacity: 0.5;
     flex-shrink: 0;
 }
@@ -213,51 +267,60 @@ watch(() => liststore.currentList.githubRepo, (repo) => {
     background: transparent;
     border: none;
     outline: none;
-    font-size: 0.8125rem;
+    font-size: 12.5px;
     font-family: inherit;
-    color: inherit;
+    color: rgb(var(--v-theme-on-surface));
     min-width: 0;
-    padding: 2px 0;
+    padding: 0;
+    font-weight: 500;
+}
+
+.autocomplete__input::placeholder {
+    font-weight: 400;
+    color: rgba(var(--v-theme-on-surface), 0.35);
 }
 
 .clear-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     border: none;
     background: transparent;
     cursor: pointer;
-    border-radius: 3px;
-    color: rgba(var(--v-theme-on-surface), 0.5);
+    border-radius: 4px;
+    color: rgba(var(--v-theme-on-surface), 0.35);
     padding: 0;
     flex-shrink: 0;
+    transition: background 0.12s, color 0.12s;
 }
 
 .clear-btn:hover {
-    background: rgba(var(--v-border-color), 0.1);
+    background: rgba(var(--v-border-color), 0.22);
+    color: rgb(var(--v-theme-on-surface));
 }
 
 .clear-btn .mdi {
-    font-size: 13px;
+    font-size: 11px;
 }
 
 .autocomplete__dropdown {
     width: 280px;
     max-width: calc(100vw - 32px);
     background: rgb(var(--v-theme-surface));
-    border: 1px solid rgba(var(--v-border-color), 0.12);
-    border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(var(--v-border-color), 0.14);
+    border-radius: 9px;
+    box-shadow: 0 8px 24px rgba(15, 30, 53, 0.10), 0 2px 6px rgba(15, 30, 53, 0.06);
+    padding: 4px;
     overflow: hidden;
 }
 
 .autocomplete__list {
     list-style: none;
     margin: 0;
-    padding: 4px;
-    max-height: 240px;
+    padding: 0;
+    max-height: 196px;
     overflow-y: auto;
 }
 
@@ -265,14 +328,14 @@ watch(() => liststore.currentList.githubRepo, (repo) => {
     display: flex;
     align-items: flex-start;
     gap: 8px;
-    padding: 8px 12px;
+    padding: 7px 10px;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 6px;
     transition: background 0.1s;
 }
 
 .autocomplete__item:hover {
-    background: rgba(var(--v-border-color), 0.08);
+    background: rgba(var(--v-border-color), 0.07);
 }
 
 .autocomplete__item-prepend {
@@ -281,8 +344,8 @@ watch(() => liststore.currentList.githubRepo, (repo) => {
 }
 
 .autocomplete__item-icon {
-    font-size: 16px;
-    opacity: 0.6;
+    font-size: 13px;
+    color: rgba(var(--v-theme-on-surface), 0.45);
 }
 
 .autocomplete__item-body {
@@ -294,7 +357,7 @@ watch(() => liststore.currentList.githubRepo, (repo) => {
 }
 
 .autocomplete__item-title {
-    font-size: 0.875rem;
+    font-size: 13px;
     font-weight: 500;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -302,8 +365,9 @@ watch(() => liststore.currentList.githubRepo, (repo) => {
 }
 
 .autocomplete__item-sub {
-    font-size: 0.75rem;
-    color: rgba(var(--v-theme-on-surface), 0.5);
+    font-size: 11px;
+    font-family: monospace;
+    color: rgba(var(--v-theme-on-surface), 0.45);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
