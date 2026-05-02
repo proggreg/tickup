@@ -47,7 +47,8 @@ async function main() {
                         message: `Reminder for todo: ${todo.name}`,
                     }),
                 );
-            } catch (e) {
+            }
+            catch (e) {
                 console.error('Failed to send notification', e);
             }
         }
