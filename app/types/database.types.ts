@@ -1,18 +1,12 @@
-export type Json
-    = | string
-        | number
-        | boolean
-        | null
-        | { [key: string]: Json | undefined }
-        | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
     graphql_public: {
         Tables: {
-            [_ in never]: never
+            [_ in never]: never;
         };
         Views: {
-            [_ in never]: never
+            [_ in never]: never;
         };
         Functions: {
             graphql: {
@@ -26,10 +20,10 @@ export type Database = {
             };
         };
         Enums: {
-            [_ in never]: never
+            [_ in never]: never;
         };
         CompositeTypes: {
-            [_ in never]: never
+            [_ in never]: never;
         };
     };
     public: {
@@ -74,9 +68,9 @@ export type Database = {
                     notification_date_time: string | null;
                     notification_sent: boolean | null;
                     order: number | null;
+                    parent_id: number | null;
                     priority: string | null;
                     status: string | null;
-                    subtasks: Json | null;
                     type: string | null;
                     updated_at: string | null;
                     user_id: string | null;
@@ -96,9 +90,9 @@ export type Database = {
                     notification_date_time?: string | null;
                     notification_sent?: boolean | null;
                     order?: number | null;
+                    parent_id?: number | null;
                     priority?: string | null;
                     status?: string | null;
-                    subtasks?: Json | null;
                     type?: string | null;
                     updated_at?: string | null;
                     user_id?: string | null;
@@ -118,9 +112,9 @@ export type Database = {
                     notification_date_time?: string | null;
                     notification_sent?: boolean | null;
                     order?: number | null;
+                    parent_id?: number | null;
                     priority?: string | null;
                     status?: string | null;
-                    subtasks?: Json | null;
                     type?: string | null;
                     updated_at?: string | null;
                     user_id?: string | null;
@@ -131,6 +125,13 @@ export type Database = {
                         columns: ['list_id'];
                         isOneToOne: false;
                         referencedRelation: 'Lists';
+                        referencedColumns: ['id'];
+                    },
+                    {
+                        foreignKeyName: 'Todos_parent_id_fkey';
+                        columns: ['parent_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'Todos';
                         referencedColumns: ['id'];
                     },
                 ];
@@ -172,6 +173,7 @@ export type Database = {
                 Row: {
                     github_installation_id: number | null;
                     github_username: string | null;
+                    github_webhook_subscriptions: Json | null;
                     id: string;
                     push_subscriptions: Json | null;
                     username: string | null;
@@ -179,6 +181,7 @@ export type Database = {
                 Insert: {
                     github_installation_id?: number | null;
                     github_username?: string | null;
+                    github_webhook_subscriptions?: Json | null;
                     id: string;
                     push_subscriptions?: Json | null;
                     username?: string | null;
@@ -186,6 +189,7 @@ export type Database = {
                 Update: {
                     github_installation_id?: number | null;
                     github_username?: string | null;
+                    github_webhook_subscriptions?: Json | null;
                     id?: string;
                     push_subscriptions?: Json | null;
                     username?: string | null;
@@ -194,16 +198,16 @@ export type Database = {
             };
         };
         Views: {
-            [_ in never]: never
+            [_ in never]: never;
         };
         Functions: {
-            [_ in never]: never
+            [_ in never]: never;
         };
         Enums: {
-            [_ in never]: never
+            [_ in never]: never;
         };
         CompositeTypes: {
-            [_ in never]: never
+            [_ in never]: never;
         };
     };
 };
@@ -214,37 +218,37 @@ type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>]
 
 export type Tables<
     DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
-    | { schema: keyof DatabaseWithoutInternals },
+        | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+        | { schema: keyof DatabaseWithoutInternals },
     TableName extends DefaultSchemaTableNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals;
     }
-        ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
-            & DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
+        ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+              DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
         : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
 }
-    ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
-        & DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
+    ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+          DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
+          Row: infer R;
+      }
+        ? R
+        : never
+    : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] &
+            DefaultSchema['Views'])
+      ? (DefaultSchema['Tables'] &
+            DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
             Row: infer R;
         }
-            ? R
-            : never
-    : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables']
-        & DefaultSchema['Views'])
-        ? (DefaultSchema['Tables']
-            & DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
-                Row: infer R;
-            }
-                ? R
-                : never
-        : never;
+          ? R
+          : never
+      : never;
 
 export type TablesInsert<
     DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
-    | { schema: keyof DatabaseWithoutInternals },
+        | keyof DefaultSchema['Tables']
+        | { schema: keyof DatabaseWithoutInternals },
     TableName extends DefaultSchemaTableNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals;
     }
@@ -254,22 +258,22 @@ export type TablesInsert<
     schema: keyof DatabaseWithoutInternals;
 }
     ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
-        Insert: infer I;
-    }
+          Insert: infer I;
+      }
         ? I
         : never
     : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-        ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+      ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
             Insert: infer I;
         }
-            ? I
-            : never
-        : never;
+          ? I
+          : never
+      : never;
 
 export type TablesUpdate<
     DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
-    | { schema: keyof DatabaseWithoutInternals },
+        | keyof DefaultSchema['Tables']
+        | { schema: keyof DatabaseWithoutInternals },
     TableName extends DefaultSchemaTableNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals;
     }
@@ -279,22 +283,22 @@ export type TablesUpdate<
     schema: keyof DatabaseWithoutInternals;
 }
     ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
-        Update: infer U;
-    }
+          Update: infer U;
+      }
         ? U
         : never
     : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-        ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+      ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
             Update: infer U;
         }
-            ? U
-            : never
-        : never;
+          ? U
+          : never
+      : never;
 
 export type Enums<
     DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema['Enums']
-    | { schema: keyof DatabaseWithoutInternals },
+        | keyof DefaultSchema['Enums']
+        | { schema: keyof DatabaseWithoutInternals },
     EnumName extends DefaultSchemaEnumNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals;
     }
@@ -305,13 +309,13 @@ export type Enums<
 }
     ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
     : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
-        ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
-        : never;
+      ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
+      : never;
 
 export type CompositeTypes<
     PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema['CompositeTypes']
-    | { schema: keyof DatabaseWithoutInternals },
+        | keyof DefaultSchema['CompositeTypes']
+        | { schema: keyof DatabaseWithoutInternals },
     CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals;
     }
@@ -322,8 +326,8 @@ export type CompositeTypes<
 }
     ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
     : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
-        ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
-        : never;
+      ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+      : never;
 
 export const Constants = {
     graphql_public: {

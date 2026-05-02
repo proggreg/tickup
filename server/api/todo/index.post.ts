@@ -7,6 +7,19 @@ export default defineEventHandler(async (event) => {
 
     delete body.edit;
     delete body.userId;
+    delete body.subtasks;
+
+    if (body.parentId) {
+        const { data: parent, error: parentError } = await supabase
+            .from('Todos')
+            .select('id')
+            .eq('id', body.parentId)
+            .single();
+        if (parentError || !parent) {
+            throw createError({ statusCode: 400, statusMessage: 'Parent todo not found' });
+        }
+        // Allow parent to be a subtask as well (nested subtasks are permitted)
+    }
 
     const todo = objectToSnake(body);
     try {
@@ -24,8 +37,7 @@ export default defineEventHandler(async (event) => {
         if (result) {
             return objectToCamel(result);
         }
-    }
-    catch (e) {
+    } catch (e) {
         console.error('error', e);
         throw createError({
             statusCode: 500,

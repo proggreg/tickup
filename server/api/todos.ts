@@ -23,12 +23,13 @@ export default defineEventHandler(async (event) => {
             }
 
             // Transform snake_case fields to camelCase
-            return (data || []).map(todo => ({
+            return (data || []).map((todo) => ({
                 ...todo,
                 dueDate: todo.due_date,
                 completedDate: todo.completed_date,
                 userId: todo.user_id,
                 listId: todo.list_id,
+                parentId: todo.parent_id,
                 githubBranchName: todo.github_branch_name,
                 notificationDateTime: todo.notification_date_time,
                 notificationSent: todo.notification_sent,
@@ -45,6 +46,7 @@ export default defineEventHandler(async (event) => {
                 .from('Todos')
                 .select('*')
                 .lt('due_date', start.toISOString())
+                .is('parent_id', null)
                 .order('due_date', { ascending: false });
 
             if (error) {
@@ -53,7 +55,7 @@ export default defineEventHandler(async (event) => {
             }
 
             // Transform snake_case fields to camelCase
-            return (data || []).map(todo => ({
+            return (data || []).map((todo) => ({
                 ...todo,
                 dueDate: todo.due_date,
                 completedDate: todo.completed_date,
@@ -70,7 +72,8 @@ export default defineEventHandler(async (event) => {
         const { data, error } = await supabase
             .from('Todos')
             .select('*')
-            .eq('user_id', query.id);
+            .eq('user_id', query.id)
+            .is('parent_id', null);
 
         if (error) {
             console.error('Supabase error:', error);
@@ -78,7 +81,7 @@ export default defineEventHandler(async (event) => {
         }
 
         // Transform snake_case fields to camelCase
-        return (data || []).map(todo => ({
+        return (data || []).map((todo) => ({
             ...todo,
             dueDate: todo.due_date,
             completedDate: todo.completed_date,
@@ -90,8 +93,7 @@ export default defineEventHandler(async (event) => {
             createdAt: todo.created_at,
             updatedAt: todo.updated_at,
         }));
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error fetching todos:', error);
         return [];
     }

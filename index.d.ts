@@ -1,7 +1,6 @@
 export { Todo, Status, List };
 
 declare global {
-
     type View = 'list' | 'board';
     type ListType = 'simple' | 'table' | '';
 
@@ -11,11 +10,13 @@ declare global {
         id?: string;
         dueDate?: Date;
         listId?: string;
+        list?: List;
         status: string;
         desc?: string;
         edit: boolean;
         selected?: boolean;
         color: string;
+        priorityLev: string;
         githubBranchName?: string;
         githubRepo?: string;
         githubLink?: string;
@@ -24,11 +25,8 @@ declare global {
             title: string;
             url: string;
         }[];
-        subtasks?: {
-            name: string;
-            status: string;
-            id: string;
-        }[];
+        parentId?: string;
+        subtasks?: Todo[]; // hydrated client-side only; never sent in PUT/POST body
         attachments?: {
             id: ObjectId;
             attachmentId: string;
@@ -40,6 +38,8 @@ declare global {
         }[];
         notificationDateTime?: string | Date;
         notificationSent?: boolean;
+        createdAt?: string;
+        updatedAt?: string;
     }
 
     interface Status {
@@ -50,14 +50,17 @@ declare global {
     }
 
     interface List {
-        userId?: string;
         name: string;
-        todos: Todo[];
+        todos?: Todo[];
         id?: string;
         image?: string;
         listType: ListType;
-        icon: string;
+        icon?: string;
         githubRepo?: string;
+        /**
+         * Default view when opening this list ("list" or "board").
+         */
+        defaultView?: View;
     }
 
     interface listsState {
@@ -77,13 +80,13 @@ declare global {
     }
 
     export interface PwaInjection {
-    /**
-     * @deprecated use `isPWAInstalled` instead
-     */
+        /**
+         * @deprecated use `isPWAInstalled` instead
+         */
         isInstalled: boolean;
         /**
-     * From version v0.3.5+.
-     */
+         * From version v0.3.5+.
+         */
         isPWAInstalled: Ref<boolean>;
         showInstallPrompt: Ref<boolean>;
         cancelInstall: () => void;
@@ -131,5 +134,4 @@ declare global {
             $pwa: UnwrapNestedRefs<PwaInjection>;
         }
     }
-
 }

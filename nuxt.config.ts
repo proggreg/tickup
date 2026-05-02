@@ -35,7 +35,6 @@ export default defineNuxtConfig({
     },
 
     runtimeConfig: {
-
         private: {
             vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
             github: {
@@ -43,8 +42,10 @@ export default defineNuxtConfig({
                 appId: process.env.GITHUB_APP_ID,
                 clientId: process.env.GITHUB_CLIENT_ID,
                 clientSecret: process.env.GITHUB_CLIENT_SECRET,
+                webhookSecret: process.env.GITHUB_WEBHOOK_SECRET,
             },
         },
+
         public: {
             apiBase: '/api',
             hotjarId: process.env.HOTJAR_ID,
@@ -61,10 +62,21 @@ export default defineNuxtConfig({
         },
     },
 
+    ignore: [
+        '**/.claude',
+        'e2e',
+        'e2e-screenshots',
+        'playwright',
+        'playwright-report',
+        'test',
+        'test-results',
+    ],
+
     experimental: {
         payloadExtraction: false,
         typedPages: false,
     },
+    compatibilityDate: '2026-02-28',
 
     nitro: {
         esbuild: {
@@ -74,25 +86,18 @@ export default defineNuxtConfig({
         },
     },
 
-    vite: {
-        server: {
-            allowedHosts: ['dev.gregfield.dev'],
-        },
-    },
-
     typescript: {
         strict: false,
         typeCheck: false,
-
     },
 
     bugsnag: {
-        disabled: process.env.NODE_ENV === 'development', // Disable in development
+        // disabled: process.env.NODE_ENV === 'development', // Disable in development
         publishRelease: true,
         config: {
             apiKey: process.env.BUGSNAG_API_KEY,
-            enabledReleaseStages: ['staging', 'production'],
-            releaseStage: process.env.NUXT_PUBLIC_VERCEL_ENV || 'development',
+            enabledReleaseStages: ['preview', 'production'],
+            releaseStage: process.env.VERCEL_ENV || 'development',
         },
     },
 

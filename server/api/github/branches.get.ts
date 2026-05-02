@@ -71,8 +71,7 @@ export default defineEventHandler(async (event): Promise<ListBranchesData> => {
         } while (link);
 
         return branches;
-    }
-    catch (error: any) {
+    } catch (error: any) {
         console.error('Error listing repos:', error);
         throw createError({
             statusCode: error.status || 500,

@@ -2,17 +2,20 @@ import * as cheerio from 'cheerio';
 import type { Meta } from '~/types/link.types';
 
 async function getTitle(url: string) {
-    return await $fetch(url as string).then((response: any) => {
+    return await $fetch(url, {
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...',
+        },
+    }).then((response: any) => {
         try {
             const $ = cheerio.load(response);
-            const title = $('title').text().replace(/\n/g, '').trim().split(' ').slice(0, 10).join(' ').split('').slice(0, 100).join('');
+            const title = $('title').text() as string;
 
             if (!title) {
                 return url.split('?')[0];
             }
             return title;
-        }
-        catch (error) {
+        } catch (error) {
             console.error('getting title', error);
         }
     });
@@ -26,7 +29,7 @@ export default defineEventHandler(async (event): Promise<Meta[] | { error: strin
             throw new Error('No URLs provided');
         }
 
-        const parsedUrls = JSON.parse(urls);
+        const parsedUrls = JSON.parse(Array.isArray(urls) ? urls[0] : urls);
 
         if (!Array.isArray(parsedUrls)) {
             throw new Error('URLs must be an array');
@@ -44,8 +47,7 @@ export default defineEventHandler(async (event): Promise<Meta[] | { error: strin
         }
 
         return titles;
-    }
-    catch (error: any) {
+    } catch (error: any) {
         console.error(error);
         return { error: error.message };
     }

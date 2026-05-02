@@ -2,7 +2,7 @@
 const listStore = useListsStore();
 const { statuses } = useSettingsStore();
 const currentStatus = computed((): Status => {
-    const status = statuses.find(status => status.name === listStore.currentTodo.status);
+    const status = statuses.find((status) => status.name === listStore.currentTodo.status);
     if (status) {
         return status;
     }
@@ -42,17 +42,13 @@ function updateStatus(statusName: string) {
             </v-list-item>
         </template>
         <template #item="{ props, item }">
-            <v-list-item
-                v-bind="props"
-                :base-color="item.raw.color"
-                :title="item.raw.name"
-            />
+            <v-list-item v-bind="props" :base-color="item.raw.color" :title="item.raw.name" />
         </template>
     </v-select>
 </template>
 
 <style scoped>
 :deep(.v-field__input) {
-  padding: 0;
+    padding: 0;
 }
 </style>
