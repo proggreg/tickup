@@ -1,21 +1,13 @@
+import type { ModuleOptions as McpToolkitOptions } from '@nuxtjs/mcp-toolkit';
+import type { ModuleOptions as NuxtMcpViteOptions } from 'nuxt-mcp';
 import { defineNuxtConfig } from 'nuxt/config';
 import vuetify from './config/vuetify';
 
+type MergedMcpConfig = NuxtMcpViteOptions & McpToolkitOptions;
+
 export default defineNuxtConfig({
-    modules: [
-        '@vite-pwa/nuxt',
-        'vuetify-nuxt-module',
-        '@pinia/nuxt',
-        // "pinia-plugin-persistedstate/nuxt",
-        '@vueuse/nuxt',
-        '@nuxtjs/color-mode',
-        '@nuxt/eslint',
-        '@nuxtjs/device',
-        '@nuxt/test-utils/module',
-        'nuxt-bugsnag',
-        '@nuxtjs/supabase',
-        'nuxt-mcp',
-    ],
+    modules: ['@vite-pwa/nuxt', 'vuetify-nuxt-module', '@pinia/nuxt',
+        '@vueuse/nuxt', '@nuxtjs/color-mode', '@nuxt/eslint', '@nuxtjs/device', '@nuxt/test-utils/module', 'nuxt-bugsnag', '@nuxtjs/supabase', 'nuxt-mcp', '@nuxtjs/mcp-toolkit'],
 
     pages: true,
 
@@ -75,9 +67,9 @@ export default defineNuxtConfig({
     experimental: {
         payloadExtraction: false,
         typedPages: false,
+        asyncContext: true,
     },
     compatibilityDate: '2026-02-28',
-
     nitro: {
         esbuild: {
             options: {
@@ -110,6 +102,11 @@ export default defineNuxtConfig({
             },
         },
     },
+
+    mcp: {
+        name: 'Tickup',
+        description: 'Tickup MCP server — tools and resources for the todo app.',
+    } as MergedMcpConfig,
 
     pinia: {},
 
