@@ -7,7 +7,7 @@ export class ListAPI {
 
     constructor(request: APIRequestContext) {
         this.request = request;
-    };
+    }
 
     async new(data: List) {
         const response = await this.request.post(APIRoutes.list.post, { data });

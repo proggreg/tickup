@@ -24,7 +24,7 @@ async function focusDeleteButton() {
 
     buttonFocused.value = !buttonFocused.value;
     if (deleteButton.value) {
-    // deleteButton.value.focus()
+        // deleteButton.value.focus()
     }
 }
 </script>
@@ -42,9 +42,7 @@ async function focusDeleteButton() {
         </template>
         <template #default="{ isActive }">
             <v-card>
-                <v-card-text>
-                    Are you sure you want to delete this todo?
-                </v-card-text>
+                <v-card-text> Are you sure you want to delete this todo? </v-card-text>
                 <v-card-actions>
                     <v-spacer />
                     <v-btn
@@ -55,9 +53,7 @@ async function focusDeleteButton() {
                     >
                         Yes
                     </v-btn>
-                    <v-btn @click="isActive.value = false">
-                        No
-                    </v-btn>
+                    <v-btn @click="isActive.value = false"> No </v-btn>
                 </v-card-actions>
             </v-card>
         </template>

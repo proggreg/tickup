@@ -96,8 +96,7 @@ export default defineEventHandler(async (event) => {
             success: true,
             // attachment: attachmentRef,
         };
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error uploading file:', error);
         throw createError({
             statusCode: 500,

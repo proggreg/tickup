@@ -42,31 +42,12 @@ async function signUpWithPassword() {
 </script>
 
 <template>
-    <v-row
-        width="100%"
-        align="center"
-        justify="center"
-        class="fill-height"
-    >
-        <v-col
-            cols="12"
-            sm="8"
-            md="6"
-            lg="4"
-            xl="3"
-        >
-            <v-card
-                class="pa-8"
-                elevation="2"
-                width="100%"
-            >
+    <v-row width="100%" align="center" justify="center" class="fill-height">
+        <v-col cols="12" sm="8" md="6" lg="4" xl="3">
+            <v-card class="pa-8" elevation="2" width="100%">
                 <v-card-title class="text-center pa-6">
-                    <h2 class="text-h4 font-weight-bold">
-                        Welcome
-                    </h2>
-                    <p class="text-subtitle-1 text-medium-emphasis mt-4">
-                        Sign in to your account
-                    </p>
+                    <h2 class="text-h4 font-weight-bold">Welcome</h2>
+                    <p class="text-subtitle-1 text-medium-emphasis mt-4">Sign in to your account</p>
                 </v-card-title>
 
                 <v-card-text class="pt-0">
@@ -79,10 +60,7 @@ async function signUpWithPassword() {
                         {{ loginError }}
                     </v-alert>
 
-                    <form
-                        class="d-flex flex-column"
-                        @submit.prevent="signInWithPassword"
-                    >
+                    <form class="d-flex flex-column" @submit.prevent="signInWithPassword">
                         <v-text-field
                             v-model="email"
                             label="Email"

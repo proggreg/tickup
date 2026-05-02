@@ -24,7 +24,9 @@ export default defineEventHandler(async (event) => {
     try {
         const { owner, repo, branch } = getQuery(event);
         console.log({
-            owner, repo, branch,
+            owner,
+            repo,
+            branch,
         });
 
         // Ensure owner, repo, and branch are strings (as getQuery may return string|string[])
@@ -44,8 +46,7 @@ export default defineEventHandler(async (event) => {
         });
 
         return data;
-    }
-    catch (error: any) {
+    } catch (error: any) {
         console.error('Error listing repos:', error);
         throw createError({
             statusCode: error.status || 500,

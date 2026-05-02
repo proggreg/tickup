@@ -5,7 +5,8 @@ async function getTitle(url: string) {
     return await $fetch(url, {
         headers: {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...',
-        } }).then((response: any) => {
+        },
+    }).then((response: any) => {
         try {
             const $ = cheerio.load(response);
             const title = $('title').text() as string;
@@ -14,8 +15,7 @@ async function getTitle(url: string) {
                 return url.split('?')[0];
             }
             return title;
-        }
-        catch (error) {
+        } catch (error) {
             console.error('getting title', error);
         }
     });
@@ -47,8 +47,7 @@ export default defineEventHandler(async (event): Promise<Meta[] | { error: strin
         }
 
         return titles;
-    }
-    catch (error: any) {
+    } catch (error: any) {
         console.error(error);
         return { error: error.message };
     }

@@ -24,11 +24,7 @@ export default defineEventHandler(async (event) => {
         privateKey: VAPID_PRIVATE_KEY ? '✅ Set' : '❌ Missing',
     });
 
-    webpush.setVapidDetails(
-        'mailto:greg.field1992@gmail.com',
-        VAPID_PUBLIC_KEY,
-        VAPID_PRIVATE_KEY,
-    );
+    webpush.setVapidDetails('mailto:greg.field1992@gmail.com', VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
 
     const supabase = await serverSupabaseClient(event);
 
@@ -50,13 +46,16 @@ export default defineEventHandler(async (event) => {
     console.log(`📋 Found ${todos?.length || 0} todos that need notifications`);
 
     if (todos && todos.length > 0) {
-        console.log('📝 Todos requiring notifications:', todos.map(t => ({
-            id: t.id,
-            name: t.name,
-            userId: t.user_id,
-            notificationDateTime: t.notification_date_time,
-            notificationSent: t.notification_sent,
-        })));
+        console.log(
+            '📝 Todos requiring notifications:',
+            todos.map((t) => ({
+                id: t.id,
+                name: t.name,
+                userId: t.user_id,
+                notificationDateTime: t.notification_date_time,
+                notificationSent: t.notification_sent,
+            })),
+        );
     }
 
     let sent = 0;
@@ -85,12 +84,16 @@ export default defineEventHandler(async (event) => {
         }
         userSubscriptions.push(user);
 
-        console.log(`📱 User ${user.username} has ${user.push_subscriptions.length} push subscriptions`);
+        console.log(
+            `📱 User ${user.username} has ${user.push_subscriptions.length} push subscriptions`,
+        );
 
         // Send notification to all subscriptions
         for (let i = 0; i < user.push_subscriptions.length; i++) {
             const sub = user.push_subscriptions[i];
-            console.log(`📤 Attempting to send notification ${i + 1}/${user.push_subscriptions.length}`);
+            console.log(
+                `📤 Attempting to send notification ${i + 1}/${user.push_subscriptions.length}`,
+            );
 
             try {
                 const payload = JSON.stringify({
@@ -99,13 +102,15 @@ export default defineEventHandler(async (event) => {
                 });
 
                 console.log('📦 Notification payload:', payload);
-                console.log('🔗 Subscription endpoint:', sub.endpoint ? '✅ Present' : '❌ Missing');
+                console.log(
+                    '🔗 Subscription endpoint:',
+                    sub.endpoint ? '✅ Present' : '❌ Missing',
+                );
 
                 await webpush.sendNotification(sub, payload);
                 console.log(`✅ Notification sent successfully to subscription ${i + 1}`);
                 sent++;
-            }
-            catch (e: any) {
+            } catch (e: any) {
                 console.error(`❌ Failed to send notification to subscription ${i + 1}:`, e);
                 console.error('🔍 Error details:', {
                     message: e?.message || 'Unknown error',
@@ -125,12 +130,13 @@ export default defineEventHandler(async (event) => {
 
         if (updateError) {
             console.error(`❌ Failed to mark todo ${todo.id} as notified:`, updateError);
-        }
-        else {
+        } else {
             console.log(`✅ Todo ${todo.id} marked as notified`);
         }
     }
     console.log(`userSubscriptions ${userSubscriptions}`);
-    console.log(`\n📊 Summary: ${sent} notifications sent out of ${todos?.length || 0} todos processed`);
+    console.log(
+        `\n📊 Summary: ${sent} notifications sent out of ${todos?.length || 0} todos processed`,
+    );
     return { sent, checked: todos?.length || 0, todos };
 });

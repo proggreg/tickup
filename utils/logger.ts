@@ -32,10 +32,10 @@ class Logger {
         const formatted = this.formatMessage('warn', message, context);
         console.warn(formatted, ...args);
 
-    // In production, could send to error tracking service
-    // if (!this.isDev) {
-    //   // Send to Bugsnag or similar
-    // }
+        // In production, could send to error tracking service
+        // if (!this.isDev) {
+        //   // Send to Bugsnag or similar
+        // }
     }
 
     error(error: Error | unknown, context?: LogContext, ...args: unknown[]): void {

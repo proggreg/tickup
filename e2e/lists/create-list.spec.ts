@@ -22,8 +22,8 @@ test.describe('a user can create a list', () => {
         const listName = `List ${testId}`;
         const newListInput = await page.getByRole('textbox', { name: 'New List' });
         await newListInput.type(listName);
-        const requestPromise = page.waitForRequest(request =>
-            request.url().includes('/api/list') && request.method() === 'POST',
+        const requestPromise = page.waitForRequest(
+            (request) => request.url().includes('/api/list') && request.method() === 'POST',
         );
         await page.keyboard.press('Enter');
         await requestPromise;
@@ -55,8 +55,8 @@ test.describe('a user can create a list', () => {
         const listName = `List ${testId}`;
         const newListInput = await page.getByRole('textbox', { name: 'New List' });
         await newListInput.type(listName);
-        const requestPromise = page.waitForRequest(request =>
-            request.url().includes('/api/list') && request.method() === 'POST',
+        const requestPromise = page.waitForRequest(
+            (request) => request.url().includes('/api/list') && request.method() === 'POST',
         );
         await page.keyboard.press('Enter');
 

@@ -3,7 +3,8 @@ import type { Endpoints } from '@octokit/types';
 
 const { notify } = useNotification();
 const githubBranchName = useState('githubBranchName');
-const selectedRepo = useState<Endpoints['GET /repos/{owner}/{repo}']['response']['data']>('githubRepo');
+const selectedRepo =
+    useState<Endpoints['GET /repos/{owner}/{repo}']['response']['data']>('githubRepo');
 const listStore = useListsStore();
 const hasBranch = useState('hasBranch', () => false);
 const pendingBranchResponse = useState('pendingBranchResponse');
@@ -24,8 +25,7 @@ async function createBranch() {
                 // Show confirmation dialog
                 pendingBranchResponse.value = response;
                 showLinkDialog.value = true;
-            }
-            else {
+            } else {
                 listStore.currentTodo.githubBranchName = githubBranchName.value as string;
                 listStore.currentTodo.githubRepo = selectedRepo.value?.full_name;
                 listStore.currentTodo.githubLink = response.url;
@@ -34,8 +34,7 @@ async function createBranch() {
                 notify('Branch created successfully');
             }
         }
-    }
-    catch (error: any) {
+    } catch (error: any) {
         console.error('Failed to create branch:', error);
         const errorMessage = error?.data?.message || error?.message || 'Failed to create branch';
         notify(errorMessage);

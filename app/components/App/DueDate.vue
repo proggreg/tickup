@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const emit = defineEmits(['setDate']);
-const dueDateProps = defineProps<{ todoDueDate?: Date | string; todo: Todo; showDetail?: boolean }>();
+const dueDateProps = defineProps<{
+    todoDueDate?: Date | string;
+    todo: Todo;
+    showDetail?: boolean;
+}>();
 const formattedDate = computed(() => {
     if (dueDateProps.todoDueDate) {
         return new Date(dueDateProps.todoDueDate).toLocaleDateString('en-GB');
@@ -15,11 +19,7 @@ function updateDueDate(newDate: Date | unknown) {
 </script>
 
 <template>
-    <v-dialog
-        location="top"
-        class="ma-2"
-        max-width="500"
-    >
+    <v-dialog location="top" class="ma-2" max-width="500">
         <template #activator="{ props }">
             <v-text-field
                 v-if="dueDateProps.showDetail"
@@ -44,12 +44,7 @@ function updateDueDate(newDate: Date | unknown) {
                     </v-icon>
                 </template>
             </v-text-field>
-            <v-btn
-                v-else
-                v-bind="props"
-                icon="mdi-calendar"
-                variant="text"
-            />
+            <v-btn v-else v-bind="props" icon="mdi-calendar" variant="text" />
         </template>
         <template #default="{ isActive }">
             <v-icon
@@ -68,27 +63,26 @@ function updateDueDate(newDate: Date | unknown) {
 </template>
 
 <style scoped>
-  .v-picker__body {
+.v-picker__body {
     max-width: 100%;
+}
 
-  }
-
-  .v-btn :deep(.v-btn__content) {
+.v-btn :deep(.v-btn__content) {
     @media (max-width: 600px) {
-      font-size: 1rem;
+        font-size: 1rem;
     }
-  }
+}
 
-  .v-icon {
+.v-icon {
     @media (max-width: 600px) {
-      font-size: 1rem;
-      margin-left: 5px;
+        font-size: 1rem;
+        margin-left: 5px;
     }
-  }
+}
 
-  .v-text-field :deep(.v-field__input) {
+.v-text-field :deep(.v-field__input) {
     @media (max-width: 600px) {
-      font-size: 0.8rem;
+        font-size: 0.8rem;
     }
-  }
+}
 </style>

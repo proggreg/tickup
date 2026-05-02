@@ -27,8 +27,7 @@ async function loadRepos() {
     try {
         const data = await $fetch('/api/github/repos');
         repos.value = data.repositories;
-    }
-    catch (e: any) {
+    } catch (e: any) {
         error.value = e?.data?.message || 'Failed to load repositories';
     }
     loading.value = false;
@@ -68,25 +67,28 @@ function handleMenuUpdate(isOpen: boolean) {
 onBeforeMount(async () => {
     await loadRepos();
     if (!listStore.currentList.githubRepo) return;
-    selectedRepo.value = repos.value.find(repo => repo?.name === listStore.currentList.githubRepo);
+    selectedRepo.value = repos.value.find(
+        (repo) => repo?.name === listStore.currentList.githubRepo,
+    );
 });
 onUnmounted(() => {
     selectedRepo.value = null;
 });
 
-watch(() => liststore.currentList.githubRepo, (repo) => {
-    const listsDefaultRepo = repos.value.find(r => r.name === repo);
-    if (listsDefaultRepo) {
-        selectedRepo.value = listsDefaultRepo;
-    }
-});
+watch(
+    () => liststore.currentList.githubRepo,
+    (repo) => {
+        const listsDefaultRepo = repos.value.find((r) => r.name === repo);
+        if (listsDefaultRepo) {
+            selectedRepo.value = listsDefaultRepo;
+        }
+    },
+);
 </script>
 
 <template>
-    <v-chip
-        v-if="listStore.currentTodo.githubRepo && listStore.currentTodo.githubLink"
-    >
-        <v-icon icon="mdi-source-repository" />   {{ listStore.currentTodo.githubRepo }}
+    <v-chip v-if="listStore.currentTodo.githubRepo && listStore.currentTodo.githubLink">
+        <v-icon icon="mdi-source-repository" /> {{ listStore.currentTodo.githubRepo }}
     </v-chip>
     <v-autocomplete
         v-else
@@ -109,11 +111,7 @@ watch(() => liststore.currentList.githubRepo, (repo) => {
         @update:menu="handleMenuUpdate"
     >
         <template #item="{ props, item }">
-            <v-list-item
-                v-bind="props"
-                :subtitle="item.raw.description"
-                slim
-            >
+            <v-list-item v-bind="props" :subtitle="item.raw.description" slim>
                 <template #prepend>
                     <v-icon size="small">
                         {{ item.raw.private ? 'mdi-lock' : 'mdi-source-repository' }}

@@ -5,7 +5,10 @@ import { v4 as uuidv4 } from 'uuid';
 // controls which tab (board/list) a list opens with by default.
 
 test.describe('list default view setting', () => {
-    test.skip('changing default view to board opens list on board tab', async ({ page, isMobile }) => {
+    test.skip('changing default view to board opens list on board tab', async ({
+        page,
+        isMobile,
+    }) => {
         test.skip(isMobile, 'List settings layout is desktop only');
 
         await page.goto('/');
@@ -26,8 +29,9 @@ test.describe('list default view setting', () => {
         const newListInput = await page.getByRole('textbox', { name: 'New List' });
         await newListInput.type(listName);
 
-        const createResponse = page.waitForResponse(response =>
-            response.url().includes('/api/list') && response.request().method() === 'POST',
+        const createResponse = page.waitForResponse(
+            (response) =>
+                response.url().includes('/api/list') && response.request().method() === 'POST',
         );
         await page.keyboard.press('Enter');
         const response = await createResponse;
@@ -58,8 +62,9 @@ test.describe('list default view setting', () => {
         await boardOption.click();
 
         // Save settings (this persists defaultView on the list)
-        const saveRequestPromise = page.waitForRequest(request =>
-            request.url().includes(`/api/list/${listId}`) && request.method() === 'PUT',
+        const saveRequestPromise = page.waitForRequest(
+            (request) =>
+                request.url().includes(`/api/list/${listId}`) && request.method() === 'PUT',
         );
         const saveButton = page.getByRole('button', { name: 'Save' });
         await saveButton.click();

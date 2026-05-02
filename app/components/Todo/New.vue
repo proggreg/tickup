@@ -27,14 +27,14 @@ function addTodo() {
             <AppDueDate
                 :todo="listsStore.newTodo"
                 :date="listsStore.newTodo.dueDate"
-                @set-date="(newDate: Date) => listsStore.newTodo.dueDate = newDate"
+                @set-date="(newDate: Date) => (listsStore.newTodo.dueDate = newDate)"
             />
         </template>
     </v-text-field>
 </template>
 
 <style>
-  input {
+input {
     height: 100%;
-  }
+}
 </style>

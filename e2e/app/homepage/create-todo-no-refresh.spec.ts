@@ -25,7 +25,10 @@ test.describe('Homepage - new todo appears without refresh', () => {
         await page.waitForLoadState('networkidle');
     });
 
-    test('new todo is shown without refreshing when created on the homepage', async ({ page, isMobile }) => {
+    test('new todo is shown without refreshing when created on the homepage', async ({
+        page,
+        isMobile,
+    }) => {
         test.skip(isMobile, 'This feature is desktop only');
 
         const todoName = `Homepage todo ${uuidv4()}`;

@@ -2,7 +2,6 @@ import { defineNuxtConfig } from 'nuxt/config';
 import vuetify from './config/vuetify';
 
 export default defineNuxtConfig({
-
     modules: [
         '@vite-pwa/nuxt',
         'vuetify-nuxt-module',
@@ -90,7 +89,6 @@ export default defineNuxtConfig({
     typescript: {
         strict: false,
         typeCheck: false,
-
     },
 
     bugsnag: {

@@ -2,7 +2,8 @@
 import type { Endpoints } from '@octokit/types';
 
 const githubBranchName = useState<string>('githubBranchName');
-const selectedRepo = useState<Endpoints['GET /repos/{owner}/{repo}']['response']['data']>('githubRepo');
+const selectedRepo =
+    useState<Endpoints['GET /repos/{owner}/{repo}']['response']['data']>('githubRepo');
 const { notify } = useNotification();
 const listStore = useListsStore();
 
@@ -29,9 +30,5 @@ const copyToClipBoard = () => {
 </script>
 
 <template>
-    <v-btn
-        size="small"
-        icon="mdi-content-copy"
-        @click.stop="copyToClipBoard"
-    />
+    <v-btn size="small" icon="mdi-content-copy" @click.stop="copyToClipBoard" />
 </template>

@@ -7,7 +7,6 @@ export default defineNuxtPlugin((_nuxtApp: any) => {
             provide: {
                 octokit: new Octokit({ auth: runtimeConfig.public.github }),
             },
-
         };
     }
 });

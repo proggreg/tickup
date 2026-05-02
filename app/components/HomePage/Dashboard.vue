@@ -4,11 +4,11 @@ const dialog = useDialog();
 const saveTodo = ref(false);
 const { isTodoClosed } = useTodoStatus();
 
-const todayCount = computed(() =>
-    listsStore.todaysTodos.filter(todo => !isTodoClosed(todo.status)).length,
+const todayCount = computed(
+    () => listsStore.todaysTodos.filter((todo) => !isTodoClosed(todo.status)).length,
 );
-const doneCount = computed(() =>
-    listsStore.todaysTodos.filter(todo => isTodoClosed(todo.status)).length,
+const doneCount = computed(
+    () => listsStore.todaysTodos.filter((todo) => isTodoClosed(todo.status)).length,
 );
 
 onBeforeMount(() => {
@@ -17,95 +17,50 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <v-container
-        fluid
-        class="pa-6"
-    >
+    <v-container fluid class="pa-6">
         <!-- Stats summary row -->
-        <v-row
-            class="mb-6"
-            dense
-        >
+        <v-row class="mb-6" dense>
             <v-col cols="3">
-                <v-card
-                    rounded="lg"
-                    color="error"
-                    variant="tonal"
-                    class="pa-4 text-center"
-                >
+                <v-card rounded="lg" color="error" variant="tonal" class="pa-4 text-center">
                     <div class="text-h3 font-weight-bold">
                         {{ listsStore.overdueTodos.length }}
                     </div>
-                    <div class="text-body-2 mt-1 text-medium-emphasis">
-                        Overdue
-                    </div>
+                    <div class="text-body-2 mt-1 text-medium-emphasis">Overdue</div>
                 </v-card>
             </v-col>
             <v-col cols="3">
-                <v-card
-                    rounded="lg"
-                    color="primary"
-                    variant="tonal"
-                    class="pa-4 text-center"
-                >
+                <v-card rounded="lg" color="primary" variant="tonal" class="pa-4 text-center">
                     <div class="text-h3 font-weight-bold">
                         {{ todayCount }}
                     </div>
-                    <div class="text-body-2 mt-1 text-medium-emphasis">
-                        Due Today
-                    </div>
+                    <div class="text-body-2 mt-1 text-medium-emphasis">Due Today</div>
                 </v-card>
             </v-col>
             <v-col cols="3">
-                <v-card
-                    rounded="lg"
-                    color="success"
-                    variant="tonal"
-                    class="pa-4 text-center"
-                >
+                <v-card rounded="lg" color="success" variant="tonal" class="pa-4 text-center">
                     <div class="text-h3 font-weight-bold">
                         {{ doneCount }}
                     </div>
-                    <div class="text-body-2 mt-1 text-medium-emphasis">
-                        Done Today
-                    </div>
+                    <div class="text-body-2 mt-1 text-medium-emphasis">Done Today</div>
                 </v-card>
             </v-col>
             <v-col cols="3">
-                <v-card
-                    rounded="lg"
-                    variant="tonal"
-                    class="pa-4 text-center"
-                >
+                <v-card rounded="lg" variant="tonal" class="pa-4 text-center">
                     <div class="text-h3 font-weight-bold">
                         {{ listsStore.lists.length }}
                     </div>
-                    <div class="text-body-2 mt-1 text-medium-emphasis">
-                        Lists
-                    </div>
+                    <div class="text-body-2 mt-1 text-medium-emphasis">Lists</div>
                 </v-card>
             </v-col>
         </v-row>
 
         <!-- Main 3-column content -->
-        <v-row
-            class="mb-6"
-            align="stretch"
-        >
+        <v-row class="mb-6" align="stretch">
             <!-- Overdue column -->
             <v-col cols="4">
-                <v-card
-                    rounded="lg"
-                    variant="outlined"
-                    class="dashboard-col"
-                >
+                <v-card rounded="lg" variant="outlined" class="dashboard-col">
                     <v-card-title class="d-flex align-center ga-2 pa-4 pb-3">
-                        <v-icon
-                            color="error"
-                            size="small"
-                        >
-                            mdi-clock-alert-outline
-                        </v-icon>
+                        <v-icon color="error" size="small"> mdi-clock-alert-outline </v-icon>
                         <span>Overdue</span>
                         <v-chip
                             v-if="listsStore.overdueTodos.length"
@@ -125,25 +80,11 @@ onBeforeMount(() => {
 
             <!-- Today column -->
             <v-col cols="4">
-                <v-card
-                    rounded="lg"
-                    variant="outlined"
-                    class="dashboard-col"
-                >
+                <v-card rounded="lg" variant="outlined" class="dashboard-col">
                     <v-card-title class="d-flex align-center ga-2 pa-4 pb-3">
-                        <v-icon
-                            color="primary"
-                            size="small"
-                        >
-                            mdi-calendar-today
-                        </v-icon>
+                        <v-icon color="primary" size="small"> mdi-calendar-today </v-icon>
                         <span>Today</span>
-                        <v-chip
-                            v-if="todayCount"
-                            color="primary"
-                            size="small"
-                            class="ml-auto"
-                        >
+                        <v-chip v-if="todayCount" color="primary" size="small" class="ml-auto">
                             {{ todayCount }}
                         </v-chip>
                     </v-card-title>
@@ -152,7 +93,10 @@ onBeforeMount(() => {
                         <TodoNew
                             :save-todo="saveTodo"
                             class="mb-4"
-                            @add-todo="dialog.open = false; saveTodo = false"
+                            @add-todo="
+                                dialog.open = false;
+                                saveTodo = false;
+                            "
                         />
                         <HomePageToday />
                     </div>
@@ -161,25 +105,11 @@ onBeforeMount(() => {
 
             <!-- Done column -->
             <v-col cols="4">
-                <v-card
-                    rounded="lg"
-                    variant="outlined"
-                    class="dashboard-col"
-                >
+                <v-card rounded="lg" variant="outlined" class="dashboard-col">
                     <v-card-title class="d-flex align-center ga-2 pa-4 pb-3">
-                        <v-icon
-                            color="success"
-                            size="small"
-                        >
-                            mdi-check-circle-outline
-                        </v-icon>
+                        <v-icon color="success" size="small"> mdi-check-circle-outline </v-icon>
                         <span>Done Today</span>
-                        <v-chip
-                            v-if="doneCount"
-                            color="success"
-                            size="small"
-                            class="ml-auto"
-                        >
+                        <v-chip v-if="doneCount" color="success" size="small" class="ml-auto">
                             {{ doneCount }}
                         </v-chip>
                     </v-card-title>
@@ -194,30 +124,17 @@ onBeforeMount(() => {
         <!-- My Lists section -->
         <v-row>
             <v-col cols="12">
-                <v-card
-                    rounded="lg"
-                    variant="outlined"
-                >
+                <v-card rounded="lg" variant="outlined">
                     <v-card-title class="d-flex align-center ga-2 pa-4 pb-3">
-                        <v-icon size="small">
-                            mdi-format-list-bulleted
-                        </v-icon>
+                        <v-icon size="small"> mdi-format-list-bulleted </v-icon>
                         <span>My Lists</span>
-                        <v-btn
-                            variant="text"
-                            size="small"
-                            to="/lists"
-                            class="ml-auto text-caption"
-                        >
+                        <v-btn variant="text" size="small" to="/lists" class="ml-auto text-caption">
                             View all
                         </v-btn>
                     </v-card-title>
                     <v-divider />
                     <v-card-text class="pa-4">
-                        <v-row
-                            v-if="listsStore.lists.length"
-                            dense
-                        >
+                        <v-row v-if="listsStore.lists.length" dense>
                             <v-col
                                 v-for="list in listsStore.lists"
                                 :key="list.id"
@@ -244,10 +161,7 @@ onBeforeMount(() => {
                                 </v-card>
                             </v-col>
                         </v-row>
-                        <AppEmptyState
-                            v-else
-                            height="80px"
-                        />
+                        <AppEmptyState v-else height="80px" />
                     </v-card-text>
                 </v-card>
             </v-col>
