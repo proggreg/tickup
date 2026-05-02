@@ -36,14 +36,8 @@ const closedTodos = computed(() => {
         v-if="listsStore.currentList.todos && listsStore.currentList.todos.length"
         variant="flat"
     >
-        <v-list
-            :opened="opened"
-            variant="plain"
-        >
-            <v-list-group
-                value="Open"
-                fluid
-            >
+        <v-list :opened="opened" variant="plain">
+            <v-list-group value="Open" fluid>
                 <template #activator="{ props }">
                     <v-list-item
                         v-bind="props"
@@ -61,17 +55,11 @@ const closedTodos = computed(() => {
                     <template #prepend>
                         <v-checkbox @click.stop="setClosed(todo)" />
                     </template>
-                    <v-list-item-title
-                        data-testid="todo-title"
-                        class="todo-title text-truncate"
-                    >
+                    <v-list-item-title data-testid="todo-title" class="todo-title text-truncate">
                         {{ todo.name }}
                     </v-list-item-title>
 
-                    <v-list-item-subtitle
-                        v-if="todo.dueDate"
-                        class="todo-subtitle"
-                    >
+                    <v-list-item-subtitle v-if="todo.dueDate" class="todo-subtitle">
                         {{ formatDate(todo.dueDate) }}
                     </v-list-item-subtitle>
 
@@ -81,10 +69,7 @@ const closedTodos = computed(() => {
                 </v-list-item>
             </v-list-group>
 
-            <v-list-group
-                value="Closed"
-                fluid
-            >
+            <v-list-group value="Closed" fluid>
                 <template #activator="{ props }">
                     <v-list-item
                         v-bind="props"
@@ -100,19 +85,13 @@ const closedTodos = computed(() => {
                     @click="selectTodo(todo)"
                 >
                     <template #prepend>
-                        <v-checkbox
-                            :model-value="true"
-                            @click.stop="setOpen(todo)"
-                        />
+                        <v-checkbox :model-value="true" @click.stop="setOpen(todo)" />
                     </template>
                     <v-list-item-title class="todo-title text-truncate">
                         {{ todo.name }}
                     </v-list-item-title>
 
-                    <v-list-item-subtitle
-                        v-if="todo.dueDate"
-                        class="todo-subtitle"
-                    >
+                    <v-list-item-subtitle v-if="todo.dueDate" class="todo-subtitle">
                         {{ formatDate(todo.dueDate) }}
                     </v-list-item-subtitle>
 
@@ -123,11 +102,7 @@ const closedTodos = computed(() => {
             </v-list-group>
         </v-list>
     </v-card>
-    <v-card
-        v-else
-        variant="flat"
-        :class="['d-flex flex-column justify-center align-center']"
-    >
+    <v-card v-else variant="flat" :class="['d-flex flex-column justify-center align-center']">
         <AppEmptyState height="100%" />
     </v-card>
 </template>

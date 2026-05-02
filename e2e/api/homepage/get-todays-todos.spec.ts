@@ -21,7 +21,7 @@ test.describe('Homepage - todos list', () => {
         const homepageTodosResponse = await request.get('/api/todos?today=true');
         const homepageTodos = await homepageTodosResponse.json();
 
-        const listTodo = homepageTodos.find(todo => todo.name === todoName);
+        const listTodo = homepageTodos.find((todo) => todo.name === todoName);
         expect(listTodo).toBeTruthy();
     });
 
@@ -34,20 +34,28 @@ test.describe('Homepage - todos list', () => {
 
         const todoName = `Homepage List Todo ${testId}`;
 
-        const todo = await createTodo(request, { name: todoName, dueDate: new Date(), listId: list.id });
+        const todo = await createTodo(request, {
+            name: todoName,
+            dueDate: new Date(),
+            listId: list.id,
+        });
 
         console.log('Todo created in a list', todo);
 
         const subtaskName = `Homepage Subtask ${testId}`;
 
-        const subTask = await createTodo(request, { name: subtaskName, dueDate: new Date(), parentId: todo.id });
+        const subTask = await createTodo(request, {
+            name: subtaskName,
+            dueDate: new Date(),
+            parentId: todo.id,
+        });
 
         console.log('Subtask Created: ', subTask);
 
         const homepageTodosResponse = await request.get('/api/todos?today=true');
         const homepageTodos = await homepageTodosResponse.json();
 
-        const listTodo = homepageTodos.find(todo => todo.name === subtaskName);
+        const listTodo = homepageTodos.find((todo) => todo.name === subtaskName);
 
         expect(listTodo).toBeTruthy();
     });

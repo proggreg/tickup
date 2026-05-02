@@ -150,7 +150,9 @@ test.describe('subtasks priority and sorting', () => {
                 await priorityButton.click();
                 await page.waitForTimeout(200);
 
-                const priorityOption = page.getByTestId(`subtask-priority-${subtasksData[i].priority}-${i}`);
+                const priorityOption = page.getByTestId(
+                    `subtask-priority-${subtasksData[i].priority}-${i}`,
+                );
                 await priorityOption.click();
                 await page.waitForTimeout(500);
             }
@@ -317,7 +319,9 @@ test.describe('subtasks priority and sorting', () => {
             await priorityButton.click();
             await page.waitForTimeout(200);
 
-            const priorityOption = page.getByTestId(`subtask-priority-${subtasksData[i].priority}-${i}`);
+            const priorityOption = page.getByTestId(
+                `subtask-priority-${subtasksData[i].priority}-${i}`,
+            );
             await priorityOption.click();
             await page.waitForTimeout(500);
 

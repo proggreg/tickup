@@ -2,7 +2,11 @@ import { test, expect } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
 
 test.describe('a user can create a subtask and it persists after reload', () => {
-    test.skip('creates a subtask, reloads the page, and verifies the subtask still exists', async ({ page, request, isMobile }) => {
+    test.skip('creates a subtask, reloads the page, and verifies the subtask still exists', async ({
+        page,
+        request,
+        isMobile,
+    }) => {
         test.skip(isMobile, 'This feature is desktop only');
         test.skip();
         // Create a test list
@@ -33,8 +37,8 @@ test.describe('a user can create a subtask and it persists after reload', () => 
         await newTodoInput.fill(todoName);
 
         // Wait for the POST request to complete
-        const createTodoPromise = page.waitForRequest(request =>
-            request.url().includes('/api/todo') && request.method() === 'POST',
+        const createTodoPromise = page.waitForRequest(
+            (request) => request.url().includes('/api/todo') && request.method() === 'POST',
         );
         await newTodoInput.press('Enter');
         await createTodoPromise;
@@ -70,8 +74,8 @@ test.describe('a user can create a subtask and it persists after reload', () => 
         const addSubtaskButton = page.getByTestId('add-subtask-button');
         await expect(addSubtaskButton).toBeEnabled({ timeout: 5000 });
 
-        const createSubtaskPromise = page.waitForRequest(request =>
-            request.url().includes('/api/todo') && request.method() === 'POST',
+        const createSubtaskPromise = page.waitForRequest(
+            (request) => request.url().includes('/api/todo') && request.method() === 'POST',
         );
         await addSubtaskButton.click();
         await createSubtaskPromise;

@@ -1,7 +1,6 @@
 export { Todo, Status, List };
 
 declare global {
-
     type View = 'list' | 'board';
     type ListType = 'simple' | 'table' | '';
 
@@ -81,13 +80,13 @@ declare global {
     }
 
     export interface PwaInjection {
-    /**
-     * @deprecated use `isPWAInstalled` instead
-     */
+        /**
+         * @deprecated use `isPWAInstalled` instead
+         */
         isInstalled: boolean;
         /**
-     * From version v0.3.5+.
-     */
+         * From version v0.3.5+.
+         */
         isPWAInstalled: Ref<boolean>;
         showInstallPrompt: Ref<boolean>;
         cancelInstall: () => void;
@@ -135,5 +134,4 @@ declare global {
             $pwa: UnwrapNestedRefs<PwaInjection>;
         }
     }
-
 }

@@ -7,7 +7,7 @@ const statusProps = withDefaults(defineProps<{ todo: Todo; disabled?: boolean }>
 const statuses = computed(() => settings.statuses);
 function getStatusColor(todoStatus: string) {
     if (!statuses.value) return;
-    const status = statuses.value.filter(status => status.name === todoStatus);
+    const status = statuses.value.filter((status) => status.name === todoStatus);
     if (status.length > 0) {
         return status[0].color;
     }
@@ -63,8 +63,8 @@ const updateStatus = (status: string) => {
 
 <style scoped>
 .status-icon {
-  width: 1.5em;
-  height: 1.5em;
-  border-radius: 50%;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
 }
 </style>

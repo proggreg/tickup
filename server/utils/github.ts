@@ -18,7 +18,10 @@ export async function getGithubInstallation(event): Promise<Octokit> {
         .single();
 
     if (!userData?.github_installation_id) {
-        throw createError({ statusCode: 403, message: 'GitHub integration not connected. Connect it in Settings.' });
+        throw createError({
+            statusCode: 403,
+            message: 'GitHub integration not connected. Connect it in Settings.',
+        });
     }
 
     const app = new App({
@@ -29,7 +32,9 @@ export async function getGithubInstallation(event): Promise<Octokit> {
 }
 
 export async function listWebhooks(octokit) {
-    type RawWebhook = Awaited<ReturnType<(typeof octokit)['rest']['repos']['listWebhooks']>>['data'][number];
+    type RawWebhook = Awaited<
+        ReturnType<(typeof octokit)['rest']['repos']['listWebhooks']>
+    >['data'][number];
     type Webhook = RawWebhook & { repoFullName: string };
     let webhooks: Webhook[] = [];
     try {
@@ -42,13 +47,14 @@ export async function listWebhooks(octokit) {
 
             const repoFullName = `${repo.owner.login}/${repo.name}`;
 
-            const repoHooks = data.filter(hook => hook.config.url.includes('tickup')).map(hook => ({ ...hook, repoFullName }));
+            const repoHooks = data
+                .filter((hook) => hook.config.url.includes('tickup'))
+                .map((hook) => ({ ...hook, repoFullName }));
             webhooks = webhooks.concat(repoHooks);
         }
 
         return webhooks;
-    }
-    catch (err) {
+    } catch (err) {
         console.error(err);
         return err;
     }

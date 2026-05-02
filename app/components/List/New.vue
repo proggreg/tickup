@@ -16,8 +16,7 @@ async function createNewList() {
                 navOpen.value = false;
             }
         }
-    }
-    catch {
+    } catch {
         // Error is already handled by showError() in the store
         // The toast will be shown automatically via useError()
     }
@@ -25,15 +24,9 @@ async function createNewList() {
 </script>
 
 <template>
-    <AppDialog
-        title="New List"
-        page="list"
-    >
+    <AppDialog title="New List" page="list">
         <template #open />
-        <v-container
-            justify-center
-            style="overflow-y: hidden;"
-        >
+        <v-container justify-center style="overflow-y: hidden">
             <v-text-field
                 v-model="listsStore.newList.name"
                 autofocus
@@ -42,10 +35,7 @@ async function createNewList() {
                 @keyup.enter="createNewList"
             >
                 <template #append>
-                    <div
-                        v-if="!smAndDown"
-                        style="min-width: 150px"
-                    >
+                    <div v-if="!smAndDown" style="min-width: 150px">
                         <ListType />
                     </div>
                 </template>

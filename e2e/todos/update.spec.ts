@@ -28,7 +28,10 @@ test.describe('Update Todo', () => {
         await page.waitForURL(/\/todo\//, { timeout: 5000 });
     });
 
-    test.skip('keeps local description while typing when stale API response arrives', async ({ page, isMobile }) => {
+    test.skip('keeps local description while typing when stale API response arrives', async ({
+        page,
+        isMobile,
+    }) => {
         test.skip(isMobile, 'This feature is desktop only');
 
         const descriptionField = page.locator('textarea').first();
@@ -54,7 +57,7 @@ test.describe('Update Todo', () => {
             // Later saves continue normally to mimic real API behavior.
             if (putRequestCount === 1) {
                 const staleBody = request.postDataJSON() as Record<string, unknown>;
-                await new Promise(resolve => setTimeout(resolve, 1200));
+                await new Promise((resolve) => setTimeout(resolve, 1200));
                 await route.fulfill({
                     status: 200,
                     contentType: 'application/json',

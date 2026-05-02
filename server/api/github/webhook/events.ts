@@ -4,7 +4,12 @@ type PushEvent = EmitterWebhookEvent<'push'>['payload'];
 type PullRequestEvent = EmitterWebhookEvent<'pull_request'>['payload'];
 type DeleteEvent = EmitterWebhookEvent<'delete'>['payload'];
 
-export async function handlePush(supabase: any, _payload: PushEvent, subscribedUserIds: string[], branchName: string) {
+export async function handlePush(
+    supabase: any,
+    _payload: PushEvent,
+    subscribedUserIds: string[],
+    branchName: string,
+) {
     const { data, error } = await supabase
         .from('Todos')
         .update({ status: 'In Progress' })
@@ -19,7 +24,12 @@ export async function handlePush(supabase: any, _payload: PushEvent, subscribedU
     }
 }
 
-export async function handlePullRequest(supabase, body: PullRequestEvent, subscribedUserIds, branchName) {
+export async function handlePullRequest(
+    supabase,
+    body: PullRequestEvent,
+    subscribedUserIds,
+    branchName,
+) {
     const pr = body.pull_request;
     const merged = pr?.merged;
 
@@ -36,7 +46,12 @@ export async function handlePullRequest(supabase, body: PullRequestEvent, subscr
     }
 }
 
-export async function handleDelete(supabase: any, _payload: DeleteEvent, subscribedUserIds: string[], branchName: string) {
+export async function handleDelete(
+    supabase: any,
+    _payload: DeleteEvent,
+    subscribedUserIds: string[],
+    branchName: string,
+) {
     const { error } = await supabase
         .from('Todos')
         .update({ status: 'Closed' })

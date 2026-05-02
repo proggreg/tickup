@@ -3,9 +3,12 @@ const { userId: _userId } = useCurrentUser();
 const modelValue = defineModel<string>({ default: 'todo' });
 const listsStore = useListsStore();
 
-watch(() => modelValue.value, (_newTab) => {
-    listsStore.getTodaysTodos?.();
-});
+watch(
+    () => modelValue.value,
+    (_newTab) => {
+        listsStore.getTodaysTodos?.();
+    },
+);
 
 onBeforeMount(() => {
     listsStore.getTodaysTodos();
@@ -15,12 +18,7 @@ onBeforeMount(() => {
 <template>
     <div class="d-flex justify-center mb-4 px-4">
         <div class="pill-tabs-container pa-1">
-            <v-btn-toggle
-                v-model="modelValue"
-                mandatory
-                density="comfortable"
-                class="pill-tabs"
-            >
+            <v-btn-toggle v-model="modelValue" mandatory density="comfortable" class="pill-tabs">
                 <v-btn
                     value="overdue"
                     class="pill-tab-btn"
@@ -77,7 +75,9 @@ onBeforeMount(() => {
     text-transform: none !important;
     letter-spacing: 0 !important;
     opacity: 0.6;
-    transition: opacity 0.2s, background 0.2s;
+    transition:
+        opacity 0.2s,
+        background 0.2s;
 }
 
 .pill-tab-btn--active {

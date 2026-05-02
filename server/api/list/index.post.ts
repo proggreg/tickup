@@ -29,8 +29,7 @@ export default defineEventHandler(async (event) => {
         }
 
         return result;
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error creating list:', error);
         throw createError({
             statusCode: 500,

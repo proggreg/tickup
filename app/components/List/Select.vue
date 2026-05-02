@@ -1,31 +1,40 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
 
-const props = withDefaults(defineProps<{
-    modelValue?: string | null;
-    label?: string;
-    variant?: 'filled' | 'outlined' | 'underlined' | 'plain' | 'solo' | 'solo-filled' | 'solo-inverted';
-    density?: 'default' | 'comfortable' | 'compact';
-    minWidth?: string | number;
-}>(), {
-    modelValue: undefined,
-    label: undefined,
-    variant: 'filled',
-    density: 'default',
-    minWidth: 75,
-});
+const props = withDefaults(
+    defineProps<{
+        modelValue?: string | null;
+        label?: string;
+        variant?:
+            | 'filled'
+            | 'outlined'
+            | 'underlined'
+            | 'plain'
+            | 'solo'
+            | 'solo-filled'
+            | 'solo-inverted';
+        density?: 'default' | 'comfortable' | 'compact';
+        minWidth?: string | number;
+    }>(),
+    {
+        modelValue: undefined,
+        label: undefined,
+        variant: 'filled',
+        density: 'default',
+        minWidth: 75,
+    },
+);
 
 const emit = defineEmits<{
     'update:modelValue': [value: string | null];
 }>();
 
 const selectedId = computed({
-    get: () => props.modelValue !== undefined ? props.modelValue : listsStore.currentList.id,
+    get: () => (props.modelValue !== undefined ? props.modelValue : listsStore.currentList.id),
     set: (val) => {
         if (props.modelValue !== undefined) {
             emit('update:modelValue', val);
-        }
-        else {
+        } else {
             listsStore.currentList.id = val;
         }
     },

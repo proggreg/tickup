@@ -53,31 +53,11 @@ async function resetPassword() {
 </script>
 
 <template>
-    <v-row
-        width="100%"
-        align="center"
-        justify="center"
-        class="fill-height"
-    >
-        <v-col
-            cols="12"
-            sm="8"
-            md="6"
-            lg="4"
-            xl="3"
-        >
-            <v-card
-                class="pa-8"
-                elevation="2"
-                width="100%"
-            >
+    <v-row width="100%" align="center" justify="center" class="fill-height">
+        <v-col cols="12" sm="8" md="6" lg="4" xl="3">
+            <v-card class="pa-8" elevation="2" width="100%">
                 <v-card-item class="mb-4">
-                    <v-img
-                        class="mx-auto"
-                        width="50%"
-                        rounded="xl"
-                        src="/pwa-512x512.png"
-                    />
+                    <v-img class="mx-auto" width="50%" rounded="xl" src="/pwa-512x512.png" />
                 </v-card-item>
 
                 <v-card-text>
@@ -90,10 +70,7 @@ async function resetPassword() {
                         {{ loginError }}
                     </v-alert>
 
-                    <form
-                        class="d-flex flex-column"
-                        @submit.prevent="signInWithPassword"
-                    >
+                    <form class="d-flex flex-column" @submit.prevent="signInWithPassword">
                         <v-text-field
                             v-model="email"
                             label="Email"
@@ -138,12 +115,7 @@ async function resetPassword() {
                             Create Account
                         </v-btn>
 
-                        <v-btn
-                            block
-                            class="mb-4"
-                            :disabled="!email.length"
-                            @click="resetPassword"
-                        >
+                        <v-btn block class="mb-4" :disabled="!email.length" @click="resetPassword">
                             Reset Password
                         </v-btn>
                     </form>
