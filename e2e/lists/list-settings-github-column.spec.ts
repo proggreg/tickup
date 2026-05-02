@@ -2,7 +2,10 @@ import { test, expect } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
 
 test.describe('list settings GitHub column', () => {
-    test.skip('shows GitHub integration column on list settings page', async ({ page, isMobile }) => {
+    test.skip('shows GitHub integration column on list settings page', async ({
+        page,
+        isMobile,
+    }) => {
         test.skip(isMobile, 'List settings layout is desktop only');
 
         await page.goto('/');
@@ -22,8 +25,9 @@ test.describe('list settings GitHub column', () => {
         const newListInput = await page.getByRole('textbox', { name: 'New List' });
         await newListInput.type(listName);
 
-        const createResponse = page.waitForResponse(response =>
-            response.url().includes('/api/list') && response.request().method() === 'POST',
+        const createResponse = page.waitForResponse(
+            (response) =>
+                response.url().includes('/api/list') && response.request().method() === 'POST',
         );
         await page.keyboard.press('Enter');
         const response = await createResponse;

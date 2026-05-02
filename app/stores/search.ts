@@ -15,8 +15,7 @@ export const useSearchStore = defineStore('search', () => {
                 },
             });
             results.value = todos;
-        }
-        finally {
+        } finally {
             loading.value = false;
         }
     }

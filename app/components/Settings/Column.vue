@@ -21,23 +21,11 @@ const props = defineProps<Props>();
 </script>
 
 <template>
-    <v-col
-        cols="12"
-        md="6"
-        lg="4"
-        class="settings-column"
-        :data-testid="props.testId"
-    >
-        <v-card
-            class="pa-4 d-flex flex-column h-100"
-            variant="flat"
-        >
+    <v-col cols="12" md="6" lg="4" class="settings-column" :data-testid="props.testId">
+        <v-card class="pa-4 d-flex flex-column h-100" variant="flat">
             <v-card-title class="d-flex align-center justify-space-between px-0 pt-0 pb-2">
                 <div class="d-flex align-center ga-2">
-                    <v-icon
-                        v-if="props.icon"
-                        :icon="props.icon"
-                    />
+                    <v-icon v-if="props.icon" :icon="props.icon" />
                     <span class="font-weight-medium text-subtitle-1">
                         {{ props.title }}
                     </span>
@@ -52,10 +40,7 @@ const props = defineProps<Props>();
                 </v-chip>
             </v-card-title>
 
-            <v-card-subtitle
-                v-if="props.description"
-                class="px-0 pb-3 text-body-2"
-            >
+            <v-card-subtitle v-if="props.description" class="px-0 pb-3 text-body-2">
                 {{ props.description }}
             </v-card-subtitle>
 

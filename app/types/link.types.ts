@@ -1,1 +1,4 @@
-export interface Meta { title: string; url: string }
+export interface Meta {
+    title: string;
+    url: string;
+}

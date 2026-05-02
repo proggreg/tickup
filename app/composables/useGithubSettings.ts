@@ -46,8 +46,7 @@ export function useGithubSettings() {
         try {
             const connected = await $fetch('/api/github/check');
             githubConnected.value = !!connected;
-        }
-        catch {
+        } catch {
             githubConnected.value = false;
         }
         githubLoading.value = false;
@@ -59,8 +58,7 @@ export function useGithubSettings() {
         try {
             const data = await $fetch<{ repositories: RepoItem[] }>('/api/github/repos');
             repos.value = data.repositories;
-        }
-        catch (e: any) {
+        } catch (e: any) {
             reposError.value = e?.data?.message || 'Failed to load repositories';
         }
         reposLoading.value = false;
@@ -70,10 +68,11 @@ export function useGithubSettings() {
         subscriptionsLoading.value = true;
         subscriptionsError.value = '';
         try {
-            const data = await $fetch<{ subscriptions: WebhookItem[] }>('/api/github/webhook/subscriptions');
+            const data = await $fetch<{ subscriptions: WebhookItem[] }>(
+                '/api/github/webhook/subscriptions',
+            );
             subscribedRepos.value = data.subscriptions || [];
-        }
-        catch (e: any) {
+        } catch (e: any) {
             subscriptionsError.value = e?.data?.message || 'Failed to load webhook subscriptions';
         }
         subscriptionsLoading.value = false;
@@ -88,23 +87,21 @@ export function useGithubSettings() {
                 method: 'DELETE',
                 query: { owner, repo },
             });
-            subscribedRepos.value = subscribedRepos.value.filter(h => h.id !== hookId);
-        }
-        catch (e: any) {
+            subscribedRepos.value = subscribedRepos.value.filter((h) => h.id !== hookId);
+        } catch (e: any) {
             webhooksError.value = e?.data?.message || 'Failed to delete webhook';
-        }
-        finally {
-            deletingWebhookIds.value = deletingWebhookIds.value.filter(id => id !== hookId);
+        } finally {
+            deletingWebhookIds.value = deletingWebhookIds.value.filter((id) => id !== hookId);
         }
     }
 
     function isRepoSubscribed(fullName: string) {
-        return subscribedRepos.value.find(repo => repo.repoFullName === fullName);
+        return subscribedRepos.value.find((repo) => repo.repoFullName === fullName);
     }
 
     function toggleRepoSubscription(fullName: string, subscribed: boolean) {
         if (subscribed) {
-            if (!subscribedRepos.value.find(repo => repo.repoFullName === fullName)) {
+            if (!subscribedRepos.value.find((repo) => repo.repoFullName === fullName)) {
                 subscribedRepos.value = [
                     ...subscribedRepos.value,
                     {
@@ -120,7 +117,9 @@ export function useGithubSettings() {
             }
             return;
         }
-        subscribedRepos.value = subscribedRepos.value.filter(repo => repo.repoFullName !== fullName);
+        subscribedRepos.value = subscribedRepos.value.filter(
+            (repo) => repo.repoFullName !== fullName,
+        );
     }
 
     function isDirectSaveLoading(fullName: string) {
@@ -129,7 +128,7 @@ export function useGithubSettings() {
 
     async function persistWebhookSubscriptions(): Promise<{ subscriptions: WebhookItem[] }> {
         const repoFullNames = subscribedRepos.value
-            .map(item => item.repoFullName)
+            .map((item) => item.repoFullName)
             .filter(Boolean);
 
         return await $fetch('/api/github/webhook/subscribe', {
@@ -148,8 +147,7 @@ export function useGithubSettings() {
             const { subscriptions } = await persistWebhookSubscriptions();
             subscriptionsSaved.value = true;
             subscribedRepos.value = subscriptions;
-        }
-        catch (e: any) {
+        } catch (e: any) {
             subscriptionsError.value = e?.data?.message || 'Failed to save webhook subscriptions';
         }
         subscriptionsSaving.value = false;
@@ -171,13 +169,13 @@ export function useGithubSettings() {
         try {
             const { subscriptions } = await persistWebhookSubscriptions();
             subscribedRepos.value = subscriptions || [];
-        }
-        catch (e: any) {
+        } catch (e: any) {
             subscribedRepos.value = previousSubscriptions;
             subscriptionsError.value = e?.data?.message || 'Failed to save webhook subscriptions';
-        }
-        finally {
-            directSaveLoadingRepos.value = directSaveLoadingRepos.value.filter(repo => repo !== fullName);
+        } finally {
+            directSaveLoadingRepos.value = directSaveLoadingRepos.value.filter(
+                (repo) => repo !== fullName,
+            );
         }
     }
 
@@ -188,8 +186,7 @@ export function useGithubSettings() {
             githubConnected.value = false;
             repos.value = [];
             subscribedRepos.value = [];
-        }
-        catch (e) {
+        } catch (e) {
             console.error('Failed to disconnect GitHub:', e);
         }
         githubLoading.value = false;
@@ -215,13 +212,11 @@ export function useGithubSettings() {
                     },
                 });
                 githubConnected.value = true;
-            }
-            catch (e) {
+            } catch (e) {
                 console.error('Failed to complete GitHub connection:', e);
             }
             githubLoading.value = false;
-        }
-        else {
+        } else {
             await checkGithubStatus();
             if (route.query.github === 'connected') {
                 githubConnected.value = true;

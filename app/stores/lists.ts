@@ -29,13 +29,13 @@ export const useListsStore = defineStore('lists', {
 
                     this.resetList();
                     return list;
-                }
-                catch (error: any) {
+                } catch (error: any) {
                     // Remove the list from the optimistic update
                     this.lists.pop();
 
                     // Set error using showError to trigger useError()
-                    const errorMessage = error?.data?.message || error?.message || 'Failed to create list';
+                    const errorMessage =
+                        error?.data?.message || error?.message || 'Failed to create list';
                     showError({
                         statusCode: error?.statusCode || 500,
                         statusMessage: errorMessage,
@@ -78,8 +78,7 @@ export const useListsStore = defineStore('lists', {
                 if (route.path.includes('/list/') && route.params?.id === listId) {
                     navigateTo('/');
                 }
-            }
-            catch {
+            } catch {
                 // logger.error(err as Error, { component: 'ListsStore', function: 'deleteList', listId })
             }
         },
@@ -101,7 +100,7 @@ export const useListsStore = defineStore('lists', {
                 listId = this.currentList.id;
             }
             const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { listId } });
-            const list = this.lists.find(l => l.id === listId);
+            const list = this.lists.find((l) => l.id === listId);
             if (list) {
                 list.todos = todos;
             }
@@ -134,7 +133,8 @@ export const useListsStore = defineStore('lists', {
             return valid;
         },
         async addTodo(newTodo?: Todo) {
-            const todo = newTodo !== undefined && !(newTodo instanceof Event) ? newTodo : this.newTodo;
+            const todo =
+                newTodo !== undefined && !(newTodo instanceof Event) ? newTodo : this.newTodo;
             console.debug('Create Todo', todo);
 
             if (!this.validateTodo(todo)) {
@@ -162,8 +162,7 @@ export const useListsStore = defineStore('lists', {
             const route = useRoute();
             if (route.path.includes('list')) {
                 this.currentList.todos[this.currentList.todos.length - 1].id = todo.id;
-            }
-            else {
+            } else {
                 this.todaysTodos[this.todaysTodos.length - 1].id = todo.id;
             }
         },
@@ -171,8 +170,7 @@ export const useListsStore = defineStore('lists', {
             const route = useRoute();
             if (route.path.includes('list')) {
                 this.currentList.todos.push(todo);
-            }
-            else {
+            } else {
                 this.todaysTodos.push(todo);
             }
         },
@@ -219,7 +217,14 @@ export const useListsStore = defineStore('lists', {
         async addSubtask(name: string, parentId: string | number) {
             const subtask = await $fetch<Todo>('/api/todo', {
                 method: 'POST',
-                body: { name, status: 'Open', parentId: Number(parentId), color: '#87909e', edit: false, links: [] },
+                body: {
+                    name,
+                    status: 'Open',
+                    parentId: Number(parentId),
+                    color: '#87909e',
+                    edit: false,
+                    links: [],
+                },
             });
             if (this.currentTodo?.subtasks) this.currentTodo.subtasks.push(subtask);
             else if (this.currentTodo) this.currentTodo.subtasks = [subtask];
@@ -284,10 +289,10 @@ export const useListsStore = defineStore('lists', {
         setTaskName(name: string, index: number) {
             // Ensure the index is valid and the todo exists before setting the name
             if (
-                !this.currentList
-                || !Array.isArray(this.currentList.todos)
-                || index < 0
-                || index >= this.currentList.todos.length
+                !this.currentList ||
+                !Array.isArray(this.currentList.todos) ||
+                index < 0 ||
+                index >= this.currentList.todos.length
             ) {
                 return;
             }

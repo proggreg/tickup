@@ -23,27 +23,21 @@ function editTodo(todo: Todo, status: Status) {
 </script>
 
 <template>
-    <v-hover
-        v-for="(todo, index) in itemProps.todos"
-        :key="index"
-    >
+    <v-hover v-for="(todo, index) in itemProps.todos" :key="index">
         <template #default="{ isHovering, props }">
             <v-list-item
                 v-if="todo.status == itemProps.status"
                 v-bind="props"
                 rounded="lg"
                 :variant="isHovering ? 'tonal' : 'text'"
-                :class="isHovering ? 'mouseOver': ''"
+                :class="isHovering ? 'mouseOver' : ''"
                 @click="emit('TodoClicked')"
             >
                 <template #prepend>
                     <v-list-item-action start>
                         <v-menu>
                             <template #activator="{ props: statusProps }">
-                                <ListStatus
-                                    v-bind="statusProps"
-                                    :todo="todo"
-                                />
+                                <ListStatus v-bind="statusProps" :todo="todo" />
                             </template>
                             <v-list>
                                 <v-list-item
@@ -78,10 +72,10 @@ function editTodo(todo: Todo, status: Status) {
 
 <style scoped>
 .add-todo-field {
-  position: relative;
-  z-index: 1;
+    position: relative;
+    z-index: 1;
 }
 .mouseOver {
-  cursor: pointer;
+    cursor: pointer;
 }
 </style>

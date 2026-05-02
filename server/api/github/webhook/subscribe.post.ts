@@ -14,15 +14,20 @@ export default defineEventHandler(async (event) => {
     const rawSubscriptions = body?.subscriptions;
 
     if (!Array.isArray(rawSubscriptions)) {
-        throw createError({ statusCode: 400, message: 'subscriptions must be an array of repository full names' });
+        throw createError({
+            statusCode: 400,
+            message: 'subscriptions must be an array of repository full names',
+        });
     }
 
-    const repoSubscriptions = Array.from(new Set(
-        rawSubscriptions
-            .filter((item): item is string => typeof item === 'string')
-            .map(item => item.trim())
-            .filter(Boolean),
-    ));
+    const repoSubscriptions = Array.from(
+        new Set(
+            rawSubscriptions
+                .filter((item): item is string => typeof item === 'string')
+                .map((item) => item.trim())
+                .filter(Boolean),
+        ),
+    );
 
     const supabase = await serverSupabaseClient<Database>(event);
     const { data: userData, error: userError } = await supabase
@@ -60,16 +65,24 @@ export default defineEventHandler(async (event) => {
     };
 
     const previousSubscriptions = Array.isArray(userData?.github_webhook_subscriptions)
-        ? userData.github_webhook_subscriptions.filter((item): item is string => typeof item === 'string')
+        ? userData.github_webhook_subscriptions.filter(
+              (item): item is string => typeof item === 'string',
+          )
         : [];
-    const deletedSubscriptions = previousSubscriptions.filter(fullName => !repoSubscriptions.includes(fullName));
+    const deletedSubscriptions = previousSubscriptions.filter(
+        (fullName) => !repoSubscriptions.includes(fullName),
+    );
     const nextSubscriptions = new Set(previousSubscriptions);
 
     try {
         for (const fullName of repoSubscriptions) {
             const { owner, repo } = toRepoParts(fullName);
-            const { data: hooks } = await octokit.rest.repos.listWebhooks({ owner, repo, per_page: 100 });
-            const existingHook = hooks.find(hook => hook.config?.url === webhookUrl);
+            const { data: hooks } = await octokit.rest.repos.listWebhooks({
+                owner,
+                repo,
+                per_page: 100,
+            });
+            const existingHook = hooks.find((hook) => hook.config?.url === webhookUrl);
 
             if (existingHook) {
                 await octokit.rest.repos.updateWebhook({
@@ -80,8 +93,7 @@ export default defineEventHandler(async (event) => {
                     events: ['push', 'pull_request', 'delete'],
                     config: hookConfig,
                 });
-            }
-            else {
+            } else {
                 await octokit.rest.repos.createWebhook({
                     owner,
                     repo,
@@ -97,32 +109,37 @@ export default defineEventHandler(async (event) => {
 
         for (const fullName of deletedSubscriptions) {
             const { owner, repo } = toRepoParts(fullName);
-            const { data: hooks } = await octokit.rest.repos.listWebhooks({ owner, repo, per_page: 100 });
-            const matchingHooks = hooks.filter(hook => hook.config?.url === webhookUrl);
+            const { data: hooks } = await octokit.rest.repos.listWebhooks({
+                owner,
+                repo,
+                per_page: 100,
+            });
+            const matchingHooks = hooks.filter((hook) => hook.config?.url === webhookUrl);
 
             for (const hook of matchingHooks) {
-                const res = await octokit.rest.repos.deleteWebhook({ owner, repo, hook_id: hook.id });
+                const res = await octokit.rest.repos.deleteWebhook({
+                    owner,
+                    repo,
+                    hook_id: hook.id,
+                });
                 console.log('deleted webhook res', res);
             }
 
             nextSubscriptions.delete(fullName);
         }
 
-        const github_webhook_subscriptions
-            = Array.from(nextSubscriptions) as unknown as Database['public']['Tables']['Users']['Update']['github_webhook_subscriptions'];
+        const github_webhook_subscriptions = Array.from(
+            nextSubscriptions,
+        ) as unknown as Database['public']['Tables']['Users']['Update']['github_webhook_subscriptions'];
 
         const { error: updateError } = await supabase
             .from('Users')
-            .upsert(
-                { id: user.sub, github_webhook_subscriptions },
-                { onConflict: 'id' },
-            );
+            .upsert({ id: user.sub, github_webhook_subscriptions }, { onConflict: 'id' });
 
         if (updateError) {
             throw updateError;
         }
-    }
-    catch (error: any) {
+    } catch (error: any) {
         throw createError({
             statusCode: error?.status || 500,
             message: error?.message || 'Failed to sync GitHub webhook subscriptions',

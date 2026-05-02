@@ -25,21 +25,23 @@ function sendMessage(message: string) {
     messages.push({ role: 'user', content: message });
     let tmpchatResponse = '';
 
-    ollama.chat({
-        model: selectedModel.value,
-        messages: messages,
-        stream: true,
-    }).then(async (response) => {
-        for await (const part of response) {
-            chatResponse.value += part.message.content;
-            tmpchatResponse += part.message.content;
-        }
+    ollama
+        .chat({
+            model: selectedModel.value,
+            messages: messages,
+            stream: true,
+        })
+        .then(async (response) => {
+            for await (const part of response) {
+                chatResponse.value += part.message.content;
+                tmpchatResponse += part.message.content;
+            }
 
-        messages.push({ role: 'AI', content: tmpchatResponse });
-        chatMessages.push({ text: tmpchatResponse, sender: 'AI' });
-        chatResponse.value = '';
-        loading.value = false;
-    });
+            messages.push({ role: 'AI', content: tmpchatResponse });
+            chatMessages.push({ text: tmpchatResponse, sender: 'AI' });
+            chatResponse.value = '';
+            loading.value = false;
+        });
 
     prompt.value = '';
 }
@@ -48,10 +50,7 @@ function sendMessage(message: string) {
 <template>
     <div>
         <NuxtErrorBoundary>
-            <div
-                v-for="(message, index) in chatMessages"
-                :key="index"
-            >
+            <div v-for="(message, index) in chatMessages" :key="index">
                 <p v-if="message.sender === 'user'">
                     {{ message.text }}
                 </p>
@@ -68,10 +67,7 @@ function sendMessage(message: string) {
                 @keyup.enter="sendMessage(prompt)"
             >
                 <template #append>
-                    <v-select
-                        v-model="selectedModel"
-                        :items="models"
-                    />
+                    <v-select v-model="selectedModel" :items="models" />
                 </template>
             </v-text-field>
 

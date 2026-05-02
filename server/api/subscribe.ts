@@ -16,14 +16,14 @@ export default defineEventHandler(async (event) => {
     }
 
     if (username && subscription) {
-    // Note: User subscription management would need to be implemented in Supabase
-    // This requires creating a Users table and handling push subscriptions
+        // Note: User subscription management would need to be implemented in Supabase
+        // This requires creating a Users table and handling push subscriptions
         console.log('User subscription update needed for:', username);
     }
 
     if (todoId && notificationDateTime) {
-    // Note: Todo notification scheduling would need to be implemented in Supabase
-    // This requires updating the Todos table
+        // Note: Todo notification scheduling would need to be implemented in Supabase
+        // This requires updating the Todos table
         console.log('Todo notification scheduling needed for:', todoId);
     }
 
@@ -36,24 +36,27 @@ export default defineEventHandler(async (event) => {
     try {
         if (!notificationDateTime) {
             let testTitle = 'Tickup Push Test';
-            let testMessage = 'Push notifications are working! You will get reminders for your todos.';
+            let testMessage =
+                'Push notifications are working! You will get reminders for your todos.';
             if (todoId) {
                 // Note: Todo lookup would need to be implemented with Supabase
                 console.log('Todo lookup needed for test notification:', todoId);
                 testTitle = 'Test Todo Notification';
                 testMessage = 'Test notification for todo (Supabase migration needed)';
             }
-            await webpush.sendNotification(subscription, JSON.stringify({
-                title: testTitle,
-                body: testMessage,
-            }));
+            await webpush.sendNotification(
+                subscription,
+                JSON.stringify({
+                    title: testTitle,
+                    body: testMessage,
+                }),
+            );
 
             return { success: true };
         }
         // If scheduling, just update the todo and return
         return { scheduled: true };
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error sending push notification:', error);
         throw error;
     }

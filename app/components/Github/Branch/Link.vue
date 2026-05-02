@@ -13,7 +13,9 @@ async function linkBranch() {
         console.warn('branch name is required');
         return;
     }
-    const branch = await $fetch<Endpoints['GET /repos/{owner}/{repo}/branches/{branch}']['response']['data']>('/api/github/branch', {
+    const branch = await $fetch<
+        Endpoints['GET /repos/{owner}/{repo}/branches/{branch}']['response']['data']
+    >('/api/github/branch', {
         query: {
             branch: selectedBranch.value.name,
             repo: selectedRepo.value.name,

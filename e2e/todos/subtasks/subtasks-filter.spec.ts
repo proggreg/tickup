@@ -111,7 +111,11 @@ test.describe('subtasks filtering', () => {
         await expect(page.getByTestId('subtask-item-2')).toBeVisible();
     });
 
-    test.skip('shows celebration message when all subtasks are completed with active filter', async ({ page, request, isMobile }) => {
+    test.skip('shows celebration message when all subtasks are completed with active filter', async ({
+        page,
+        request,
+        isMobile,
+    }) => {
         test.skip(isMobile, 'This feature is desktop only');
         test.skip();
         // Create a test list

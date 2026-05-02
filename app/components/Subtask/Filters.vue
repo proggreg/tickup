@@ -26,10 +26,7 @@ function toggleExpanded() {
 </script>
 
 <template>
-    <div
-        v-if="hasSubtasks"
-        class="d-flex align-center"
-    >
+    <div v-if="hasSubtasks" class="d-flex align-center">
         <v-tooltip location="bottom">
             <template #activator="{ props: tooltipProps }">
                 <v-btn
@@ -43,15 +40,16 @@ function toggleExpanded() {
                     @click.stop="toggleSort"
                 />
             </template>
-            <span>{{ sortBy === 'priority' ? 'Sorted by priority (click to unsort)' : 'Click to sort by priority' }}</span>
+            <span>{{
+                sortBy === 'priority'
+                    ? 'Sorted by priority (click to unsort)'
+                    : 'Click to sort by priority'
+            }}</span>
         </v-tooltip>
 
         <v-spacer />
 
-        <div
-            class="d-flex align-center"
-            data-testid="subtasks-filter"
-        >
+        <div class="d-flex align-center" data-testid="subtasks-filter">
             <v-btn
                 :variant="filter === 'all' ? 'tonal' : 'outlined'"
                 :color="filter === 'all' ? 'primary' : undefined"

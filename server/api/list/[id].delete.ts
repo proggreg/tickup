@@ -2,8 +2,8 @@ import { serverSupabaseClient } from '#supabase/server';
 
 export default defineEventHandler(async (event) => {
     try {
-    // Get the id from the URL path
-    // console.log(event)
+        // Get the id from the URL path
+        // console.log(event)
         const id = event.context.params?.id;
 
         console.log('Params:', event.context.params);
@@ -19,16 +19,12 @@ export default defineEventHandler(async (event) => {
 
         const client = await serverSupabaseClient(event);
 
-        const listDeleted = await client
-            .from('Lists')
-            .delete()
-            .eq('id', id);
+        const listDeleted = await client.from('Lists').delete().eq('id', id);
 
         console.log('listDeleted', listDeleted);
 
         return listDeleted;
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Delete error:', error);
         throw createError({
             statusCode: 500,

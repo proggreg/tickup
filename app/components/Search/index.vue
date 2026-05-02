@@ -26,12 +26,15 @@ router.beforeResolve(() => {
     open.value = false;
 });
 
-watch(() => searchStore.searchQuery, () => {
-    if (!isMobile && searchStore.searchQuery && searchStore.searchQuery.length) {
-        open.value = true;
-    }
-    searchStore.debouncedSearch();
-});
+watch(
+    () => searchStore.searchQuery,
+    () => {
+        if (!isMobile && searchStore.searchQuery && searchStore.searchQuery.length) {
+            open.value = true;
+        }
+        searchStore.debouncedSearch();
+    },
+);
 
 onMounted(() => {
     searchStore.search();
@@ -71,10 +74,7 @@ onMounted(() => {
         </template>
 
         <template #default="{ isActive }">
-            <v-card
-                v-show="isActive"
-                min-height="300"
-            >
+            <v-card v-show="isActive" min-height="300">
                 <v-card-item class="pa-4">
                     <v-text-field
                         v-model="searchStore.searchQuery"
@@ -88,10 +88,7 @@ onMounted(() => {
 
                 <v-card-item>
                     <v-list v-if="loading">
-                        <v-list-item
-                            v-for="n in 5"
-                            :key="n"
-                        >
+                        <v-list-item v-for="n in 5" :key="n">
                             <v-skeleton-loader type="list-item" />
                         </v-list-item>
                     </v-list>

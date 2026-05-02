@@ -2,7 +2,11 @@ import { test, expect } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
 
 test.describe('subtask navigation', () => {
-    test.skip('can navigate from parent to subtask and back using links', async ({ page, request, isMobile }) => {
+    test.skip('can navigate from parent to subtask and back using links', async ({
+        page,
+        request,
+        isMobile,
+    }) => {
         test.skip(isMobile, 'This feature is desktop only');
 
         // Create a test list

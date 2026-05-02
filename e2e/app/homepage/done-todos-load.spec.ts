@@ -36,6 +36,8 @@ test.describe('Homepage done tab', () => {
         await page.goto('/');
         await page.waitForLoadState('networkidle');
 
-        await expect(page.getByTestId('todo-title').filter({ hasText: 'Legacy done todo' }).first()).toBeVisible();
+        await expect(
+            page.getByTestId('todo-title').filter({ hasText: 'Legacy done todo' }).first(),
+        ).toBeVisible();
     });
 });

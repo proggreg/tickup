@@ -39,13 +39,14 @@ async function loadBranches() {
         branches.value = data;
 
         if (branches.value && branches.value.length > 0) {
-            const foundBranch = branches.value.find(branch => branch.name === githubBranchName.value);
+            const foundBranch = branches.value.find(
+                (branch) => branch.name === githubBranchName.value,
+            );
 
             if (foundBranch) {
                 hasBranch.value = true;
                 selectedBranch.value = foundBranch;
-            }
-            else {
+            } else {
                 hasBranch.value = false;
             }
 
@@ -61,12 +62,10 @@ async function loadBranches() {
                 }
             }, 150);
         }
-    }
-    catch (e: any) {
+    } catch (e: any) {
         error.value = e?.data?.message || 'Failed to load branches';
         branches.value = [];
-    }
-    finally {
+    } finally {
         loading.value = false;
     }
 }
@@ -83,8 +82,7 @@ watch(selectedRepo, (newVal, oldVal) => {
         selectedBranch.value = '';
         loadBranches();
     }
-},
-);
+});
 
 onMounted(() => {
     if (selectedRepo.value) {
@@ -98,9 +96,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <v-chip
-        v-if="listStore.currentTodo.githubBranchName"
-    >
+    <v-chip v-if="listStore.currentTodo.githubBranchName">
         <v-icon icon="mdi-source-branch" />
         {{ listStore.currentTodo.githubBranchName }}
         <template #append>
@@ -127,10 +123,7 @@ onUnmounted(() => {
         clearable
     >
         <template #item="{ props, item }">
-            <v-list-item
-                v-bind="props"
-                :subtitle="item.raw.commit.sha"
-            />
+            <v-list-item v-bind="props" :subtitle="item.raw.commit.sha" />
         </template>
 
         <template #append>

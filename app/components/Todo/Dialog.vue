@@ -55,16 +55,21 @@ async function addTodo() {
         <v-card
             rounded="lg"
             elevation="0"
-            style="border: 1px solid rgba(var(--v-theme-outline-variant), 0.3); box-shadow: 0 24px 40px -10px rgba(0, 90, 194, 0.08); overflow: hidden; position: relative;"
+            style="
+                border: 1px solid rgba(var(--v-theme-outline-variant), 0.3);
+                box-shadow: 0 24px 40px -10px rgba(0, 90, 194, 0.08);
+                overflow: hidden;
+                position: relative;
+            "
         >
             <v-card-item class="px-6 pt-5 pb-2">
                 <template #title>
                     <span
                         class="text-caption font-weight-bold text-uppercase"
-                        style="letter-spacing: 0.1em;"
+                        style="letter-spacing: 0.1em"
                         data-testid="dialog-title"
                     >
-                    New Task
+                        New Task
                     </span>
                 </template>
                 <template #append>
@@ -100,11 +105,7 @@ async function addTodo() {
                             density="compact"
                         >
                             <template #prepend-inner>
-                                <v-icon
-                                    size="16"
-                                    color="on-surface"
-                                    class="mr-1"
-                                >
+                                <v-icon size="16" color="on-surface" class="mr-1">
                                     mdi-format-list-bulleted
                                 </v-icon>
                             </template>
@@ -114,7 +115,7 @@ async function addTodo() {
                         <AppDueDate
                             :todo="todo"
                             :todo-due-date="dueDate"
-                            @set-date="(newDate: Date) => dueDate = newDate"
+                            @set-date="(newDate: Date) => (dueDate = newDate)"
                         />
                     </v-col>
                 </v-row>
@@ -122,15 +123,10 @@ async function addTodo() {
 
             <v-card-actions
                 class="px-6 py-3"
-                style="background: rgba(var(--v-theme-surface-variant), 0.15);"
+                style="background: rgba(var(--v-theme-surface-variant), 0.15)"
             >
                 <v-spacer />
-                <v-btn
-                    variant="text"
-                    size="small"
-                    class="text-medium-emphasis"
-                    @click="close"
-                >
+                <v-btn variant="text" size="small" class="text-medium-emphasis" @click="close">
                     Cancel
                 </v-btn>
                 <v-btn

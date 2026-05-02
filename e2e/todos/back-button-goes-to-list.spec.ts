@@ -2,7 +2,11 @@ import { test, expect } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
 
 test.describe('back button always goes to list from parent task', () => {
-    test.skip('back button goes to list even when navigating between tasks', async ({ page, request, isMobile }) => {
+    test.skip('back button goes to list even when navigating between tasks', async ({
+        page,
+        request,
+        isMobile,
+    }) => {
         test.skip(isMobile, 'This feature is desktop only');
 
         // Create a test list
