@@ -19,7 +19,10 @@ function deleteList() {
 </script>
 
 <template>
-    <v-menu location="bottom end" :close-on-content-click="true">
+    <v-menu
+        location="bottom end"
+        :close-on-content-click="true"
+    >
         <template #activator="{ props: menuProps }">
             <v-btn
                 size="small"
@@ -28,10 +31,16 @@ function deleteList() {
                 class="mr-n2"
                 @click.stop.prevent
             >
-                <v-icon icon="mdi-dots-vertical" size="18" />
+                <v-icon
+                    icon="mdi-dots-vertical"
+                    size="18"
+                />
             </v-btn>
         </template>
-        <v-list bg-color="none" @click.stop>
+        <v-list
+            bg-color="none"
+            @click.stop
+        >
             <v-list-item :to="`/list/${listId}/settings`">
                 <template #prepend>
                     <v-icon icon="mdi-cog" />
@@ -40,9 +49,15 @@ function deleteList() {
             </v-list-item>
             <v-list-item @click.stop="deleteList">
                 <template #prepend>
-                    <v-icon color="red" icon="mdi-delete" />
+                    <v-icon
+                        color="red"
+                        icon="mdi-delete"
+                    />
                 </template>
-                <v-list-item-title data-test-id="delete-list" class="text-red">
+                <v-list-item-title
+                    data-test-id="delete-list"
+                    class="text-red"
+                >
                     Delete List
                 </v-list-item-title>
             </v-list-item>

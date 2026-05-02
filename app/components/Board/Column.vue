@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const isAddingTodo = ref(false);
 const listsStore = useListsStore();
-const statusStore = useSettingsStore();
 
 interface Props {
     status: Status;
@@ -12,11 +11,11 @@ const { status } = defineProps<Props>();
 
 const todos = computed(() => {
     if (
-        !listsStore.currentList ||
-        !listsStore.currentList.todos ||
-        !listsStore.currentList.todos.length ||
-        !status ||
-        !status.name
+        !listsStore.currentList
+        || !listsStore.currentList.todos
+        || !listsStore.currentList.todos.length
+        || !status
+        || !status.name
     ) {
         return [];
     }
@@ -114,8 +113,7 @@ function handleDragChange(evt: any) {
                                 />
                                 <span
                                     class="text-truncate text-body-1 font-weight-bold flex-grow-1 mr-2"
-                                    >{{ todo.name }}</span
-                                >
+                                >{{ todo.name }}</span>
                             </div>
                         </v-card-item>
                     </v-card>

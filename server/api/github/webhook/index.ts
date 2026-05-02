@@ -74,7 +74,7 @@ export default defineEventHandler(async (event) => {
 
                 return subscriptions.includes(repoFullName);
             })
-            .map((user) => user.id);
+            .map(user => user.id);
 
         if (!subscribedUserIds.length) {
             return {
@@ -114,7 +114,8 @@ export default defineEventHandler(async (event) => {
             status: 'ignored',
             message: `Unhandled GitHub event: ${githubEvent}`,
         };
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Webhook error:', error);
 
         return {

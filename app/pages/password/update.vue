@@ -12,7 +12,12 @@ const updateUserPassword = async () => {
 
 <template>
     <div>
-        <input v-model="newPassword" type="password" />
-        <button @click="updateUserPassword">Update Password</button>
+        <input
+            v-model="newPassword"
+            type="password"
+        >
+        <button @click="updateUserPassword">
+            Update Password
+        </button>
     </div>
 </template>

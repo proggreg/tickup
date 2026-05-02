@@ -13,16 +13,32 @@ const { mdAndUp } = useDisplay();
     <HomePageDashboard v-if="mdAndUp" />
 
     <!-- Mobile tabbed view -->
-    <v-col v-else cols="12" class="fill-height">
+    <v-col
+        v-else
+        cols="12"
+        class="fill-height"
+    >
         <HomePageTabs v-model="tab" />
-        <v-window v-model="tab" class="fill-height">
-            <v-window-item value="overdue" class="fill-height px-4">
+        <v-window
+            v-model="tab"
+            class="fill-height"
+        >
+            <v-window-item
+                value="overdue"
+                class="fill-height px-4"
+            >
                 <HomePageOverDue />
             </v-window-item>
-            <v-window-item value="todo" class="fill-height px-2">
+            <v-window-item
+                value="todo"
+                class="fill-height px-2"
+            >
                 <HomePageToday />
             </v-window-item>
-            <v-window-item value="done" class="fill-height px-4">
+            <v-window-item
+                value="done"
+                class="fill-height px-4"
+            >
                 <HomePageTodayClosed />
             </v-window-item>
         </v-window>

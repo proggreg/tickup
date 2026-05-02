@@ -31,7 +31,10 @@ async function createTodo(status: string) {
 
 <template>
     <tr>
-        <td v-if="!openNewTodo" colspan="5">
+        <td
+            v-if="!openNewTodo"
+            colspan="5"
+        >
             <v-btn
                 elevation="0"
                 @click="openNewTodo = true"
@@ -42,7 +45,10 @@ async function createTodo(status: string) {
             </v-btn>
         </td>
 
-        <td v-else colspan="5">
+        <td
+            v-else
+            colspan="5"
+        >
             <v-text-field
                 v-model="newTodo.name"
                 autofocus

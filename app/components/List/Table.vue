@@ -39,8 +39,8 @@ const headers = reactive([
         sortable: true,
         sort: (a: string, b: string) => {
             return (
-                settingsStore.statuses.findIndex((status) => status.name === a) -
-                settingsStore.statuses.findIndex((status) => status.name === b)
+                settingsStore.statuses.findIndex(status => status.name === a)
+                - settingsStore.statuses.findIndex(status => status.name === b)
             );
         },
     },
@@ -73,7 +73,10 @@ const group = ref([
         <template #headers="{}" />
         <template #body="{ columns, groupedItems, toggleGroup, isGroupOpen, sortBy, toggleSort }">
             <template v-if="groupedItems.length">
-                <template v-for="groupItem in groupedItems" :key="groupItem.key">
+                <template
+                    v-for="groupItem in groupedItems"
+                    :key="groupItem.key"
+                >
                     <ListTableGroupHeader
                         :columns="columns"
                         :group-item="groupItem"

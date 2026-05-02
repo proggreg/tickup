@@ -23,7 +23,10 @@ function editTodo(todo: Todo, status: Status) {
 </script>
 
 <template>
-    <v-hover v-for="(todo, index) in itemProps.todos" :key="index">
+    <v-hover
+        v-for="(todo, index) in itemProps.todos"
+        :key="index"
+    >
         <template #default="{ isHovering, props }">
             <v-list-item
                 v-if="todo.status == itemProps.status"
@@ -37,7 +40,10 @@ function editTodo(todo: Todo, status: Status) {
                     <v-list-item-action start>
                         <v-menu>
                             <template #activator="{ props: statusProps }">
-                                <ListStatus v-bind="statusProps" :todo="todo" />
+                                <ListStatus
+                                    v-bind="statusProps"
+                                    :todo="todo"
+                                />
                             </template>
                             <v-list>
                                 <v-list-item

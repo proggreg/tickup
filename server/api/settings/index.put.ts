@@ -7,7 +7,8 @@ export default defineEventHandler(async (event) => {
             { statuses: body.statuses },
             options,
         );
-    } catch (error) {
+    }
+    catch (error) {
         return error;
     }
 });

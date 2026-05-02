@@ -137,7 +137,9 @@ function openFullPage() {
     border-radius: 6px;
     color: rgba(var(--v-theme-on-surface), 0.5);
     padding: 0;
-    transition: background 0.1s, color 0.1s;
+    transition:
+        background 0.1s,
+        color 0.1s;
 }
 
 .icon-btn:hover {

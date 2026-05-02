@@ -16,7 +16,8 @@ export async function deleteLists() {
 
     if (deleteError) {
         console.error('Error deleting lists:', deleteError);
-    } else {
+    }
+    else {
         console.log(`Deleted ${deletedLists?.length || 0} list(s) for test user`);
     }
 }

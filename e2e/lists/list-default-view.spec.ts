@@ -30,7 +30,7 @@ test.describe('list default view setting', () => {
         await newListInput.type(listName);
 
         const createResponse = page.waitForResponse(
-            (response) =>
+            response =>
                 response.url().includes('/api/list') && response.request().method() === 'POST',
         );
         await page.keyboard.press('Enter');
@@ -63,7 +63,7 @@ test.describe('list default view setting', () => {
 
         // Save settings (this persists defaultView on the list)
         const saveRequestPromise = page.waitForRequest(
-            (request) =>
+            request =>
                 request.url().includes(`/api/list/${listId}`) && request.method() === 'PUT',
         );
         const saveButton = page.getByRole('button', { name: 'Save' });

@@ -21,7 +21,8 @@ async function loadTodo(id: string | string[]) {
             if (needsNewParent) {
                 parentTodo.value = await $fetch<Todo>(`/api/todo/${todo.parentId}`);
             }
-        } else {
+        }
+        else {
             // No parent for this todo
             parentTodo.value = null;
         }
@@ -34,7 +35,8 @@ async function loadTodo(id: string | string[]) {
         // Only bump the transition key once everything for this todo is loaded,
         // so the fade happens between fully-rendered states.
         transitionKey.value++;
-    } finally {
+    }
+    finally {
         isLoading.value = false;
     }
 }
@@ -55,8 +57,15 @@ watch(
                 {{ error }}
             </v-alert>
         </template>
-        <v-col cols="12" style="height: 60px">
-            <v-btn v-if="parentTodo" data-testid="nav-back-parent" :to="`/todo/${parentTodo.id}`">
+        <v-col
+            cols="12"
+            style="height: 60px"
+        >
+            <v-btn
+                v-if="parentTodo"
+                data-testid="nav-back-parent"
+                :to="`/todo/${parentTodo.id}`"
+            >
                 <template #prepend>
                     <v-icon>mdi-arrow-left</v-icon>
                 </template>
@@ -72,7 +81,11 @@ watch(
                 </template>
                 {{ listsStore.currentList.name }}
             </v-btn>
-            <v-btn v-else-if="!isLoading" data-testid="nav-back-home" to="/">
+            <v-btn
+                v-else-if="!isLoading"
+                data-testid="nav-back-home"
+                to="/"
+            >
                 <template #prepend>
                     <v-icon>mdi-arrow-left</v-icon>
                 </template>

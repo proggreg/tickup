@@ -21,7 +21,7 @@ test.describe('Homepage - todos list', () => {
         const homepageTodosResponse = await request.get('/api/todos?today=true');
         const homepageTodos = await homepageTodosResponse.json();
 
-        const listTodo = homepageTodos.find((todo) => todo.name === todoName);
+        const listTodo = homepageTodos.find(todo => todo.name === todoName);
         expect(listTodo).toBeTruthy();
     });
 
@@ -55,7 +55,7 @@ test.describe('Homepage - todos list', () => {
         const homepageTodosResponse = await request.get('/api/todos?today=true');
         const homepageTodos = await homepageTodosResponse.json();
 
-        const listTodo = homepageTodos.find((todo) => todo.name === subtaskName);
+        const listTodo = homepageTodos.find(todo => todo.name === subtaskName);
 
         expect(listTodo).toBeTruthy();
     });

@@ -24,7 +24,8 @@ export default defineEventHandler(async (event) => {
         console.log('listDeleted', listDeleted);
 
         return listDeleted;
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Delete error:', error);
         throw createError({
             statusCode: 500,

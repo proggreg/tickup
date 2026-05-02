@@ -14,7 +14,10 @@ const open = ref(false);
                 <v-card-actions>
                     <v-spacer />
 
-                    <v-btn text="Close Dialog" @click="isActive.value = false" />
+                    <v-btn
+                        text="Close Dialog"
+                        @click="isActive.value = false"
+                    />
                 </v-card-actions>
             </v-card>
         </template>

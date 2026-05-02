@@ -41,7 +41,8 @@ export default defineEventHandler(async (event) => {
             success: true,
             message: 'Attachment deleted successfully',
         };
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error deleting attachment:', error);
         throw createError({
             statusCode: 500,

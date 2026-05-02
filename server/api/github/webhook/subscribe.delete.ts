@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
         new Set(
             rawSubscriptions
                 .filter((item): item is string => typeof item === 'string')
-                .map((item) => item.trim())
+                .map(item => item.trim())
                 .filter(Boolean),
         ),
     );
@@ -65,11 +65,11 @@ export default defineEventHandler(async (event) => {
 
     const previousSubscriptions = Array.isArray(userData?.github_webhook_subscriptions)
         ? userData.github_webhook_subscriptions.filter(
-              (item): item is string => typeof item === 'string',
-          )
+                (item): item is string => typeof item === 'string',
+            )
         : [];
     const deletedSubscriptions = previousSubscriptions.filter(
-        (fullName) => !subscriptions.includes(fullName),
+        fullName => !subscriptions.includes(fullName),
     );
 
     try {
@@ -80,7 +80,7 @@ export default defineEventHandler(async (event) => {
                 repo,
                 per_page: 100,
             });
-            const existingHook = hooks.find((hook) => hook.config?.url === webhookUrl);
+            const existingHook = hooks.find(hook => hook.config?.url === webhookUrl);
 
             if (existingHook) {
                 await octokit.rest.repos.updateWebhook({
@@ -91,7 +91,8 @@ export default defineEventHandler(async (event) => {
                     events: ['push', 'pull_request', 'delete'],
                     config: hookConfig,
                 });
-            } else {
+            }
+            else {
                 await octokit.rest.repos.createWebhook({
                     owner,
                     repo,
@@ -110,12 +111,13 @@ export default defineEventHandler(async (event) => {
                 repo,
                 per_page: 100,
             });
-            const matchingHooks = hooks.filter((hook) => hook.config?.url === webhookUrl);
+            const matchingHooks = hooks.filter(hook => hook.config?.url === webhookUrl);
             for (const hook of matchingHooks) {
                 await octokit.rest.repos.deleteWebhook({ owner, repo, hook_id: hook.id });
             }
         }
-    } catch (error: any) {
+    }
+    catch (error: any) {
         throw createError({
             statusCode: error?.status || 500,
             message: error?.message || 'Failed to sync GitHub webhook subscriptions',

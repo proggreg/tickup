@@ -35,11 +35,11 @@ function getStatusColor(todoStatus: string) {
 }
 
 function isSorted(sortBy: { key: string }[], column: { key: string }) {
-    return sortBy.some((item) => item.key === column.key);
+    return sortBy.some(item => item.key === column.key);
 }
 
 function isSortedIndex(sortBy: { key: string; order: string }[], column: { key: string }) {
-    let index = sortBy.findIndex((item) => item.key === column.key);
+    let index = sortBy.findIndex(item => item.key === column.key);
     index++;
     if (index > 0) {
         return index;
@@ -72,17 +72,25 @@ function isSortedIndex(sortBy: { key: string; order: string }[], column: { key: 
     </tr>
     <template v-if="isGroupOpen(groupItem)">
         <tr v-if="mdAndUp">
-            <th colspan="1" class="text-h6">Status</th>
+            <th
+                colspan="1"
+                class="text-h6"
+            >
+                Status
+            </th>
 
-            <template v-for="column in headerColumns" :key="column.key">
+            <template
+                v-for="column in headerColumns"
+                :key="column.key"
+            >
                 <v-hover
                     v-if="
-                        column.key !== 'data-table-group' &&
-                        column.key !== 'data-table-expand' &&
-                        column.key !== 'status' &&
-                        column.key !== 'desc' &&
-                        column.key !== 'dueDate' &&
-                        column.key !== 'actions'
+                        column.key !== 'data-table-group'
+                            && column.key !== 'data-table-expand'
+                            && column.key !== 'status'
+                            && column.key !== 'desc'
+                            && column.key !== 'dueDate'
+                            && column.key !== 'actions'
                     "
                 >
                     <template #default="{ isHovering, props }">
@@ -100,7 +108,10 @@ function isSortedIndex(sortBy: { key: string; order: string }[], column: { key: 
                                         mdi-arrow-up
                                     </v-icon>
 
-                                    <template v-for="sort in sortBy" :key="sort.key">
+                                    <template
+                                        v-for="sort in sortBy"
+                                        :key="sort.key"
+                                    >
                                         <v-icon
                                             v-if="sort.key === column.key && sort.order === 'asc'"
                                         >
@@ -128,7 +139,10 @@ function isSortedIndex(sortBy: { key: string; order: string }[], column: { key: 
 
             <th colspan="8" />
         </tr>
-        <ListTableItem :columns="columns" :group-item="groupItem" />
+        <ListTableItem
+            :columns="columns"
+            :group-item="groupItem"
+        />
         <ListTableNewItem :group-item="groupItem" />
     </template>
 </template>

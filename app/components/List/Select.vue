@@ -34,7 +34,8 @@ const selectedId = computed({
     set: (val) => {
         if (props.modelValue !== undefined) {
             emit('update:modelValue', val);
-        } else {
+        }
+        else {
             listsStore.currentList.id = val;
         }
     },

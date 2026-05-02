@@ -3,7 +3,8 @@ export default defineEventHandler(async (event) => {
         const query = getQuery(event);
 
         return await SettingsSchema.find({ userId: query.userId });
-    } catch (error) {
+    }
+    catch (error) {
         return error;
     }
 });

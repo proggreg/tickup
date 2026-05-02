@@ -37,7 +37,8 @@ export default defineEventHandler(async (event) => {
         if (result) {
             return objectToCamel(result);
         }
-    } catch (e) {
+    }
+    catch (e) {
         console.error('error', e);
         throw createError({
             statusCode: 500,
