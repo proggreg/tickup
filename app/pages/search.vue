@@ -3,8 +3,7 @@ definePageMeta({
     auth: {
         unauthenticatedOnly: false,
         navigateUnauthenticatedTo: '/login',
-    },
-    layout: 'mobile',
+    }
 });
 
 const searchStore = useSearchStore();

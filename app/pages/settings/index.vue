@@ -1,7 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-    layout: 'mobile',
-});
 const supabase = useSupabaseClient();
 const { userId } = useCurrentUser();
 const store = useSettingsStore();
