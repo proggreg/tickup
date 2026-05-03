@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ListSimple } from '#components';
-import type { ViewType } from '~/types/table-item.types';
+import type { ViewType } from '~~/types/table-item.types';
 
 const listsStore = useListsStore();
 const tabs = ref<ViewType[]>(['board', 'list']);

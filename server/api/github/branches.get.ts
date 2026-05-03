@@ -2,7 +2,7 @@ import { defineEventHandler, createError, getQuery } from 'h3';
 import { App } from 'octokit';
 import type { Endpoints } from '@octokit/types';
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
-import type { Database } from '~/types/database.types';
+import type { Database } from '~~/types/database.types';
 
 type ListBranchesData = Endpoints['GET /repos/{owner}/{repo}/branches']['response']['data'];
 

@@ -85,11 +85,24 @@ export default defineNuxtConfig({
                 target: 'esnext',
             },
         },
+        typescript: {
+            tsConfig: {
+                include: [
+                    '../index.d.ts',
+                    '../types/**/*.ts',
+                ],
+            },
+        },
     },
 
     typescript: {
         strict: false,
         typeCheck: false,
+        tsConfig: {
+            include: [
+                '../types/**/*.ts',
+            ],
+        },
     },
 
     bugsnag: {
