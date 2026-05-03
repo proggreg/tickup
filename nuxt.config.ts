@@ -1,13 +1,10 @@
 import type { ModuleOptions as McpToolkitOptions } from '@nuxtjs/mcp-toolkit';
-import type { ModuleOptions as NuxtMcpViteOptions } from 'nuxt-mcp';
 import { defineNuxtConfig } from 'nuxt/config';
 import vuetify from './config/vuetify';
 
-type MergedMcpConfig = NuxtMcpViteOptions & McpToolkitOptions;
-
 export default defineNuxtConfig({
     modules: ['@vite-pwa/nuxt', 'vuetify-nuxt-module', '@pinia/nuxt',
-        '@vueuse/nuxt', '@nuxtjs/color-mode', '@nuxt/eslint', '@nuxtjs/device', '@nuxt/test-utils/module', 'nuxt-bugsnag', '@nuxtjs/supabase', 'nuxt-mcp', '@nuxtjs/mcp-toolkit'],
+        '@vueuse/nuxt', '@nuxtjs/color-mode', '@nuxt/eslint', '@nuxtjs/device', '@nuxt/test-utils/module', 'nuxt-bugsnag', '@nuxtjs/supabase', '@nuxtjs/mcp-toolkit'],
 
     pages: true,
 
@@ -106,7 +103,7 @@ export default defineNuxtConfig({
     mcp: {
         name: 'Tickup',
         description: 'Tickup MCP server — tools and resources for the todo app.',
-    } as MergedMcpConfig,
+    } as McpToolkitOptions,
 
     pinia: {},
 
@@ -200,7 +197,7 @@ export default defineNuxtConfig({
             login: '/login',
             callback: '/confirm',
             include: undefined,
-            exclude: [],
+            exclude: ['/oauth/consent'],
             saveRedirectToCookie: false,
         },
     },
