@@ -50,12 +50,12 @@ importers:
       cheerio:
         specifier: ^1.1.2
         version: 1.1.2
+      jose:
+        specifier: ^6.2.3
+        version: 6.2.3
       nuxt-bugsnag:
         specifier: ^8.6.0
         version: 8.6.0(@bugsnag/core@8.6.0)(magicast@0.5.1)(vue-router@4.6.3(vue@3.5.22(typescript@5.9.3)))
-      nuxt-mcp:
-        specifier: ^0.2.5
-        version: 0.2.5(magicast@0.5.1)(nitropack@2.12.9(xml2js@0.6.2))(nuxi@3.29.3)(nuxt@4.1.3(@parcel/watcher@2.5.1)(@types/node@24.10.0)(@vue/compiler-sfc@3.5.22)(db0@0.3.4)(eslint@9.39.0(jiti@2.6.1))(ioredis@5.8.2)(magicast@0.5.1)(optionator@0.9.4)(rollup@4.52.5)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vite@7.1.12(@types/node@24.10.0)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(vue-tsc@3.1.3(typescript@5.9.3))(xml2js@0.6.2)(yaml@2.8.1))(vite@7.1.12(@types/node@24.10.0)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       octokit:
         specifier: ^5.0.5
         version: 5.0.5
@@ -3628,9 +3628,6 @@ packages:
     resolution: {integrity: sha512-cbdCP0PGOBq0ASG+sjnKIoYkWMKhhz+F/h9pRexUdX2Hd38+WOlBkRKlqkGOSm0YQpcFMQBJeK4WspUAkwsEdg==}
     engines: {node: '>=20.19.0'}
 
-  async-cache-dedupe@3.3.0:
-    resolution: {integrity: sha512-SWxhug14IobaInGSk1XaGm+ETRr4mb6huworKeWNtNfNM8rlyAuVlOyMwRu5/Qb9VhlR+rRMScIZk2PgWcLM3Q==}
-
   async-function@1.0.0:
     resolution: {integrity: sha512-hsU18Ae8CDTR6Kgu9DYf0EbCr/a5iGL0rytQDobUcdpYOKokk8LEjVphnXkDkgpi0wYVsqrXuP0bZxJaTqdgoA==}
     engines: {node: '>= 0.4'}
@@ -6299,9 +6296,6 @@ packages:
   mlly@1.8.2:
     resolution: {integrity: sha512-d+ObxMQFmbt10sretNDytwt85VrbkhhUA/JBGm1MPaWJ65Cl4wOgLaB1NYvJSZ0Ef03MMEU/0xpPMXUIQ29UfA==}
 
-  mnemonist@0.40.3:
-    resolution: {integrity: sha512-Vjyr90sJ23CKKH/qPAgUKicw/v6pRoamxIEDFOF8uSgFME7DqPRpHgRTejWVjkdGg5dXj0/NyxZHZ9bcjH+2uQ==}
-
   mocked-exports@0.1.1:
     resolution: {integrity: sha512-aF7yRQr/Q0O2/4pIXm6PZ5G+jAd7QS4Yu8m+WEeEHGnbo+7mE36CbLSDQiXYV8bVL3NfmdeqPJct0tUlnjVSnA==}
 
@@ -6464,21 +6458,8 @@ packages:
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
 
-  nuxi@3.29.3:
-    resolution: {integrity: sha512-+/IHFCXT2t1XO5dQdpVyV/eU12DrVOCkKKwrDv9YwHIL4pXMyTDxIGMfU995YWjLjRb7SUsfNLfGV4wWCFdg0A==}
-    engines: {node: ^16.10.0 || >=18.0.0}
-    hasBin: true
-
   nuxt-bugsnag@8.6.0:
     resolution: {integrity: sha512-qyhWgOX0L6zrl6GV/vZd9rVIurfomQBPlzhRa7xfepsoZJuJUeClfyv4aaHfuqNUAJSSnwNnJpYxNc0UUOdRYw==}
-
-  nuxt-mcp@0.2.5:
-    resolution: {integrity: sha512-c2+NViFRBPcsFo6aOXZpAkyrE0Lo4yvBKBe8HVNICQrW0Y8BiPHeK55G/YJFTxrePljiZVtWWf0OVcrP4Qu7dw==}
-    peerDependencies:
-      nitropack: ^2 || ^3
-      nuxi: '>=3'
-      nuxt: '>=3.5.0'
-      vite: '>=6'
 
   nuxt@4.1.3:
     resolution: {integrity: sha512-FPl+4HNIOTRYWQXtsZe5KJAr/eddFesuXABvcSTnFLYckIfnxcistwmbtPlkJhkW6vr/Jdhef5QqqYYkBsowGg==}
@@ -6533,9 +6514,6 @@ packages:
   object.values@1.2.1:
     resolution: {integrity: sha512-gXah6aZrcUxjWg2zR2MwouP2eHlCBzdV4pygudehaKXSGW4v2AsRQUK+lwwXhii6KFZcunEnmSUoYp5CXibxtA==}
     engines: {node: '>= 0.4'}
-
-  obliterator@2.0.5:
-    resolution: {integrity: sha512-42CPE9AhahZRsMNslczq0ctAEtqk8Eka26QofnqC346BZdHDySk3LWka23LI7ULIw11NmltpiLagIq8gBozxTw==}
 
   octokit@5.0.5:
     resolution: {integrity: sha512-4+/OFSqOjoyULo7eN7EA97DE0Xydj/PW5aIckxqQIoFjFwqXKuFCvXUJObyJfBF9Khu4RL/jlDRI9FPaMGfPnw==}
@@ -7461,10 +7439,6 @@ packages:
 
   safe-regex@2.1.1:
     resolution: {integrity: sha512-rx+x8AMzKb5Q5lQ95Zoi6ZbJqwCLkqi3XuJXp5P3rT8OEc6sZCJG5AE5dU3lsgRr/F4Bs31jSlVN+j5KrsGu9A==}
-
-  safe-stable-stringify@2.5.0:
-    resolution: {integrity: sha512-b3rppTKm9T+PsVCBEOUR46GWI7fdOs00VKZ1+9c1EWDaDMvjQc6tUwuFyIprgGgTcWoVHSKrU8H31ZHA2e0RHA==}
-    engines: {node: '>=10'}
 
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
@@ -8469,11 +8443,6 @@ packages:
     peerDependenciesMeta:
       '@nuxt/kit':
         optional: true
-
-  vite-plugin-mcp@0.2.5:
-    resolution: {integrity: sha512-Q/iB3Sg1Bmvq3H6PvdijZowZdvCfr8QiXzr80W/gyGyZaK2oCpFFygMDbUvBzI4q23beZJCMFnu2uTfdf93YNw==}
-    peerDependencies:
-      vite: '>=6.0.0'
 
   vite-plugin-pwa@1.1.0:
     resolution: {integrity: sha512-VsSpdubPzXhHWVINcSx6uHRMpOHVHQcHsef1QgkOlEoaIDAlssFEW88LBq1a59BuokAhsh2kUDJbaX1bZv4Bjw==}
@@ -10911,28 +10880,6 @@ snapshots:
       tar: 7.5.2
     transitivePeerDependencies:
       - encoding
-      - supports-color
-
-  '@modelcontextprotocol/sdk@1.29.0(zod@3.25.76)':
-    dependencies:
-      '@hono/node-server': 1.19.14(hono@4.12.16)
-      ajv: 8.17.1
-      ajv-formats: 3.0.1(ajv@8.17.1)
-      content-type: 1.0.5
-      cors: 2.8.5
-      cross-spawn: 7.0.6
-      eventsource: 3.0.7
-      eventsource-parser: 3.0.6
-      express: 5.2.1
-      express-rate-limit: 8.4.1(express@5.2.1)
-      hono: 4.12.16
-      jose: 6.2.3
-      json-schema-typed: 8.0.2
-      pkce-challenge: 5.0.0
-      raw-body: 3.0.1
-      zod: 3.25.76
-      zod-to-json-schema: 3.25.2(zod@3.25.76)
-    transitivePeerDependencies:
       - supports-color
 
   '@modelcontextprotocol/sdk@1.29.0(zod@4.4.2)':
@@ -13612,11 +13559,6 @@ snapshots:
     dependencies:
       '@babel/parser': 7.28.5
       ast-kit: 2.1.3
-
-  async-cache-dedupe@3.3.0:
-    dependencies:
-      mnemonist: 0.40.3
-      safe-stable-stringify: 2.5.0
 
   async-function@1.0.0: {}
 
@@ -16728,10 +16670,6 @@ snapshots:
       pkg-types: 1.3.1
       ufo: 1.6.4
 
-  mnemonist@0.40.3:
-    dependencies:
-      obliterator: 2.0.5
-
   mocked-exports@0.1.1: {}
 
   moo@0.5.2: {}
@@ -16945,8 +16883,6 @@ snapshots:
     dependencies:
       boolbase: 1.0.0
 
-  nuxi@3.29.3: {}
-
   nuxt-bugsnag@8.6.0(@bugsnag/core@8.6.0)(magicast@0.5.1)(vue-router@4.6.3(vue@3.5.22(typescript@5.9.3))):
     dependencies:
       '@bugsnag/browser-performance': 3.0.0
@@ -16960,27 +16896,6 @@ snapshots:
       - '@bugsnag/core'
       - magicast
       - vue-router
-
-  nuxt-mcp@0.2.5(magicast@0.5.1)(nitropack@2.12.9(xml2js@0.6.2))(nuxi@3.29.3)(nuxt@4.1.3(@parcel/watcher@2.5.1)(@types/node@24.10.0)(@vue/compiler-sfc@3.5.22)(db0@0.3.4)(eslint@9.39.0(jiti@2.6.1))(ioredis@5.8.2)(magicast@0.5.1)(optionator@0.9.4)(rollup@4.52.5)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vite@7.1.12(@types/node@24.10.0)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(vue-tsc@3.1.3(typescript@5.9.3))(xml2js@0.6.2)(yaml@2.8.1))(vite@7.1.12(@types/node@24.10.0)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)):
-    dependencies:
-      '@modelcontextprotocol/sdk': 1.29.0(zod@3.25.76)
-      '@nuxt/kit': 4.2.0(magicast@0.5.1)
-      ansis: 4.2.0
-      async-cache-dedupe: 3.3.0
-      citty: 0.1.6
-      debug: 4.4.3
-      nitropack: 2.12.9(xml2js@0.6.2)
-      nuxi: 3.29.3
-      nuxt: 4.1.3(@parcel/watcher@2.5.1)(@types/node@24.10.0)(@vue/compiler-sfc@3.5.22)(db0@0.3.4)(eslint@9.39.0(jiti@2.6.1))(ioredis@5.8.2)(magicast@0.5.1)(optionator@0.9.4)(rollup@4.52.5)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vite@7.1.12(@types/node@24.10.0)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(vue-tsc@3.1.3(typescript@5.9.3))(xml2js@0.6.2)(yaml@2.8.1)
-      pathe: 2.0.3
-      unimport: 5.5.0
-      vite: 7.1.12(@types/node@24.10.0)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
-      vite-plugin-mcp: 0.2.5(vite@7.1.12(@types/node@24.10.0)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
-      zod: 3.25.76
-    transitivePeerDependencies:
-      - '@cfworker/json-schema'
-      - magicast
-      - supports-color
 
   nuxt@4.1.3(@parcel/watcher@2.5.1)(@types/node@24.10.0)(@vue/compiler-sfc@3.5.22)(db0@0.3.4)(eslint@9.39.0(jiti@2.6.1))(ioredis@5.8.2)(magicast@0.5.1)(optionator@0.9.4)(rollup@4.52.5)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vite@7.1.12(@types/node@24.10.0)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(vue-tsc@3.1.3(typescript@5.9.3))(xml2js@0.6.2)(yaml@2.8.1):
     dependencies:
@@ -17161,8 +17076,6 @@ snapshots:
       call-bound: 1.0.4
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
-
-  obliterator@2.0.5: {}
 
   octokit@5.0.5:
     dependencies:
@@ -18188,8 +18101,6 @@ snapshots:
   safe-regex@2.1.1:
     dependencies:
       regexp-tree: 0.1.27
-
-  safe-stable-stringify@2.5.0: {}
 
   safer-buffer@2.1.2: {}
 
@@ -19290,18 +19201,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-mcp@0.2.5(vite@7.1.12(@types/node@24.10.0)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)):
-    dependencies:
-      '@modelcontextprotocol/sdk': 1.29.0(zod@3.25.76)
-      ansis: 4.2.0
-      debug: 4.4.3
-      pathe: 2.0.3
-      vite: 7.1.12(@types/node@24.10.0)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
-      zod: 3.25.76
-    transitivePeerDependencies:
-      - '@cfworker/json-schema'
-      - supports-color
-
   vite-plugin-pwa@1.1.0(vite@7.1.12(@types/node@24.10.0)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(workbox-build@7.3.0)(workbox-window@7.3.0):
     dependencies:
       debug: 4.4.3
@@ -19865,10 +19764,6 @@ snapshots:
       readable-stream: 4.7.0
 
   zod-to-json-schema@3.24.6(zod@3.25.76):
-    dependencies:
-      zod: 3.25.76
-
-  zod-to-json-schema@3.25.2(zod@3.25.76):
     dependencies:
       zod: 3.25.76
 
