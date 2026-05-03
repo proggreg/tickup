@@ -26,9 +26,9 @@ if (listsStore.currentList) {
     });
 }
 
-watch(listsStore.currentList.todos, (todos: Todo[]) => {
+watch(listsStore.currentList.todos, (todos: Task[]) => {
     if (!todos) return;
-    on.value = todos.filter((todo: Todo) => todo.selected).length > 0;
+    on.value = todos.filter((todo: Task) => todo.selected).length > 0;
 });
 
 function updateListType(listType) {

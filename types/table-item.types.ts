@@ -2,7 +2,7 @@ export interface Column {
     key: string;
     label?: string;
 }
-export type TodoType = Todo;
+export type TodoType = Task;
 
 export interface TableItem {
     key: string;

@@ -1,10 +1,10 @@
-export { Todo, Status, List };
+export { Task, Status, List };
 
 declare global {
     type View = 'list' | 'board';
     type ListType = 'simple' | 'table' | '';
 
-    interface Todo {
+    interface Task {
         userId?: string;
         name: string;
         id?: string;
@@ -13,7 +13,7 @@ declare global {
         list?: List;
         status: string;
         desc?: string;
-        edit: boolean;
+        edit?: boolean;
         selected?: boolean;
         color: string;
         priorityLev: string;
@@ -26,7 +26,7 @@ declare global {
             url: string;
         }[];
         parentId?: string;
-        subtasks?: Todo[]; // hydrated client-side only; never sent in PUT/POST body
+        subtasks?: Task[];
         attachments?: {
             id: ObjectId;
             attachmentId: string;
@@ -45,21 +45,18 @@ declare global {
     interface Status {
         name: string;
         color: string;
-        todos?: Todos[];
+        todos?: Task[];
         Edit?: boolean;
     }
 
     interface List {
         name: string;
-        todos?: Todo[];
+        todos?: Task[];
         id?: string;
         image?: string;
         listType: ListType;
         icon?: string;
         githubRepo?: string;
-        /**
-         * Default view when opening this list ("list" or "board").
-         */
         defaultView?: View;
     }
 
@@ -67,12 +64,12 @@ declare global {
         lists: List[];
         currentList: List;
         newList: List;
-        currentTodo: Todo;
-        todos?: Todo[];
-        todaysTodos: Todo[];
-        overdueTodos: Todo[];
+        currentTodo: Task;
+        todos?: Task[];
+        todaysTodos: Task[];
+        overdueTodos: Task[];
         view: ViewType;
-        newTodo: Todo;
+        newTodo: Task;
     }
 
     interface Settings {
@@ -100,7 +97,6 @@ declare global {
         getSWRegistration: () => ServiceWorkerRegistration | undefined;
     }
 
-    // types/offline.ts (or add to your existing types file)
     export interface PendingChange {
         id: string | number;
         action: string;

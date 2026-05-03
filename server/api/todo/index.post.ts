@@ -1,19 +1,21 @@
-import { serverSupabaseClient } from '#supabase/server';
 import { objectToSnake, objectToCamel } from 'ts-case-convert';
+import { mcpSupabaseClient } from '~~/server/mcp/utils/auth';
+import { TaskService } from '~~/server/utils/tasks';
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody<Todo>(event);
-    const supabase = await serverSupabaseClient(event);
+    const body = await readBody<Task>(event);
+    const supabase = await mcpSupabaseClient(event);
+    const todoData = objectToSnake(body)
 
-    delete body.edit;
-    delete body.userId;
-    delete body.subtasks;
+    delete todoData.edit;
+    delete todoData.user_id;
+    delete todoData.subtasks;
 
     if (body.parentId) {
         const { data: parent, error: parentError } = await supabase
             .from('Todos')
             .select('id')
-            .eq('id', body.parentId)
+            .eq('id', todoData.parent_id)
             .single();
         if (parentError || !parent) {
             throw createError({ statusCode: 400, statusMessage: 'Parent todo not found' });
@@ -21,9 +23,11 @@ export default defineEventHandler(async (event) => {
         // Allow parent to be a subtask as well (nested subtasks are permitted)
     }
 
-    const todo = objectToSnake(body);
+    
     try {
-        const { data, error } = await supabase.from('Todos').insert([todo]).select();
+        const todo = new TaskService(supabase)
+        
+        const { data, error } = await todo.create(todoData as unknown as Task)
 
         if (error) {
             console.error('Supabase error:', error);

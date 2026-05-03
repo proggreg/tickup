@@ -5,7 +5,7 @@ export const createNewListState = (): List => ({
     listType: 'simple',
 });
 
-export const createNewTodoState = (): Todo => ({
+export const createNewTodoState = (): Task => ({
     name: '',
     status: 'Open',
     desc: '',

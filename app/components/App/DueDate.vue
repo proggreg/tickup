@@ -2,7 +2,7 @@
 const emit = defineEmits(['setDate']);
 const dueDateProps = defineProps<{
     todoDueDate?: Date | string;
-    todo: Todo;
+    todo: Task;
     showDetail?: boolean;
 }>();
 const formattedDate = computed(() => {
