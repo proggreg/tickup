@@ -1,19 +1,15 @@
-import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
 import { objectToCamel } from 'ts-case-convert';
+import { mcpSupabaseClient, mcpUserId } from '../utils/auth';
 
 export default defineMcpTool({
     name: 'get_lists',
     description: 'Get all lists for the signed-in user',
-    // enabled: event => event.context.sessions !== undefined,
     inputSchema: {},
     handler: async () => {
         const event = useEvent();
-        const user = await serverSupabaseUser(event);
-        if (!user) {
-            throw createError({ statusCode: 401, statusMessage: 'Not signed in' });
-        }
+        await mcpUserId(event);
 
-        const client = await serverSupabaseClient(event);
+        const client = await mcpSupabaseClient(event);
         const { data, error } = await client
             .from('Lists')
             .select('name, id')

@@ -23,6 +23,18 @@ export default defineNuxtConfig({
         enabled: true,
     },
 
+
+    vite: {
+      server: {
+        allowedHosts: ['dev.gregfield.dev'],
+        // hmr: {
+        //   protocol: 'wss',
+        //   host: 'localhost',
+        //   clientPort: 443
+        // }
+      }
+    },
+
     runtimeConfig: {
         private: {
             vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
