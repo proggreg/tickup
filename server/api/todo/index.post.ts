@@ -5,11 +5,22 @@ import { TaskService } from '~~/server/utils/tasks';
 export default defineEventHandler(async (event) => {
     const body = await readBody<Task>(event);
     const supabase = await mcpSupabaseClient(event);
-    const todoData = objectToSnake(body)
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user?.id) {
+        throw createError({
+            statusCode: 401,
+            statusMessage: 'Unauthorized',
+        });
+    }
+
+    const todoData = objectToSnake(body) as any;
 
     delete todoData.edit;
-    delete todoData.user_id;
     delete todoData.subtasks;
+
+    // Always use authenticated user's ID
+    todoData.user_id = user.id;
 
     if (body.parentId) {
         const { data: parent, error: parentError } = await supabase
@@ -26,7 +37,7 @@ export default defineEventHandler(async (event) => {
     
     try {
         const todo = new TaskService(supabase)
-        
+
         const { data, error } = await todo.create(todoData as unknown as Task)
 
         if (error) {
@@ -43,10 +54,10 @@ export default defineEventHandler(async (event) => {
         }
     }
     catch (e) {
-        console.error('error', e);
+        const errorMsg = e instanceof Error ? e.message : String(e);
         throw createError({
             statusCode: 500,
-            statusMessage: 'Failed to create todo',
+            statusMessage: errorMsg,
         });
     }
 });

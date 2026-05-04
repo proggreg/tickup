@@ -1,4 +1,4 @@
-import { serverSupabaseClient } from '#supabase/server';
+import { mcpSupabaseClient } from '../../mcp/utils/auth';
 
 export default defineEventHandler(async (event) => {
     if (!event.context.params || !event.context.params._id) {
@@ -8,13 +8,13 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    const supabase = await serverSupabaseClient(event);
+    const supabase = await mcpSupabaseClient(event);
+    const todoId = parseInt(event.context.params._id, 10);
     const { data, error } = await supabase
         .from('Todos')
         .delete()
-        .eq('id', event.context.params._id)
-        .select()
-        .single();
+        .eq('id', todoId)
+        .select();
 
     if (error) {
         throw createError({
@@ -23,21 +23,24 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    // Transform snake_case fields back to camelCase for API response
-    if (data) {
-        return {
-            ...data,
-            dueDate: data.due_date,
-            completedDate: data.completed_date,
-            userId: data.user_id,
-            listId: data.list_id,
-            githubBranchName: data.github_branch_name,
-            notificationDateTime: data.notification_date_time,
-            notificationSent: data.notification_sent,
-            createdAt: data.created_at,
-            updatedAt: data.updated_at,
-        };
+    if (!data || data.length === 0) {
+        throw createError({
+            statusCode: 404,
+            statusMessage: 'Todo not found',
+        });
     }
 
-    return data;
+    const todo = data[0];
+    return {
+        ...todo,
+        dueDate: todo.due_date,
+        completedDate: todo.completed_date,
+        userId: todo.user_id,
+        listId: todo.list_id,
+        githubBranchName: todo.github_branch_name,
+        notificationDateTime: todo.notification_date_time,
+        notificationSent: todo.notification_sent,
+        createdAt: todo.created_at,
+        updatedAt: todo.updated_at,
+    };
 });
