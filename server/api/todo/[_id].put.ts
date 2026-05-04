@@ -1,5 +1,5 @@
-import { serverSupabaseClient } from '#supabase/server';
 import { objectToSnake, objectToCamel } from 'ts-case-convert';
+import { mcpSupabaseClient } from '../../mcp/utils/auth';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
@@ -13,25 +13,36 @@ export default defineEventHandler(async (event) => {
             statusMessage: 'Todo ID is required',
         });
     }
-    const todo = objectToSnake(body);
 
-    const supabase = await serverSupabaseClient(event);
+    // Remove undefined fields to avoid Supabase issues
+    const cleanBody = Object.fromEntries(
+        Object.entries(body).filter(([, v]) => v !== undefined)
+    ) as Record<string, unknown>;
+
+    const todo = objectToSnake(cleanBody) as Record<string, unknown>;
+    const todoId = parseInt(event.context.params._id, 10);
+
+    const supabase = await mcpSupabaseClient(event);
 
     const { data, error } = await supabase
         .from('Todos')
-        .update(todo)
-        .eq('id', event.context.params._id)
-        .select()
-        .single();
+        .update(todo as any)
+        .eq('id', todoId)
+        .select() as { data: unknown[] | null; error: unknown };
 
     if (error) {
         throw createError({
             statusCode: 500,
-            statusMessage: error.message,
+            statusMessage: (error as Record<string, unknown>).message as string,
         });
     }
 
-    if (data) {
-        return objectToCamel(data);
+    if (data && data.length > 0) {
+        return objectToCamel(data[0] as Record<string, unknown>);
     }
+
+    throw createError({
+        statusCode: 404,
+        statusMessage: 'Todo not found',
+    });
 });
