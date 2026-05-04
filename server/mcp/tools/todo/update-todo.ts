@@ -11,7 +11,7 @@ export default defineMcpTool({
         name: z.string().optional(),
         description: z.string().optional(),
         status: z.string().optional(),
-        priority: z.string().optional(),
+        priority_lev: z.enum(['high', 'medium', 'low']).optional(),
         listId: z.string().optional(),
         parentId: z.union([z.string(), z.number()]).optional().describe('Parent todo ID for subtasks'),
         dueDate: z.string().nullable().optional(),
