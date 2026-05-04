@@ -16,7 +16,8 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format": "prettier --write .",
-        "format:check": "prettier --check ."
+        "format:check": "prettier --check .",
+        "dbtypes:prod": "npx supabase gen types typescript --project-id \"ipdpfyijlchkfkukigyn\" --schema public > types/database.types.ts"
     },
     "devDependencies": {
         "@lhci/cli": "^0.15.1",
