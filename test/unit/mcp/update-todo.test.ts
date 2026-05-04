@@ -95,4 +95,42 @@ describe('update_todo MCP tool', () => {
         expect(text).not.toContain('Input validation error');
         expect(text).not.toContain('invalid_type');
     });
+
+    mcpTest('should accept priority parameter in update_todo', async ({ client }) => {
+        // Create a todo
+        const createResult = await client.callTool({
+            name: 'create_todo',
+            arguments: {
+                name: 'Priority Test Todo',
+            },
+        });
+        expect(createResult.content).toBeDefined();
+        const createContent = Array.isArray(createResult.content) && createResult.content[0];
+        const createdTodos = JSON.parse((createContent as Record<string, unknown>).text as string);
+        const todoId = createdTodos[0].id;
+
+        // Test that update_todo accepts priority without validation error
+        const updateResult = await client.callTool({
+            name: 'update_todo',
+            arguments: {
+                id: String(todoId),
+                priority: 'high',
+            },
+        });
+
+        expect(updateResult.content).toBeDefined();
+        const contentArray = updateResult.content as unknown[];
+        const content = contentArray[0] as Record<string, unknown>;
+        const text = content.text as string;
+
+        // Should not have schema validation error
+        expect(text).not.toContain('Input validation error');
+        expect(text).not.toContain('invalid_type');
+
+        // Verify priority is in the response
+        const updatedData = JSON.parse(text);
+        // Response could be array or object
+        const updatedTodo = Array.isArray(updatedData) ? updatedData[0] : updatedData;
+        expect(updatedTodo.priority).toBe('high');
+    });
 });
