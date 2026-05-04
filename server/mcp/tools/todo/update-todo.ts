@@ -1,5 +1,7 @@
 import { z } from 'zod';
-import { callApi } from '../../utils/api';
+import { objectToSnake } from 'ts-case-convert';
+import { mcpSupabaseClient, mcpUserId } from '../../utils/auth';
+import { TaskService } from '../../../utils/tasks';
 
 export default defineMcpTool({
     name: 'update_todo',
@@ -20,16 +22,45 @@ export default defineMcpTool({
         githubBranchName: z.string().nullable().optional(),
     },
     handler: async (args) => {
-        const { id, parentId, ...rest } = args;
-        const body: Record<string, unknown> = rest;
+        const event = useEvent();
+        await mcpUserId(event);
+
+        const { id, ...updateFields } = args;
+
         // Coerce parentId to number if it's a string
-        if (parentId !== undefined) {
-            const numericParentId = typeof parentId === 'string' ? parseInt(parentId, 10) : parentId;
-            body.parentId = numericParentId;
+        if (updateFields.parentId !== undefined) {
+            updateFields.parentId = typeof updateFields.parentId === 'string'
+                ? parseInt(updateFields.parentId, 10)
+                : updateFields.parentId;
         }
-        return await callApi(`/api/todo/${encodeURIComponent(id)}`, {
-            method: 'PUT',
-            body,
-        });
+
+        // Convert camelCase to snake_case
+        const updates = objectToSnake(updateFields) as Partial<Task>;
+
+        const supabase = await mcpSupabaseClient(event);
+        const tasks = new TaskService(supabase);
+
+        const { data, error } = await tasks.update(id, updates);
+
+        if (error) {
+            console.error('Update error:', error);
+            return [
+                {
+                    isError: true,
+                    message: (error as unknown as Record<string, unknown>).message || 'Update failed',
+                }
+            ];
+        }
+
+        if (!data) {
+            return [
+                {
+                    isError: true,
+                    message: 'Todo not found',
+                }
+            ];
+        }
+
+        return [data];
     },
 });
