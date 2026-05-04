@@ -24,9 +24,16 @@ describe('get_todo MCP tool', () => {
             },
         });
 
-        const text = result.content[0].text;
+        const content = result.content as { type: string; text?: string }[];
 
-        expect(text).toContain(newTodo.id);
-        expect(text).toContain(newTodo.name);
+        const textContent = content.filter(({ type }) => type === 'text')[0];
+        if (!textContent || !textContent.text) {
+            throw Error('Text content is expected');
+        }
+
+        const text: Task = JSON.parse(textContent.text);
+
+        expect(text.id).toBe(newTodo.id);
+        expect(text.name).toBe(newTodo.name);
     });
 });
