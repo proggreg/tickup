@@ -11,7 +11,7 @@ export default defineMcpTool({
         status: z.string().optional(),
         priority: z.string().optional(),
         listId: z.string().optional(),
-        parentId: z.string().optional(),
+        parentId: z.union([z.string(), z.number()]).optional().describe('Parent todo ID for subtasks'),
         dueDate: z.string().nullable().optional(),
         completedDate: z.string().nullable().optional(),
         notificationDateTime: z.string().nullable().optional(),
@@ -20,7 +20,13 @@ export default defineMcpTool({
         githubBranchName: z.string().nullable().optional(),
     },
     handler: async (args) => {
-        const { id, ...body } = args;
+        const { id, parentId, ...rest } = args;
+        const body: Record<string, unknown> = rest;
+        // Coerce parentId to number if it's a string
+        if (parentId !== undefined) {
+            const numericParentId = typeof parentId === 'string' ? parseInt(parentId, 10) : parentId;
+            body.parentId = numericParentId;
+        }
         return await callApi(`/api/todo/${encodeURIComponent(id)}`, {
             method: 'PUT',
             body,
