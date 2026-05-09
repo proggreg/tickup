@@ -40,23 +40,42 @@ describe('create_todo MCP tool', () => {
         expect(text.isError).not.toBe(true);
     });
 
-    mcpTest('should create todo with parent_id for subtask', async ({ client }) => {
-        const result = await client.callTool({
+    mcpTest('should create parent task and subtask with unique names', async ({ client }) => {
+        const uniqueId = crypto.randomUUID().substring(0, 8);
+
+        // Create parent task
+        const parentResult = await client.callTool({
             name: 'create_todo',
             arguments: {
-                name: 'Build tickup development workflow',
-                description: 'Create workflow that searches tickup tasks',
-                parent_id: '2108',
+                name: `Test Parent Task ${uniqueId}`,
+                description: 'Parent task for testing subtask creation',
             },
         });
 
-        expect(result.content).toBeDefined();
-        expect(Array.isArray(result.content)).toBe(true);
+        expect(parentResult.content).toBeDefined();
+        const parentContent = Array.isArray(parentResult.content) && parentResult.content[0];
+        const textContent = (parentContent as Record<string, unknown>).text as string;
+        const parentTodos = JSON.parse(textContent);
 
-        const content = result.content as unknown[];
-        const text = content[0] as Record<string, unknown>;
+        const parentId = parentTodos[0]?.id;
+        expect(parentId).toBeDefined();
 
-        // Should not have error
-        expect(text.isError).not.toBe(true);
+        // Create subtask under parent
+        const subtaskResult = await client.callTool({
+            name: 'create_todo',
+            arguments: {
+                name: `Test Subtask ${uniqueId}`,
+                description: 'Subtask created for testing parent_id parameter',
+                parent_id: String(parentId),
+            },
+        });
+
+        expect(subtaskResult.content).toBeDefined();
+        const subtaskContent = Array.isArray(subtaskResult.content) && subtaskResult.content[0];
+        const subtaskTodos = JSON.parse((subtaskContent as Record<string, unknown>).text as string);
+        const subtask = subtaskTodos[0];
+
+        // Verify subtask created with parent_id set
+        expect(subtask.parent_id).toBe(parentId);
     });
 });
