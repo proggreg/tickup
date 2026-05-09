@@ -1,6 +1,16 @@
 import { describe, expect } from 'vitest';
 import { mcpTest } from '../fixtures/mcp';
 
+function parseToolContent(result: unknown): unknown {
+    const items = (result as Record<string, unknown>).content as Record<string, unknown>[];
+    return JSON.parse(items[0].text as string);
+}
+
+function firstItem(result: unknown): Record<string, unknown> {
+    const parsed = parseToolContent(result);
+    return Array.isArray(parsed) ? parsed[0] : (parsed as Record<string, unknown>);
+}
+
 describe('update_todo MCP tool', () => {
     mcpTest('should list tools and find update_todo', async ({ client }) => {
         const result = await client.listTools();
@@ -21,21 +31,17 @@ describe('update_todo MCP tool', () => {
         expect(updateTodoTool?.inputSchema).toBeDefined();
         const schema = updateTodoTool?.inputSchema as Record<string, unknown>;
 
-        // Should accept todo ID
         expect(schema.properties).toBeDefined();
         const properties = schema.properties as Record<string, unknown>;
         expect(properties.id).toBeDefined();
-
-        // Should accept optional fields
         expect(properties.name).toBeDefined();
         expect(properties.status).toBeDefined();
         expect(properties.description).toBeDefined();
-        expect(properties.priority).toBeDefined();
+        expect(properties.priority_lev).toBeDefined();
     });
 
     mcpTest('should call update_todo tool without error', async ({ client }) => {
-        // Test calling the tool with a valid structure
-        // Note: This will fail with "todo not found" but that's OK - we're testing the tool is callable
+        // Note: This will fail with "todo not found" but that's OK — testing the tool is callable
         const result = await client.callTool({
             name: 'update_todo',
             arguments: {
@@ -44,95 +50,72 @@ describe('update_todo MCP tool', () => {
             },
         });
 
-        // Should have content (either success or error response)
         expect(result.content).toBeDefined();
         expect(Array.isArray(result.content)).toBe(true);
     });
 
     mcpTest('should accept parent_id parameter in update_todo', async ({ client }) => {
-        // Create parent todo
         const parentResult = await client.callTool({
             name: 'create_todo',
-            arguments: {
-                name: 'Parent Todo',
-            },
+            arguments: { name: 'Parent Todo' },
         });
-        expect(parentResult.content).toBeDefined();
-        const parentContent = Array.isArray(parentResult.content) && parentResult.content[0];
-        const parentTodos = JSON.parse((parentContent as Record<string, unknown>).text as string);
-        const parentId = parentTodos[0].id;
+        const parentTodo = firstItem(parentResult);
+        const parentId = parentTodo.id;
 
-        // Create child todo with parent_id already set
         const childResult = await client.callTool({
             name: 'create_todo',
-            arguments: {
-                name: 'Child Todo',
-                parent_id: String(parentId),
-            },
+            arguments: { name: 'Child Todo', parent_id: String(parentId) },
         });
-        expect(childResult.content).toBeDefined();
-        const childContent = Array.isArray(childResult.content) && childResult.content[0];
-        const childTodos = JSON.parse((childContent as Record<string, unknown>).text as string);
-        const childTodo = childTodos[0];
-
-        // Verify child has parent_id in creation response
+        const childTodo = firstItem(childResult);
         expect(childTodo.parent_id).toBe(parentId);
 
-        // Test that update_todo accepts parent_id without validation error
-        // Full E2E verification deferred - API endpoint needs auth investigation
         const updateResult = await client.callTool({
             name: 'update_todo',
-            arguments: {
-                id: String(childTodo.id),
-                parentId: String(parentId),
-            },
+            arguments: { id: String(childTodo.id), parent_id: String(parentId) },
         });
 
-        expect(updateResult.content).toBeDefined();
-        const contentArray = updateResult.content as unknown[];
-        const content = contentArray[0] as Record<string, unknown>;
-        const text = content.text as string;
-
-        // Should not have schema validation error (the key requirement)
+        const text = (updateResult.content as Record<string, unknown>[])[0].text as string;
         expect(text).not.toContain('Input validation error');
         expect(text).not.toContain('invalid_type');
     });
 
-    mcpTest('should accept priority parameter in update_todo', async ({ client }) => {
-        // Create a todo
+    mcpTest('should persist description field when updating a todo', async ({ client }) => {
         const createResult = await client.callTool({
             name: 'create_todo',
-            arguments: {
-                name: 'Priority Test Todo',
-            },
+            arguments: { name: 'Description Test Todo' },
         });
-        expect(createResult.content).toBeDefined();
-        const createContent = Array.isArray(createResult.content) && createResult.content[0];
-        const createdTodos = JSON.parse((createContent as Record<string, unknown>).text as string);
-        const todoId = createdTodos[0].id;
+        const created = firstItem(createResult);
 
-        // Test that update_todo accepts priority without validation error
         const updateResult = await client.callTool({
             name: 'update_todo',
-            arguments: {
-                id: String(todoId),
-                priority: 'high',
-            },
+            arguments: { id: String(created.id), description: 'A meaningful description' },
         });
 
-        expect(updateResult.content).toBeDefined();
-        const contentArray = updateResult.content as unknown[];
-        const content = contentArray[0] as Record<string, unknown>;
-        const text = content.text as string;
+        const text = (updateResult.content as Record<string, unknown>[])[0].text as string;
+        expect(text).not.toContain('schema cache');
+        expect(text).not.toContain('isError');
 
-        // Should not have schema validation error
+        const updated = firstItem(updateResult);
+        expect(updated.desc).toBe('A meaningful description');
+    });
+
+    mcpTest('should accept priority_lev parameter in update_todo', async ({ client }) => {
+        const createResult = await client.callTool({
+            name: 'create_todo',
+            arguments: { name: 'Priority Test Todo' },
+        });
+        const created = firstItem(createResult);
+
+        const updateResult = await client.callTool({
+            name: 'update_todo',
+            arguments: { id: String(created.id), priority_lev: 'high' },
+        });
+
+        const text = (updateResult.content as Record<string, unknown>[])[0].text as string;
         expect(text).not.toContain('Input validation error');
         expect(text).not.toContain('invalid_type');
 
-        // Verify priority is in the response
-        const updatedData = JSON.parse(text);
-        // Response could be array or object
-        const updatedTodo = Array.isArray(updatedData) ? updatedData[0] : updatedData;
-        expect(updatedTodo.priority).toBe('high');
+        const updated = firstItem(updateResult);
+        expect(updated.priority_lev).toBe('high');
     });
 });
