@@ -9,6 +9,18 @@ const isOpen = computed(() => dialog.value.open && dialog.value.page === 'todo')
 const name = ref('');
 const dueDate = ref<Date | undefined>(undefined);
 const selectedListId = ref<string | null>(null);
+const priorityLev = ref('');
+
+const priorities = [
+    { label: 'High', value: 'high', color: 'error', icon: 'mdi-flag' },
+    { label: 'Medium', value: 'medium', color: 'warning', icon: 'mdi-flag' },
+    { label: 'Low', value: 'low', color: 'success', icon: 'mdi-flag' },
+    { label: 'None', value: '', color: 'grey', icon: 'mdi-flag-outline' },
+];
+
+const currentPriority = computed(
+    () => priorities.find(p => p.value === priorityLev.value) ?? priorities[3],
+);
 
 const todo = computed<Todo>(() => ({
     name: name.value,
@@ -20,7 +32,7 @@ const todo = computed<Todo>(() => ({
     color: '#87909e',
     links: [],
     attachments: [],
-    priorityLev: '',
+    priorityLev: priorityLev.value,
 }));
 
 function close() {
@@ -32,6 +44,7 @@ function resetState() {
     name.value = '';
     dueDate.value = undefined;
     selectedListId.value = null;
+    priorityLev.value = '';
 }
 
 async function addTodo() {
@@ -96,7 +109,7 @@ async function addTodo() {
                     @keyup.enter="addTodo"
                 />
 
-                <v-row>
+                <v-row align="center">
                     <v-col>
                         <ListSelect
                             v-model="selectedListId"
@@ -117,6 +130,36 @@ async function addTodo() {
                             :todo-due-date="dueDate"
                             @set-date="(newDate: Date) => (dueDate = newDate)"
                         />
+                    </v-col>
+                    <v-col cols="auto">
+                        <v-menu>
+                            <template #activator="{ props }">
+                                <v-btn
+                                    v-bind="props"
+                                    :icon="currentPriority.icon"
+                                    :color="currentPriority.color"
+                                    size="small"
+                                    variant="text"
+                                    density="compact"
+                                    data-testid="dialog-priority-button"
+                                />
+                            </template>
+                            <v-list density="compact">
+                                <v-list-item
+                                    v-for="p in priorities"
+                                    :key="p.value || 'none'"
+                                    :data-testid="`dialog-priority-${p.label.toLowerCase()}`"
+                                    @click="priorityLev = p.value"
+                                >
+                                    <template #prepend>
+                                        <v-icon :color="p.color">
+                                            {{ p.icon }}
+                                        </v-icon>
+                                    </template>
+                                    <v-list-item-title>{{ p.label }}</v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
                     </v-col>
                 </v-row>
             </v-card-text>

@@ -32,6 +32,9 @@ function updateName() {
                     <TodoStatus />
                 </v-col>
                 <v-col cols="auto">
+                    <TodoPriority data-testid="todo-priority-selector" />
+                </v-col>
+                <v-col cols="auto">
                     <GithubButton v-if="hasGithub" :todo="listsStore.currentTodo" />
                 </v-col>
                 <v-col />
