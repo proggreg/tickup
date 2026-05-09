@@ -2,7 +2,7 @@
 const listsStore = useListsStore();
 const settingsStore = useSettingsStore();
 const hasGithub = await useHasGithub();
-const notif = useNotification();
+const { notify } = useNotification();
 const isTriggering = ref(false);
 
 function updateDueDate(newDate: Date) {
@@ -21,7 +21,7 @@ async function triggerRoutine() {
 
     settingsStore.loadClaudeRoutineSettings();
     if (!settingsStore.claudeRoutineUrl || !settingsStore.claudeRoutineApiKey) {
-        notif('Claude routine settings not configured. Please update settings first.', {
+        notify('Claude routine settings not configured. Please update settings first.', {
             timeout: 5000,
         });
         return;
@@ -37,10 +37,10 @@ async function triggerRoutine() {
             },
         });
 
-        notif('Claude routine triggered successfully', { timeout: 3000 });
+        notify('Claude routine triggered successfully', { timeout: 3000 });
     } catch (error: any) {
         const message = error?.data?.statusMessage || error?.message || 'Failed to trigger routine';
-        notif(message, { timeout: 5000 });
+        notify(message, { timeout: 5000 });
     } finally {
         isTriggering.value = false;
     }

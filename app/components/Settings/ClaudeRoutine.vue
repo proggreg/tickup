@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const settingsStore = useSettingsStore();
-const notif = useNotification();
+const { notify } = useNotification();
 const form = ref({
     url: '',
     apiKey: '',
@@ -15,16 +15,16 @@ onMounted(() => {
 
 async function saveSettings() {
     if (!form.value.url || !form.value.apiKey) {
-        notif('Please fill in both URL and API key');
+        notify('Please fill in both URL and API key');
         return;
     }
 
     isSaving.value = true;
     try {
         settingsStore.saveClaudeRoutineSettings(form.value.url, form.value.apiKey);
-        notif('Claude routine settings saved');
+        notify('Claude routine settings saved');
     } catch (error: any) {
-        notif(error?.message || 'Failed to save settings');
+        notify(error?.message || 'Failed to save settings');
     } finally {
         isSaving.value = false;
     }
@@ -34,7 +34,7 @@ function clearSettings() {
     settingsStore.clearClaudeRoutineSettings();
     form.value.url = '';
     form.value.apiKey = '';
-    notif('Settings cleared');
+    notify('Settings cleared');
 }
 </script>
 
