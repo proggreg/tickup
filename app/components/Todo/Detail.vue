@@ -20,7 +20,7 @@ async function triggerRoutine() {
     if (!listsStore.currentTodo.id) return;
 
     settingsStore.loadClaudeRoutineSettings();
-    if (!settingsStore.claudeRoutineUrl || !settingsStore.claudeRoutineApiKey) {
+    if (!settingsStore.claudeRoutineId || !settingsStore.claudeRoutineApiKey) {
         notify('Claude routine settings not configured. Please update settings first.', {
             timeout: 5000,
         });
@@ -32,7 +32,7 @@ async function triggerRoutine() {
         await $fetch(`/api/todo/${listsStore.currentTodo.id}/trigger-routine`, {
             method: 'POST',
             body: {
-                claudeRoutineUrl: settingsStore.claudeRoutineUrl,
+                claudeRoutineId: settingsStore.claudeRoutineId,
                 claudeRoutineApiKey: settingsStore.claudeRoutineApiKey,
             },
         });

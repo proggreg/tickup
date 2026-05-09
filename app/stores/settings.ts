@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 export const useSettingsStore = defineStore('settings', () => {
     const darkMode = ref(false);
     const userStatuses = ref<Status[]>([]);
-    const claudeRoutineUrl = ref('');
+    const claudeRoutineId = ref('');
     const claudeRoutineApiKey = ref('');
     const defaultStatuses: Status[] = [
         {
@@ -37,24 +37,24 @@ export const useSettingsStore = defineStore('settings', () => {
         // }
     }
 
-    function saveClaudeRoutineSettings(url: string, apiKey: string) {
-        claudeRoutineUrl.value = url;
+    function saveClaudeRoutineSettings(id: string, apiKey: string) {
+        claudeRoutineId.value = id;
         claudeRoutineApiKey.value = apiKey;
-        localStorage.setItem('claude_routine_url', url);
+        localStorage.setItem('claude_routine_id', id);
         localStorage.setItem('claude_routine_api_key', apiKey);
     }
 
     function loadClaudeRoutineSettings() {
-        const url = localStorage.getItem('claude_routine_url') || '';
+        const id = localStorage.getItem('claude_routine_id') || '';
         const apiKey = localStorage.getItem('claude_routine_api_key') || '';
-        claudeRoutineUrl.value = url;
+        claudeRoutineId.value = id;
         claudeRoutineApiKey.value = apiKey;
     }
 
     function clearClaudeRoutineSettings() {
-        claudeRoutineUrl.value = '';
+        claudeRoutineId.value = '';
         claudeRoutineApiKey.value = '';
-        localStorage.removeItem('claude_routine_url');
+        localStorage.removeItem('claude_routine_id');
         localStorage.removeItem('claude_routine_api_key');
     }
 
@@ -63,7 +63,7 @@ export const useSettingsStore = defineStore('settings', () => {
         statuses,
         getUserSettings,
         userStatuses,
-        claudeRoutineUrl,
+        claudeRoutineId,
         claudeRoutineApiKey,
         saveClaudeRoutineSettings,
         loadClaudeRoutineSettings,

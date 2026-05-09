@@ -11,13 +11,13 @@ export default defineEventHandler(async (event) => {
     }
 
     const body = await readBody(event);
-    const claudeRoutineUrl = body?.claudeRoutineUrl;
+    const claudeRoutineId = body?.claudeRoutineId;
     const claudeRoutineApiKey = body?.claudeRoutineApiKey;
 
-    if (!claudeRoutineUrl) {
+    if (!claudeRoutineId) {
         throw createError({
             statusCode: 400,
-            statusMessage: 'Claude routine URL is required',
+            statusMessage: 'Claude routine ID is required',
         });
     }
 
@@ -45,22 +45,24 @@ export default defineEventHandler(async (event) => {
             });
         }
 
-        await $fetch(claudeRoutineUrl, {
+        // Build context text for the routine
+        const contextText = `Task to process:
+Title: ${todo.name}
+Description: ${todo.desc || '(no description)'}
+Status: ${todo.status || 'Open'}
+Due Date: ${todo.due_date || '(no due date)'}
+ID: ${todo.id}`;
+
+        await $fetch(`https://api.anthropic.com/v1/claude_code/routines/${claudeRoutineId}/fire`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${claudeRoutineApiKey}`,
+                'anthropic-version': '2023-06-01',
+                'anthropic-beta': 'experimental-cc-routine-2026-04-01',
                 'Content-Type': 'application/json',
             },
             body: {
-                todoId,
-                todo: {
-                    id: todo.id,
-                    name: todo.name,
-                    description: todo.desc,
-                    status: todo.status,
-                    dueDate: todo.due_date,
-                },
-                timestamp: new Date().toISOString(),
+                text: contextText,
             },
         });
 
