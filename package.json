@@ -12,6 +12,7 @@
         "test:coverage": "vitest --coverage",
         "test:mcp": "vitest --project=unit test/unit/mcp",
         "test:mcp:coverage": "vitest --project=unit --coverage test/unit/mcp",
+        "test:mcp:coverage:ui": "vitest --project=unit --coverage --ui test/unit/mcp",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
