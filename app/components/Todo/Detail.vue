@@ -1,14 +1,35 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
 const hasGithub = await useHasGithub();
+const notif = useNotification();
+const isTriggering = ref(false);
 
 function updateDueDate(newDate: Date) {
     listsStore.currentTodo.dueDate = newDate;
     listsStore.updateTodo(listsStore.currentTodo);
 }
+
 function updateName() {
     if (listsStore.currentTodo.name) {
         listsStore.updateTodo(listsStore.currentTodo);
+    }
+}
+
+async function triggerRoutine() {
+    if (!listsStore.currentTodo.id) return;
+
+    isTriggering.value = true;
+    try {
+        const response = await $fetch(`/api/todo/${listsStore.currentTodo.id}/trigger-routine`, {
+            method: 'POST',
+        });
+
+        notif('Claude routine triggered successfully', { timeout: 3000 });
+    } catch (error: any) {
+        const message = error?.data?.statusMessage || error?.message || 'Failed to trigger routine';
+        notif(message, { timeout: 5000 });
+    } finally {
+        isTriggering.value = false;
     }
 }
 </script>
@@ -71,6 +92,15 @@ function updateName() {
         </v-card-item> -->
         <v-card-actions class="py-6 px-6 d-flex flex-wrap gap-4 align-center justify-space-between">
             <div class="d-flex align-center gap-2 flex-wrap">
+                <v-btn
+                    size="small"
+                    variant="outlined"
+                    @click="triggerRoutine"
+                    :loading="isTriggering"
+                    data-testid="trigger-routine-button"
+                >
+                    Trigger Claude Routine
+                </v-btn>
                 <AppDeleteButton :todo="listsStore.currentTodo" />
             </div>
         </v-card-actions>
