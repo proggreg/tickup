@@ -4,7 +4,7 @@ import { TaskService } from '~~/server/utils/tasks';
 
 export default defineMcpTool({
     name: 'create_todo',
-    description: 'Create a new todo. Pass `parentId` to create a subtask.',
+    description: 'Create a new todo. Pass `parent_id` to create a subtask.',
     inputSchema: {
         name: z.string().describe('Todo name/title'),
         list_id: z.string().optional().describe('List ID to add the todo to'),
@@ -23,14 +23,31 @@ export default defineMcpTool({
         const supabase = await mcpSupabaseClient(event);
         const tasks = new TaskService(supabase);
 
-        const { data, error } = await tasks.create(args as unknown as Task);
+        // Remap description to desc (database column name)
+        const { description, ...otherArgs } = args;
+        const createData = {
+            ...otherArgs,
+            ...(description && { desc: description }),
+        };
 
-        console.error(error);
+        const { data, error } = await tasks.create(createData as unknown as Task);
 
-        if (!data) {
+        if (error) {
+            console.error('Create error:', error);
             return [
                 {
                     isError: true,
+                    message:
+                        (error as unknown as Record<string, unknown>).message || 'Create failed',
+                },
+            ];
+        }
+
+        if (!data || data.length === 0) {
+            return [
+                {
+                    isError: true,
+                    message: 'Failed to create todo',
                 },
             ];
         }
