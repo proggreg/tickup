@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia';
 
+/**
+ * Pinia store for full-text todo search.
+ *
+ * Debounced by 500 ms via `debouncedSearch`.  Use `search()` to trigger
+ * immediately (e.g. on form submit).
+ */
 export const useSearchStore = defineStore('search', () => {
     const searchQuery = ref('');
     const results = ref<Todo[]>([]);

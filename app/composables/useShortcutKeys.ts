@@ -1,5 +1,18 @@
 import { onKeyDown } from '@vueuse/core';
 
+/**
+ * Registers global keyboard shortcuts for the app.
+ *
+ * | Key | Action |
+ * |---|---|
+ * | `t` | Open the new-todo dialog |
+ * | `l` | Open the new-list dialog |
+ *
+ * Shortcuts are suppressed when focus is inside an INPUT, TEXTAREA, or an
+ * overlay content element so they don't interfere with user typing.
+ *
+ * Register this once in `app.vue`.
+ */
 export function useShortcutKeys() {
     const dialog = useDialog();
     onKeyDown(['t', 'l'], (event) => {

@@ -7,6 +7,17 @@ export default defineConfig({
     test: {
         projects: [
             {
+                esbuild: {
+                    tsconfigRaw: {
+                        compilerOptions: {
+                            target: 'ESNext',
+                            module: 'ESNext',
+                            moduleResolution: 'Bundler',
+                            strict: false,
+                            skipLibCheck: true,
+                        },
+                    },
+                },
                 test: {
                     name: 'unit',
                     include: ['test/unit/*.{test,spec}.ts'],

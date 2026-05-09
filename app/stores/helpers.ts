@@ -1,3 +1,4 @@
+/** Returns a blank `List` object suitable for initialising the new-list form. */
 export const createNewListState = (): List => ({
     name: '',
     todos: [],
@@ -5,6 +6,7 @@ export const createNewListState = (): List => ({
     listType: 'simple',
 });
 
+/** Returns a blank `Todo` object suitable for initialising the new-todo form. */
 export const createNewTodoState = (): Todo => ({
     name: '',
     status: 'Open',

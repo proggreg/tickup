@@ -1,0 +1,36 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "entryPoints": [
+        "utils/logger.ts",
+        "app/composables/dialog.ts",
+        "app/composables/hasGithub.ts",
+        "app/composables/navigation.ts",
+        "app/composables/toolbar.ts",
+        "app/composables/useAppLayout.ts",
+        "app/composables/useCurrentUser.ts",
+        "app/composables/useGithubSettings.ts",
+        "app/composables/useNotification.ts",
+        "app/composables/useOfflineSync.ts",
+        "app/composables/useShortcutKeys.ts",
+        "app/composables/useTodoActions.ts",
+        "app/composables/useTodoStatus.ts",
+        "app/stores/helpers.ts",
+        "app/stores/lists.ts",
+        "app/stores/search.ts",
+        "app/stores/settings.ts"
+    ],
+    "out": "docs",
+    "name": "Tickup",
+    "readme": "README.md",
+    "includeVersion": true,
+    "skipErrorChecking": true,
+    "excludeExternals": true,
+    "excludePrivate": true,
+    "excludeProtected": false,
+    "categorizeByGroup": true,
+    "navigationLinks": {
+        "GitHub": "https://github.com/proggreg/tickup"
+    },
+    "tsconfig": "tsconfig.docs.json",
+    "plugin": []
+}
