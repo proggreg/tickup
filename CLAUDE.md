@@ -64,6 +64,8 @@ Global Vuetify component defaults are set in `config/vuetify.ts`. `VBtn` default
 
 After implementing a bug fix or new feature, run `@agent-code-improvement-advisor review this branch` to catch readability, performance, and best-practice issues before committing.
 
+When creating a PR, set the base branch to the parent task's branch (not `main`). Look up the current task in tickup, find its `parentId`, then use that parent task's `githubBranchName` as the PR target.
+
 Each MCP tool has a paired test task and branch in tickup (format: `write-a-test-for-the-'<tool-name>'-mcp-tool`). When fixing a bug in an MCP tool, switch to that tool's test branch and include the fix there. Bug fixes and tests for the same tool ship together. Every bug fix must have a regression test that would have caught it.
 
 To find in-progress MCP work: use `search_todos` via the tickup MCP (`mcp__tickup-ewrmrye0m-greg-fields-projects__search_todos`) with keyword `"MCP"`. The parent epic is todo #2108 "implement mcp tool tests".
