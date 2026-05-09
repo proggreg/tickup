@@ -34,6 +34,7 @@ export default defineConfig({
             reportOnFailure: true,
             include: ['server/mcp/**/*.ts', 'server/api/**/*.ts'],
             exclude: ['node_modules/', 'test/', '**/*.d.ts', '**/*.test.ts', '**/*.spec.ts'],
+            reportsDirectory: '.coverage/vitest',
             thresholds: {
                 lines: 70,
                 functions: 70,
