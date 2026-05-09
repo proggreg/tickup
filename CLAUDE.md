@@ -60,6 +60,18 @@ Do not use custom CSS classes. Use Vuetify component props, slots, and the `:dee
 
 Global Vuetify component defaults are set in `config/vuetify.ts`. `VBtn` defaults to `variant: 'plain'`, `VTextField` to `variant: 'outlined'`, `density: 'compact'`. Override per-component as needed.
 
+### MCP tool development workflow
+
+After implementing a bug fix or new feature, run `@agent-code-improvement-advisor review this branch` to catch readability, performance, and best-practice issues before committing.
+
+When creating a PR, set the base branch to the parent task's branch (not `main`). Look up the current task in tickup, find its `parentId`, then use that parent task's `githubBranchName` as the PR target.
+
+Each MCP tool has a paired test task and branch in tickup (format: `write-a-test-for-the-'<tool-name>'-mcp-tool`). When fixing a bug in an MCP tool, switch to that tool's test branch and include the fix there. Bug fixes and tests for the same tool ship together. Every bug fix must have a regression test that would have caught it.
+
+To find in-progress MCP work: use `search_todos` via the tickup MCP (`mcp__tickup-ewrmrye0m-greg-fields-projects__search_todos`) with keyword `"MCP"`. The parent epic is todo #2108 "implement mcp tool tests".
+
+**Known field gotcha**: the `Todos` DB column for a todo's description is `desc`, not `description`. `objectToSnake` does not rename this. Any MCP tool that accepts a `description` input must manually remap it to `desc` before the Supabase call. The `update-todo` tool has this fix; watch for the same issue in future tools.
+
 ### E2e test conventions
 
 - Tests import `test` and `expect` from `e2e/fixtures/index.ts` (not from `@playwright/test` directly) to get the `listAPI` fixture.
