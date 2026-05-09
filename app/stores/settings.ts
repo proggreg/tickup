@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia';
 
+/**
+ * Pinia store for user-level application settings.
+ *
+ * Provides `statuses` — falling back to built-in defaults when no user
+ * statuses have been persisted — and `darkMode` for theme control.
+ */
 export const useSettingsStore = defineStore('settings', () => {
     const darkMode = ref(false);
     const userStatuses = ref<Status[]>([]);

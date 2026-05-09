@@ -1,3 +1,4 @@
+/** A GitHub webhook subscription as returned by the API. */
 export type WebhookItem = {
     id: number;
     active: boolean;
@@ -20,6 +21,14 @@ export type RepoItem = {
     updated_at: string;
 };
 
+/**
+ * Manages GitHub integration settings: connection status, repository list,
+ * and webhook subscriptions.
+ *
+ * Call this composable on the GitHub settings page.  It initialises
+ * automatically via `onMounted` — checking connection status and loading
+ * repos + webhooks when already connected.
+ */
 export function useGithubSettings() {
     const route = useRoute();
 

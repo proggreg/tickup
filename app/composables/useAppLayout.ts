@@ -1,3 +1,13 @@
+/**
+ * Returns a computed ref of the Nuxt layout name to use for the current route.
+ *
+ * | Route | Layout |
+ * |---|---|
+ * | `/login`, `/register` | `'login-register'` |
+ * | Mobile devices | `'mobile'` |
+ * | `/todo/:id` | `'todo'` |
+ * | Everything else | `'default'` |
+ */
 export function useAppLayout() {
     const route = useRoute();
     const { isMobile } = useDevice();
