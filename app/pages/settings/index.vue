@@ -213,40 +213,44 @@ onMounted(async () => {
                 Integrations
             </div>
 
-            <v-list class="px-3 bg-transparent mb-6">
-                <v-list-item
-                    to="/settings/github"
-                    rounded="xl"
-                    base-color="surface-variant"
-                    variant="tonal"
-                    min-height="62"
-                    class="mb-2"
-                >
-                    <template #prepend>
-                        <v-icon icon="mdi-github" size="18" class="mr-3" />
-                    </template>
-
-                    <v-list-item-title class="font-weight-bold">
-                        GitHub Integration
-                    </v-list-item-title>
-                    <v-list-item-subtitle v-if="githubLoading" class="text-caption">
-                        Checking...
-                    </v-list-item-subtitle>
-                    <v-list-item-subtitle
-                        v-else-if="githubConnected"
-                        class="text-caption text-success"
+            <div class="px-3 mb-6">
+                <v-list class="bg-transparent mb-2">
+                    <v-list-item
+                        to="/settings/github"
+                        rounded="xl"
+                        base-color="surface-variant"
+                        variant="tonal"
+                        min-height="62"
+                        class="mb-2"
                     >
-                        Connected
-                    </v-list-item-subtitle>
-                    <v-list-item-subtitle v-else class="text-caption text-medium-emphasis">
-                        Not connected
-                    </v-list-item-subtitle>
+                        <template #prepend>
+                            <v-icon icon="mdi-github" size="18" class="mr-3" />
+                        </template>
 
-                    <template #append>
-                        <v-icon icon="mdi-chevron-right" size="18" />
-                    </template>
-                </v-list-item>
-            </v-list>
+                        <v-list-item-title class="font-weight-bold">
+                            GitHub Integration
+                        </v-list-item-title>
+                        <v-list-item-subtitle v-if="githubLoading" class="text-caption">
+                            Checking...
+                        </v-list-item-subtitle>
+                        <v-list-item-subtitle
+                            v-else-if="githubConnected"
+                            class="text-caption text-success"
+                        >
+                            Connected
+                        </v-list-item-subtitle>
+                        <v-list-item-subtitle v-else class="text-caption text-medium-emphasis">
+                            Not connected
+                        </v-list-item-subtitle>
+
+                        <template #append>
+                            <v-icon icon="mdi-chevron-right" size="18" />
+                        </template>
+                    </v-list-item>
+                </v-list>
+
+                <SettingsClaudeRoutine />
+            </div>
 
             <!-- Account -->
             <div

@@ -1,3 +1,5 @@
+import { serverSupabaseClient } from '#supabase/server';
+
 export default defineEventHandler(async (event) => {
     const todoId = event.context.params?.id;
 
@@ -8,31 +10,56 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    const apiKey = process.env.CLAUDE_API_KEY;
-    if (!apiKey) {
+    const body = await readBody(event);
+    const claudeRoutineUrl = body?.claudeRoutineUrl;
+    const claudeRoutineApiKey = body?.claudeRoutineApiKey;
+
+    if (!claudeRoutineUrl) {
         throw createError({
-            statusCode: 500,
-            statusMessage: 'Claude API key not configured',
+            statusCode: 400,
+            statusMessage: 'Claude routine URL is required',
         });
     }
 
-    const triggerId = process.env.CLAUDE_TRIGGER_ID;
-    if (!triggerId) {
+    if (!claudeRoutineApiKey) {
         throw createError({
-            statusCode: 500,
-            statusMessage: 'Claude trigger ID not configured',
+            statusCode: 400,
+            statusMessage: 'Claude API key is required',
         });
     }
 
     try {
-        const response = await $fetch(`https://claude.ai/api/v1/code/triggers/${triggerId}/run`, {
+        const supabase = await serverSupabaseClient(event);
+
+        // Fetch todo context to pass to the routine
+        const { data: todo, error: todoError } = await supabase
+            .from('Todos')
+            .select('id, name, desc, status, due_date')
+            .eq('id', todoId)
+            .single();
+
+        if (todoError || !todo) {
+            throw createError({
+                statusCode: 404,
+                statusMessage: 'Todo not found',
+            });
+        }
+
+        await $fetch(claudeRoutineUrl, {
             method: 'POST',
             headers: {
-                Authorization: `Bearer ${apiKey}`,
+                Authorization: `Bearer ${claudeRoutineApiKey}`,
                 'Content-Type': 'application/json',
             },
             body: {
                 todoId,
+                todo: {
+                    id: todo.id,
+                    name: todo.name,
+                    description: todo.desc,
+                    status: todo.status,
+                    dueDate: todo.due_date,
+                },
                 timestamp: new Date().toISOString(),
             },
         });
@@ -41,13 +68,17 @@ export default defineEventHandler(async (event) => {
             success: true,
             message: 'Routine triggered successfully',
             todoId,
-            triggerId,
+            todoName: todo.name,
         };
     } catch (error: any) {
         console.error('Error triggering routine:', error);
         throw createError({
             statusCode: error?.statusCode || 500,
-            statusMessage: error?.data?.message || error?.message || 'Failed to trigger routine',
+            statusMessage:
+                error?.data?.statusMessage ||
+                error?.data?.message ||
+                error?.message ||
+                'Failed to trigger routine',
         });
     }
 });

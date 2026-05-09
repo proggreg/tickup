@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
+const settingsStore = useSettingsStore();
 const hasGithub = await useHasGithub();
 const notif = useNotification();
 const isTriggering = ref(false);
@@ -18,10 +19,22 @@ function updateName() {
 async function triggerRoutine() {
     if (!listsStore.currentTodo.id) return;
 
+    settingsStore.loadClaudeRoutineSettings();
+    if (!settingsStore.claudeRoutineUrl || !settingsStore.claudeRoutineApiKey) {
+        notif('Claude routine settings not configured. Please update settings first.', {
+            timeout: 5000,
+        });
+        return;
+    }
+
     isTriggering.value = true;
     try {
-        const response = await $fetch(`/api/todo/${listsStore.currentTodo.id}/trigger-routine`, {
+        await $fetch(`/api/todo/${listsStore.currentTodo.id}/trigger-routine`, {
             method: 'POST',
+            body: {
+                claudeRoutineUrl: settingsStore.claudeRoutineUrl,
+                claudeRoutineApiKey: settingsStore.claudeRoutineApiKey,
+            },
         });
 
         notif('Claude routine triggered successfully', { timeout: 3000 });
