@@ -1,6 +1,5 @@
 import { describe, expect } from 'vitest';
 import { mcpTest } from '../fixtures/mcp';
-import { apiTest } from '../fixtures/api';
 
 describe('get_todo MCP tool', () => {
     mcpTest('should list tools and find get_todo', async ({ client }) => {
@@ -35,5 +34,58 @@ describe('get_todo MCP tool', () => {
 
         expect(text.id).toBe(newTodo.id);
         expect(text.name).toBe(newTodo.name);
+    });
+
+    mcpTest('should fetch todo by name', async ({ client, createTodo }) => {
+        const todoName = 'fetch-by-name-test';
+        const newTodo = await createTodo({
+            name: todoName,
+        });
+
+        const result = await client.callTool({
+            name: 'get_todo',
+            arguments: {
+                name: todoName,
+            },
+        });
+
+        const content = result.content as { type: string; text?: string }[];
+
+        const textContent = content.filter(({ type }) => type === 'text')[0];
+        if (!textContent || !textContent.text) {
+            throw Error('Text content is expected');
+        }
+
+        const text: Task = JSON.parse(textContent.text);
+
+        expect(text.id).toBe(newTodo.id);
+        expect(text.name).toBe(todoName);
+    });
+
+    mcpTest('should fetch todo by github branch name', async ({ client, createTodo }) => {
+        const branchName = 'feat/test-branch-123';
+        const newTodo = await createTodo({
+            name: 'test-with-branch',
+            githubBranchName: branchName,
+        });
+
+        const result = await client.callTool({
+            name: 'get_todo',
+            arguments: {
+                githubBranchName: branchName,
+            },
+        });
+
+        const content = result.content as { type: string; text?: string }[];
+
+        const textContent = content.filter(({ type }) => type === 'text')[0];
+        if (!textContent || !textContent.text) {
+            throw Error('Text content is expected');
+        }
+
+        const text: Task = JSON.parse(textContent.text);
+
+        expect(text.id).toBe(newTodo.id);
+        expect(text.githubBranchName).toBe(branchName);
     });
 });
