@@ -9,6 +9,7 @@ node_modules
 .claude
 .cursor
 coverage
+.coverage
 dist
 
 pnpm-lock.yaml
