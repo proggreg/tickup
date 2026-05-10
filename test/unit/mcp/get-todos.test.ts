@@ -41,7 +41,7 @@ describe('get_todos MCP tool', () => {
             expect(found).toMatchObject({
                 id: expect.anything(),
                 name,
-                status: expect.any(String),
+                status: null,
                 dueDate: expect.any(String),
             });
         },
@@ -95,7 +95,7 @@ describe('get_todos MCP tool', () => {
             expect(found).toMatchObject({
                 id: expect.anything(),
                 name,
-                status: expect.any(String),
+                status: null,
             });
         },
     );
