@@ -4,10 +4,7 @@ const colorMode = useColorMode();
 
 <template>
     <ColorScheme>
-        <v-theme-provider
-            with-background
-            :theme="colorMode.preference"
-        >
+        <v-theme-provider with-background :theme="colorMode.preference">
             <v-app>
                 <v-layout>
                     <v-main>

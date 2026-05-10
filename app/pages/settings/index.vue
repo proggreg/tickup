@@ -11,8 +11,7 @@ async function checkGithubStatus() {
     try {
         const connected = await $fetch('/api/github/check');
         githubConnected.value = !!connected;
-    }
-    catch {
+    } catch {
         githubConnected.value = false;
     }
     githubLoading.value = false;
@@ -93,13 +92,11 @@ onMounted(async () => {
                 },
             });
             githubConnected.value = true;
-        }
-        catch (e) {
+        } catch (e) {
             console.error('Failed to complete GitHub connection:', e);
         }
         githubLoading.value = false;
-    }
-    else {
+    } else {
         await checkGithubStatus();
         if (route.query.github === 'connected') {
             githubConnected.value = true;
@@ -114,10 +111,7 @@ onMounted(async () => {
             <span class="text-h5 font-weight-bold">Settings</span>
         </div>
 
-        <div
-            class="flex-grow-1"
-            style="overflow-y: auto"
-        >
+        <div class="flex-grow-1" style="overflow-y: auto">
             <!-- Statuses -->
             <div
                 class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-5 mb-2"
@@ -129,20 +123,11 @@ onMounted(async () => {
                 v-if="store.statuses.length === 0"
                 class="d-flex flex-column align-center justify-center pa-8 text-center mb-4"
             >
-                <v-icon
-                    icon="mdi-tag-outline"
-                    size="48"
-                    class="text-disabled mb-3"
-                />
-                <p class="text-body-2 text-disabled">
-                    No statuses yet
-                </p>
+                <v-icon icon="mdi-tag-outline" size="48" class="text-disabled mb-3" />
+                <p class="text-body-2 text-disabled">No statuses yet</p>
             </div>
 
-            <v-list
-                v-else
-                class="px-3 bg-transparent mb-2"
-            >
+            <v-list v-else class="px-3 bg-transparent mb-2">
                 <v-list-item
                     v-for="status in store.statuses"
                     :key="status.name"
@@ -164,11 +149,7 @@ onMounted(async () => {
                                     rounded="lg"
                                 />
                             </template>
-                            <v-color-picker
-                                v-model="status.color"
-                                class="ma-4"
-                                show-swatches
-                            />
+                            <v-color-picker v-model="status.color" class="ma-4" show-swatches />
                         </v-menu>
                     </template>
 
@@ -181,10 +162,7 @@ onMounted(async () => {
                         hide-details
                         class="font-weight-bold"
                     />
-                    <v-list-item-title
-                        v-else
-                        class="font-weight-bold"
-                    >
+                    <v-list-item-title v-else class="font-weight-bold">
                         {{ status.name }}
                     </v-list-item-title>
 
@@ -219,22 +197,10 @@ onMounted(async () => {
             </v-list>
 
             <div class="d-flex ga-2 px-4 mb-6">
-                <v-btn
-                    variant="tonal"
-                    prepend-icon="mdi-plus"
-                    rounded="xl"
-                    @click="addStatus"
-                >
+                <v-btn variant="tonal" prepend-icon="mdi-plus" rounded="xl" @click="addStatus">
                     Add Status
                 </v-btn>
-                <v-btn
-                    color="primary"
-                    variant="tonal"
-                    rounded="xl"
-                    @click="save"
-                >
-                    Save
-                </v-btn>
+                <v-btn color="primary" variant="tonal" rounded="xl" @click="save"> Save </v-btn>
             </div>
 
             <!-- Integrations -->
@@ -254,20 +220,13 @@ onMounted(async () => {
                     class="mb-2"
                 >
                     <template #prepend>
-                        <v-icon
-                            icon="mdi-github"
-                            size="18"
-                            class="mr-3"
-                        />
+                        <v-icon icon="mdi-github" size="18" class="mr-3" />
                     </template>
 
                     <v-list-item-title class="font-weight-bold">
                         GitHub Integration
                     </v-list-item-title>
-                    <v-list-item-subtitle
-                        v-if="githubLoading"
-                        class="text-caption"
-                    >
+                    <v-list-item-subtitle v-if="githubLoading" class="text-caption">
                         Checking...
                     </v-list-item-subtitle>
                     <v-list-item-subtitle
@@ -276,18 +235,12 @@ onMounted(async () => {
                     >
                         Connected
                     </v-list-item-subtitle>
-                    <v-list-item-subtitle
-                        v-else
-                        class="text-caption text-medium-emphasis"
-                    >
+                    <v-list-item-subtitle v-else class="text-caption text-medium-emphasis">
                         Not connected
                     </v-list-item-subtitle>
 
                     <template #append>
-                        <v-icon
-                            icon="mdi-chevron-right"
-                            size="18"
-                        />
+                        <v-icon icon="mdi-chevron-right" size="18" />
                     </template>
                 </v-list-item>
             </v-list>
@@ -308,11 +261,7 @@ onMounted(async () => {
                     @click="signOut"
                 >
                     <template #prepend>
-                        <v-icon
-                            icon="mdi-logout"
-                            size="18"
-                            class="mr-3"
-                        />
+                        <v-icon icon="mdi-logout" size="18" class="mr-3" />
                     </template>
                     <v-list-item-title class="font-weight-bold text-error">
                         Sign Out

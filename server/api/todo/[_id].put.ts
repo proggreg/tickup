@@ -3,7 +3,7 @@ import { mcpSupabaseClient } from '../../mcp/utils/auth';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
-    
+
     delete body.subtasks;
     delete body.edit;
 
@@ -14,25 +14,25 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    console.log('update todo id: ', event.context.params._id)
-    
+    console.log('update todo id: ', event.context.params._id);
+
     // Remove undefined fields to avoid Supabase issues
     const cleanBody = Object.fromEntries(
-        Object.entries(body).filter(([, v]) => v !== undefined)
+        Object.entries(body).filter(([, v]) => v !== undefined),
     ) as Record<string, unknown>;
 
     const todo = objectToSnake(cleanBody) as Record<string, unknown>;
 
-    console.log('update todo parent_id: ', todo.parent_id)
+    console.log('update todo parent_id: ', todo.parent_id);
     const todoId = parseInt(event.context.params._id, 10);
 
     const supabase = await mcpSupabaseClient(event);
 
-    const { data, error } = await supabase
+    const { data, error } = (await supabase
         .from('Todos')
         .update(todo as any)
         .eq('id', todoId)
-        .select() as { data: unknown[] | null; error: unknown };
+        .select()) as { data: unknown[] | null; error: unknown };
 
     if (error) {
         throw createError({

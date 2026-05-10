@@ -105,11 +105,7 @@ async function addTodo() {
                             density="compact"
                         >
                             <template #prepend-inner>
-                                <v-icon
-                                    size="16"
-                                    color="on-surface"
-                                    class="mr-1"
-                                >
+                                <v-icon size="16" color="on-surface" class="mr-1">
                                     mdi-format-list-bulleted
                                 </v-icon>
                             </template>
@@ -130,12 +126,7 @@ async function addTodo() {
                 style="background: rgba(var(--v-theme-surface-variant), 0.15)"
             >
                 <v-spacer />
-                <v-btn
-                    variant="text"
-                    size="small"
-                    class="text-medium-emphasis"
-                    @click="close"
-                >
+                <v-btn variant="text" size="small" class="text-medium-emphasis" @click="close">
                     Cancel
                 </v-btn>
                 <v-btn

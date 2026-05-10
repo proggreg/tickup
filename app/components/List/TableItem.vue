@@ -32,16 +32,9 @@ function formatDate(date: Date) {
         <td class="status-cell">
             <ListStatus :todo="item.raw" />
         </td>
-        <template
-            v-for="column in props.columns"
-            :key="column.key"
-        >
+        <template v-for="column in props.columns" :key="column.key">
             <template v-if="column.key !== 'data-table-group'">
-                <td
-                    v-if="column.key === 'name'"
-                    colspan="6"
-                    class="text-h6"
-                >
+                <td v-if="column.key === 'name'" colspan="6" class="text-h6">
                     <v-text
                         class="text-h6 text-truncate"
                         data-testid="todo-title"
@@ -51,11 +44,7 @@ function formatDate(date: Date) {
                         {{ item.columns[column.key] }}
                     </v-text>
                 </td>
-                <td
-                    v-else-if="column.key === 'dueDate' && !xs"
-                    colspan="2"
-                    class="text-h6"
-                >
+                <td v-else-if="column.key === 'dueDate' && !xs" colspan="2" class="text-h6">
                     <v-text
                         class="text-h6 text-truncate"
                         style="max-width: 120px; display: block"
@@ -64,11 +53,7 @@ function formatDate(date: Date) {
                         {{ formatDate(item.columns[column.key]) }}
                     </v-text>
                 </td>
-                <td
-                    v-else-if="column.key === 'actions' && !xs"
-                    colspan="4"
-                    class="text-h6"
-                >
+                <td v-else-if="column.key === 'actions' && !xs" colspan="4" class="text-h6">
                     <div class="d-flex justify-end">
                         <v-checkbox
                             v-model="item.raw.selected"

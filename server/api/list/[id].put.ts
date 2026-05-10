@@ -14,8 +14,7 @@ export default defineEventHandler(async (event) => {
             })
             .eq('id', body.id)
             .select();
-    }
-    catch (error) {
+    } catch (error) {
         return error;
     }
 });

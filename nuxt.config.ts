@@ -3,8 +3,19 @@ import { defineNuxtConfig } from 'nuxt/config';
 import vuetify from './config/vuetify';
 
 export default defineNuxtConfig({
-    modules: ['@vite-pwa/nuxt', 'vuetify-nuxt-module', '@pinia/nuxt',
-        '@vueuse/nuxt', '@nuxtjs/color-mode', '@nuxt/eslint', '@nuxtjs/device', '@nuxt/test-utils/module', 'nuxt-bugsnag', '@nuxtjs/supabase', '@nuxtjs/mcp-toolkit'],
+    modules: [
+        '@vite-pwa/nuxt',
+        'vuetify-nuxt-module',
+        '@pinia/nuxt',
+        '@vueuse/nuxt',
+        '@nuxtjs/color-mode',
+        '@nuxt/eslint',
+        '@nuxtjs/device',
+        '@nuxt/test-utils/module',
+        'nuxt-bugsnag',
+        '@nuxtjs/supabase',
+        '@nuxtjs/mcp-toolkit',
+    ],
 
     pages: true,
 
@@ -23,16 +34,15 @@ export default defineNuxtConfig({
         enabled: true,
     },
 
-
     vite: {
-      server: {
-        allowedHosts: ['dev.gregfield.dev'],
-        // hmr: {
-        //   protocol: 'wss',
-        //   host: 'localhost',
-        //   clientPort: 443
-        // }
-      }
+        server: {
+            allowedHosts: ['dev.gregfield.dev'],
+            // hmr: {
+            //   protocol: 'wss',
+            //   host: 'localhost',
+            //   clientPort: 443
+            // }
+        },
     },
 
     runtimeConfig: {
@@ -87,10 +97,7 @@ export default defineNuxtConfig({
         },
         typescript: {
             tsConfig: {
-                include: [
-                    '../index.d.ts',
-                    '../types/**/*.ts',
-                ],
+                include: ['../index.d.ts', '../types/**/*.ts'],
             },
         },
     },
@@ -99,9 +106,7 @@ export default defineNuxtConfig({
         strict: false,
         typeCheck: false,
         tsConfig: {
-            include: [
-                '../types/**/*.ts',
-            ],
+            include: ['../types/**/*.ts'],
         },
     },
 
