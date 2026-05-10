@@ -1,92 +1,92 @@
 import { describe, expect } from 'vitest';
 import { mcpTest } from '../fixtures/mcp';
 
+function parseContent(result: unknown): Record<string, unknown> {
+    const contentArray = (result as Record<string, unknown>).content as {
+        type: string;
+        text?: string;
+    }[];
+    const textContent = contentArray.find(({ type }) => type === 'text');
+    if (!textContent?.text) throw new Error('Text content expected');
+    return JSON.parse(textContent.text);
+}
+
 describe('get_todo MCP tool', () => {
-    mcpTest('should list tools and find get_todo', async ({ client }) => {
-        const result = await client.listTools();
-        expect(result.tools).toBeDefined();
-        expect(Array.isArray(result.tools)).toBe(true);
-
-        const tool = result.tools.find((t: { name: string }) => t.name === 'get_todo');
-        expect(tool).toBeDefined();
-    });
-
-    mcpTest('should call get_todo tool', async ({ client, createTodo }) => {
-        const newTodo = await createTodo({
-            name: 'test',
-        });
+    mcpTest('fetches todo by ID with correct structure', async ({ client, createTodo }) => {
+        const newTodo = await createTodo({ name: `test-todo-${crypto.randomUUID()}` });
 
         const result = await client.callTool({
             name: 'get_todo',
-            arguments: {
-                id: String(newTodo.id),
-            },
+            arguments: { id: String(newTodo.id) },
         });
 
-        const content = result.content as { type: string; text?: string }[];
-
-        const textContent = content.filter(({ type }) => type === 'text')[0];
-        if (!textContent || !textContent.text) {
-            throw Error('Text content is expected');
-        }
-
-        const text: Task = JSON.parse(textContent.text);
-
-        expect(text.id).toBe(newTodo.id);
-        expect(text.name).toBe(newTodo.name);
+        const todo = parseContent(result);
+        expect(todo).toMatchObject({
+            id: newTodo.id,
+            name: newTodo.name,
+            status: expect.any(String),
+            userId: expect.any(String),
+        });
     });
 
-    mcpTest('should fetch todo by name', async ({ client, createTodo }) => {
-        const todoName = 'fetch-by-name-test';
-        const newTodo = await createTodo({
-            name: todoName,
-        });
+    mcpTest('fetches todo by name', async ({ client, createTodo }) => {
+        const name = `fetch-by-name-${crypto.randomUUID()}`;
+        const newTodo = await createTodo({ name });
 
         const result = await client.callTool({
             name: 'get_todo',
-            arguments: {
-                name: todoName,
-            },
+            arguments: { name },
         });
 
-        const content = result.content as { type: string; text?: string }[];
-
-        const textContent = content.filter(({ type }) => type === 'text')[0];
-        if (!textContent || !textContent.text) {
-            throw Error('Text content is expected');
-        }
-
-        const text: Task = JSON.parse(textContent.text);
-
-        expect(text.id).toBe(newTodo.id);
-        expect(text.name).toBe(todoName);
+        const todo = parseContent(result);
+        expect(todo.id).toBe(newTodo.id);
+        expect(todo.name).toBe(name);
     });
 
-    mcpTest('should fetch todo by github branch name', async ({ client, createTodo }) => {
-        const branchName = 'feat/test-branch-123';
+    mcpTest('fetches todo by github branch name', async ({ client, createTodo }) => {
+        const branchName = `feat/test-${crypto.randomUUID()}`;
         const newTodo = await createTodo({
-            name: 'test-with-branch',
+            name: `test-with-branch-${crypto.randomUUID()}`,
             githubBranchName: branchName,
         });
 
         const result = await client.callTool({
             name: 'get_todo',
-            arguments: {
-                githubBranchName: branchName,
-            },
+            arguments: { githubBranchName: branchName },
         });
 
-        const content = result.content as { type: string; text?: string }[];
+        const todo = parseContent(result);
+        expect(todo.id).toBe(newTodo.id);
+        expect(todo.githubBranchName).toBe(branchName);
+    });
 
-        const textContent = content.filter(({ type }) => type === 'text')[0];
-        if (!textContent || !textContent.text) {
-            throw Error('Text content is expected');
-        }
+    mcpTest('returns error when called with no arguments', async ({ client }) => {
+        const result = await client.callTool({
+            name: 'get_todo',
+            arguments: {},
+        });
 
-        const text: Task = JSON.parse(textContent.text);
+        const contentArray = (result as Record<string, unknown>).content as {
+            type: string;
+            text?: string;
+        }[];
+        const textContent = contentArray.find(({ type }) => type === 'text');
+        expect(textContent?.text).toContain('Must provide either id, name, or githubBranchName');
+    });
 
-        expect(text.id).toBe(newTodo.id);
-        expect(text.githubBranchName).toBe(branchName);
+    mcpTest('returns error for nonexistent ID', async ({ client }) => {
+        const result = await client.callTool({
+            name: 'get_todo',
+            arguments: { id: '999999999' },
+        });
+
+        const contentArray = (result as Record<string, unknown>).content as {
+            type: string;
+            text?: string;
+        }[];
+        const textContent = contentArray.find(({ type }) => type === 'text');
+        expect(textContent?.text).toBeDefined();
+        expect(textContent!.text!.toLowerCase()).toMatch(/not found|error/);
     });
 
     mcpTest('should handle non-existent todo ID gracefully', async ({ client }) => {
