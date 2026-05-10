@@ -21,7 +21,7 @@ Tactical, bounded tickup tasks that don't need review before shipping. Small fea
 
 1. **Check git state**: `git status` and `git log -1 --oneline`
 2. **Check CI**: Most recent run must be green. Wait if `in_progress`/`queued`. If failed, fix it before picking new work.
-3. **Look for `in_progress` task first**. Use tickup MCP `get_todos` with today's todos or search. If one exists, resume it — see "Recovery" below.
+3. **Look for `in_progress` task first**. Use tickup MCP `get_todo` with a task name or id. If one exists, use `get_subtasks` with the task id to get the work to be done, then resume it — see "Recovery" below.
 4. **Pick next todo**. Query tickup tasks with status pending/todo. Skip blocked. Pick best candidate (unlocks downstream work first). State pick + one-liner rationale.
 5. **If argument passed**, use that task ID instead.
 6. **If nothing pickable and CI green**, print "No todo tasks — nothing to do." and exit.
@@ -59,10 +59,6 @@ For UI: verify visually if possible.
 
 **All checks green before marking done.**
 
-## Mark Done
-
-Update task status to `completed` with `completed_date` via tickup MCP `update_todo`.
-
 ## Commit and Push
 
 ```
@@ -74,6 +70,14 @@ Closes tickup task #<id>.
 ```
 
 Watch build to completion. If red, fix locally, commit (no `--amend`), push, re-watch.
+
+## Create a PR
+
+Create a PR for a subtask with the parent task's branch as the target branch. If the task is a parent task, target the main branch.
+
+## Mark In Review
+
+Update task status to `in review` with `completed_date` via tickup MCP `update_todo`.
 
 ## CI Discipline
 
