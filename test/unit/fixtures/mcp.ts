@@ -15,7 +15,9 @@ export const mcpTest = test.extend<MCPTestContext>({
         const adminKey = process.env.SUPABASE_SECRET_KEY;
 
         if (!supabaseUrl || !supabaseKey || !adminKey) {
-            throw new Error('Missing required Supabase environment variables: SUPABASE_URL, SUPABASE_KEY, SUPABASE_SECRET_KEY');
+            throw new Error(
+                'Missing required Supabase environment variables: SUPABASE_URL, SUPABASE_KEY, SUPABASE_SECRET_KEY',
+            );
         }
 
         const supabase = createClient(supabaseUrl, supabaseKey);
@@ -66,7 +68,8 @@ export const mcpTest = test.extend<MCPTestContext>({
         }) as typeof globalThis.fetch;
 
         // Create HTTP transport pointing to Nuxt MCP server
-        const url = new URL('http://localhost:3000/mcp');
+        const port = process.env.MCP_PORT || '3001';
+        const url = new URL(`http://localhost:${port}/mcp`);
         const transport = new StreamableHTTPClientTransport(url);
 
         // Initialize MCP client
