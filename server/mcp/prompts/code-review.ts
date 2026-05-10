@@ -7,13 +7,15 @@ export default defineMcpPrompt({
     },
     handler: async ({ language }) => {
         return {
-            messages: [{
-                role: 'user',
-                content: {
-                    type: 'text',
-                    text: `Please review my ${language} code for best practices, potential bugs, and improvements.`,
+            messages: [
+                {
+                    role: 'user',
+                    content: {
+                        type: 'text',
+                        text: `Please review my ${language} code for best practices, potential bugs, and improvements.`,
+                    },
                 },
-            }],
+            ],
         };
     },
 });

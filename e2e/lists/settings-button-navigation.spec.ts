@@ -25,7 +25,7 @@ test.describe('list settings button prevents navigation', () => {
         await newListInput.type(listName);
 
         const createResponse = page.waitForResponse(
-            response =>
+            (response) =>
                 response.url().includes('/api/list') && response.request().method() === 'POST',
         );
         await page.keyboard.press('Enter');
@@ -77,7 +77,7 @@ test.describe('list settings button prevents navigation', () => {
         const newListInput = await page.getByRole('textbox', { name: 'New List' });
         await newListInput.type(listName);
         const createRequestPromise = page.waitForRequest(
-            request => request.url().includes('/api/list') && request.method() === 'POST',
+            (request) => request.url().includes('/api/list') && request.method() === 'POST',
         );
         await page.keyboard.press('Enter');
         await createRequestPromise;

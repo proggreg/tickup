@@ -46,8 +46,7 @@ export default defineEventHandler(async (event) => {
         });
 
         return data;
-    }
-    catch (error: any) {
+    } catch (error: any) {
         console.error('Error listing repos:', error);
         throw createError({
             statusCode: error.status || 500,

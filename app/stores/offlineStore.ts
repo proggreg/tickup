@@ -46,14 +46,13 @@ export const useOfflineSyncStore = defineStore(
             }
 
             isSyncing.value = true;
-            const unsyncedChanges = pendingChanges.value.filter(c => !c.synced);
+            const unsyncedChanges = pendingChanges.value.filter((c) => !c.synced);
 
             for (const change of unsyncedChanges) {
                 try {
                     await syncSingleChange(change);
                     markChangeSynced(change.id);
-                }
-                catch (err: any) {
+                } catch (err: any) {
                     console.error(err);
                     incrementRetryCount(change.id);
                 }
@@ -71,7 +70,7 @@ export const useOfflineSyncStore = defineStore(
         };
 
         const markChangeSynced = (changeId: string | number): void => {
-            const change = pendingChanges.value.find(c => c.id === changeId);
+            const change = pendingChanges.value.find((c) => c.id === changeId);
             if (change) {
                 change.synced = true;
                 change.syncedAt = Date.now();
@@ -79,21 +78,21 @@ export const useOfflineSyncStore = defineStore(
         };
 
         const incrementRetryCount = (changeId: string | number): void => {
-            const change = pendingChanges.value.find(c => c.id === changeId);
+            const change = pendingChanges.value.find((c) => c.id === changeId);
             if (change) {
                 change.retryCount = (change.retryCount || 0) + 1;
             }
         };
 
         const removePendingChange = (changeId: string | number): void => {
-            const index = pendingChanges.value.findIndex(c => c.id === changeId);
+            const index = pendingChanges.value.findIndex((c) => c.id === changeId);
             if (index !== -1) {
                 pendingChanges.value.splice(index, 1);
             }
         };
 
         const clearSyncedChanges = (): void => {
-            pendingChanges.value = pendingChanges.value.filter(c => !c.synced);
+            pendingChanges.value = pendingChanges.value.filter((c) => !c.synced);
         };
 
         return {

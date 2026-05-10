@@ -20,11 +20,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <v-virtual-scroll
-        :item-size="1"
-        :items="store.lists"
-        class="pa-0 nav-items-scroll"
-    >
+    <v-virtual-scroll :item-size="1" :items="store.lists" class="pa-0 nav-items-scroll">
         <template #default="{ item }">
             <v-hover>
                 <template #default="{ props }">
@@ -49,10 +45,7 @@ onBeforeMount(() => {
                             @blur="renameList(item)"
                         />
 
-                        <v-list-item-title
-                            v-else
-                            class="nav-item-title text-truncate"
-                        >
+                        <v-list-item-title v-else class="nav-item-title text-truncate">
                             {{ item.name }}
                         </v-list-item-title>
 

@@ -38,7 +38,7 @@ test.describe('Todo List to Detail Navigation', () => {
         // Verify todos are visible in the list
         const todoTitlesBeforeNavigation = await page.getByTestId('todo-title').all();
         const todoTextsBefore = await Promise.all(
-            todoTitlesBeforeNavigation.map(el => el.textContent()),
+            todoTitlesBeforeNavigation.map((el) => el.textContent()),
         );
         expect(todoTitlesBeforeNavigation.length).toBeGreaterThan(0);
 
@@ -72,7 +72,7 @@ test.describe('Todo List to Detail Navigation', () => {
         await page.waitForLoadState('networkidle');
         const todoTitlesAfterNavigation = await page.getByTestId('todo-title').all();
         const todoTextsAfter = await Promise.all(
-            todoTitlesAfterNavigation.map(el => el.textContent()),
+            todoTitlesAfterNavigation.map((el) => el.textContent()),
         );
 
         expect(todoTitlesAfterNavigation.length).toBeGreaterThan(0);

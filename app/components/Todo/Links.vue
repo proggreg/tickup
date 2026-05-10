@@ -33,7 +33,7 @@ function editLink(link) {
 
 function cancelEditLink(link) {
     // TODO make a copy and revert back if cancelled
-    editLinks.value = editLinks.value.filter(url => url !== link.url);
+    editLinks.value = editLinks.value.filter((url) => url !== link.url);
 }
 
 watch(
@@ -65,8 +65,7 @@ watch(
                 listsStore.currentTodo.desc = listsStore.currentTodo.desc.replace(url, '');
             }
             listsStore.updateTodo(listsStore.currentTodo);
-        }
-        catch (e) {
+        } catch (e) {
             logger.error(e as Error, { component: 'TodoLinks', function: 'watchDesc' });
         }
     },
@@ -77,16 +76,9 @@ watch(
     <v-list>
         <v-list-subheader>Links</v-list-subheader>
 
-        <v-list-item
-            v-for="(link, index) in listsStore.currentTodo.links"
-            :key="index"
-        >
+        <v-list-item v-for="(link, index) in listsStore.currentTodo.links" :key="index">
             <v-list-item-title>
-                <a
-                    v-if="!editLinks.includes(link.url)"
-                    :href="link.url"
-                    target="_blank"
-                >{{
+                <a v-if="!editLinks.includes(link.url)" :href="link.url" target="_blank">{{
                     link.title
                 }}</a>
                 <v-text-field
@@ -110,12 +102,7 @@ watch(
                     @click="() => cancelEditLink(link)"
                 />
 
-                <v-btn
-                    color="red"
-                    icon="mdi-delete"
-                    variant="text"
-                    @click="removeLink(link)"
-                />
+                <v-btn color="red" icon="mdi-delete" variant="text" @click="removeLink(link)" />
             </template>
         </v-list-item>
     </v-list>

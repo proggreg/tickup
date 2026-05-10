@@ -36,7 +36,7 @@ test.describe('Create Todo', () => {
 
         const listItemTitlesEls = await page.getByTestId('todo-title').all();
         const listItemTitles = await Promise.all(
-            listItemTitlesEls.map(navItem => navItem.textContent()),
+            listItemTitlesEls.map((navItem) => navItem.textContent()),
         );
 
         expect(listItemTitles.includes(todoName)).toBeTruthy();
@@ -64,7 +64,7 @@ test.describe('Create Todo', () => {
 
         let listItemTitlesEls = await page.getByTestId('todo-title').all();
         let listItemTitles = await Promise.all(
-            listItemTitlesEls.map(navItem => navItem.textContent()),
+            listItemTitlesEls.map((navItem) => navItem.textContent()),
         );
         console.log(listItemTitles, todoName);
 
@@ -75,7 +75,7 @@ test.describe('Create Todo', () => {
 
         listItemTitlesEls = await page.getByTestId('todo-title').all();
         listItemTitles = await Promise.all(
-            listItemTitlesEls.map(navItem => navItem.textContent()),
+            listItemTitlesEls.map((navItem) => navItem.textContent()),
         );
 
         expect(listItemTitles.includes(todoName)).toBeTruthy();
