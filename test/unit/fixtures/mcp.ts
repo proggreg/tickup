@@ -43,12 +43,10 @@ export const mcpTest = test
             const supabase = createClient(supabaseUrl, supabaseKey);
             const adminSupabase = createClient(supabaseUrl, adminKey);
 
-            // Generate unique test user
             const uniqueId = crypto.randomUUID();
             const testUserEmail = `test.user.${uniqueId}@example.com`;
             const testPassword = 'TestPassword123!';
 
-            // Sign up new test user
             const { data: signUpData, error: signUpError } =
                 await adminSupabase.auth.admin.createUser({
                     email: testUserEmail,
@@ -70,7 +68,6 @@ export const mcpTest = test
                 password: testPassword,
             };
 
-            // Sign in to get auth token
             const { data: signInData, error: signInError } =
                 await supabase.auth.signInWithPassword(user);
 
@@ -87,22 +84,18 @@ export const mcpTest = test
 
             use(user);
 
-            // // Delete test user
-            // try {
-            //     const { error } = await adminSupabase.auth.admin.deleteUser(testUserId);
-            //     if (error) {
-            //         console.warn('Failed to delete test user:', error.message);
-            //     }
-            // } catch (err) {
-            //     console.warn('Error deleting test user:', err);
-            // }
+            try {
+                const { error } = await adminSupabase.auth.admin.deleteUser(testUserId);
+                if (error) {
+                    console.warn('Failed to delete test user:', error.message);
+                }
+            } catch (err) {
+                console.warn('Error deleting test user:', err);
+            }
         },
     })
     .extend<MCPTestContext>({
         async client({ user }, use) {
-            // Load config from environment
-
-            // Override globalThis.fetch to add Authorization header
             const originalFetch = globalThis.fetch;
             globalThis.fetch = ((input: RequestInfo | URL, init?: RequestInit) => {
                 const headers = new Headers(init?.headers || {});
@@ -110,23 +103,19 @@ export const mcpTest = test
                 return originalFetch(input, { ...init, headers });
             }) as typeof globalThis.fetch;
 
-            // Create HTTP transport pointing to Nuxt MCP server
-            const url = new URL('http://localhost:3000/mcp');
+            const port = process.env.MCP_PORT || '3001';
+            const url = new URL(`http://localhost:${port}/mcp`);
             const transport = new StreamableHTTPClientTransport(url);
 
-            // Initialize MCP client
             const client = new Client({
                 name: 'test-client',
                 version: '1.0.0',
             });
 
-            // Connect client to transport
             await client.connect(transport);
 
-            // Provide context to test
             await use(client);
 
-            // Teardown
             await client.close();
             await transport.close();
             globalThis.fetch = originalFetch;
@@ -137,7 +126,6 @@ export const mcpTest = test
             const createdTodoIds: (string | number)[] = [];
 
             const apiCall = async (path: string, options?: RequestInit): Promise<Response> => {
-                // Sign in to get auth token
                 const supabaseUrl = process.env.SUPABASE_URL;
                 const supabaseKey = process.env.SUPABASE_KEY;
                 const adminKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -167,20 +155,13 @@ export const mcpTest = test
                     headers.set('Content-Type', 'application/json');
                 }
 
-                console.log(
-                    '[apiCall] fetching:',
-                    `http://localhost:3000${path}`,
-                    'method:',
-                    options?.method || 'GET',
-                );
-                const response = await fetch(`http://localhost:3000${path}`, {
+                const port = process.env.MCP_PORT || '3001';
+                const response = await fetch(`http://localhost:${port}${path}`, {
                     method: options?.method || 'GET',
                     headers,
                     body: options?.body,
                 });
-                console.log('[apiCall] response status:', response.status);
 
-                // Track created todos
                 if (options?.method === 'POST' && path === '/api/todo') {
                     if (response.ok) {
                         const clone = response.clone();
@@ -196,7 +177,6 @@ export const mcpTest = test
 
             await use(apiCall);
 
-            // Cleanup todos
             for (const todoId of createdTodoIds) {
                 try {
                     const response = await apiCall(`/api/todo/${todoId}`, { method: 'DELETE' });
@@ -221,9 +201,7 @@ export const mcpTest = test
                     throw new Error(`Create todo failed: ${response.statusText} - ${text}`);
                 }
 
-                const todo = await response.json();
-
-                return todo;
+                return response.json();
             };
 
             await use(createTodo);
