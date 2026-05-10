@@ -40,14 +40,13 @@ async function loadBranches() {
 
         if (branches.value && branches.value.length > 0) {
             const foundBranch = branches.value.find(
-                branch => branch.name === githubBranchName.value,
+                (branch) => branch.name === githubBranchName.value,
             );
 
             if (foundBranch) {
                 hasBranch.value = true;
                 selectedBranch.value = foundBranch;
-            }
-            else {
+            } else {
                 hasBranch.value = false;
             }
 
@@ -63,12 +62,10 @@ async function loadBranches() {
                 }
             }, 150);
         }
-    }
-    catch (e: any) {
+    } catch (e: any) {
         error.value = e?.data?.message || 'Failed to load branches';
         branches.value = [];
-    }
-    finally {
+    } finally {
         loading.value = false;
     }
 }
@@ -126,10 +123,7 @@ onUnmounted(() => {
         clearable
     >
         <template #item="{ props, item }">
-            <v-list-item
-                v-bind="props"
-                :subtitle="item.raw.commit.sha"
-            />
+            <v-list-item v-bind="props" :subtitle="item.raw.commit.sha" />
         </template>
 
         <template #append>

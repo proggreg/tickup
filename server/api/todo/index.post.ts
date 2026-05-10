@@ -6,7 +6,9 @@ export default defineEventHandler(async (event) => {
     const body = await readBody<Task>(event);
     const supabase = await mcpSupabaseClient(event);
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
     if (!user?.id) {
         throw createError({
             statusCode: 401,
@@ -34,11 +36,10 @@ export default defineEventHandler(async (event) => {
         // Allow parent to be a subtask as well (nested subtasks are permitted)
     }
 
-    
     try {
-        const todo = new TaskService(supabase)
+        const todo = new TaskService(supabase);
 
-        const { data, error } = await todo.create(todoData as unknown as Task)
+        const { data, error } = await todo.create(todoData as unknown as Task);
 
         if (error) {
             console.error('Supabase error:', error);
@@ -52,8 +53,7 @@ export default defineEventHandler(async (event) => {
         if (result) {
             return objectToCamel(result);
         }
-    }
-    catch (e) {
+    } catch (e) {
         const errorMsg = e instanceof Error ? e.message : String(e);
         throw createError({
             statusCode: 500,

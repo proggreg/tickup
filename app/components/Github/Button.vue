@@ -77,25 +77,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <v-menu
-        :close-on-content-click="false"
-        elevation="0"
-    >
+    <v-menu :close-on-content-click="false" elevation="0">
         <template #activator="{ props }">
-            <v-btn
-                v-bind="props"
-                icon="mdi-github"
-            />
+            <v-btn v-bind="props" icon="mdi-github" />
         </template>
-        <v-list
-            class="github-menu rounded-xl"
-            density="compact"
-            elevation="1"
-        >
-            <v-list-item
-                class="github-menu-item"
-                slim
-            >
+        <v-list class="github-menu rounded-xl" density="compact" elevation="1">
+            <v-list-item class="github-menu-item" slim>
                 <v-text-field
                     :model-value="githubBranchCommand"
                     class="github-command-field font-weight-bold"
@@ -114,24 +101,12 @@ onUnmounted(() => {
                     </template>
                 </v-text-field>
             </v-list-item>
-            <v-list-item
-                class="github-menu-item"
-                slim
-            >
-                <v-row
-                    class="github-menu-row"
-                    dense
-                >
-                    <v-col
-                        cols="5"
-                        class="pa-0 pr-1 github-repo-col"
-                    >
+            <v-list-item class="github-menu-item" slim>
+                <v-row class="github-menu-row" dense>
+                    <v-col cols="5" class="pa-0 pr-1 github-repo-col">
                         <GithubRepoSelect />
                     </v-col>
-                    <v-col
-                        cols="7"
-                        class="pa-0 pl-1 github-branch-col"
-                    >
+                    <v-col cols="7" class="pa-0 pl-1 github-branch-col">
                         <GithubBranchSelect :branch-name="githubBranchName" />
                     </v-col>
                 </v-row>
@@ -140,29 +115,17 @@ onUnmounted(() => {
     </v-menu>
 
     <!-- Confirmation dialog for existing branch -->
-    <v-dialog
-        v-model="showLinkDialog"
-        max-width="400"
-    >
+    <v-dialog v-model="showLinkDialog" max-width="400">
         <v-card>
-            <v-card-title class="text-h6">
-                Branch Already Exists
-            </v-card-title>
+            <v-card-title class="text-h6"> Branch Already Exists </v-card-title>
             <v-card-text>
                 The branch <strong>{{ githubBranchName }}</strong> already exists in this
                 repository. Would you like to link this todo to the existing branch?
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
-                <v-btn
-                    text="Cancel"
-                    @click="cancelLinkBranch"
-                />
-                <v-btn
-                    color="primary"
-                    text="Link Branch"
-                    @click="confirmLinkBranch"
-                />
+                <v-btn text="Cancel" @click="cancelLinkBranch" />
+                <v-btn color="primary" text="Link Branch" @click="confirmLinkBranch" />
             </v-card-actions>
         </v-card>
     </v-dialog>

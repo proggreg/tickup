@@ -13,31 +13,28 @@ export default defineMcpTool({
         status: z.string().optional(),
         priority: z.string().optional(),
         due_date: z.string().optional().describe('Due date (ISO 8601)'),
-        notification_date_time: z
-            .string()
-            .optional()
-            .describe('Reminder date/time (ISO 8601)'),
+        notification_date_time: z.string().optional().describe('Reminder date/time (ISO 8601)'),
         order: z.number().optional(),
         github_branch_name: z.string().optional(),
     },
     handler: async (args) => {
-      const event = useEvent();
+        const event = useEvent();
         await mcpUserId(event);
         const supabase = await mcpSupabaseClient(event);
         const tasks = new TaskService(supabase);
 
         const { data, error } = await tasks.create(args as unknown as Task);
 
-        console.error(error)
+        console.error(error);
 
         if (!data) {
-          return [
-            {
-              isError: true
-            }
-          ]
+            return [
+                {
+                    isError: true,
+                },
+            ];
         }
 
-        return data
+        return data;
     },
 });

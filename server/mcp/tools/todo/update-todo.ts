@@ -13,7 +13,10 @@ export default defineMcpTool({
         status: z.string().optional(),
         priority_lev: z.enum(['high', 'medium', 'low']).optional(),
         listId: z.string().optional(),
-        parentId: z.union([z.string(), z.number()]).optional().describe('Parent todo ID for subtasks'),
+        parentId: z
+            .union([z.string(), z.number()])
+            .optional()
+            .describe('Parent todo ID for subtasks'),
         dueDate: z.string().nullable().optional(),
         completedDate: z.string().nullable().optional(),
         notificationDateTime: z.string().nullable().optional(),
@@ -29,9 +32,10 @@ export default defineMcpTool({
 
         // Coerce parentId to number if it's a string
         if (updateFields.parentId !== undefined) {
-            updateFields.parentId = typeof updateFields.parentId === 'string'
-                ? parseInt(updateFields.parentId, 10)
-                : updateFields.parentId;
+            updateFields.parentId =
+                typeof updateFields.parentId === 'string'
+                    ? parseInt(updateFields.parentId, 10)
+                    : updateFields.parentId;
         }
 
         // Convert camelCase to snake_case
@@ -47,8 +51,9 @@ export default defineMcpTool({
             return [
                 {
                     isError: true,
-                    message: (error as unknown as Record<string, unknown>).message || 'Update failed',
-                }
+                    message:
+                        (error as unknown as Record<string, unknown>).message || 'Update failed',
+                },
             ];
         }
 
@@ -57,7 +62,7 @@ export default defineMcpTool({
                 {
                     isError: true,
                     message: 'Todo not found',
-                }
+                },
             ];
         }
 

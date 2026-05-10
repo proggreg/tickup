@@ -47,20 +47,9 @@ function deleteList() {
         class="font-weight-bold"
         data-testid="nav-bar"
     >
-        <v-list
-            nav
-            class="flex-shrink-0"
-        >
-            <v-list-item
-                prepend-icon="mdi-home"
-                title="Home"
-                to="/"
-            />
-            <v-list-item
-                prepend-icon="mdi-cog"
-                title="Settings"
-                to="/settings"
-            />
+        <v-list nav class="flex-shrink-0">
+            <v-list-item prepend-icon="mdi-home" title="Home" to="/" />
+            <v-list-item prepend-icon="mdi-cog" title="Settings" to="/settings" />
             <v-list-item
                 prepend-icon="mdi-plus"
                 title="New List"
@@ -73,29 +62,15 @@ function deleteList() {
             <v-divider class="my-2" />
         </v-list>
 
-        <v-list
-            nav
-            class="overflow-y-auto flex-grow-1"
-        >
-            <ListNew
-                :open="dialog"
-                @close="dialog.open = false"
-            />
+        <v-list nav class="overflow-y-auto flex-grow-1">
+            <ListNew :open="dialog" @close="dialog.open = false" />
             <AppNavItems @open="openContextMenu" />
         </v-list>
 
-        <v-menu
-            v-model="contextMenuOpen"
-            location-strategy="connected"
-        >
+        <v-menu v-model="contextMenuOpen" location-strategy="connected">
             <v-list nav>
                 <v-list-item>
-                    <v-btn
-                        variant="text"
-                        color="red"
-                        icon="mdi-trash-can"
-                        @click="deleteList"
-                    />
+                    <v-btn variant="text" color="red" icon="mdi-trash-can" @click="deleteList" />
                 </v-list-item>
             </v-list>
         </v-menu>

@@ -1,8 +1,8 @@
 {
-  "mcpServers" : {
-    "tickup-git-mcp-oauth-poc-greg-fields-projects": {
-      "type": "http",
-      "url": "https://tickup-git-mcp-oauth-poc-greg-fields-projects.vercel.app/mcp"
+    "mcpServers": {
+        "tickup-git-mcp-oauth-poc-greg-fields-projects": {
+            "type": "http",
+            "url": "https://tickup-git-mcp-oauth-poc-greg-fields-projects.vercel.app/mcp"
+        }
     }
-  }
 }

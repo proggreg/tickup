@@ -9,7 +9,9 @@ describe('update_todo MCP tool', () => {
 
         const updateTodoTool = result.tools.find((t: { name: string }) => t.name === 'update_todo');
         expect(updateTodoTool).toBeDefined();
-        expect(updateTodoTool?.description).toBe('Update a todo. Any provided fields are merged into the existing todo.');
+        expect(updateTodoTool?.description).toBe(
+            'Update a todo. Any provided fields are merged into the existing todo.',
+        );
     });
 
     mcpTest('should have correct tool input schema', async ({ client }) => {

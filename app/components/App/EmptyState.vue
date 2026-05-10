@@ -1,9 +1,6 @@
 <template>
     <div style="display: flex; flex-direction: column">
-        <v-empty-state
-            class="fill-height"
-            icon="$success"
-        >
+        <v-empty-state class="fill-height" icon="$success">
             <template #media>
                 <v-icon color="surface-variant" />
             </template>
@@ -11,15 +8,11 @@
             <slot />
 
             <template #headline>
-                <div class="text-h4">
-                    All Done For Now!
-                </div>
+                <div class="text-h4">All Done For Now!</div>
             </template>
 
             <template #title>
-                <div class="text-h6">
-                    You're all caught up.
-                </div>
+                <div class="text-h6">You're all caught up.</div>
             </template>
 
             <template #text>
