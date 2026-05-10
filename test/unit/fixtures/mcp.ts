@@ -15,7 +15,9 @@ export const mcpTest = test.extend<MCPTestContext>({
         const adminKey = process.env.SUPABASE_SECRET_KEY;
 
         if (!supabaseUrl || !supabaseKey || !adminKey) {
-            throw new Error('Missing required Supabase environment variables: SUPABASE_URL, SUPABASE_KEY, SUPABASE_SECRET_KEY');
+            throw new Error(
+                'Missing required Supabase environment variables: SUPABASE_URL, SUPABASE_KEY, SUPABASE_SECRET_KEY',
+            );
         }
 
         const supabase = createClient(supabaseUrl, supabaseKey);
