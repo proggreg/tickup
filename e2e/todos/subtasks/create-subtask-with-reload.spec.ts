@@ -38,7 +38,7 @@ test.describe('a user can create a subtask and it persists after reload', () => 
 
         // Wait for the POST request to complete
         const createTodoPromise = page.waitForRequest(
-            request => request.url().includes('/api/todo') && request.method() === 'POST',
+            (request) => request.url().includes('/api/todo') && request.method() === 'POST',
         );
         await newTodoInput.press('Enter');
         await createTodoPromise;
@@ -75,7 +75,7 @@ test.describe('a user can create a subtask and it persists after reload', () => 
         await expect(addSubtaskButton).toBeEnabled({ timeout: 5000 });
 
         const createSubtaskPromise = page.waitForRequest(
-            request => request.url().includes('/api/todo') && request.method() === 'POST',
+            (request) => request.url().includes('/api/todo') && request.method() === 'POST',
         );
         await addSubtaskButton.click();
         await createSubtaskPromise;

@@ -26,8 +26,7 @@ export default defineEventHandler(async (event) => {
 
         // Return the file data
         // return attachment.data
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error serving attachment:', error);
         throw createError({
             statusCode: 500,

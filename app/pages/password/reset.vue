@@ -12,12 +12,7 @@ const requestResetPassword = async () => {
 
 <template>
     <div>
-        <input
-            v-model="email"
-            type="email"
-        >
-        <button @click="requestResetPassword">
-            Reset Password
-        </button>
+        <input v-model="email" type="email" />
+        <button @click="requestResetPassword">Reset Password</button>
     </div>
 </template>

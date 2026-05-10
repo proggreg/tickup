@@ -4,7 +4,10 @@ import { createClient } from '@supabase/supabase-js';
 interface APITestContext {
     apiCall: (path: string, options?: RequestInit) => Promise<Response>;
     createTodo: (data: Record<string, unknown>) => Promise<Record<string, unknown>>;
-    updateTodo: (id: string | number, data: Record<string, unknown>) => Promise<Record<string, unknown>>;
+    updateTodo: (
+        id: string | number,
+        data: Record<string, unknown>,
+    ) => Promise<Record<string, unknown>>;
     deleteTodo: (id: string | number) => Promise<void>;
     getTodo: (id: string | number) => Promise<Record<string, unknown>>;
 }
@@ -110,7 +113,9 @@ export const apiTest = test.extend<APITestContext>({
     },
 
     async createTodo({ apiCall }, use) {
-        const createTodo = async (data: Record<string, unknown>): Promise<Record<string, unknown>> => {
+        const createTodo = async (
+            data: Record<string, unknown>,
+        ): Promise<Record<string, unknown>> => {
             const response = await apiCall('/api/todo', {
                 method: 'POST',
                 body: JSON.stringify(data),
@@ -128,7 +133,10 @@ export const apiTest = test.extend<APITestContext>({
     },
 
     async updateTodo({ apiCall }, use) {
-        const updateTodo = async (id: string | number, data: Record<string, unknown>): Promise<Record<string, unknown>> => {
+        const updateTodo = async (
+            id: string | number,
+            data: Record<string, unknown>,
+        ): Promise<Record<string, unknown>> => {
             const response = await apiCall(`/api/todo/${id}`, {
                 method: 'PUT',
                 body: JSON.stringify(data),

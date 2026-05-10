@@ -56,22 +56,25 @@ describe('Todo API endpoints', () => {
         }
     });
 
-    apiTest('should update todo with parent_id via API', async ({ createTodo, updateTodo, getTodo }) => {
-        const parent = await createTodo({
-            name: 'Parent Todo',
-        });
+    apiTest(
+        'should update todo with parent_id via API',
+        async ({ createTodo, updateTodo, getTodo }) => {
+            const parent = await createTodo({
+                name: 'Parent Todo',
+            });
 
-        const child = await createTodo({
-            name: 'Child Todo',
-        });
+            const child = await createTodo({
+                name: 'Child Todo',
+            });
 
-        const updated = await updateTodo(child.id as string | number, {
-            parentId: parent.id,
-        });
+            const updated = await updateTodo(child.id as string | number, {
+                parentId: parent.id,
+            });
 
-        expect(updated.parentId).toBe(parent.id);
+            expect(updated.parentId).toBe(parent.id);
 
-        const fetched = await getTodo(child.id as string | number);
-        expect(fetched.parentId).toBe(parent.id);
-    });
+            const fetched = await getTodo(child.id as string | number);
+            expect(fetched.parentId).toBe(parent.id);
+        },
+    );
 });

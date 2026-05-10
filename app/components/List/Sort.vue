@@ -17,8 +17,7 @@ function changeIcon() {
     if (sortDirection.value === 'ascending') {
         sortDirection.value = 'descending';
         icon.value = 'mdi-arrow-down';
-    }
-    else {
+    } else {
         sortDirection.value = 'ascending';
         icon.value = 'mdi-arrow-up';
     }
@@ -38,10 +37,7 @@ function changeIcon() {
             />
         </v-col>
         <v-col>
-            <v-btn
-                :icon="icon"
-                @click="changeIcon"
-            />
+            <v-btn :icon="icon" @click="changeIcon" />
         </v-col>
     </v-row>
 </template>

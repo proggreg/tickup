@@ -1,12 +1,27 @@
 import { objectToSnake, objectToCamel } from 'ts-case-convert';
-import { mcpSupabaseClient } from '~~/server/mcp/utils/auth';
+import { getHeader } from 'h3';
 import { TaskService } from '~~/server/utils/tasks';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody<Task>(event);
-    const supabase = await mcpSupabaseClient(event);
+    const supabase = event.context.supabase;
 
-    const { data: { user } } = await supabase.auth.getUser();
+    // Extract bearer token from Authorization header
+    const authHeader = getHeader(event, 'authorization') || '';
+    let token = '';
+    if (authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+    }
+
+    let user;
+    if (token) {
+        const { data } = await supabase.auth.getUser(token);
+        user = data.user;
+    } else {
+        const { data } = await supabase.auth.getUser();
+        user = data.user;
+    }
+
     if (!user?.id) {
         throw createError({
             statusCode: 401,
@@ -16,6 +31,7 @@ export default defineEventHandler(async (event) => {
 
     const todoData = objectToSnake(body) as any;
 
+    console.log('create todo');
     delete todoData.edit;
     delete todoData.subtasks;
 
@@ -34,11 +50,10 @@ export default defineEventHandler(async (event) => {
         // Allow parent to be a subtask as well (nested subtasks are permitted)
     }
 
-    
     try {
-        const todo = new TaskService(supabase)
+        const todo = new TaskService(supabase);
 
-        const { data, error } = await todo.create(todoData as unknown as Task)
+        const { data, error } = await todo.create(todoData as unknown as Task);
 
         if (error) {
             console.error('Supabase error:', error);
@@ -50,10 +65,10 @@ export default defineEventHandler(async (event) => {
 
         const result = data[0];
         if (result) {
+            console.log('todo created', result.id);
             return objectToCamel(result);
         }
-    }
-    catch (e) {
+    } catch (e) {
         const errorMsg = e instanceof Error ? e.message : String(e);
         throw createError({
             statusCode: 500,
