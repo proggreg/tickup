@@ -2,11 +2,7 @@ import { test } from 'vitest';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { createClient } from '@supabase/supabase-js';
-
-interface AuthContext {
-    token: string;
-    userId: string;
-}
+import type { Session } from '@supabase/supabase-js';
 
 interface MCPTestContext {
     client: Client;
@@ -15,8 +11,22 @@ interface MCPTestContext {
     deleteTodo: (id: string | number) => Promise<void>;
 }
 
-const authTest = test.extend<{ authContext: AuthContext }>({
-    async authContext({}, use) {
+function buildSupabaseCookieHeader(supabaseUrl: string, session: Session): string {
+    const projectRef = new URL(supabaseUrl).hostname.split('.')[0];
+    const cookieName = `sb-${projectRef}-auth-token`;
+    const sessionJson = JSON.stringify(session);
+    // base64url encoding (URL-safe, no padding) — matches @supabase/ssr stringToBase64URL
+    const base64url = Buffer.from(sessionJson, 'utf8')
+        .toString('base64')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=/g, '');
+    return `${cookieName}=base64-${base64url}`;
+}
+
+export const mcpTest = test.extend<MCPTestContext>({
+    async client({}, use) {
+        // Load config from environment
         const supabaseUrl = process.env.SUPABASE_URL;
         const supabaseKey = process.env.SUPABASE_KEY;
         const adminKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -62,25 +72,16 @@ const authTest = test.extend<{ authContext: AuthContext }>({
             throw new Error('No access token received');
         }
 
-        await use({ token: authToken, userId: testUserId });
+        const sessionCookie = buildSupabaseCookieHeader(supabaseUrl, signInData.session!);
 
-        try {
-            const { error } = await adminSupabase.auth.admin.deleteUser(testUserId);
-            if (error) {
-                console.warn('Failed to delete test user:', error.message);
-            }
-        } catch (err) {
-            console.warn('Error deleting test user:', err);
-        }
-    },
-});
-
-export const mcpTest = authTest.extend<MCPTestContext>({
-    async client({ authContext }, use) {
+        // Override globalThis.fetch to add Authorization header and Supabase session cookie.
+        // The cookie is needed because callApi() forwards cookies to internal Nuxt API routes,
+        // which use serverSupabaseClient() (cookie-based auth).
         const originalFetch = globalThis.fetch;
         globalThis.fetch = ((input: RequestInfo | URL, init?: RequestInit) => {
             const headers = new Headers(init?.headers || {});
-            headers.set('Authorization', `Bearer ${authContext.token}`);
+            headers.set('Authorization', `Bearer ${authToken}`);
+            headers.set('Cookie', sessionCookie);
             return originalFetch(input, { ...init, headers });
         }) as typeof globalThis.fetch;
 
@@ -99,10 +100,19 @@ export const mcpTest = authTest.extend<MCPTestContext>({
         await client.close();
         await transport.close();
         globalThis.fetch = originalFetch;
+
+        try {
+            const { error } = await adminSupabase.auth.admin.deleteUser(testUserId);
+            if (error) {
+                console.warn('Failed to delete test user:', error.message);
+            }
+        } catch (err) {
+            console.warn('Error deleting test user:', err);
+        }
     },
 
-    async userId({ authContext }, use) {
-        await use(authContext.userId);
+    async userId({}, use) {
+        await use('');
     },
 
     async createTodo({ client: _ }, use) {
