@@ -88,4 +88,20 @@ describe('get_todo MCP tool', () => {
         expect(text.id).toBe(newTodo.id);
         expect(text.githubBranchName).toBe(branchName);
     });
+
+    mcpTest('should handle non-existent todo ID gracefully', async ({ client }) => {
+        const result = await client.callTool({
+            name: 'get_todo',
+            arguments: {
+                id: 'non-existent-id-99999',
+            },
+        });
+
+        const content = result.content as { type: string; text?: string }[];
+        const textContent = content.filter(({ type }) => type === 'text')[0];
+
+        // Tool should return error or empty result gracefully
+        expect(textContent).toBeDefined();
+        expect(result.isError).not.toBe(true);
+    });
 });
