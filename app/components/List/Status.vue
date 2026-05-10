@@ -7,7 +7,7 @@ const statusProps = withDefaults(defineProps<{ todo: Task; disabled?: boolean }>
 const statuses = computed(() => settings.statuses);
 function getStatusColor(todoStatus: string) {
     if (!statuses.value) return;
-    const status = statuses.value.filter(status => status.name === todoStatus);
+    const status = statuses.value.filter((status) => status.name === todoStatus);
     if (status.length > 0) {
         return status[0].color;
     }

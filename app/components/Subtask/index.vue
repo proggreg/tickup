@@ -9,7 +9,7 @@ const subtasksExpanded = computed(() => expandedPanel.value === 'subtasks');
 
 const activeCount = computed(() => {
     if (!listsStore.currentTodo.subtasks) return 0;
-    return listsStore.currentTodo.subtasks.filter(subtask => subtask.status !== 'Closed').length;
+    return listsStore.currentTodo.subtasks.filter((subtask) => subtask.status !== 'Closed').length;
 });
 
 const subtasksFilter = ref<'all' | 'active'>('all');
@@ -37,7 +37,7 @@ const filteredAndSortedSubtasks = computed(() => {
 
     // Apply filter
     if (subtasksFilter.value === 'active') {
-        filtered = filtered.filter(subtask => subtask.status !== 'Closed');
+        filtered = filtered.filter((subtask) => subtask.status !== 'Closed');
     }
 
     // Apply sort
@@ -56,7 +56,7 @@ const baseLinkableTodos = computed(() => {
         // Exclude the current todo, existing subtasks, and any item that already has a parent
         if (!todo.id || listsStore.currentTodo?.id === todo.id) return false;
         if ((todo as any).parentId) return false;
-        if (listsStore.currentTodo?.subtasks?.some(st => st.id === todo.id)) return false;
+        if (listsStore.currentTodo?.subtasks?.some((st) => st.id === todo.id)) return false;
         return true;
     });
 });
@@ -67,7 +67,7 @@ const linkableTodos = computed(() => {
     const rawSearch = linkSearch.value ?? '';
     const q = String(rawSearch).trim().toLowerCase();
     if (q) {
-        todos = todos.filter(todo => todo.name?.toLowerCase().includes(q));
+        todos = todos.filter((todo) => todo.name?.toLowerCase().includes(q));
     }
 
     // Sort by most recently edited when possible (updatedAt),
@@ -108,7 +108,7 @@ async function linkExistingTodo(todo: Task) {
 
     if (!listsStore.currentTodo.subtasks) listsStore.currentTodo.subtasks = [];
     // Avoid duplicates
-    if (!listsStore.currentTodo.subtasks.some(st => st.id === updated.id)) {
+    if (!listsStore.currentTodo.subtasks.some((st) => st.id === updated.id)) {
         listsStore.currentTodo.subtasks.push(updated);
     }
 }
@@ -131,7 +131,7 @@ function renameSubtask(subtaskId: string | number, index: number) {
 }
 
 function onSubtaskBlur(subtask: Task) {
-    editingSubtaskIds.value = editingSubtaskIds.value.filter(id => id !== subtask.id);
+    editingSubtaskIds.value = editingSubtaskIds.value.filter((id) => id !== subtask.id);
     listsStore.updateTodo(subtask);
 }
 
@@ -142,29 +142,16 @@ async function updatePriority(subtask: Task, level: string) {
 </script>
 
 <template>
-    <v-expansion-panels
-        v-model="expandedPanel"
-        rounded="lg"
-        flat
-    >
-        <v-expansion-panel
-            value="subtasks"
-            elevation="0"
-            class="pa-0"
-            width="100%"
-        >
-            <v-expansion-panel-title
-                hide-actions
-                class="pa-0"
-                data-testid="subtasks-header"
-            >
+    <v-expansion-panels v-model="expandedPanel" rounded="lg" flat>
+        <v-expansion-panel value="subtasks" elevation="0" class="pa-0" width="100%">
+            <v-expansion-panel-title hide-actions class="pa-0" data-testid="subtasks-header">
                 <div class="d-flex align-center justify-space-between w-100">
                     <div class="text-subtitle-1 font-weight-bold d-flex align-center">
                         <span class="mr-2">Subtasks</span>
                         <v-chip
                             v-if="
-                                listsStore.currentTodo.subtasks
-                                    && listsStore.currentTodo.subtasks.length
+                                listsStore.currentTodo.subtasks &&
+                                listsStore.currentTodo.subtasks.length
                             "
                             size="small"
                             variant="tonal"
@@ -175,16 +162,16 @@ async function updatePriority(subtask: Task, level: string) {
                     </div>
                     <SubtaskFilters
                         v-if="
-                            listsStore.currentTodo.subtasks
-                                && listsStore.currentTodo.subtasks.length
+                            listsStore.currentTodo.subtasks &&
+                            listsStore.currentTodo.subtasks.length
                         "
                         v-model:filter="subtasksFilter"
                         v-model:sort-by="subtasksSortBy"
                         :expanded="subtasksExpanded"
                         :has-subtasks="
                             !!(
-                                listsStore.currentTodo.subtasks
-                                && listsStore.currentTodo.subtasks.length
+                                listsStore.currentTodo.subtasks &&
+                                listsStore.currentTodo.subtasks.length
                             )
                         "
                         @update:expanded="expandedPanel = $event ? 'subtasks' : undefined"
@@ -213,10 +200,7 @@ async function updatePriority(subtask: Task, level: string) {
                         class="mr-2"
                         @click="addSubtask"
                     />
-                    <v-menu
-                        :width="400"
-                        location="bottom"
-                    >
+                    <v-menu :width="400" location="bottom">
                         <template #activator="{ props }">
                             <v-btn
                                 v-bind="props"
@@ -315,10 +299,7 @@ async function updatePriority(subtask: Task, level: string) {
                                 @blur="onSubtaskBlur(subtask)"
                             />
                             <template #append>
-                                <v-row
-                                    class="d-flex align-center gap-4"
-                                    min-width="500px"
-                                >
+                                <v-row class="d-flex align-center gap-4" min-width="500px">
                                     <v-col>
                                         <SubtaskPriority
                                             :subtask="subtask"
@@ -358,9 +339,7 @@ async function updatePriority(subtask: Task, level: string) {
                                                     @click="deleteSubtask(subtask.id)"
                                                 >
                                                     <template #prepend>
-                                                        <v-icon color="error">
-                                                            mdi-delete
-                                                        </v-icon>
+                                                        <v-icon color="error"> mdi-delete </v-icon>
                                                     </template>
                                                     <v-list-item-title>
                                                         Delete subtask

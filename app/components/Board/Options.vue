@@ -35,12 +35,8 @@ const unselectAll = () => {
                 />
             </template>
             <v-list>
-                <v-list-item @click="selectAll">
-                    Select All
-                </v-list-item>
-                <v-list-item @click="unselectAll">
-                    Unselect All
-                </v-list-item>
+                <v-list-item @click="selectAll"> Select All </v-list-item>
+                <v-list-item @click="unselectAll"> Unselect All </v-list-item>
             </v-list>
         </v-menu>
     </div>
