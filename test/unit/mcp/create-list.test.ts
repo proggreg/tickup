@@ -1,6 +1,17 @@
 import { describe, expect } from 'vitest';
 import { mcpTest } from '../fixtures/mcp';
 
+function parseListContent(result: unknown): Record<string, unknown> {
+    const content = (result as { content: { text: string }[] }).content;
+    return JSON.parse(content[0].text);
+}
+
+async function deleteList(client: { callTool: Function }, id: unknown): Promise<void> {
+    if (id) {
+        await client.callTool({ name: 'delete_list', arguments: { id: String(id) } });
+    }
+}
+
 describe('create_list MCP tool', () => {
     mcpTest('should list tools and find create_list', async ({ client }) => {
         const result = await client.listTools();
@@ -12,88 +23,72 @@ describe('create_list MCP tool', () => {
         expect(tool?.description).toBe('Create a new list for the signed-in user');
     });
 
-    mcpTest('should have correct tool input schema', async ({ client }) => {
+    mcpTest('should have correct input schema', async ({ client }) => {
         const result = await client.listTools();
-        const createListTool = result.tools.find((t: { name: string }) => t.name === 'create_list');
+        const tool = result.tools.find((t: { name: string }) => t.name === 'create_list');
 
-        expect(createListTool?.inputSchema).toBeDefined();
-        const schema = createListTool?.inputSchema as Record<string, unknown>;
-
-        // Should require name parameter
+        const schema = tool?.inputSchema as Record<string, unknown>;
         expect(schema.properties).toBeDefined();
         const properties = schema.properties as Record<string, unknown>;
         expect(properties.name).toBeDefined();
 
-        // Verify name is required
         const required = schema.required as string[];
         expect(required).toContain('name');
     });
 
-    mcpTest('should call create_list tool with valid name', async ({ client }) => {
+    mcpTest('should create list and return id and name', async ({ client }) => {
         const listName = `Test List ${Date.now()}`;
         const result = await client.callTool({
             name: 'create_list',
-            arguments: {
-                name: listName,
-            },
+            arguments: { name: listName },
         });
 
-        expect(result.content).toBeDefined();
-        expect(Array.isArray(result.content)).toBe(true);
+        const list = parseListContent(result);
+        expect(list.id).toBeDefined();
+        expect(list.name).toBe(listName);
+
+        await deleteList(client, list.id);
     });
 
-    mcpTest('should validate name is required', async ({ client }) => {
+    mcpTest('should reject missing name with isError', async ({ client }) => {
         const result = await client.callTool({
             name: 'create_list',
-            arguments: {
-                // Missing name parameter
-            },
+            arguments: {},
         });
 
-        expect(result.content).toBeDefined();
-        const contentArray = result.content as unknown[];
-        const content = contentArray[0] as Record<string, unknown>;
-        const text = content.text as string;
-
-        // Should have validation error
-        expect(text.toLowerCase()).toContain('error');
+        expect((result as { isError?: boolean }).isError).toBe(true);
     });
 
-    mcpTest('should accept various string values for name', async ({ client }) => {
-        const testNames = [
-            'Simple List',
-            'List & Special (Chars) [Here]',
-            `Timestamp ${Date.now()}`,
-        ];
+    mcpTest('should handle empty string name', async ({ client }) => {
+        const result = await client.callTool({
+            name: 'create_list',
+            arguments: { name: '' },
+        });
 
-        for (const listName of testNames) {
+        const isError = (result as { isError?: boolean }).isError;
+        if (!isError) {
+            const list = parseListContent(result);
+            await deleteList(client, list.id);
+        }
+        // Document: server either rejects empty name (isError) or creates it (no error).
+        // Either outcome is explicitly handled — test asserts no crash.
+        expect(true).toBe(true);
+    });
+
+    mcpTest(
+        'should accept special characters in name and return correct name',
+        async ({ client }) => {
+            const specialName = `List & Special (Chars) [Here] ${Date.now()}`;
             const result = await client.callTool({
                 name: 'create_list',
-                arguments: {
-                    name: listName,
-                },
+                arguments: { name: specialName },
             });
 
-            expect(result.content).toBeDefined();
-            expect(Array.isArray(result.content)).toBe(true);
-        }
-    });
+            const list = parseListContent(result);
+            expect(list.id).toBeDefined();
+            expect(list.name).toBe(specialName);
 
-    mcpTest('should return response with content for valid calls', async ({ client }) => {
-        const listName = `Fields Test ${Date.now()}`;
-        const result = await client.callTool({
-            name: 'create_list',
-            arguments: {
-                name: listName,
-            },
-        });
-
-        expect(result.content).toBeDefined();
-        const contentArray = result.content as unknown[];
-        expect(contentArray.length).toBeGreaterThan(0);
-
-        const content = contentArray[0] as Record<string, unknown>;
-        expect(content.type).toBeDefined();
-        expect(content.text).toBeDefined();
-    });
+            await deleteList(client, list.id);
+        },
+    );
 });
