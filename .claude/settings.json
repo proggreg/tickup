@@ -4,7 +4,8 @@
       "Bash(ls docs/tickets/mcp-test-*)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git push origin *)"
+      "Bash(git push origin *)",
+      "Bash(curl -s http://localhost:3000 | head -1 || (pnpm dev > /tmp/dev.log 2>&1 & sleep 5 && echo \"server started\"))"
     ],
     "deny": [
       "Bash(git push origin main)"
