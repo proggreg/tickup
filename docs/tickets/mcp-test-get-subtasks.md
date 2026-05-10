@@ -1,8 +1,9 @@
 ---
-Status: todo
+Status: done
 taskId: 2130
 title: Write a test for the 'get-subtasks' MCP tool
 priority: high
+completed: 2026-05-10
 ---
 
 # Write a test for the 'get-subtasks' MCP tool
