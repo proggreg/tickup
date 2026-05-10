@@ -1,8 +1,9 @@
 ---
-Status: todo
+Status: done
 taskId: 2127
 title: Write a test for the 'update-list' MCP tool
 priority: medium
+completed: 2026-05-10
 ---
 
 # Write a test for the 'update-list' MCP tool
