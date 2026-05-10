@@ -6,11 +6,9 @@ export async function callApi<T = unknown>(path: string, options?: ApiOptions): 
     const event = useEvent();
     await mcpUserId(event);
     const cookie = event.headers.get('cookie') ?? '';
-    const authorization = event.headers.get('authorization') ?? '';
     const headers = {
-        ...(options?.headers as Record<string, string> | undefined),
         cookie,
-        ...(authorization && { authorization }),
+        ...event.req.headers,
     };
-    return (await $fetch(path, { ...options, headers } as ApiOptions)) as T;
+    return (await $fetch(path, { ...options, headers } as unknown as ApiOptions)) as T;
 }
