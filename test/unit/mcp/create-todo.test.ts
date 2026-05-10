@@ -1,6 +1,16 @@
 import { describe, expect } from 'vitest';
 import { mcpTest } from '../fixtures/mcp';
 
+function parseToolContent(result: unknown): unknown {
+    const items = (result as Record<string, unknown>).content as Record<string, unknown>[];
+    return JSON.parse(items[0].text as string);
+}
+
+function firstItem(result: unknown): Record<string, unknown> {
+    const parsed = parseToolContent(result);
+    return Array.isArray(parsed) ? parsed[0] : (parsed as Record<string, unknown>);
+}
+
 describe('create_todo MCP tool', () => {
     mcpTest('should list tools and find create_todo', async ({ client }) => {
         const result = await client.listTools();
@@ -11,16 +21,38 @@ describe('create_todo MCP tool', () => {
         expect(tool).toBeDefined();
     });
 
-    mcpTest('should call create_todo tool', async ({ client }) => {
+    mcpTest('should have correct tool input schema', async ({ client }) => {
+        const result = await client.listTools();
+        const tool = result.tools.find((t: { name: string }) => t.name === 'create_todo');
+
+        expect(tool?.inputSchema).toBeDefined();
+        const schema = tool?.inputSchema as Record<string, unknown>;
+
+        expect(schema.properties).toBeDefined();
+        const properties = schema.properties as Record<string, unknown>;
+        expect(properties.name).toBeDefined();
+        expect(properties.list_id).toBeDefined();
+        expect(properties.description).toBeDefined();
+        expect(properties.parent_id).toBeDefined();
+    });
+
+    mcpTest('should create todo with required name field', async ({ client }) => {
         const result = await client.callTool({
             name: 'create_todo',
-            arguments: {},
+            arguments: {
+                name: 'Test Todo Required',
+            },
         });
 
         expect(result.content).toBeDefined();
+        expect(Array.isArray(result.content)).toBe(true);
+
+        const todo = firstItem(result);
+        expect(todo.name).toBe('Test Todo Required');
+        expect(todo.id).toBeDefined();
     });
 
-    mcpTest('should create todo with name and description', async ({ client }) => {
+    mcpTest('should create todo with description field', async ({ client }) => {
         const result = await client.callTool({
             name: 'create_todo',
             arguments: {
@@ -31,13 +63,44 @@ describe('create_todo MCP tool', () => {
         });
 
         expect(result.content).toBeDefined();
-        expect(Array.isArray(result.content)).toBe(true);
+        const todo = firstItem(result);
+        expect(todo.desc).toBe(
+            'Create workflow that searches tickup tasks and selects corresponding skills',
+        );
+    });
 
-        const content = result.content as unknown[];
-        const text = content[0] as Record<string, unknown>;
+    mcpTest('should create todo with due_date field', async ({ client }) => {
+        const result = await client.callTool({
+            name: 'create_todo',
+            arguments: {
+                name: 'Task with due date',
+                due_date: '2026-06-15',
+            },
+        });
 
-        // Should not have error
-        expect(text.isError).not.toBe(true);
+        expect(result.content).toBeDefined();
+        const todo = firstItem(result);
+        // due_date is returned as ISO timestamp
+        expect(todo.due_date).toBeDefined();
+        expect(String(todo.due_date)).toContain('2026-06-15');
+    });
+
+    mcpTest('should create todo with priority_lev parameter', async ({ client }) => {
+        const result = await client.callTool({
+            name: 'create_todo',
+            arguments: {
+                name: 'High priority task',
+                priority_lev: 'high',
+            },
+        });
+
+        expect(result.content).toBeDefined();
+        const text = (result.content as Record<string, unknown>[])[0].text as string;
+        // Verify tool accepts parameter without validation error
+        expect(text).not.toContain('Input validation error');
+        expect(text).not.toContain('invalid_type');
+        const todo = firstItem(result);
+        expect(todo.id).toBeDefined();
     });
 
     mcpTest('should create parent task and subtask with unique names', async ({ client }) => {
@@ -53,12 +116,8 @@ describe('create_todo MCP tool', () => {
         });
 
         expect(parentResult.content).toBeDefined();
-        const parentContent = Array.isArray(parentResult.content) && parentResult.content[0];
-        const textContent = (parentContent as Record<string, unknown>).text as string;
-        const parentTodos = JSON.parse(textContent);
-
-        const parentId = parentTodos[0]?.id;
-        expect(parentId).toBeDefined();
+        const parentTodo = firstItem(parentResult);
+        const parentId = parentTodo.id;
 
         // Create subtask under parent
         const subtaskResult = await client.callTool({
@@ -71,11 +130,30 @@ describe('create_todo MCP tool', () => {
         });
 
         expect(subtaskResult.content).toBeDefined();
-        const subtaskContent = Array.isArray(subtaskResult.content) && subtaskResult.content[0];
-        const subtaskTodos = JSON.parse((subtaskContent as Record<string, unknown>).text as string);
-        const subtask = subtaskTodos[0];
+        const subtask = firstItem(subtaskResult);
 
         // Verify subtask created with parent_id set
         expect(subtask.parent_id).toBe(parentId);
+    });
+
+    mcpTest('should accept multiple optional fields together', async ({ client }) => {
+        const result = await client.callTool({
+            name: 'create_todo',
+            arguments: {
+                name: 'Complex todo',
+                description: 'Todo with multiple optional fields',
+                due_date: '2026-07-20',
+                priority_lev: 'medium',
+            },
+        });
+
+        expect(result.content).toBeDefined();
+        const text = (result.content as Record<string, unknown>[])[0].text as string;
+        expect(text).not.toContain('Input validation error');
+        const todo = firstItem(result);
+        expect(todo.name).toBe('Complex todo');
+        expect(todo.desc).toBe('Todo with multiple optional fields');
+        expect(todo.due_date).toBeDefined();
+        expect(String(todo.due_date)).toContain('2026-07-20');
     });
 });
