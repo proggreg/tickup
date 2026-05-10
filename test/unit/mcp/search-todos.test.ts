@@ -7,14 +7,20 @@ describe('search_todos MCP tool', () => {
         expect(result.tools).toBeDefined();
         expect(Array.isArray(result.tools)).toBe(true);
 
-        const searchTodosTool = result.tools.find((t: { name: string }) => t.name === 'search_todos');
+        const searchTodosTool = result.tools.find(
+            (t: { name: string }) => t.name === 'search_todos',
+        );
         expect(searchTodosTool).toBeDefined();
-        expect(searchTodosTool?.description).toBe('Search todos by name (case-insensitive substring match)');
+        expect(searchTodosTool?.description).toBe(
+            'Search todos by name (case-insensitive substring match)',
+        );
     });
 
     mcpTest('should have correct tool input schema', async ({ client }) => {
         const result = await client.listTools();
-        const searchTodosTool = result.tools.find((t: { name: string }) => t.name === 'search_todos');
+        const searchTodosTool = result.tools.find(
+            (t: { name: string }) => t.name === 'search_todos',
+        );
 
         expect(searchTodosTool?.inputSchema).toBeDefined();
         const schema = searchTodosTool?.inputSchema as Record<string, unknown>;

@@ -24,7 +24,7 @@ export default defineMcpTool({
                 {
                     isError: true,
                     message: error.message,
-                }
+                },
             ];
         }
 
