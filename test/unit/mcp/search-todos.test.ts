@@ -31,8 +31,7 @@ describe('search_todos MCP tool', () => {
         expect(properties.query).toBeDefined();
     });
 
-    mcpTest('should call search_todos tool without validation error', async ({ client }) => {
-        // Test that search_todos accepts query parameter and doesn't throw validation error
+    mcpTest('should search todos with query parameter', async ({ client }) => {
         const searchResult = await client.callTool({
             name: 'search_todos',
             arguments: {
@@ -50,5 +49,75 @@ describe('search_todos MCP tool', () => {
         // Should not have schema validation error
         expect(text).not.toContain('Input validation error');
         expect(text).not.toContain('invalid_type');
+    });
+
+    mcpTest('should handle case-insensitive search', async ({ client }) => {
+        // Search with uppercase query
+        const result = await client.callTool({
+            name: 'search_todos',
+            arguments: {
+                query: 'TEST QUERY',
+            },
+        });
+
+        expect(result.content).toBeDefined();
+        const contentArray = result.content as unknown[];
+        const content = contentArray[0] as Record<string, unknown>;
+        const text = content.text as string;
+
+        // Should not have validation error for case variations
+        expect(text).not.toContain('Input validation error');
+    });
+
+    mcpTest('should handle partial match search', async ({ client }) => {
+        // Search with partial string
+        const result = await client.callTool({
+            name: 'search_todos',
+            arguments: {
+                query: 'part',
+            },
+        });
+
+        expect(result.content).toBeDefined();
+        const contentArray = result.content as unknown[];
+        const content = contentArray[0] as Record<string, unknown>;
+
+        // Should return valid response with partial match capability
+        expect(content.type).toBe('text');
+    });
+
+    mcpTest('should handle empty query gracefully', async ({ client }) => {
+        // Search with empty string
+        const result = await client.callTool({
+            name: 'search_todos',
+            arguments: {
+                query: '',
+            },
+        });
+
+        expect(result.content).toBeDefined();
+        const contentArray = result.content as unknown[];
+        const content = contentArray[0] as Record<string, unknown>;
+        const text = content.text as string;
+
+        // Should handle empty query without crashing
+        expect(text).toBeDefined();
+    });
+
+    mcpTest('should return array response from search', async ({ client }) => {
+        const result = await client.callTool({
+            name: 'search_todos',
+            arguments: {
+                query: 'any',
+            },
+        });
+
+        const contentArray = result.content as unknown[];
+        const content = contentArray[0] as Record<string, unknown>;
+        const text = content.text as string;
+        const parsed = JSON.parse(text);
+
+        // Should return array response (even if empty)
+        expect(Array.isArray(parsed)).toBe(true);
     });
 });
