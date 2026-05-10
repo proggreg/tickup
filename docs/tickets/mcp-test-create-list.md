@@ -1,5 +1,5 @@
 ---
-Status: todo
+Status: doing
 taskId: 2124
 title: Write a test for the 'create-list' MCP tool
 priority: high
