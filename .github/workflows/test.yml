@@ -62,9 +62,6 @@ jobs:
             - name: Check Build
               run: pnpm build
 
-            - name: Check Build
-              run: pnpm build
-
             - name: Cache Playwright browsers
               id: playwright-cache
               uses: actions/cache@v3
