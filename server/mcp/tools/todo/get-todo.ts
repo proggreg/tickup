@@ -10,17 +10,22 @@ export default defineMcpTool({
         githubBranchName: z.string().optional().describe('The GitHub branch name'),
     },
     handler: async ({ id, name, githubBranchName }) => {
-        if (id) {
-            return await callApi(`/api/todo/${encodeURIComponent(id)}`);
+        try {
+            if (id) {
+                return await callApi(`/api/todo/${encodeURIComponent(id)}`);
+            }
+            if (name) {
+                return await callApi(`/api/todo/search?name=${encodeURIComponent(name)}`);
+            }
+            if (githubBranchName) {
+                return await callApi(
+                    `/api/todo/search?githubBranchName=${encodeURIComponent(githubBranchName)}`,
+                );
+            }
+            throw new Error('Must provide either id, name, or githubBranchName');
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to retrieve todo';
+            return { text: message };
         }
-        if (name) {
-            return await callApi(`/api/todo/search?name=${encodeURIComponent(name)}`);
-        }
-        if (githubBranchName) {
-            return await callApi(
-                `/api/todo/search?githubBranchName=${encodeURIComponent(githubBranchName)}`,
-            );
-        }
-        throw new Error('Must provide either id, name, or githubBranchName');
     },
 });
