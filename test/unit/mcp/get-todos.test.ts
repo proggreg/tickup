@@ -1,102 +1,102 @@
 import { describe, expect } from 'vitest';
 import { mcpTest } from '../fixtures/mcp';
 
+function parseTodos(result: unknown): Record<string, unknown>[] {
+    const contentArray = (result as Record<string, unknown>).content as unknown[];
+    const content = contentArray[0] as Record<string, unknown>;
+    return JSON.parse(content.text as string);
+}
+
 describe('get_todos MCP tool', () => {
-    mcpTest('should list tools and find get_todos', async ({ client }) => {
-        const result = await client.listTools();
-        expect(result.tools).toBeDefined();
-        expect(Array.isArray(result.tools)).toBe(true);
-
-        const tool = result.tools.find((t: { name: string }) => t.name === 'get_todos');
-        expect(tool).toBeDefined();
-        expect(tool?.description).toBeDefined();
-    });
-
-    mcpTest('should have correct tool input schema', async ({ client }) => {
-        const result = await client.listTools();
-        const tool = result.tools.find((t: { name: string }) => t.name === 'get_todos');
-
-        expect(tool?.inputSchema).toBeDefined();
-        const schema = tool?.inputSchema as Record<string, unknown>;
-        expect(schema.properties).toBeDefined();
-    });
-
-    mcpTest('should call get_todos tool without validation error', async ({ client }) => {
+    mcpTest('returns empty array when user has no todos', async ({ client }) => {
         const result = await client.callTool({
             name: 'get_todos',
-            arguments: {},
+            arguments: { today: true },
+        });
+
+        const todos = parseTodos(result);
+        expect(Array.isArray(todos)).toBe(true);
+        expect(todos).toHaveLength(0);
+    });
+
+    mcpTest(
+        'returns created todo with correct structure including dueDate',
+        async ({ client, createTodo }) => {
+            const name = `test-todo-${crypto.randomUUID()}`;
+            const dueDate = new Date();
+            dueDate.setHours(12, 0, 0, 0);
+
+            await createTodo({ name, dueDate: dueDate.toISOString() });
+
+            const result = await client.callTool({
+                name: 'get_todos',
+                arguments: { today: true },
+            });
+
+            const todos = parseTodos(result);
+            expect(Array.isArray(todos)).toBe(true);
+
+            const found = todos.find((t) => t.name === name);
+            expect(found).toBeDefined();
+            expect(found).toMatchObject({
+                id: expect.anything(),
+                name,
+                status: expect.any(String),
+                dueDate: expect.any(String),
+            });
+        },
+    );
+
+    mcpTest(
+        'overdue filter returns empty array for new user with no overdue todos',
+        async ({ client }) => {
+            const result = await client.callTool({
+                name: 'get_todos',
+                arguments: { overdue: true },
+            });
+
+            const todos = parseTodos(result);
+            expect(Array.isArray(todos)).toBe(true);
+            expect(todos).toHaveLength(0);
+        },
+    );
+
+    mcpTest('returns error content for invalid argument type', async ({ client }) => {
+        const result = await client.callTool({
+            name: 'get_todos',
+            arguments: { today: 'yes' as unknown as boolean },
         });
 
         expect(result.content).toBeDefined();
         expect(Array.isArray(result.content)).toBe(true);
 
-        const content = result.content as unknown[];
-        const textContent = content[0] as Record<string, unknown>;
-
-        // Should not have validation errors
-        const text = textContent.text as string;
-        expect(text).not.toContain('Input validation error');
-        expect(text).not.toContain('invalid_type');
+        const contentArray = result.content as unknown[];
+        const content = contentArray[0] as Record<string, unknown>;
+        const text = content.text as string;
+        expect(text).toContain('invalid_type');
     });
 
-    mcpTest('should return content for user todos', async ({ client }) => {
-        const result = await client.callTool({
-            name: 'get_todos',
-            arguments: {},
-        });
+    mcpTest(
+        'userId param returns top-level todos for that user',
+        async ({ client, userId, createTodo }) => {
+            const name = `test-todo-${crypto.randomUUID()}`;
+            await createTodo({ name });
 
-        expect(result.content).toBeDefined();
-        const content = result.content as unknown[];
-        expect(content.length).toBeGreaterThan(0);
-        const textContent = content[0] as Record<string, unknown>;
-        expect(textContent.type).toBe('text');
-    });
+            const result = await client.callTool({
+                name: 'get_todos',
+                arguments: { userId },
+            });
 
-    mcpTest('should handle tool invocation without parameters', async ({ client }) => {
-        const result = await client.callTool({
-            name: 'get_todos',
-            arguments: {},
-        });
+            const todos = parseTodos(result);
+            expect(Array.isArray(todos)).toBe(true);
 
-        expect(result.content).toBeDefined();
-        const content = result.content as unknown[];
-        expect(Array.isArray(content)).toBe(true);
-        expect(content.length).toBeGreaterThan(0);
-
-        // Response should be text type
-        const textContent = content[0] as Record<string, unknown>;
-        expect(textContent.type).toBe('text');
-    });
-
-    mcpTest('should provide valid response for todos request', async ({ client }) => {
-        const result = await client.callTool({
-            name: 'get_todos',
-            arguments: {},
-        });
-
-        expect(result.content).toBeDefined();
-        const content = result.content as unknown[];
-        const textContent = content[0] as Record<string, unknown>;
-        const text = textContent.text as string;
-
-        // Response should be defined and not error
-        expect(text).toBeDefined();
-        expect(text.length).toBeGreaterThan(0);
-    });
-
-    mcpTest('should return todos list data', async ({ client }) => {
-        const result = await client.callTool({
-            name: 'get_todos',
-            arguments: {},
-        });
-
-        expect(result.content).toBeDefined();
-        const content = result.content as unknown[];
-        expect(content.length).toBeGreaterThan(0);
-
-        // Check response structure
-        const textContent = content[0] as Record<string, unknown>;
-        expect(textContent.type).toBe('text');
-        expect(textContent.text).toBeDefined();
-    });
+            const found = todos.find((t) => t.name === name);
+            expect(found).toBeDefined();
+            expect(found).toMatchObject({
+                id: expect.anything(),
+                name,
+                status: expect.any(String),
+            });
+        },
+    );
 });
