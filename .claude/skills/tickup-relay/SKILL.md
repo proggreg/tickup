@@ -23,8 +23,9 @@ Tactical, bounded tickup tasks that don't need review before shipping. Small fea
 2. **Check CI**: Most recent run must be green. Wait if `in_progress`/`queued`. If failed, fix it before picking new work.
 3. **Look for `in_progress` task first**. Use tickup MCP `get_todo` with a task name or id. If one exists, use `get_subtasks` with the task id to get the work to be done, then resume it — see "Recovery" below.
 4. **Pick next todo**. Query tickup tasks with status pending/todo. Skip blocked. Pick best candidate (unlocks downstream work first). State pick + one-liner rationale.
-5. **If argument passed**, use that task ID instead.
-6. **If nothing pickable and CI green**, print "No todo tasks — nothing to do." and exit.
+5. ** Check the branch is update to date with parent todo's branch
+6. **If argument passed**, use that task ID instead.
+7. **If nothing pickable and CI green**, print "No todo tasks — nothing to do." and exit.
 
 ## Recovery (task already `in_progress`)
 
