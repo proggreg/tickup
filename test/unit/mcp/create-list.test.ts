@@ -43,6 +43,7 @@ describe('create_list MCP tool', () => {
             arguments: { name: listName },
         });
 
+        expect((result as { isError?: boolean }).isError).toBeFalsy();
         const list = parseListContent(result);
         expect(list.id).toBeDefined();
         expect(list.name).toBe(listName);
@@ -84,6 +85,7 @@ describe('create_list MCP tool', () => {
                 arguments: { name: specialName },
             });
 
+            expect((result as { isError?: boolean }).isError).toBeFalsy();
             const list = parseListContent(result);
             expect(list.id).toBeDefined();
             expect(list.name).toBe(specialName);
