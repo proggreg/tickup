@@ -1,8 +1,9 @@
 ---
-Status: todo
+Status: done
 taskId: 2134
 title: Write a test for the 'get-todos' MCP tool
 priority: high
+completed: 2026-05-10
 ---
 
 # Write a test for the 'get-todos' MCP tool
