@@ -167,7 +167,12 @@ export const mcpTest = test
                     headers.set('Content-Type', 'application/json');
                 }
 
-                console.log('[apiCall] fetching:', `http://localhost:3000${path}`, 'method:', options?.method || 'GET');
+                console.log(
+                    '[apiCall] fetching:',
+                    `http://localhost:3000${path}`,
+                    'method:',
+                    options?.method || 'GET',
+                );
                 const response = await fetch(`http://localhost:3000${path}`, {
                     method: options?.method || 'GET',
                     headers,
