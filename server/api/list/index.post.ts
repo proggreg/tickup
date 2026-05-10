@@ -8,6 +8,13 @@ export default defineEventHandler(async (event) => {
             name: body.name,
         };
 
+        if (!listData.name) {
+            throw createError({
+                statusCode: 400,
+                statusText: 'List name is required',
+            });
+        }
+
         const { data, error } = await supabase.from('Lists').insert([listData]).select();
 
         if (error) {
