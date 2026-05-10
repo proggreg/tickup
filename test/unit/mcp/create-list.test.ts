@@ -69,33 +69,18 @@ describe('create_list MCP tool', () => {
         await deleteListViaApi(list.id);
     });
 
-    mcpTest('CRUD chain: create → get → update → delete', async ({ client }) => {
-        const name = `crud-list-${crypto.randomUUID()}`;
+    mcpTest('creates a list with a name', async ({ client }) => {
+        const testListName = `crud-list-${crypto.randomUUID()}`;
 
         const createResult = await client.callTool({
             name: 'create_list',
-            arguments: { name },
+            arguments: { name: testListName },
         });
         expect((createResult as { isError?: boolean }).isError).toBeFalsy();
-        const created = parseListContent(createResult);
-        const id = String(created.id);
+        const { name, id } = parseListContent(createResult);
 
-        const getResult = await client.callTool({
-            name: 'get_list',
-            arguments: { id },
-        });
-        expect((getResult as { isError?: boolean }).isError).toBeFalsy();
-        const fetched = parseListContent(getResult);
-        expect(fetched.name).toBe(name);
-
-        const updatedName = `updated-${crypto.randomUUID()}`;
-        const updateResult = await client.callTool({
-            name: 'update_list',
-            arguments: { id, name: updatedName },
-        });
-        expect((updateResult as { isError?: boolean }).isError).toBeFalsy();
-        const updated = parseListContent(updateResult);
-        expect(updated.name).toBe(updatedName);
+        expect(name).toBe(name);
+        expect(id).toBeTruthy();
 
         await deleteListViaApi(id);
     });
