@@ -77,6 +77,9 @@ jobs:
               run: pnpm exec playwright install --with-deps
               if: steps.playwright-cache.outputs.cache-hit != 'true'
 
+            - name: Run MCP Tests
+              run: pnpm test:mcp
+
             - name: Run Playwright tests
               run: pnpm exec playwright test
               env:
