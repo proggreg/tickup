@@ -149,7 +149,7 @@ test.describe('subtasks are scrollable', () => {
             el.scrollTop = el.scrollHeight / 2;
         });
 
-        const scrollPosition = await scrollableContainer.evaluate(el => el.scrollTop);
+        const scrollPosition = await scrollableContainer.evaluate((el) => el.scrollTop);
 
         // Check a checkbox in the middle
         const checkbox = page.getByTestId('subtask-checkbox-5');
@@ -157,7 +157,7 @@ test.describe('subtasks are scrollable', () => {
         await page.waitForTimeout(200);
 
         // Verify scroll position is maintained
-        const newScrollPosition = await scrollableContainer.evaluate(el => el.scrollTop);
+        const newScrollPosition = await scrollableContainer.evaluate((el) => el.scrollTop);
         expect(Math.abs(newScrollPosition - scrollPosition)).toBeLessThan(50); // Allow small variance
     });
 });

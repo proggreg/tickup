@@ -1,343 +1,337 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "13.0.5"
-  }
-  public: {
-    Tables: {
-      Lists: {
-        Row: {
-          created_at: string | null
-          default_view: string | null
-          github_repo: string | null
-          id: number
-          list_type: string | null
-          name: string
-          nav_order: number | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          default_view?: string | null
-          github_repo?: string | null
-          id?: number
-          list_type?: string | null
-          name: string
-          nav_order?: number | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          default_view?: string | null
-          github_repo?: string | null
-          id?: number
-          list_type?: string | null
-          name?: string
-          nav_order?: number | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      Todos: {
-        Row: {
-          attachments: Json | null
-          color: string | null
-          completed_date: string | null
-          created_at: string | null
-          desc: string | null
-          due_date: string | null
-          github_branch_name: string | null
-          github_link: string | null
-          github_repo: string | null
-          id: number
-          links: Json | null
-          list_id: number | null
-          name: string
-          notification_date_time: string | null
-          notification_sent: boolean | null
-          order: number | null
-          parent_id: number | null
-          priority: string | null
-          priority_lev: string | null
-          status: string | null
-          type: string | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          attachments?: Json | null
-          color?: string | null
-          completed_date?: string | null
-          created_at?: string | null
-          desc?: string | null
-          due_date?: string | null
-          github_branch_name?: string | null
-          github_link?: string | null
-          github_repo?: string | null
-          id?: number
-          links?: Json | null
-          list_id?: number | null
-          name: string
-          notification_date_time?: string | null
-          notification_sent?: boolean | null
-          order?: number | null
-          parent_id?: number | null
-          priority?: string | null
-          priority_lev?: string | null
-          status?: string | null
-          type?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          attachments?: Json | null
-          color?: string | null
-          completed_date?: string | null
-          created_at?: string | null
-          desc?: string | null
-          due_date?: string | null
-          github_branch_name?: string | null
-          github_link?: string | null
-          github_repo?: string | null
-          id?: number
-          links?: Json | null
-          list_id?: number | null
-          name?: string
-          notification_date_time?: string | null
-          notification_sent?: boolean | null
-          order?: number | null
-          parent_id?: number | null
-          priority?: string | null
-          priority_lev?: string | null
-          status?: string | null
-          type?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "Todos_list_id_fkey"
-            columns: ["list_id"]
-            isOneToOne: false
-            referencedRelation: "Lists"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "todos_parent_id_fkey"
-            columns: ["parent_id"]
-            isOneToOne: false
-            referencedRelation: "Todos"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_integrations: {
-        Row: {
-          access_token: string
-          created_at: string | null
-          expires_at: string | null
-          id: string
-          provider: string
-          refresh_token: string | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          access_token: string
-          created_at?: string | null
-          expires_at?: string | null
-          id?: string
-          provider: string
-          refresh_token?: string | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          access_token?: string
-          created_at?: string | null
-          expires_at?: string | null
-          id?: string
-          provider?: string
-          refresh_token?: string | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      Users: {
-        Row: {
-          github_installation_id: number | null
-          github_username: string | null
-          github_webhook_subscriptions: Json | null
-          id: string
-          push_subscriptions: Json | null
-          username: string | null
-        }
-        Insert: {
-          github_installation_id?: number | null
-          github_username?: string | null
-          github_webhook_subscriptions?: Json | null
-          id: string
-          push_subscriptions?: Json | null
-          username?: string | null
-        }
-        Update: {
-          github_installation_id?: number | null
-          github_username?: string | null
-          github_webhook_subscriptions?: Json | null
-          id?: string
-          push_subscriptions?: Json | null
-          username?: string | null
-        }
-        Relationships: []
-      }
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      [_ in never]: never
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-}
+    // Allows to automatically instantiate createClient with right options
+    // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+    __InternalSupabase: {
+        PostgrestVersion: '13.0.5';
+    };
+    public: {
+        Tables: {
+            Lists: {
+                Row: {
+                    created_at: string | null;
+                    default_view: string | null;
+                    github_repo: string | null;
+                    id: number;
+                    list_type: string | null;
+                    name: string;
+                    nav_order: number | null;
+                    updated_at: string | null;
+                    user_id: string | null;
+                };
+                Insert: {
+                    created_at?: string | null;
+                    default_view?: string | null;
+                    github_repo?: string | null;
+                    id?: number;
+                    list_type?: string | null;
+                    name: string;
+                    nav_order?: number | null;
+                    updated_at?: string | null;
+                    user_id?: string | null;
+                };
+                Update: {
+                    created_at?: string | null;
+                    default_view?: string | null;
+                    github_repo?: string | null;
+                    id?: number;
+                    list_type?: string | null;
+                    name?: string;
+                    nav_order?: number | null;
+                    updated_at?: string | null;
+                    user_id?: string | null;
+                };
+                Relationships: [];
+            };
+            Todos: {
+                Row: {
+                    attachments: Json | null;
+                    color: string | null;
+                    completed_date: string | null;
+                    created_at: string | null;
+                    desc: string | null;
+                    due_date: string | null;
+                    github_branch_name: string | null;
+                    github_link: string | null;
+                    github_repo: string | null;
+                    id: number;
+                    links: Json | null;
+                    list_id: number | null;
+                    name: string;
+                    notification_date_time: string | null;
+                    notification_sent: boolean | null;
+                    order: number | null;
+                    parent_id: number | null;
+                    priority: string | null;
+                    priority_lev: string | null;
+                    status: string | null;
+                    type: string | null;
+                    updated_at: string | null;
+                    user_id: string | null;
+                };
+                Insert: {
+                    attachments?: Json | null;
+                    color?: string | null;
+                    completed_date?: string | null;
+                    created_at?: string | null;
+                    desc?: string | null;
+                    due_date?: string | null;
+                    github_branch_name?: string | null;
+                    github_link?: string | null;
+                    github_repo?: string | null;
+                    id?: number;
+                    links?: Json | null;
+                    list_id?: number | null;
+                    name: string;
+                    notification_date_time?: string | null;
+                    notification_sent?: boolean | null;
+                    order?: number | null;
+                    parent_id?: number | null;
+                    priority?: string | null;
+                    priority_lev?: string | null;
+                    status?: string | null;
+                    type?: string | null;
+                    updated_at?: string | null;
+                    user_id?: string | null;
+                };
+                Update: {
+                    attachments?: Json | null;
+                    color?: string | null;
+                    completed_date?: string | null;
+                    created_at?: string | null;
+                    desc?: string | null;
+                    due_date?: string | null;
+                    github_branch_name?: string | null;
+                    github_link?: string | null;
+                    github_repo?: string | null;
+                    id?: number;
+                    links?: Json | null;
+                    list_id?: number | null;
+                    name?: string;
+                    notification_date_time?: string | null;
+                    notification_sent?: boolean | null;
+                    order?: number | null;
+                    parent_id?: number | null;
+                    priority?: string | null;
+                    priority_lev?: string | null;
+                    status?: string | null;
+                    type?: string | null;
+                    updated_at?: string | null;
+                    user_id?: string | null;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: 'Todos_list_id_fkey';
+                        columns: ['list_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'Lists';
+                        referencedColumns: ['id'];
+                    },
+                    {
+                        foreignKeyName: 'todos_parent_id_fkey';
+                        columns: ['parent_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'Todos';
+                        referencedColumns: ['id'];
+                    },
+                ];
+            };
+            user_integrations: {
+                Row: {
+                    access_token: string;
+                    created_at: string | null;
+                    expires_at: string | null;
+                    id: string;
+                    provider: string;
+                    refresh_token: string | null;
+                    updated_at: string | null;
+                    user_id: string;
+                };
+                Insert: {
+                    access_token: string;
+                    created_at?: string | null;
+                    expires_at?: string | null;
+                    id?: string;
+                    provider: string;
+                    refresh_token?: string | null;
+                    updated_at?: string | null;
+                    user_id: string;
+                };
+                Update: {
+                    access_token?: string;
+                    created_at?: string | null;
+                    expires_at?: string | null;
+                    id?: string;
+                    provider?: string;
+                    refresh_token?: string | null;
+                    updated_at?: string | null;
+                    user_id?: string;
+                };
+                Relationships: [];
+            };
+            Users: {
+                Row: {
+                    github_installation_id: number | null;
+                    github_username: string | null;
+                    github_webhook_subscriptions: Json | null;
+                    id: string;
+                    push_subscriptions: Json | null;
+                    username: string | null;
+                };
+                Insert: {
+                    github_installation_id?: number | null;
+                    github_username?: string | null;
+                    github_webhook_subscriptions?: Json | null;
+                    id: string;
+                    push_subscriptions?: Json | null;
+                    username?: string | null;
+                };
+                Update: {
+                    github_installation_id?: number | null;
+                    github_username?: string | null;
+                    github_webhook_subscriptions?: Json | null;
+                    id?: string;
+                    push_subscriptions?: Json | null;
+                    username?: string | null;
+                };
+                Relationships: [];
+            };
+        };
+        Views: {
+            [_ in never]: never;
+        };
+        Functions: {
+            [_ in never]: never;
+        };
+        Enums: {
+            [_ in never]: never;
+        };
+        CompositeTypes: {
+            [_ in never]: never;
+        };
+    };
+};
 
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>;
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>];
 
 export type Tables<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R
+    DefaultSchemaTableNameOrOptions extends
+        | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+        | { schema: keyof DatabaseWithoutInternals },
+    TableName extends DefaultSchemaTableNameOrOptions extends {
+        schema: keyof DatabaseWithoutInternals;
     }
-    ? R
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R
+        ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+              DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
+        : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+}
+    ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+          DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
+          Row: infer R;
       }
-      ? R
-      : never
-    : never
+        ? R
+        : never
+    : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] &
+            DefaultSchema['Views'])
+      ? (DefaultSchema['Tables'] &
+            DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
+            Row: infer R;
+        }
+          ? R
+          : never
+      : never;
 
 export type TablesInsert<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
+    DefaultSchemaTableNameOrOptions extends
+        | keyof DefaultSchema['Tables']
+        | { schema: keyof DatabaseWithoutInternals },
+    TableName extends DefaultSchemaTableNameOrOptions extends {
+        schema: keyof DatabaseWithoutInternals;
     }
-    ? I
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I
+        ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+        : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+}
+    ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+          Insert: infer I;
       }
-      ? I
-      : never
-    : never
+        ? I
+        : never
+    : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
+      ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+            Insert: infer I;
+        }
+          ? I
+          : never
+      : never;
 
 export type TablesUpdate<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
+    DefaultSchemaTableNameOrOptions extends
+        | keyof DefaultSchema['Tables']
+        | { schema: keyof DatabaseWithoutInternals },
+    TableName extends DefaultSchemaTableNameOrOptions extends {
+        schema: keyof DatabaseWithoutInternals;
     }
-    ? U
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U
+        ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+        : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+}
+    ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+          Update: infer U;
       }
-      ? U
-      : never
-    : never
+        ? U
+        : never
+    : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
+      ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+            Update: infer U;
+        }
+          ? U
+          : never
+      : never;
 
 export type Enums<
-  DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    DefaultSchemaEnumNameOrOptions extends
+        | keyof DefaultSchema['Enums']
+        | { schema: keyof DatabaseWithoutInternals },
+    EnumName extends DefaultSchemaEnumNameOrOptions extends {
+        schema: keyof DatabaseWithoutInternals;
+    }
+        ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
+        : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals;
 }
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never
+    ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
+    : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
+      ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
+      : never;
 
 export type CompositeTypes<
-  PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    PublicCompositeTypeNameOrOptions extends
+        | keyof DefaultSchema['CompositeTypes']
+        | { schema: keyof DatabaseWithoutInternals },
+    CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+        schema: keyof DatabaseWithoutInternals;
+    }
+        ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+        : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals;
 }
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never
+    ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
+    : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
+      ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+      : never;
 
 export const Constants = {
-  public: {
-    Enums: {},
-  },
-} as const
+    public: {
+        Enums: {},
+    },
+} as const;

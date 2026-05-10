@@ -55,33 +55,15 @@ function toRepoTestId(fullName: string): string {
 
 <template>
     <div>
-        <div
-            v-if="props.reposLoading"
-            class="d-flex align-center justify-center pa-8"
-        >
-            <v-progress-circular
-                indeterminate
-                size="32"
-                class="mr-3"
-            />
+        <div v-if="props.reposLoading" class="d-flex align-center justify-center pa-8">
+            <v-progress-circular indeterminate size="32" class="mr-3" />
             Loading repositories...
         </div>
 
-        <v-alert
-            v-else-if="props.reposError"
-            type="error"
-            variant="tonal"
-            class="mb-3"
-        >
+        <v-alert v-else-if="props.reposError" type="error" variant="tonal" class="mb-3">
             {{ props.reposError }}
             <template #append>
-                <v-btn
-                    variant="text"
-                    size="small"
-                    @click="emit('retryLoad')"
-                >
-                    Retry
-                </v-btn>
+                <v-btn variant="text" size="small" @click="emit('retryLoad')"> Retry </v-btn>
             </template>
         </v-alert>
 
@@ -107,12 +89,7 @@ function toRepoTestId(fullName: string): string {
             v-if="!props.reposLoading && !props.reposError && props.repos.length > 0"
             variant="tonal"
         >
-            <v-list-item
-                v-for="repo in props.repos"
-                :key="repo.id"
-                target="_blank"
-                class="my-1"
-            >
+            <v-list-item v-for="repo in props.repos" :key="repo.id" target="_blank" class="my-1">
                 <template #prepend>
                     <v-icon>
                         {{ repo.private ? 'mdi-lock' : 'mdi-source-repository' }}
@@ -138,14 +115,8 @@ function toRepoTestId(fullName: string): string {
                                 props.isRepoSubscribed(repo.full_name) ? 'Unsubscribe' : 'Subscribe'
                             }}
                         </v-btn>
-                        <span
-                            v-if="repo.language"
-                            class="d-flex align-center ga-1"
-                        >
-                            <v-icon
-                                size="8"
-                                :color="languageColor(repo.language)"
-                            >
+                        <span v-if="repo.language" class="d-flex align-center ga-1">
+                            <v-icon size="8" :color="languageColor(repo.language)">
                                 mdi-circle
                             </v-icon>
                             {{ repo.language }}
