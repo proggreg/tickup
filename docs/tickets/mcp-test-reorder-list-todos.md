@@ -1,8 +1,9 @@
 ---
-Status: todo
+Status: done
 taskId: 2131
 title: Write a test for the 'reorder-list-todos' MCP tool
 priority: medium
+completed: 2026-05-10
 ---
 
 # Write a test for the 'reorder-list-todos' MCP tool
