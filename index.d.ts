@@ -7,20 +7,20 @@ declare global {
     interface Task {
         userId?: string;
         name: string;
+        status?: string;
         id?: string;
         dueDate?: Date;
         listId?: string;
         list?: List;
-        status: string;
         desc?: string;
         edit?: boolean;
         selected?: boolean;
-        color: string;
-        priorityLev: string;
+        color?: string;
+        priorityLev?: string;
         githubBranchName?: string;
         githubRepo?: string;
         githubLink?: string;
-        links: {
+        links?: {
             id?: string;
             title: string;
             url: string;

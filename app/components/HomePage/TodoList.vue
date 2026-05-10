@@ -56,25 +56,16 @@ const deleteTodo = async (todo: Task, closeDialog?: () => void) => {
     try {
         await listsStore.deleteTodo(todo.id);
         closeDialog?.();
-    }
-    catch {
+    } catch {
         deleteError.value = 'Failed to delete todo. Please try again.';
     }
 };
 </script>
 
 <template>
-    <v-card
-        v-if="todos && todos.length"
-        variant="flat"
-        class="todo-list-card"
-    >
+    <v-card v-if="todos && todos.length" variant="flat" class="todo-list-card">
         <!-- Grouped view (for OverDue) -->
-        <v-list
-            v-if="groupByStatus"
-            :opened="opened"
-            variant="plain"
-        >
+        <v-list v-if="groupByStatus" :opened="opened" variant="plain">
             <v-list-group value="Open">
                 <template #activator="{ props: activatorProps }">
                     <v-list-item
@@ -129,8 +120,7 @@ const deleteTodo = async (todo: Task, closeDialog?: () => void) => {
                                     <template #default="{ isActive }">
                                         <v-card>
                                             <v-card-text>
-                                                Are you sure you want to delete this
-                                                todo?
+                                                Are you sure you want to delete this todo?
                                             </v-card-text>
                                             <v-card-actions>
                                                 <v-spacer />
@@ -145,9 +135,7 @@ const deleteTodo = async (todo: Task, closeDialog?: () => void) => {
                                                 >
                                                     Yes
                                                 </v-btn>
-                                                <v-btn @click="isActive.value = false">
-                                                    No
-                                                </v-btn>
+                                                <v-btn @click="isActive.value = false"> No </v-btn>
                                             </v-card-actions>
                                         </v-card>
                                     </template>
@@ -213,8 +201,7 @@ const deleteTodo = async (todo: Task, closeDialog?: () => void) => {
                                     <template #default="{ isActive }">
                                         <v-card>
                                             <v-card-text>
-                                                Are you sure you want to delete this
-                                                todo?
+                                                Are you sure you want to delete this todo?
                                             </v-card-text>
                                             <v-card-actions>
                                                 <v-spacer />
@@ -229,9 +216,7 @@ const deleteTodo = async (todo: Task, closeDialog?: () => void) => {
                                                 >
                                                     Yes
                                                 </v-btn>
-                                                <v-btn @click="isActive.value = false">
-                                                    No
-                                                </v-btn>
+                                                <v-btn @click="isActive.value = false"> No </v-btn>
                                             </v-card-actions>
                                         </v-card>
                                     </template>
@@ -276,10 +261,7 @@ const deleteTodo = async (todo: Task, closeDialog?: () => void) => {
                         @click.stop="handleSetOpenSimple(todo)"
                     />
                 </template>
-                <v-list-item-title
-                    class="todo-title"
-                    data-testid="todo-title"
-                >
+                <v-list-item-title class="todo-title" data-testid="todo-title">
                     {{ todo.name }}
                 </v-list-item-title>
 
@@ -323,9 +305,7 @@ const deleteTodo = async (todo: Task, closeDialog?: () => void) => {
                                             >
                                                 Yes
                                             </v-btn>
-                                            <v-btn @click="isActive.value = false">
-                                                No
-                                            </v-btn>
+                                            <v-btn @click="isActive.value = false"> No </v-btn>
                                         </v-card-actions>
                                     </v-card>
                                 </template>

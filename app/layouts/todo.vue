@@ -4,18 +4,12 @@ const colorMode = useColorMode();
 
 <template>
     <ColorScheme>
-        <v-theme-provider
-            with-background
-            :theme="colorMode.preference"
-        >
+        <v-theme-provider with-background :theme="colorMode.preference">
             <v-app>
                 <v-layout>
                     <app-nav />
                     <v-main>
-                        <v-container
-                            style="height: 100%"
-                            fluid
-                        >
+                        <v-container style="height: 100%" fluid>
                             <v-row>
                                 <NuxtPage />
                             </v-row>

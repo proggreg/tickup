@@ -45,16 +45,12 @@ function openFullPage() {
                     <!-- Background on inner div, not on <dialog> element -->
                     <Dialog.Content class="confirm-shell">
                         <div class="confirm-dialog">
-                            <Dialog.Title class="confirm-dialog__title">
-                                Delete task
-                            </Dialog.Title>
+                            <Dialog.Title class="confirm-dialog__title"> Delete task </Dialog.Title>
                             <Dialog.Description class="confirm-dialog__desc">
                                 Are you sure you want to delete "{{ listsStore.currentTodo.name }}"?
                             </Dialog.Description>
                             <div class="confirm-dialog__actions">
-                                <Dialog.Close class="btn">
-                                    Cancel
-                                </Dialog.Close>
+                                <Dialog.Close class="btn"> Cancel </Dialog.Close>
                                 <Dialog.Close
                                     class="btn btn--danger"
                                     @click="listsStore.deleteTodo(listsStore.currentTodo.id)"

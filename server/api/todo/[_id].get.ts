@@ -11,11 +11,7 @@ export default defineEventHandler(async (event) => {
 
     const supabase = await mcpSupabaseClient(event);
     const todoId = parseInt(event.context.params._id, 10);
-    const { data, error } = await supabase
-        .from('Todos')
-        .select('*')
-        .eq('id', todoId)
-        .single();
+    const { data, error } = await supabase.from('Todos').select('*').eq('id', todoId).single();
 
     if (error) {
         throw createError({

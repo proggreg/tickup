@@ -3,7 +3,7 @@ definePageMeta({
     auth: {
         unauthenticatedOnly: false,
         navigateUnauthenticatedTo: '/login',
-    }
+    },
 });
 
 const searchStore = useSearchStore();
@@ -25,12 +25,7 @@ onMounted(() => {
         <div class="px-5 pt-8 pb-4 flex-shrink-0">
             <div class="d-flex align-center ga-3 mb-4">
                 <span class="text-h5 font-weight-bold">Search</span>
-                <v-chip
-                    v-if="searchStore.results.length"
-                    size="small"
-                    variant="tonal"
-                    label
-                >
+                <v-chip v-if="searchStore.results.length" size="small" variant="tonal" label>
                     {{ searchStore.results.length }}
                 </v-chip>
             </div>
