@@ -24,7 +24,7 @@ describe('get_todo MCP tool', () => {
         expect(todo).toMatchObject({
             id: newTodo.id,
             name: newTodo.name,
-            status: expect.any(String),
+            status: null,
             userId: expect.any(String),
         });
     });
@@ -39,8 +39,27 @@ describe('get_todo MCP tool', () => {
         });
 
         const todo = parseContent(result);
-        expect(todo.id).toBe(newTodo.id);
-        expect(todo.name).toBe(name);
+        expect(todo).toMatchObject({
+            id: newTodo.id,
+            name,
+            status: null,
+            userId: expect.any(String),
+        });
+    });
+
+    mcpTest('returns error for name that matches no todo', async ({ client }) => {
+        const result = await client.callTool({
+            name: 'get_todo',
+            arguments: { name: `no-such-todo-${crypto.randomUUID()}` },
+        });
+
+        const contentArray = (result as Record<string, unknown>).content as {
+            type: string;
+            text?: string;
+        }[];
+        const textContent = contentArray.find(({ type }) => type === 'text');
+        expect(textContent?.text).toBeDefined();
+        expect(textContent!.text!.toLowerCase()).toMatch(/not found|error/);
     });
 
     mcpTest('fetches todo by github branch name', async ({ client, createTodo }) => {
@@ -56,8 +75,27 @@ describe('get_todo MCP tool', () => {
         });
 
         const todo = parseContent(result);
-        expect(todo.id).toBe(newTodo.id);
-        expect(todo.githubBranchName).toBe(branchName);
+        expect(todo).toMatchObject({
+            id: newTodo.id,
+            githubBranchName: branchName,
+            status: null,
+            userId: expect.any(String),
+        });
+    });
+
+    mcpTest('returns error for githubBranchName that matches no todo', async ({ client }) => {
+        const result = await client.callTool({
+            name: 'get_todo',
+            arguments: { githubBranchName: `feat/no-such-branch-${crypto.randomUUID()}` },
+        });
+
+        const contentArray = (result as Record<string, unknown>).content as {
+            type: string;
+            text?: string;
+        }[];
+        const textContent = contentArray.find(({ type }) => type === 'text');
+        expect(textContent?.text).toBeDefined();
+        expect(textContent!.text!.toLowerCase()).toMatch(/not found|error/);
     });
 
     mcpTest('returns error when called with no arguments', async ({ client }) => {
@@ -89,19 +127,15 @@ describe('get_todo MCP tool', () => {
         expect(textContent!.text!.toLowerCase()).toMatch(/not found|error/);
     });
 
-    mcpTest('should handle non-existent todo ID gracefully', async ({ client }) => {
+    mcpTest('returns error for non-numeric ID that cannot match any todo', async ({ client }) => {
         const result = await client.callTool({
             name: 'get_todo',
-            arguments: {
-                id: 'non-existent-id-99999',
-            },
+            arguments: { id: `non-numeric-id-${crypto.randomUUID()}` },
         });
 
         const content = result.content as { type: string; text?: string }[];
         const textContent = content.filter(({ type }) => type === 'text')[0];
-
-        // Tool should return error or empty result gracefully
-        expect(textContent).toBeDefined();
-        expect(result.isError).not.toBe(true);
+        expect(textContent?.text).toBeDefined();
+        expect(textContent!.text!.toLowerCase()).toMatch(/not found|error|invalid/);
     });
 });

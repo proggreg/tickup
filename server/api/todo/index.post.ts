@@ -1,26 +1,14 @@
 import { objectToSnake, objectToCamel } from 'ts-case-convert';
-import { getHeader } from 'h3';
 import { TaskService } from '~~/server/utils/tasks';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody<Task>(event);
     const supabase = event.context.supabase;
 
-    // Extract bearer token from Authorization header
-    const authHeader = getHeader(event, 'authorization') || '';
-    let token = '';
-    if (authHeader.startsWith('Bearer ')) {
-        token = authHeader.substring(7);
-    }
 
     let user;
-    if (token) {
-        const { data } = await supabase.auth.getUser(token);
-        user = data.user;
-    } else {
-        const { data } = await supabase.auth.getUser();
-        user = data.user;
-    }
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
 
     if (!user?.id) {
         throw createError({
@@ -32,6 +20,7 @@ export default defineEventHandler(async (event) => {
     const todoData = objectToSnake(body) as any;
 
     console.log('create todo');
+
     delete todoData.edit;
     delete todoData.subtasks;
 
