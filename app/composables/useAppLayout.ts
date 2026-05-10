@@ -3,7 +3,11 @@ export function useAppLayout() {
     const { isMobile } = useDevice();
 
     return computed(() => {
-        if (route.name === 'login' || route.name === 'register' || route.name.toString().includes('consent')) {
+        if (
+            route.name === 'login' ||
+            route.name === 'register' ||
+            route.name.toString().includes('consent')
+        ) {
             return 'login-register';
         }
         if (isMobile) {

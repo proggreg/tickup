@@ -19,11 +19,7 @@ function updateDueDate(newDate: Date | unknown) {
 </script>
 
 <template>
-    <v-dialog
-        location="top"
-        class="ma-2"
-        max-width="500"
-    >
+    <v-dialog location="top" class="ma-2" max-width="500">
         <template #activator="{ props }">
             <v-text-field
                 v-if="dueDateProps.showDetail"
@@ -48,12 +44,7 @@ function updateDueDate(newDate: Date | unknown) {
                     </v-icon>
                 </template>
             </v-text-field>
-            <v-btn
-                v-else
-                v-bind="props"
-                icon="mdi-calendar"
-                variant="text"
-            />
+            <v-btn v-else v-bind="props" icon="mdi-calendar" variant="text" />
         </template>
         <template #default="{ isActive }">
             <v-icon

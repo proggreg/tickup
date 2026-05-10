@@ -4,7 +4,7 @@ import { callApi } from '../../utils/api';
 export default defineMcpTool({
     name: 'subscribe_github_webhooks',
     description:
-        'Sync the user\'s GitHub webhook subscriptions to the given list of repository full names. Repos in the list are subscribed; repos previously subscribed but not in the list are unsubscribed.',
+        "Sync the user's GitHub webhook subscriptions to the given list of repository full names. Repos in the list are subscribed; repos previously subscribed but not in the list are unsubscribed.",
     inputSchema: {
         subscriptions: z
             .array(z.string())

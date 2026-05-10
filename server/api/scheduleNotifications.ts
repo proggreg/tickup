@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
     if (todos && todos.length > 0) {
         console.log(
             '📝 Todos requiring notifications:',
-            todos.map(t => ({
+            todos.map((t) => ({
                 id: t.id,
                 name: t.name,
                 userId: t.user_id,
@@ -110,8 +110,7 @@ export default defineEventHandler(async (event) => {
                 await webpush.sendNotification(sub, payload);
                 console.log(`✅ Notification sent successfully to subscription ${i + 1}`);
                 sent++;
-            }
-            catch (e: any) {
+            } catch (e: any) {
                 console.error(`❌ Failed to send notification to subscription ${i + 1}:`, e);
                 console.error('🔍 Error details:', {
                     message: e?.message || 'Unknown error',
@@ -131,8 +130,7 @@ export default defineEventHandler(async (event) => {
 
         if (updateError) {
             console.error(`❌ Failed to mark todo ${todo.id} as notified:`, updateError);
-        }
-        else {
+        } else {
             console.log(`✅ Todo ${todo.id} marked as notified`);
         }
     }
