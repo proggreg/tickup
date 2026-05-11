@@ -1,12 +1,17 @@
-import { serverSupabaseClient } from '#supabase/server';
-
 export default defineEventHandler(async (event) => {
     const body = await readBody<List>(event);
-    const supabase = await serverSupabaseClient(event);
+    const supabase = event.context.supabase;
     try {
         const listData: any = {
             name: body.name,
         };
+
+        if (!listData.name) {
+            throw createError({
+                statusCode: 400,
+                statusText: 'List name is required',
+            });
+        }
 
         const { data, error } = await supabase.from('Lists').insert([listData]).select();
 
@@ -29,7 +34,8 @@ export default defineEventHandler(async (event) => {
         }
 
         return result;
-    } catch (error) {
+    } catch (error: any) {
+        if (error.statusCode) throw error;
         console.error('Error creating list:', error);
         throw createError({
             statusCode: 500,

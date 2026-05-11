@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
 const { todo } = defineProps<{
-    todo: Todo;
+    todo: Task;
 }>();
 const deleteButton = ref();
 const buttonFocused = ref(false);

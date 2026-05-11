@@ -1,4 +1,4 @@
-import { serverSupabaseClient } from '#supabase/server';
+import { mcpSupabaseClient } from '../../mcp/utils/auth';
 import { objectToCamel } from 'ts-case-convert';
 
 export default defineEventHandler(async (event) => {
@@ -9,12 +9,9 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    const supabase = await serverSupabaseClient(event);
-    const { data, error } = await supabase
-        .from('Todos')
-        .select('*')
-        .eq('id', event.context.params._id)
-        .single();
+    const supabase = await mcpSupabaseClient(event);
+    const todoId = parseInt(event.context.params._id, 10);
+    const { data, error } = await supabase.from('Todos').select('*').eq('id', todoId).single();
 
     if (error) {
         throw createError({

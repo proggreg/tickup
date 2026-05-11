@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const isAddingTodo = ref(false);
 const listsStore = useListsStore();
-const statusStore = useSettingsStore();
 
 interface Props {
     status: Status;
@@ -20,7 +19,7 @@ const todos = computed(() => {
     ) {
         return [];
     }
-    return listsStore.currentList.todos.filter((todo: Todo) => todo.status === status.name);
+    return listsStore.currentList.todos.filter((todo: Task) => todo.status === status.name);
 });
 
 function addTodo(status: Status) {
@@ -28,7 +27,7 @@ function addTodo(status: Status) {
     listsStore.addTodo();
 }
 // TODO updateStatus is not implemented
-// function updateStatus(todo: Todo, status: Status) {
+// function updateStatus(todo: Task, status: Status) {
 //     const index = statusStore.statuses.findIndex(s => s.name === status.name);
 //     if (index < statusStore.statuses.length) {
 //         todo.status = statusStore.statuses[index + 1].name;
@@ -44,7 +43,7 @@ function handleBlur() {
 
 function handleDragChange(evt: any) {
     if (evt?.added?.element) {
-        const todo = evt.added.element as Todo;
+        const todo = evt.added.element as Task;
         if (todo.status !== status.name) {
             todo.status = status.name;
             listsStore.updateTodo(todo);

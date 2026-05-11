@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-    todos: Todo[];
+    todos: Task[];
     groupByStatus?: boolean;
     showDueDates?: boolean;
     emptyState?: boolean;
@@ -19,38 +19,38 @@ const { isTodoClosed } = useTodoStatus();
 const opened = ref(['Open']);
 
 const openTodos = computed(() => {
-    return props.todos.filter((todo: Todo) => !isTodoClosed(todo.status));
+    return props.todos.filter((todo: Task) => !isTodoClosed(todo.status));
 });
 
 const closedTodos = computed(() => {
-    return props.todos.filter((todo: Todo) => isTodoClosed(todo.status));
+    return props.todos.filter((todo: Task) => isTodoClosed(todo.status));
 });
 
-const handleSetClosed = (todo: Todo, event?: any) => {
+const handleSetClosed = (todo: Task, event?: any) => {
     if (event?.target) {
         event.target.checked = true;
     }
     setClosed(todo, 200);
 };
 
-const handleSetOpen = (todo: Todo, event?: any) => {
+const handleSetOpen = (todo: Task, event?: any) => {
     if (event?.target) {
         event.target.checked = false;
     }
     setOpen(todo, 200);
 };
 
-const handleSetClosedSimple = (todo: Todo) => {
+const handleSetClosedSimple = (todo: Task) => {
     setClosed(todo);
 };
 
-const handleSetOpenSimple = (todo: Todo) => {
+const handleSetOpenSimple = (todo: Task) => {
     setOpen(todo);
 };
 
 const deleteError = ref<string | null>(null);
 
-const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
+const deleteTodo = async (todo: Task, closeDialog?: () => void) => {
     if (!todo.id) return;
     deleteError.value = null;
     try {
@@ -119,10 +119,9 @@ const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
                                     </template>
                                     <template #default="{ isActive }">
                                         <v-card>
-                                            <v-card-text
-                                                >Are you sure you want to delete this
-                                                todo?</v-card-text
-                                            >
+                                            <v-card-text>
+                                                Are you sure you want to delete this todo?
+                                            </v-card-text>
                                             <v-card-actions>
                                                 <v-spacer />
                                                 <v-btn
@@ -201,10 +200,9 @@ const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
                                     </template>
                                     <template #default="{ isActive }">
                                         <v-card>
-                                            <v-card-text
-                                                >Are you sure you want to delete this
-                                                todo?</v-card-text
-                                            >
+                                            <v-card-text>
+                                                Are you sure you want to delete this todo?
+                                            </v-card-text>
                                             <v-card-actions>
                                                 <v-spacer />
                                                 <v-btn
@@ -293,9 +291,9 @@ const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
                                 </template>
                                 <template #default="{ isActive }">
                                     <v-card>
-                                        <v-card-text
-                                            >Are you sure you want to delete this todo?</v-card-text
-                                        >
+                                        <v-card-text>
+                                            Are you sure you want to delete this todo?
+                                        </v-card-text>
                                         <v-card-actions>
                                             <v-spacer />
                                             <v-btn

@@ -3,15 +3,15 @@ const listsStore = useListsStore();
 // const { isMobile } = useDevice()
 const opened = ref(['Open']);
 
-function selectTodo(todo: Todo) {
+function selectTodo(todo: Task) {
     listsStore.setCurrentTodo(todo);
     navigateTo(`/todo/${todo.id}`);
 }
-function setClosed(todo: Todo) {
+function setClosed(todo: Task) {
     todo.status = 'Closed';
     listsStore.updateTodo(todo);
 }
-function setOpen(todo: Todo) {
+function setOpen(todo: Task) {
     todo.status = 'Open';
     listsStore.updateTodo(todo);
 }
@@ -23,11 +23,11 @@ function formatDate(date: Date) {
 }
 
 const openTodos = computed(() => {
-    return listsStore.currentList.todos?.filter((todo: Todo) => todo.status !== 'Closed');
+    return listsStore.currentList.todos?.filter((todo: Task) => todo.status !== 'Closed');
 });
 
 const closedTodos = computed(() => {
-    return listsStore.currentList.todos?.filter((todo: Todo) => todo.status === 'Closed');
+    return listsStore.currentList.todos?.filter((todo: Task) => todo.status === 'Closed');
 });
 </script>
 

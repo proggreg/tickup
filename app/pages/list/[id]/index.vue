@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ListSimple } from '#components';
-import type { ViewType } from '~/types/table-item.types';
+import type { ViewType } from '~~/types/table-item.types';
 
 const listsStore = useListsStore();
 const tabs = ref<ViewType[]>(['board', 'list']);
@@ -26,9 +26,9 @@ if (listsStore.currentList) {
     });
 }
 
-watch(listsStore.currentList.todos, (todos: Todo[]) => {
+watch(listsStore.currentList.todos, (todos: Task[]) => {
     if (!todos) return;
-    on.value = todos.filter((todo: Todo) => todo.selected).length > 0;
+    on.value = todos.filter((todo: Task) => todo.selected).length > 0;
 });
 
 function updateListType(listType) {

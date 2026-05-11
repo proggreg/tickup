@@ -85,11 +85,12 @@ export default defineConfig({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: 'NODE_ENV=test pnpm dev',
+        // In CI use the pre-built output (fast); locally use dev server
+        command: process.env.CI ? 'NODE_ENV=test pnpm start' : 'NODE_ENV=test pnpm dev',
         url: 'http://localhost:3000',
         reuseExistingServer: !process.env.CI,
-        timeout: 120 * 1000, // 120 seconds to allow for longer startup times
-        stdout: 'ignore', // Pipe the stdout to see server logs
-        stderr: 'ignore', // Pipe the stderr to see error logs
+        timeout: 120 * 1000,
+        stdout: 'ignore',
+        stderr: 'ignore',
     },
 });

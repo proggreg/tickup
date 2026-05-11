@@ -98,7 +98,7 @@ async function deleteSubtask(subtaskId: string | number) {
     await listsStore.deleteSubtask(subtaskId);
 }
 
-async function linkExistingTodo(todo: Todo) {
+async function linkExistingTodo(todo: Task) {
     if (!listsStore.currentTodo?.id || !todo.id) return;
     // Backend does not allow subtask-of-subtask
     if ((todo as any).parentId) return;
@@ -130,12 +130,12 @@ function renameSubtask(subtaskId: string | number, index: number) {
     }
 }
 
-function onSubtaskBlur(subtask: Todo) {
+function onSubtaskBlur(subtask: Task) {
     editingSubtaskIds.value = editingSubtaskIds.value.filter((id) => id !== subtask.id);
     listsStore.updateTodo(subtask);
 }
 
-async function updatePriority(subtask: Todo, level: string) {
+async function updatePriority(subtask: Task, level: string) {
     subtask.priorityLev = level;
     listsStore.updateTodo(subtask);
 }

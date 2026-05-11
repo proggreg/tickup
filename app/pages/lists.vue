@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-    layout: 'mobile',
-});
-
 const store = useListsStore();
 
 onBeforeMount(() => {

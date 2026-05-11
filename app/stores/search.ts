@@ -2,13 +2,13 @@ import { defineStore } from 'pinia';
 
 export const useSearchStore = defineStore('search', () => {
     const searchQuery = ref('');
-    const results = ref<Todo[]>([]);
+    const results = ref<Task[]>([]);
     const loading = ref(false);
 
     async function search() {
         loading.value = true;
         try {
-            const todos = await $fetch<Todo[]>('/api/search/todo', {
+            const todos = await $fetch<Task[]>('/api/search/todo', {
                 method: 'POST',
                 body: {
                     query: searchQuery.value,

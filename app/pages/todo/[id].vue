@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const route = useRoute();
 const listsStore = useListsStore();
-const parentTodo = ref<Todo | null>(null);
+const parentTodo = ref<Task | null>(null);
 const isLoading = ref(true);
 const transitionKey = ref(0);
 
@@ -9,7 +9,7 @@ async function loadTodo(id: string | string[]) {
     try {
         isLoading.value = true;
 
-        const todo = await $fetch<Todo>(`/api/todo/${id}`);
+        const todo = await $fetch<Task>(`/api/todo/${id}`);
         listsStore.setCurrentTodo(todo);
 
         // Explicitly fetch subtasks for this todo
@@ -19,7 +19,7 @@ async function loadTodo(id: string | string[]) {
         if (todo.parentId) {
             const needsNewParent = !parentTodo.value || parentTodo.value.id !== todo.parentId;
             if (needsNewParent) {
-                parentTodo.value = await $fetch<Todo>(`/api/todo/${todo.parentId}`);
+                parentTodo.value = await $fetch<Task>(`/api/todo/${todo.parentId}`);
             }
         } else {
             // No parent for this todo

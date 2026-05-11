@@ -4,7 +4,7 @@ import type { Endpoints } from '@octokit/types';
 const { notify } = useNotification();
 const listStore = useListsStore();
 
-const { todo } = defineProps<{ todo: Todo }>();
+const { todo } = defineProps<{ todo: Task }>();
 const githubBranchName = useState<string>('githubBranchName', () => '');
 const githubBranchCommand = computed(() => {
     if (listStore.currentTodo.githubBranchName) {

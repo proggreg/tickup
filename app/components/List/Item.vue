@@ -3,17 +3,17 @@ const listsStore = useListsStore();
 const { statuses } = useSettingsStore();
 const { smAndDown } = useDisplay();
 const itemProps = defineProps<{
-    todos: Todo[];
+    todos: Task[];
     status: string;
 }>();
 
 const emit = defineEmits(['TodoClicked', 'updateTodos']);
 
-function selectTodo(todo: Todo) {
+function selectTodo(todo: Task) {
     listsStore.setCurrentTodo(todo);
 }
 
-function editTodo(todo: Todo, status: Status) {
+function editTodo(todo: Task, status: Status) {
     todo.status = status.name;
     $fetch(`/api/todo/${todo.id}`, {
         method: 'PUT',

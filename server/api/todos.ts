@@ -69,11 +69,7 @@ export default defineEventHandler(async (event) => {
             }));
         }
 
-        const { data, error } = await supabase
-            .from('Todos')
-            .select('*')
-            .eq('user_id', query.id)
-            .is('parent_id', null);
+        const { data, error } = await supabase.from('Todos').select('*').is('parent_id', null);
 
         if (error) {
             console.error('Supabase error:', error);
