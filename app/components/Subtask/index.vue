@@ -292,12 +292,19 @@ function formatDueDate(date: Date | string | undefined): string {
                     {{ subtask.githubBranchName }}
                 </span>
 
-                <div class="subtasks__row-actions" @click.stop>
+                <div
+                    class="subtasks__priority-wrap"
+                    :class="{ 'subtasks__priority-wrap--set': subtask.priorityLev }"
+                    @click.stop
+                >
                     <SubtaskPriority
                         :subtask="subtask"
                         :index="index"
                         @update-priority="(level) => updatePriority(subtask, level)"
                     />
+                </div>
+
+                <div class="subtasks__row-actions" @click.stop>
                     <v-menu>
                         <template #activator="{ props }">
                             <button
@@ -560,8 +567,7 @@ function formatDueDate(date: Date | string | undefined): string {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px;
-    margin: 0 -8px;
+    padding: 6px 8px;
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.12s;
@@ -621,6 +627,20 @@ function formatDueDate(date: Date | string | undefined): string {
 .subtasks__meta--mono {
     font-family: ui-monospace, 'Cascadia Code', Menlo, monospace;
     font-size: 0.6875rem;
+}
+
+.subtasks__priority-wrap {
+    opacity: 0;
+    transition: opacity 0.12s;
+    flex-shrink: 0;
+}
+
+.subtasks__priority-wrap--set {
+    opacity: 1;
+}
+
+.subtasks__row:hover .subtasks__priority-wrap {
+    opacity: 1;
 }
 
 .subtasks__row-actions {
