@@ -17,8 +17,7 @@ describe('List API endpoints', () => {
             expect(list.id).toBeDefined();
             expect(list.name).toBe('Test List');
             listId = list.id;
-        }
-        finally {
+        } finally {
             if (listId) {
                 await apiCall(`/api/list/${listId}`, { method: 'DELETE' });
             }
@@ -50,8 +49,7 @@ describe('List API endpoints', () => {
             expect(fetched.id).toBe(created.id);
             expect(fetched.name).toBe('Get Test List');
             expect(Array.isArray(fetched.todos)).toBe(true);
-        }
-        finally {
+        } finally {
             await apiCall(`/api/list/${created.id}`, { method: 'DELETE' });
         }
     });
@@ -78,8 +76,7 @@ describe('List API endpoints', () => {
             const getRes = await apiCall(`/api/list/${created.id}`, { method: 'GET' });
             const fetched = await getRes.json();
             expect(fetched.name).toBe('Updated Name');
-        }
-        finally {
+        } finally {
             await apiCall(`/api/list/${created.id}`, { method: 'DELETE' });
         }
     });
@@ -114,8 +111,7 @@ describe('List API endpoints', () => {
             const found = lists.find((l: Record<string, unknown>) => l.id === created.id);
             expect(found).toBeDefined();
             expect(found.name).toBe('List For Get All');
-        }
-        finally {
+        } finally {
             await apiCall(`/api/list/${created.id}`, { method: 'DELETE' });
         }
     });

@@ -34,8 +34,7 @@ export default defineEventHandler(async (event) => {
         }
 
         return result;
-    }
-    catch (error: any) {
+    } catch (error: any) {
         if (error.statusCode) throw error;
         console.error('Error creating list:', error);
         throw createError({

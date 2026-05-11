@@ -29,8 +29,7 @@ export default defineEventHandler(async (event) => {
         const snakeUpdateData = objectToSnake(updateData);
 
         return await client.from('Lists').update(snakeUpdateData).eq('id', body.id).select();
-    }
-    catch (error: any) {
+    } catch (error: any) {
         if (error.statusCode) throw error;
         throw createError({ statusCode: 500, statusMessage: 'Failed to update list' });
     }
