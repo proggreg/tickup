@@ -78,16 +78,16 @@ jobs:
               run: pnpm exec playwright install --with-deps
               if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-            - name: Start dev server for MCP tests
-              run: pnpm dev &
+            - name: Start server for MCP tests
+              run: node .output/server/index.mjs &
               env:
-                  NODE_ENV: test
+                  NITRO_PORT: 3000
                   SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
                   SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
                   SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
-            - name: Wait for dev server
-              run: npx wait-on http://localhost:3000 --timeout 60000
+            - name: Wait for server
+              run: npx wait-on http://localhost:3000 --timeout 30000
 
             - name: Run MCP Tests
               run: pnpm test:mcp
