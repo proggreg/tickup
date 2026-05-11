@@ -289,6 +289,7 @@ function formatDueDate(date: Date | string | undefined): string {
                     class="subtasks__meta subtasks__meta--mono"
                     :data-testid="`subtask-branch-${index}`"
                 >
+                    <v-icon size="12">mdi-source-branch</v-icon>
                     {{ subtask.githubBranchName }}
                 </span>
 
@@ -567,7 +568,8 @@ function formatDueDate(date: Date | string | undefined): string {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 6px 8px;
+    padding: 8px;
+    margin: 0 -8px;
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.12s;
@@ -578,6 +580,10 @@ function formatDueDate(date: Date | string | undefined): string {
 }
 
 .subtasks__row:hover .subtasks__row-actions {
+    opacity: 1;
+}
+
+.subtasks__row:hover .subtasks__priority-wrap {
     opacity: 1;
 }
 
@@ -636,10 +642,6 @@ function formatDueDate(date: Date | string | undefined): string {
 }
 
 .subtasks__priority-wrap--set {
-    opacity: 1;
-}
-
-.subtasks__row:hover .subtasks__priority-wrap {
     opacity: 1;
 }
 
