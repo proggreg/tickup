@@ -1,10 +1,9 @@
-import { serverSupabaseClient } from '#supabase/server';
 import { objectToSnake } from 'ts-case-convert';
 
 export default defineEventHandler(async (event) => {
     try {
         const body = await readBody<List>(event);
-        const client = await serverSupabaseClient(event);
+        const client = event.context.supabase;
 
         if (!body.id) {
             throw createError({
@@ -30,7 +29,9 @@ export default defineEventHandler(async (event) => {
         const snakeUpdateData = objectToSnake(updateData);
 
         return await client.from('Lists').update(snakeUpdateData).eq('id', body.id).select();
-    } catch (error) {
-        return error;
+    }
+    catch (error: any) {
+        if (error.statusCode) throw error;
+        throw createError({ statusCode: 500, statusMessage: 'Failed to update list' });
     }
 });

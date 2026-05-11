@@ -1,5 +1,3 @@
-import { serverSupabaseClient } from '#supabase/server';
-
 export default defineEventHandler(async (event) => {
     try {
         // Get the id from the URL path
@@ -17,14 +15,15 @@ export default defineEventHandler(async (event) => {
             });
         }
 
-        const client = await serverSupabaseClient(event);
+        const client = event.context.supabase;
 
         const listDeleted = await client.from('Lists').delete().eq('id', id);
 
         console.log('listDeleted', listDeleted);
 
         return listDeleted;
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Delete error:', error);
         throw createError({
             statusCode: 500,

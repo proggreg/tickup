@@ -1,8 +1,6 @@
-import { serverSupabaseClient } from '#supabase/server';
-
 export default defineEventHandler(async (event) => {
     try {
-        const client = await serverSupabaseClient(event);
+        const client = event.context.supabase;
         const { data, error } = await client
             .from('Lists')
             .select('*')
@@ -16,13 +14,14 @@ export default defineEventHandler(async (event) => {
         }
 
         // Transform snake_case fields to camelCase for API response
-        return (data || []).map((list) => ({
+        return (data || []).map(list => ({
             ...list,
             userId: list.user_id,
             createdAt: list.created_at,
             updatedAt: list.updated_at,
         }));
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error fetching lists:', error);
         throw createError({
             statusCode: 500,

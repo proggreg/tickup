@@ -1,4 +1,3 @@
-import { serverSupabaseClient } from '#supabase/server';
 import { objectToCamel } from 'ts-case-convert';
 
 export default defineEventHandler(async (event) => {
@@ -12,7 +11,7 @@ export default defineEventHandler(async (event) => {
             });
         }
 
-        const supabase = await serverSupabaseClient(event);
+        const supabase = event.context.supabase;
 
         // Get the list
         const { data: list, error: listError } = await supabase
@@ -41,7 +40,8 @@ export default defineEventHandler(async (event) => {
 
         // Return list with todos embedded for compatibility with existing frontend code
         return { ...objectToCamel(list), todos: objectToCamel(listTodos) };
-    } catch (error: any) {
+    }
+    catch (error: any) {
         // If it's already a createError, re-throw it
         if (error.statusCode) {
             throw error;
