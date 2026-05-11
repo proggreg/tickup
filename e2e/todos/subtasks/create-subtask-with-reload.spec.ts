@@ -58,7 +58,7 @@ test.describe('a user can create a subtask and it persists after reload', () => 
         expect(urlAfterClick).toMatch(/\/todo\/[^/]+$/);
 
         // Wait for the subtask input to be visible (indicates page loaded)
-        const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+        const subtaskInput = page.getByTestId('add-subtask-input');
         await page.waitForTimeout(500);
         await expect(subtaskInput).toBeVisible();
 
@@ -67,23 +67,19 @@ test.describe('a user can create a subtask and it persists after reload', () => 
         await subtaskInput.click();
         await subtaskInput.fill(subtaskName);
 
-        // Wait for v-model to update and button to be enabled
+        // Wait for v-model to update
         await page.waitForTimeout(500);
-
-        // Click the add subtask button and wait for the request
-        const addSubtaskButton = page.getByTestId('add-subtask-button');
-        await expect(addSubtaskButton).toBeEnabled({ timeout: 5000 });
 
         const createSubtaskPromise = page.waitForRequest(
             (request) => request.url().includes('/api/todo') && request.method() === 'POST',
         );
-        await addSubtaskButton.click();
+        await subtaskInput.press('Enter');
         await createSubtaskPromise;
 
         await page.waitForLoadState('networkidle');
 
         // Verify the subtask appears initially
-        const subtasksList = page.getByTestId('subtasks-list').first();
+        const subtasksList = page.getByTestId('subtasks-list-active');
         await expect(subtasksList).toBeVisible();
 
         const subtaskNameField = page.getByTestId('subtask-name-0');
@@ -98,7 +94,7 @@ test.describe('a user can create a subtask and it persists after reload', () => 
         expect(urlAfterReload).toMatch(/\/todo\/[^/]+$/);
 
         // Verify the subtask still exists after reload
-        const subtasksListAfterReload = page.getByTestId('subtasks-list').first();
+        const subtasksListAfterReload = page.getByTestId('subtasks-list-active');
         await expect(subtasksListAfterReload).toBeVisible();
 
         const subtaskNameFieldAfterReload = page.getByTestId('subtask-name-0');
