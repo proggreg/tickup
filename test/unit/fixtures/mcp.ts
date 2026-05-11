@@ -77,6 +77,8 @@ export const mcpTest = test.extend<MCPTestContext>({
         // Override globalThis.fetch to add Authorization header and Supabase session cookie.
         // The cookie is needed because callApi() forwards cookies to internal Nuxt API routes,
         // which use serverSupabaseClient() (cookie-based auth).
+        // Must restore in finally — if client.connect throws, the override would leak into
+        // subsequent tests and corrupt their admin API calls with a user-scoped token.
         const originalFetch = globalThis.fetch;
         globalThis.fetch = ((input: RequestInfo | URL, init?: RequestInit) => {
             const headers = new Headers(init?.headers || {});
@@ -93,13 +95,14 @@ export const mcpTest = test.extend<MCPTestContext>({
             version: '1.0.0',
         });
 
-        await client.connect(transport);
-
-        await use(client);
-
-        await client.close();
-        await transport.close();
-        globalThis.fetch = originalFetch;
+        try {
+            await client.connect(transport);
+            await use(client);
+            await client.close();
+            await transport.close();
+        } finally {
+            globalThis.fetch = originalFetch;
+        }
 
         try {
             const { error } = await adminSupabase.auth.admin.deleteUser(testUserId);

@@ -28,7 +28,17 @@ Tactical, bounded tickup tasks that don't need review before shipping. Small fea
 
 ## Before Starting Work
 
-**Sync task branch with parent**: Switch to task branch. Run `git status` to verify clean. If behind parent branch, pull parent's latest: `git fetch origin <parent-branch> && git merge origin/<parent-branch>`. Don't start until task branch is up to date.
+**Get on task branch**:
+
+1. Get the task's `githubBranchName` from the tickup task (via `get_todo`).
+2. Check if branch exists locally: `git branch --list <branch-name>`.
+3. Check if branch exists remotely: `git ls-remote --heads origin <branch-name>`.
+   - **Exists locally**: `git checkout <branch-name>`
+   - **Exists remotely only**: `git checkout --track origin/<branch-name>`
+   - **Neither**: create from parent branch — `git checkout <parent-branch> && git pull origin <parent-branch> && git checkout -b <branch-name> && git push -u origin <branch-name>`
+4. Run `git status` to verify clean working tree.
+
+**Sync with parent**: If branch already existed, merge latest parent: `git fetch origin <parent-branch> && git merge origin/<parent-branch>`. Don't start until task branch is up to date.
 
 ## Recovery (task already `in_progress`)
 

@@ -12,7 +12,6 @@ jobs:
             SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
             BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY}}
 
-
         steps:
             - uses: actions/checkout@v4
 
@@ -79,11 +78,23 @@ jobs:
               run: pnpm exec playwright install --with-deps
               if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-            - name: Run MCP Tests
-              run: pnpm test:mcp
-              env: 
+            - name: Start dev server for MCP tests
+              run: pnpm dev &
+              env:
+                  NODE_ENV: test
                   SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
                   SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+                  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+            - name: Wait for dev server
+              run: npx wait-on http://localhost:3000 --timeout 60000
+
+            - name: Run MCP Tests
+              run: pnpm test:mcp
+              env:
+                  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+                  SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+                  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
             - name: Run Playwright tests
               run: pnpm exec playwright test
               env:
