@@ -95,6 +95,10 @@ jobs:
                   SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
                   SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
                   SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+            - name: Stop MCP test server
+              run: kill $(lsof -ti:3000) || true
+
             - name: Run Playwright tests
               run: pnpm exec playwright test
               env:
