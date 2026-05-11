@@ -1,19 +1,4 @@
-export const createNewListState = (): List => ({
-    name: '',
-    todos: [],
-    icon: 'mdi-format-list-bulleted',
-    listType: 'simple',
-});
-
-export const createNewTodoState = (): Todo => ({
-    name: '',
-    status: 'Open',
-    desc: '',
-    edit: false,
-    color: '#87909e',
-    links: [],
-    attachments: [],
-});
+import { createNewTodoState, createNewListState } from './helpers';
 
 export const useListsStore = defineStore('lists', {
     state: (): listsState => ({
@@ -44,13 +29,13 @@ export const useListsStore = defineStore('lists', {
 
                     this.resetList();
                     return list;
-                }
-                catch (error: any) {
+                } catch (error: any) {
                     // Remove the list from the optimistic update
                     this.lists.pop();
 
                     // Set error using showError to trigger useError()
-                    const errorMessage = error?.data?.message || error?.message || 'Failed to create list';
+                    const errorMessage =
+                        error?.data?.message || error?.message || 'Failed to create list';
                     showError({
                         statusCode: error?.statusCode || 500,
                         statusMessage: errorMessage,
@@ -82,13 +67,18 @@ export const useListsStore = defineStore('lists', {
             }
 
             try {
+                const route = useRoute();
+
                 this.lists = this.lists.filter((list: List) => list.id !== listId);
                 await $fetch<List>(`/api/list/${listId}`, {
                     method: 'DELETE',
                 });
-                navigateTo('/');
-            }
-            catch {
+
+                // Only navigate away if we're currently viewing the list being deleted
+                if (route.path.includes('/list/') && route.params?.id === listId) {
+                    navigateTo('/');
+                }
+            } catch {
                 // logger.error(err as Error, { component: 'ListsStore', function: 'deleteList', listId })
             }
         },
@@ -101,18 +91,22 @@ export const useListsStore = defineStore('lists', {
             }
             this.currentList.name = newName;
         },
-        setListTodos(todos: Todo[]) {
+        setListTodos(todos: Task[]) {
             if (!todos || !todos.length) return;
             this.currentList.todos = todos;
         },
-        async getListTodos(listId?: string): Promise<Todo[]> {
-            console.log('getListTodos');
+        async getListTodos(listId?: string): Promise<Task[]> {
             if (!listId) {
                 listId = this.currentList.id;
             }
-            const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { listId } });
-            console.log('getListTodos num of todos', todos.length);
-            this.currentList.todos = todos;
+            const todos = await $fetch<Task[]>(`/api/list/todos`, { query: { listId } });
+            const list = this.lists.find((l) => l.id === listId);
+            if (list) {
+                list.todos = todos;
+            }
+            if (this.currentList?.id === listId) {
+                this.currentList.todos = todos;
+            }
             return todos || [];
         },
         setCurrentList(list: List) {
@@ -127,7 +121,7 @@ export const useListsStore = defineStore('lists', {
             this.currentList = await $fetch(`/api/list/${route.params.id}`);
             console.log('get current list', this.currentList);
         },
-        validateTodo(todo: Todo) {
+        validateTodo(todo: Task) {
             let valid = true;
             if (!todo.name) {
                 showError({
@@ -138,9 +132,11 @@ export const useListsStore = defineStore('lists', {
             }
             return valid;
         },
-        async addTodo(newTodo?: Todo) {
-            const todo = newTodo !== undefined ? newTodo : this.newTodo;
+        async addTodo(newTodo?: Task) {
+            const todo =
+                newTodo !== undefined && !(newTodo instanceof Event) ? newTodo : this.newTodo;
             console.debug('Create Todo', todo);
+
             if (!this.validateTodo(todo)) {
                 return;
             }
@@ -149,7 +145,7 @@ export const useListsStore = defineStore('lists', {
 
             this.optimisticallyUpdateTodos(todo);
 
-            const createdTodo = await $fetch<Todo>('/api/todo', {
+            const createdTodo = await $fetch<Task>('/api/todo', {
                 method: 'POST',
                 body: todo,
             });
@@ -162,74 +158,105 @@ export const useListsStore = defineStore('lists', {
 
             return todo;
         },
-        updateTodosId(todo: Todo) {
+        updateTodosId(todo: Task) {
             const route = useRoute();
             if (route.path.includes('list')) {
                 this.currentList.todos[this.currentList.todos.length - 1].id = todo.id;
-            }
-            else {
+            } else {
                 this.todaysTodos[this.todaysTodos.length - 1].id = todo.id;
             }
         },
-        optimisticallyUpdateTodos(todo: Todo) {
+        optimisticallyUpdateTodos(todo: Task) {
             const route = useRoute();
             if (route.path.includes('list')) {
                 this.currentList.todos.push(todo);
-            }
-            else {
+            } else {
                 this.todaysTodos.push(todo);
             }
         },
-        setTodoDetails(todo: Todo) {
-            const route = useRoute();
-            const isListRoute = route.path.includes('list');
+        setTodoDetails(todo: Task) {
+            this.addListId(todo);
 
-            if (isListRoute) {
-                this.addListId(route, todo);
-            }
-            else {
-                const now = new Date();
-                this.setNewTodoDueDate(now);
-            }
+            const now = new Date();
+
+            this.setNewTodoDueDate(now);
         },
-        addListId(route, todo) {
-            const listIdParam = route.params?.id;
-            if (Array.isArray(listIdParam)) {
-                todo.listId = listIdParam[0];
-            }
-            else {
-                todo.listId = listIdParam;
+        addListId(todo) {
+            if (!todo.listId) {
+                todo.listId = this?.currentList?.id;
             }
         },
         setNewTodoDueDate(newDueDate: Date) {
             this.newTodo.dueDate = newDueDate;
         },
-        async updateTodo(todo?: Todo) {
+        async updateTodo(todo?: Task) {
             if (!todo) {
                 todo = this.currentTodo;
             }
 
-            const updatedTodo = await $fetch<Todo>(`/api/todo/${todo.id}`, {
+            const updatedTodo = await $fetch<Task>(`/api/todo/${todo.id}`, {
                 method: 'PUT',
                 body: todo,
             });
 
             // Update local state to match server response
             if (this.currentTodo && this.currentTodo.id === updatedTodo.id) {
-                this.currentTodo = updatedTodo;
+                const existingSubtasks = this.currentTodo.subtasks;
+                if (existingSubtasks) this.currentTodo.subtasks = existingSubtasks;
             }
 
             return updatedTodo;
         },
+        async fetchSubtasks(todoId: string | number) {
+            const subtasks = await $fetch<Task[]>(`/api/todo/${todoId}/subtasks`);
+            if (this.currentTodo && Number(this.currentTodo.id) === Number(todoId)) {
+                this.currentTodo.subtasks = subtasks || [];
+            }
+            return subtasks || [];
+        },
+        async addSubtask(name: string, parentId: string | number) {
+            const subtask = await $fetch<Task>('/api/todo', {
+                method: 'POST',
+                body: {
+                    name,
+                    status: 'Open',
+                    parentId: Number(parentId),
+                    color: '#87909e',
+                    edit: false,
+                    links: [],
+                },
+            });
+            if (this.currentTodo?.subtasks) this.currentTodo.subtasks.push(subtask);
+            else if (this.currentTodo) this.currentTodo.subtasks = [subtask];
+            return subtask;
+        },
+        async deleteSubtask(subtaskId: string | number) {
+            await $fetch(`/api/todo/${subtaskId}`, { method: 'DELETE' });
+            if (this.currentTodo?.subtasks) {
+                this.currentTodo.subtasks = this.currentTodo.subtasks.filter(
+                    (s: Task) => String(s.id) !== String(subtaskId),
+                );
+            }
+        },
+        debounceUpdateTodo: useDebounceFn(function (...args) {
+            // @ts-expect-error: debounce context must be bound to the store, this workaround ensures correct `this`
+            return (this.updateTodo as any).apply(this, args);
+        }, 200),
         async deleteTodo(id: string) {
             await $fetch(`/api/todo/${id}`, { method: 'DELETE' });
 
-            this.currentList.todos = this.currentList.todos.filter(
-                (todo: Todo) => todo.id !== id,
-            );
+            this.currentList.todos = this.currentList.todos.filter((todo: Task) => todo.id !== id);
+            this.todaysTodos = this.todaysTodos.filter((todo: Task) => todo.id !== id);
+            this.overdueTodos = this.overdueTodos.filter((todo: Task) => todo.id !== id);
+            this.todos = this.todos.filter((todo: Task) => todo.id !== id);
+            for (const list of this.lists) {
+                if (list.todos) {
+                    list.todos = list.todos.filter((todo: Task) => todo.id !== id);
+                }
+            }
         },
         async getTodo(id: string) {
-            const { data } = await useFetch<Todo>(`/api/todo/${id}`);
+            const { data } = await useFetch<Task>(`/api/todo/${id}`);
 
             if (data.value) {
                 this.currentTodo = data.value;
@@ -238,7 +265,7 @@ export const useListsStore = defineStore('lists', {
             return data;
         },
         async getTodos() {
-            const { data } = await useFetch<Todo[]>('/api/todos');
+            const { data } = await useFetch<Task[]>('/api/todos');
 
             if (data.value) {
                 this.todos = data.value;
@@ -251,7 +278,7 @@ export const useListsStore = defineStore('lists', {
         setView(view: 'list' | 'board') {
             this.view = view;
         },
-        setCurrentTodo(currentTodo: Todo) {
+        setCurrentTodo(currentTodo: Task) {
             this.currentTodo = currentTodo;
         },
         setDueDate(date: Date) {
@@ -262,10 +289,10 @@ export const useListsStore = defineStore('lists', {
         setTaskName(name: string, index: number) {
             // Ensure the index is valid and the todo exists before setting the name
             if (
-                !this.currentList
-                || !Array.isArray(this.currentList.todos)
-                || index < 0
-                || index >= this.currentList.todos.length
+                !this.currentList ||
+                !Array.isArray(this.currentList.todos) ||
+                index < 0 ||
+                index >= this.currentList.todos.length
             ) {
                 return;
             }
@@ -273,7 +300,6 @@ export const useListsStore = defineStore('lists', {
         },
         async getLists() {
             const lists = await $fetch<List[]>('/api/lists');
-            console.log('get lists', lists);
             this.setLists(lists);
         },
         async getList(id: string) {
@@ -285,7 +311,7 @@ export const useListsStore = defineStore('lists', {
             }
         },
         async getTodaysTodos() {
-            const todos = await $fetch<Todo[]>('/api/todos', {
+            const todos = await $fetch<Task[]>('/api/todos', {
                 query: { today: true },
             });
 
@@ -293,17 +319,9 @@ export const useListsStore = defineStore('lists', {
                 this.todaysTodos = todos;
             }
         },
-        async getOverdueTodos(id?: string) {
-            const user = useSupabaseUser();
-            const actualUserId = id || user.value?.id;
-
-            if (!actualUserId) {
-                console.error('User ID not available');
-                return;
-            }
-
-            const todos = await $fetch<Todo[]>('/api/todos', {
-                query: { overdue: true, id: actualUserId },
+        async getOverdueTodos() {
+            const todos = await $fetch<Task[]>('/api/todos', {
+                query: { overdue: true },
             });
 
             if (todos) {
@@ -339,14 +357,5 @@ export const useListsStore = defineStore('lists', {
         resetList() {
             this.newList = createNewListState();
         },
-
     },
-    // persist: {
-    //   debug: true,
-    //   storage: piniaPluginPersistedstate.localStorage(),
-    // },
 });
-
-// if (import.meta.hot) {
-//     import.meta.hot.accept(acceptHMRUpdate(useListsStore, import.meta.hot));
-// }

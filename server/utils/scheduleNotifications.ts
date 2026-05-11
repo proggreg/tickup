@@ -8,11 +8,7 @@ const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || '';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-webpush.setVapidDetails(
-    'mailto:greg.field1992@gmail.com',
-    VAPID_PUBLIC_KEY,
-    VAPID_PRIVATE_KEY,
-);
+webpush.setVapidDetails('mailto:greg.field1992@gmail.com', VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
 
 async function main() {
     // Find todos with a notificationDateTime in the past and not yet notified
@@ -30,7 +26,7 @@ async function main() {
     }
 
     for (const todo of todos || []) {
-    // Find the user
+        // Find the user
         const { data: user, error: userError } = await supabase
             .from('Users')
             .select('*')
@@ -44,12 +40,14 @@ async function main() {
         // Send notification to all subscriptions
         for (const sub of user.pushSubscriptions) {
             try {
-                await webpush.sendNotification(sub, JSON.stringify({
-                    title: 'Todo Reminder',
-                    message: `Reminder for todo: ${todo.name}`,
-                }));
-            }
-            catch (e) {
+                await webpush.sendNotification(
+                    sub,
+                    JSON.stringify({
+                        title: 'Todo Reminder',
+                        message: `Reminder for todo: ${todo.name}`,
+                    }),
+                );
+            } catch (e) {
                 console.error('Failed to send notification', e);
             }
         }

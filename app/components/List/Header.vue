@@ -6,7 +6,6 @@ const listNameRef = ref(null);
 const listName = computed(() => {
     return store?.currentList?.name || 'Today';
 });
-const aiImage = ref('');
 const imageGenerating = ref(false);
 
 watch(rename, (newVal: boolean) => {
@@ -16,8 +15,7 @@ watch(rename, (newVal: boolean) => {
         }
 
         store.updateList(store.currentList);
-    }
-    else {
+    } else {
         if (listNameRef.value) {
             listNameRef.value.focus();
         }
@@ -34,8 +32,8 @@ watch(listName, (newName: string) => {
     }
 });
 
-function validateListName(value: string) {
-    if (!value) {
+function validateListName() {
+    if (!listName.value) {
         return 'Please enter a list name';
     }
 
@@ -44,7 +42,10 @@ function validateListName(value: string) {
 
 async function generateImage() {
     if (!store.currentList.name) {
-        console.warn('No list name provided for image generation', { component: 'ListHeader', function: 'generateImage' });
+        console.warn('No list name provided for image generation', {
+            component: 'ListHeader',
+            function: 'generateImage',
+        });
         alert('Please enter a list name');
         return;
     }
@@ -57,7 +58,11 @@ async function generateImage() {
         },
     });
     if (!response) {
-        console.warn('Failed to generate image', { component: 'ListHeader', function: 'generateImage', listName: store.currentList.name });
+        console.warn('Failed to generate image', {
+            component: 'ListHeader',
+            function: 'generateImage',
+            listName: store.currentList.name,
+        });
         return;
     }
 
@@ -74,10 +79,7 @@ function removeImage() {
 </script>
 
 <template>
-    <v-col
-        cols="12"
-        class="pt-0"
-    >
+    <v-col cols="12" class="pt-0">
         <v-card
             rounded="0"
             height="100%"
@@ -86,36 +88,25 @@ function removeImage() {
             elevation="0"
         >
             <div :class="[store.currentList.image ? 'tint ma-n4 py-4 px-4' : '']">
-                <v-row>
-                    <v-col
-                        cols="6"
-                        :class="['text-capitalize', (aiImage || store.currentList.image) ? 'text-white' : '']"
-                    >
-                        <v-text-field
-                            ref="listNameRef"
-                            v-model="store.currentList.name"
-                            class="px-2"
-                            validate-on="blur eager"
-                            :rules="[validateListName]"
-                            placeholder="My List"
-                            variant="plain"
-                            :readonly="!rename"
-                            style=" font-weight: bold; "
-                            auto
-                            @click="rename = !rename"
-                            @keyup.enter="store.currentList.name ? rename = false : null"
-                            @blur="store.currentList.name ? rename = false : null"
-                        />
-                    </v-col>
-
-                    <v-col class="text-right">
-                        <v-btn
-                            :to="`/list/${router.params.id}/settings`"
-                            icon="mdi-cog"
-                        />
-
-                        <ListMenu />
-                    </v-col>
+                <v-row class="text-truncate">
+                    <v-text-field
+                        ref="listNameRef"
+                        v-model="store.currentList.name"
+                        class="px-2 text-truncate fade-text"
+                        validate-on="blur eager"
+                        :rules="[validateListName]"
+                        placeholder="My List"
+                        variant="plain"
+                        :readonly="!rename"
+                        auto
+                        width="auto"
+                        @click="rename = !rename"
+                        @keyup.enter="store.currentList.name ? (rename = false) : null"
+                        @blur="store.currentList.name ? (rename = false) : null"
+                    />
+                    <div class="pt-2" style="width: 14px">
+                        <ListMenu :list-id="router.params.id as string" />
+                    </div>
                 </v-row>
 
                 <v-card-actions
@@ -128,11 +119,7 @@ function removeImage() {
                         :disabled="imageGenerating"
                         @click="generateImage"
                     >
-                        <v-icon start>
-                            mdi-creation
-                        </v-icon><v-icon start>
-                            mdi-image
-                        </v-icon>
+                        <v-icon start> mdi-creation </v-icon><v-icon start> mdi-image </v-icon>
                     </v-btn>
 
                     <v-btn
@@ -149,19 +136,35 @@ function removeImage() {
 </template>
 
 <style scoped>
-  .v-text-field :deep(.v-field__input) {
+.v-text-field :deep(.v-field__input) {
     @media (min-width: 600px) {
-      font-size: 2.5rem;
+        font-size: 2.5rem;
     }
 
     font-size: 1.75rem;
     text-transform: capitalize;
     font-weight: bold;
-  }
+}
 
-  .tint {
+.tint {
     background-color: rgba(0, 0, 0, 0.5);
     padding: 0.5rem;
     border-radius: 4px;
-  }
+}
+
+.fade-text {
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.fade-text::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30%; /* adjust fade width */
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgb(var(--v-theme-surface)));
+}
 </style>

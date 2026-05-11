@@ -26,8 +26,7 @@ export default defineEventHandler(async (event) => {
         let accessToken: string;
         try {
             accessToken = await getGithubToken(event);
-        }
-        catch (tokenError: any) {
+        } catch (tokenError: any) {
             console.error('Failed to get valid GitHub token:', tokenError);
             throw createError({
                 statusCode: 401,
@@ -52,8 +51,7 @@ export default defineEventHandler(async (event) => {
                     alreadyExists: true,
                 };
             }
-        }
-        catch (error: any) {
+        } catch (error: any) {
             // If branch doesn't exist, we'll get a 404 - that's expected, continue to create it
             if (error.status !== 404) {
                 throw error;
@@ -76,21 +74,23 @@ export default defineEventHandler(async (event) => {
             return createError({ statusCode: 400, message: 'SHA Cannot be found' });
         }
 
-        const createRefResponse = await octokit.request(`POST /repos/${owner}/${repo.name}/git/refs`, {
-            owner: owner,
-            repo: repo,
-            ref: ref,
-            sha: sha,
-            headers: {
-                authorization: `Bearer ${accessToken}`,
+        const createRefResponse = await octokit.request(
+            `POST /repos/${owner}/${repo.name}/git/refs`,
+            {
+                owner: owner,
+                repo: repo,
+                ref: ref,
+                sha: sha,
+                headers: {
+                    authorization: `Bearer ${accessToken}`,
+                },
             },
-        });
+        );
 
         createRefResponse.data.url = `https://github.com/${owner}/${repo.name}/tree/${ref}`;
 
         return createRefResponse.data;
-    }
-    catch (error: any) {
+    } catch (error: any) {
         console.error('Error creating branch:', error);
 
         // Handle token expiration errors specifically
@@ -101,6 +101,9 @@ export default defineEventHandler(async (event) => {
             });
         }
 
-        return createError({ statusCode: error.status || 500, message: error.message || 'Failed to create branch' });
+        return createError({
+            statusCode: error.status || 500,
+            message: error.message || 'Failed to create branch',
+        });
     }
 });

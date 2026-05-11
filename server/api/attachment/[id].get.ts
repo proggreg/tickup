@@ -24,10 +24,9 @@ export default defineEventHandler(async (event) => {
         // setHeader(event, 'Content-Disposition', `inline; filename="${attachment.originalName}"`)
         // setHeader(event, 'Content-Length', attachment.size.toString())
 
-    // Return the file data
-    // return attachment.data
-    }
-    catch (error) {
+        // Return the file data
+        // return attachment.data
+    } catch (error) {
         console.error('Error serving attachment:', error);
         throw createError({
             statusCode: 500,

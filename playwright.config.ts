@@ -23,13 +23,13 @@ export default defineConfig({
     /* Retry on CI only */
     retries: process.env.CI ? 2 : 0,
     /* Opt out of parallel tests on CI. */
-    workers: process.env.CI ? 1 : undefined,
+    workers: process.env.CI ? 1 : 1,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: 'html',
-    timeout: 600000,
+    timeout: 10000,
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
+        /* Base URL to use in actions like `await page.goto('/')`. */
         baseURL: 'http://localhost:3000',
 
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
@@ -54,10 +54,17 @@ export default defineConfig({
             name: 'cleanup',
             testMatch: /global\.teardown\.ts/,
         },
-
-        // All other projects depend on the setup project
+        {
+            name: 'api',
+            testMatch: '**/api/**/*.spec.ts',
+            use: {
+                storageState: 'user.json',
+            },
+            dependencies: ['setup'],
+        },
         {
             name: 'chromium',
+            testIgnore: '**/api/**',
             use: {
                 ...devices['Desktop Chrome'],
                 storageState: 'user.json',
@@ -67,6 +74,7 @@ export default defineConfig({
 
         {
             name: 'pixel_7',
+            testIgnore: '**/api/**',
             use: {
                 ...devices['Pixel 7'],
                 storageState: 'user.json',
@@ -77,11 +85,12 @@ export default defineConfig({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: 'NODE_ENV=test pnpm dev',
+        // In CI use the pre-built output (fast); locally use dev server
+        command: process.env.CI ? 'NODE_ENV=test pnpm start' : 'NODE_ENV=test pnpm dev',
         url: 'http://localhost:3000',
         reuseExistingServer: !process.env.CI,
-        timeout: 120 * 1000, // 120 seconds to allow for longer startup times
-        stdout: 'ignore', // Pipe the stdout to see server logs
-        stderr: 'ignore', // Pipe the stderr to see error logs
+        timeout: 120 * 1000,
+        stdout: 'ignore',
+        stderr: 'ignore',
     },
 });
