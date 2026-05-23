@@ -21,15 +21,6 @@ async function checkGithubStatus() {
 
 await useAsyncData(() => store.getUserSettings().then(() => true));
 
-const options = reactive([
-    {
-        name: 'Delete',
-        handler: deleteStatus,
-        icon: 'mdi-delete',
-        destructive: true,
-    },
-]);
-
 function getRandomHexColor() {
     const letters = '0123456789ABCDEF';
     let color = '#';
@@ -39,40 +30,49 @@ function getRandomHexColor() {
     return color;
 }
 
-function addStatus() {
-    if (!store.userStatuses.length) {
-        store.userStatuses = [...store.statuses];
-    }
-    const top = store.userStatuses[store.userStatuses.length - 1];
+function isMiddle(index: number) {
+    return index > 0 && index < store.userStatuses.length - 1;
+}
 
-    if (top?.name === '') {
-        top.Edit = true;
+function canMove(evt: { draggedContext: { index: number }; relatedContext: { index: number } }) {
+    const di = evt.draggedContext.index;
+    const ri = evt.relatedContext.index;
+    const last = store.userStatuses.length - 1;
+    return di !== 0 && di !== last && ri !== 0 && ri !== last;
+}
+
+function addStatus() {
+    const insertAt = store.userStatuses.length - 1;
+    const prev = store.userStatuses[insertAt - 1];
+    if (prev?.name === '') {
+        prev.Edit = true;
         return;
     }
-    const randomColor = getRandomHexColor();
-
-    store.userStatuses.push({ name: '', color: randomColor, Edit: true });
+    store.userStatuses.splice(insertAt, 0, { name: '', color: getRandomHexColor(), Edit: true });
 }
 
 async function save() {
-    for (let i = 0; i < store.statuses.length; i++) {
-        if (store.statuses[i].Edit) {
-            store.statuses[i].Edit = false;
-        }
-        if (store.statuses[i].name === '') {
-            store.statuses.splice(i, 1);
+    for (let i = store.userStatuses.length - 2; i >= 1; i--) {
+        if (store.userStatuses[i].name === '') {
+            store.userStatuses.splice(i, 1);
         }
     }
+    store.userStatuses.forEach((s) => {
+        s.Edit = false;
+    });
 
     await $fetch('/api/settings', {
         method: 'PUT',
-        body: { statuses: store.statuses },
+        body: { statuses: store.userStatuses },
     });
 }
 
 function deleteStatus(status: Status) {
-    store.statuses.splice(store.statuses.indexOf(status), 1);
-    save();
+    const idx = store.userStatuses.indexOf(status);
+    if (idx > 0 && idx < store.userStatuses.length - 1) {
+        store.userStatuses.splice(idx, 1);
+        save();
+    }
 }
 
 async function signOut() {
@@ -124,81 +124,119 @@ onMounted(async () => {
                 Statuses
             </div>
 
-            <div
-                v-if="store.statuses.length === 0"
-                class="d-flex flex-column align-center justify-center pa-8 text-center mb-4"
-            >
-                <v-icon icon="mdi-tag-outline" size="48" class="text-disabled mb-3" />
-                <p class="text-body-2 text-disabled">No statuses yet</p>
-            </div>
-
-            <v-list v-else class="px-3 bg-transparent mb-2">
-                <v-list-item
-                    v-for="status in store.statuses"
-                    :key="status.name"
-                    rounded="xl"
-                    class="mb-2"
-                    base-color="surface-variant"
-                    variant="tonal"
-                    min-height="62"
+            <v-list class="px-3 bg-transparent mb-2">
+                <draggable
+                    :list="store.userStatuses"
+                    item-key="name"
+                    handle=".drag-handle"
+                    :move="canMove"
                 >
-                    <template #prepend>
-                        <v-menu :close-on-content-click="false">
-                            <template #activator="{ props }">
-                                <v-btn
-                                    v-bind="props"
-                                    min-width="28"
-                                    size="small"
-                                    :color="status.color"
-                                    class="mr-2"
-                                    rounded="lg"
+                    <template #item="{ element: status, index }">
+                        <v-list-item
+                            :key="status.name"
+                            rounded="xl"
+                            class="mb-2"
+                            base-color="surface-variant"
+                            variant="tonal"
+                            min-height="62"
+                        >
+                            <template #prepend>
+                                <v-icon
+                                    v-if="isMiddle(index)"
+                                    icon="mdi-drag"
+                                    class="drag-handle mr-1 text-disabled"
+                                    style="cursor: grab"
                                 />
-                            </template>
-                            <v-color-picker v-model="status.color" class="ma-4" show-swatches />
-                        </v-menu>
-                    </template>
-
-                    <v-text-field
-                        v-if="status.Edit"
-                        v-model="status.name"
-                        density="compact"
-                        variant="plain"
-                        autofocus
-                        hide-details
-                        class="font-weight-bold"
-                    />
-                    <v-list-item-title v-else class="font-weight-bold">
-                        {{ status.name }}
-                    </v-list-item-title>
-
-                    <template #append>
-                        <v-menu>
-                            <template #activator="{ props }">
-                                <v-btn
-                                    v-bind="props"
-                                    icon="mdi-dots-vertical"
-                                    variant="text"
+                                <v-icon
+                                    v-else
+                                    icon="mdi-lock-outline"
+                                    class="mr-1 text-disabled"
                                     size="small"
-                                    @click.stop
                                 />
+                                <v-menu :close-on-content-click="false">
+                                    <template #activator="{ props }">
+                                        <v-btn
+                                            v-bind="props"
+                                            min-width="32"
+                                            size="small"
+                                            :color="status.color"
+                                            variant="flat"
+                                            class="mr-2"
+                                            rounded="lg"
+                                            :title="`Color: ${status.color}`"
+                                        />
+                                    </template>
+                                    <v-color-picker
+                                        v-model="status.color"
+                                        class="ma-4"
+                                        show-swatches
+                                    />
+                                </v-menu>
                             </template>
-                            <v-list>
-                                <v-list-item
-                                    v-for="(option, index) in options"
-                                    :key="index"
-                                    :value="option.name"
-                                    :append-icon="option.icon"
-                                    :class="option.destructive ? 'text-red' : ''"
-                                    @click.passive="option.handler(status)"
+
+                            <v-text-field
+                                v-if="status.Edit"
+                                v-model="status.name"
+                                density="compact"
+                                variant="plain"
+                                autofocus
+                                hide-details
+                                class="font-weight-bold"
+                            />
+                            <v-list-item-title
+                                v-else
+                                class="font-weight-bold"
+                                style="cursor: pointer"
+                                @click="status.Edit = true"
+                            >
+                                {{ status.name }}
+                            </v-list-item-title>
+
+                            <template #append>
+                                <v-chip
+                                    v-if="index === 0"
+                                    size="x-small"
+                                    variant="tonal"
+                                    color="success"
+                                    class="mr-1"
                                 >
-                                    <v-list-item-title class="text-body-2">
-                                        {{ option.name }}
-                                    </v-list-item-title>
-                                </v-list-item>
-                            </v-list>
-                        </v-menu>
+                                    Start
+                                </v-chip>
+                                <v-chip
+                                    v-else-if="index === store.userStatuses.length - 1"
+                                    size="x-small"
+                                    variant="tonal"
+                                    color="error"
+                                    class="mr-1"
+                                >
+                                    End
+                                </v-chip>
+                                <v-menu v-if="isMiddle(index)">
+                                    <template #activator="{ props }">
+                                        <v-btn
+                                            v-bind="props"
+                                            icon="mdi-dots-vertical"
+                                            variant="text"
+                                            size="small"
+                                            @click.stop
+                                        />
+                                    </template>
+                                    <v-list>
+                                        <v-list-item
+                                            append-icon="mdi-delete"
+                                            class="text-red"
+                                            @click.passive="deleteStatus(status)"
+                                        >
+                                            <v-list-item-title class="text-body-2">
+                                                Delete
+                                            </v-list-item-title>
+                                        </v-list-item>
+                                    </v-list>
+                                </v-menu>
+                            </template>
+                        </v-list-item>
                     </template>
-                </v-list-item>
+                </draggable>
             </v-list>
 
             <div class="d-flex ga-2 px-4 mb-6">

@@ -27,9 +27,7 @@ export const useSettingsStore = defineStore('settings', () => {
 
     async function getUserSettings() {
         const settings = await $fetch<{ statuses: Status[] }>('/api/settings');
-        if (settings.statuses?.length) {
-            userStatuses.value = settings.statuses;
-        }
+        userStatuses.value = settings.statuses?.length ? settings.statuses : [...defaultStatuses];
     }
 
     return { darkMode, statuses, getUserSettings, userStatuses };
