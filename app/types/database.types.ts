@@ -176,6 +176,7 @@ export type Database = {
                     github_webhook_subscriptions: Json | null;
                     id: string;
                     push_subscriptions: Json | null;
+                    statuses: Json | null;
                     username: string | null;
                 };
                 Insert: {
@@ -184,6 +185,7 @@ export type Database = {
                     github_webhook_subscriptions?: Json | null;
                     id: string;
                     push_subscriptions?: Json | null;
+                    statuses?: Json | null;
                     username?: string | null;
                 };
                 Update: {
@@ -192,6 +194,7 @@ export type Database = {
                     github_webhook_subscriptions?: Json | null;
                     id?: string;
                     push_subscriptions?: Json | null;
+                    statuses?: Json | null;
                     username?: string | null;
                 };
                 Relationships: [];
