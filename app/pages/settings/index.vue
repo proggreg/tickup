@@ -3,7 +3,6 @@ definePageMeta({
     layout: 'mobile',
 });
 const supabase = useSupabaseClient();
-const { userId } = useCurrentUser();
 const store = useSettingsStore();
 const route = useRoute();
 const githubConnected = ref(false);
@@ -41,15 +40,18 @@ function getRandomHexColor() {
 }
 
 function addStatus() {
-    const top = store.statuses[store.statuses.length - 1];
+    if (!store.userStatuses.length) {
+        store.userStatuses = [...store.statuses];
+    }
+    const top = store.userStatuses[store.userStatuses.length - 1];
 
-    if (top.name === '') {
-        store.statuses[store.statuses.length - 1].Edit = true;
+    if (top?.name === '') {
+        top.Edit = true;
         return;
     }
     const randomColor = getRandomHexColor();
 
-    store.statuses.push({ name: '', color: randomColor, Edit: true });
+    store.userStatuses.push({ name: '', color: randomColor, Edit: true });
 }
 
 async function save() {
@@ -64,7 +66,7 @@ async function save() {
 
     await $fetch('/api/settings', {
         method: 'PUT',
-        body: { userId: userId.value, statuses: store.statuses },
+        body: { statuses: store.statuses },
     });
 }
 
