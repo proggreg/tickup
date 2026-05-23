@@ -57,7 +57,13 @@ test.describe('Settings page', () => {
 
     test('can delete a status', async ({ page, request }) => {
         await request.put('/api/settings', {
-            data: { statuses: [{ name: 'Test Status', color: '#ff0000' }] },
+            data: {
+                statuses: [
+                    { name: 'Open', color: '#87909e' },
+                    { name: 'Test Status', color: '#ff0000' },
+                    { name: 'Closed', color: '#008844' },
+                ],
+            },
         });
 
         await page.goto('/settings');
