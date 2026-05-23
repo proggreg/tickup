@@ -4,6 +4,25 @@ export const useSearchStore = defineStore('search', () => {
     const searchQuery = ref('');
     const results = ref<Todo[]>([]);
     const loading = ref(false);
+    const selectedListId = ref<string | null>(null);
+
+    const availableLists = computed(() => {
+        const seen = new Set<string>();
+        return results.value
+            .filter((todo) => todo.list?.id)
+            .reduce<List[]>((acc, todo) => {
+                if (!seen.has(todo.list!.id!)) {
+                    seen.add(todo.list!.id!);
+                    acc.push(todo.list!);
+                }
+                return acc;
+            }, []);
+    });
+
+    const filteredResults = computed(() => {
+        if (!selectedListId.value) return results.value;
+        return results.value.filter((todo) => todo.listId === selectedListId.value);
+    });
 
     async function search() {
         loading.value = true;
@@ -21,7 +40,21 @@ export const useSearchStore = defineStore('search', () => {
     }
     const debouncedSearch = useDebounceFn(search, 500);
 
-    return { results, loading, search, debouncedSearch, searchQuery };
+    function selectList(listId: string | null) {
+        selectedListId.value = selectedListId.value === listId ? null : listId;
+    }
+
+    return {
+        results,
+        filteredResults,
+        availableLists,
+        selectedListId,
+        loading,
+        search,
+        debouncedSearch,
+        searchQuery,
+        selectList,
+    };
 });
 
 if (import.meta.hot) {
