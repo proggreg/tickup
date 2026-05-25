@@ -5,8 +5,15 @@ const listsStore = useListsStore();
 const router = useRouter();
 
 const newSubtaskName = ref('');
-const linkSearch = ref('');
-const showDone = ref(true);
+const expandedPanel = ref<string | undefined>(undefined);
+const subtasksExpanded = computed(() => expandedPanel.value === 'subtasks');
+
+const activeCount = computed(() => {
+    if (!listsStore.currentTodo.subtasks) return 0;
+    return listsStore.currentTodo.subtasks.filter(subtask => subtask.status !== 'Closed').length;
+});
+
+const subtasksFilter = ref<'all' | 'active'>('all');
 const subtasksSortBy = ref<'none' | 'priority'>('none');
 
 const subtaskNameRefs = ref<any[]>([]);
@@ -23,41 +30,47 @@ const getPriorityOrder = (priority: string | null | undefined): number => {
     return 4;
 };
 
-const allSubtasks = computed(() => listsStore.currentTodo?.subtasks || []);
-const total = computed(() => allSubtasks.value.length);
-const doneCount = computed(() => allSubtasks.value.filter((s) => s.status === 'Closed').length);
+const filteredAndSortedSubtasks = computed(() => {
+    if (!listsStore.currentTodo.subtasks) return [];
 
-function sortBy(list: Todo[]): Todo[] {
-    if (subtasksSortBy.value !== 'priority') return list;
-    return [...list].sort(
-        (a, b) => getPriorityOrder(a.priorityLev) - getPriorityOrder(b.priorityLev),
-    );
-}
+    let filtered = [...listsStore.currentTodo.subtasks];
 
-const activeSubtasks = computed(() =>
-    sortBy(allSubtasks.value.filter((s) => s.status !== 'Closed')),
-);
-const closedSubtasks = computed(() =>
-    sortBy(allSubtasks.value.filter((s) => s.status === 'Closed')),
-);
+    // Apply filter
+    if (subtasksFilter.value === 'active') {
+        filtered = filtered.filter((subtask) => subtask.status !== 'Closed');
+    }
+
+    // Apply sort
+    if (subtasksSortBy.value === 'priority') {
+        return filtered.sort((a, b) => {
+            return getPriorityOrder(a.priorityLev) - getPriorityOrder(b.priorityLev);
+        });
+    }
+
+    return filtered;
+});
 
 const baseLinkableTodos = computed(() => {
     const todos = listsStore.currentList?.todos || [];
     return todos.filter((todo) => {
         if (!todo.id || listsStore.currentTodo?.id === todo.id) return false;
         if ((todo as any).parentId) return false;
-        if (listsStore.currentTodo?.subtasks?.some((st) => st.id === todo.id)) return false;
+        if (listsStore.currentTodo?.subtasks?.some(st => st.id === todo.id)) return false;
         return true;
     });
 });
 
 const linkableTodos = computed(() => {
     let todos = [...baseLinkableTodos.value];
-    const q = String(linkSearch.value ?? '')
-        .trim()
-        .toLowerCase();
-    if (q) todos = todos.filter((todo) => todo.name?.toLowerCase().includes(q));
 
+    const rawSearch = linkSearch.value ?? '';
+    const q = String(rawSearch).trim().toLowerCase();
+    if (q) {
+        todos = todos.filter((todo) => todo.name?.toLowerCase().includes(q));
+    }
+
+    // Sort by most recently edited when possible (updatedAt),
+    // falling back to dueDate, then id.
     todos.sort((a, b) => {
         const getTime = (t: any) => {
             if (t.updatedAt) return new Date(t.updatedAt).getTime();
@@ -89,6 +102,7 @@ async function linkExistingTodo(todo: Todo) {
     todo.parentId = listsStore.currentTodo.id;
     const updated = await listsStore.updateTodo(todo);
     if (!listsStore.currentTodo.subtasks) listsStore.currentTodo.subtasks = [];
+    // Avoid duplicates
     if (!listsStore.currentTodo.subtasks.some((st) => st.id === updated.id)) {
         listsStore.currentTodo.subtasks.push(updated);
     }
@@ -109,7 +123,7 @@ function renameSubtask(subtaskId: string | number, index: number) {
 }
 
 function onSubtaskBlur(subtask: Todo) {
-    editingSubtaskIds.value = editingSubtaskIds.value.filter((id) => id !== subtask.id);
+    editingSubtaskIds.value = editingSubtaskIds.value.filter(id => id !== subtask.id);
     listsStore.updateTodo(subtask);
 }
 
@@ -134,261 +148,213 @@ function formatDueDate(date: Date | string | undefined): string {
 </script>
 
 <template>
-    <section class="subtasks" data-testid="subtasks-section">
-        <!-- Header -->
-        <header class="subtasks__header">
-            <div class="subtasks__title-group">
-                <h3 class="subtasks__title">Subtasks</h3>
-                <span v-if="total" class="subtasks__count" data-testid="subtasks-count"
-                    >{{ doneCount }}/{{ total }}</span
-                >
-            </div>
-
-            <div class="subtasks__header-actions">
-                <v-tooltip v-if="total" location="bottom">
-                    <template #activator="{ props }">
-                        <button
-                            v-bind="props"
-                            type="button"
-                            class="subtasks__icon-btn"
-                            :class="{ 'subtasks__icon-btn--active': subtasksSortBy === 'priority' }"
-                            data-testid="subtasks-sort-button"
-                            @click="toggleSort"
+    <v-expansion-panels v-model="expandedPanel" rounded="lg" flat>
+        <v-expansion-panel value="subtasks" elevation="0" class="pa-0" width="100%">
+            <v-expansion-panel-title hide-actions class="pa-0" data-testid="subtasks-header">
+                <div class="d-flex align-center justify-space-between w-100">
+                    <div class="text-subtitle-1 font-weight-bold d-flex align-center">
+                        <span class="mr-2">Subtasks</span>
+                        <v-chip
+                            v-if="
+                                listsStore.currentTodo.subtasks &&
+                                listsStore.currentTodo.subtasks.length
+                            "
+                            size="small"
+                            variant="tonal"
+                            color="primary"
                         >
-                            <v-icon size="16">mdi-sort-variant</v-icon>
-                        </button>
-                    </template>
-                    <span>{{
-                        subtasksSortBy === 'priority'
-                            ? 'Sorted by priority — click to unsort'
-                            : 'Sort by priority'
-                    }}</span>
-                </v-tooltip>
-
-                <button
-                    v-if="closedSubtasks.length"
-                    type="button"
-                    class="subtasks__ghost-btn"
-                    data-testid="subtasks-toggle-done"
-                    @click="showDone = !showDone"
-                >
-                    <v-icon size="14">{{
-                        showDone ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
-                    }}</v-icon>
-                    {{ showDone ? 'Hide done' : 'Show done' }}
-                </button>
-            </div>
-        </header>
-
-        <!-- Add subtask -->
-        <form class="subtasks__add" data-testid="add-subtask-form" @submit.prevent="addSubtask">
-            <v-icon class="subtasks__add-icon" size="16">mdi-plus</v-icon>
-            <input
-                v-model="newSubtaskName"
-                type="text"
-                placeholder="Add subtask"
-                class="subtasks__add-input"
-                data-testid="add-subtask-input"
-            />
-            <kbd v-if="newSubtaskName" class="subtasks__kbd">↵</kbd>
-            <v-menu :width="400" location="bottom end">
-                <template #activator="{ props }">
-                    <button
-                        v-bind="props"
-                        type="button"
-                        class="subtasks__icon-btn"
-                        data-testid="link-subtask-button"
-                        @click.stop
-                    >
-                        <v-icon size="14">mdi-link-variant</v-icon>
-                    </button>
-                </template>
-                <v-list density="compact">
-                    <v-list-item>
-                        <v-text-field
-                            v-model="linkSearch"
-                            placeholder="Search tasks"
-                            hide-details
-                            variant="outlined"
-                            density="compact"
-                            clearable
-                            data-testid="link-subtask-search"
-                            @click.stop
-                        />
-                    </v-list-item>
-                    <v-divider />
-                    <v-list-item
-                        v-for="todo in linkableTodos"
-                        :key="todo.id"
-                        :data-testid="`link-subtask-option-${todo.id}`"
-                        @click="linkExistingTodo(todo)"
-                    >
-                        <v-list-item-title>{{ todo.name }}</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item v-if="!baseLinkableTodos.length">
-                        <v-list-item-title>No tasks available to link</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item v-else-if="baseLinkableTodos.length && !linkableTodos.length">
-                        <v-list-item-title>No tasks match your search</v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
-        </form>
-
-        <!-- Active list -->
-        <ul v-if="activeSubtasks.length" class="subtasks__list" data-testid="subtasks-list-active">
-            <li
-                v-for="(subtask, index) in activeSubtasks"
-                :key="subtask.id"
-                class="subtasks__row"
-                :data-testid="`subtask-item-${index}`"
-                @click="navigateToSubtask(subtask.id)"
-            >
-                <label class="subtasks__checkbox" @click.stop>
-                    <input
-                        type="checkbox"
-                        :checked="false"
-                        :data-testid="`subtask-checkbox-${index}`"
-                        @change="toggleStatus(subtask)"
-                    />
-                    <span class="subtasks__checkbox-box" aria-hidden="true" />
-                </label>
-
-                <div class="subtasks__row-body">
-                    <div
-                        v-if="!isEditingSubtask(subtask.id)"
-                        class="subtasks__name"
-                        :data-testid="`subtask-name-${index}`"
-                    >
-                        {{ subtask.name }}
+                            {{ activeCount }}/{{ listsStore.currentTodo.subtasks.length }}
+                        </v-chip>
                     </div>
-                    <input
-                        v-else
-                        :ref="(el) => (subtaskNameRefs[index] = el)"
-                        v-model="subtask.name"
-                        type="text"
-                        class="subtasks__name-input"
-                        :data-testid="`subtask-name-input-${index}`"
-                        @blur="onSubtaskBlur(subtask)"
-                        @click.stop
-                        @keyup.enter="onSubtaskBlur(subtask)"
+                    <SubtaskFilters
+                        v-if="
+                            listsStore.currentTodo.subtasks &&
+                            listsStore.currentTodo.subtasks.length
+                        "
+                        v-model:filter="subtasksFilter"
+                        v-model:sort-by="subtasksSortBy"
+                        :expanded="subtasksExpanded"
+                        :has-subtasks="
+                            !!(
+                                listsStore.currentTodo.subtasks &&
+                                listsStore.currentTodo.subtasks.length
+                            )
+                        "
+                        @update:expanded="expandedPanel = $event ? 'subtasks' : undefined"
                     />
                 </div>
-
-                <span
-                    v-if="subtask.dueDate"
-                    class="subtasks__meta"
-                    :data-testid="`subtask-due-date-${index}`"
-                >
-                    <v-icon size="12">mdi-calendar-blank-outline</v-icon>
-                    {{ formatDueDate(subtask.dueDate) }}
-                </span>
-
-                <span
-                    v-if="subtask.githubBranchName"
-                    class="subtasks__meta subtasks__meta--mono"
-                    :data-testid="`subtask-branch-${index}`"
-                >
-                    <v-icon size="12">mdi-source-branch</v-icon>
-                    {{ subtask.githubBranchName }}
-                </span>
-
-                <div
-                    class="subtasks__priority-wrap"
-                    :class="{ 'subtasks__priority-wrap--set': subtask.priorityLev }"
-                    @click.stop
-                >
-                    <SubtaskPriority
-                        :subtask="subtask"
-                        :index="index"
-                        @update-priority="(level) => updatePriority(subtask, level)"
+            </v-expansion-panel-title>
+            <v-expansion-panel-text class="subtasks-panel-text pa-0">
+                <div class="d-flex align-center">
+                    <v-text-field
+                        v-model="newSubtaskName"
+                        label="Add subtask"
+                        hide-details
+                        variant="outlined"
+                        class="my-4 flex-grow-1"
+                        style="min-width: 120px"
+                        data-testid="add-subtask-input"
+                        @keyup.enter="addSubtask"
                     />
-                </div>
-
-                <div class="subtasks__row-actions" @click.stop>
-                    <v-menu>
+                    <v-btn
+                        icon="mdi-plus"
+                        size="small"
+                        variant="tonal"
+                        color="primary"
+                        :disabled="!newSubtaskName"
+                        data-testid="add-subtask-button"
+                        class="mr-2"
+                        @click="addSubtask"
+                    />
+                    <v-menu :width="400" location="bottom">
                         <template #activator="{ props }">
-                            <button
+                            <v-btn
                                 v-bind="props"
-                                type="button"
-                                class="subtasks__icon-btn"
-                                :data-testid="`subtask-menu-${index}`"
-                                @click.stop
-                            >
-                                <v-icon size="14">mdi-dots-horizontal</v-icon>
-                            </button>
+                                icon="mdi-link-plus"
+                                size="small"
+                                variant="text"
+                                color="primary"
+                                data-testid="link-subtask-button"
+                            />
                         </template>
                         <v-list density="compact">
+                            <v-list-item>
+                                <v-text-field
+                                    v-model="linkSearch"
+                                    placeholder="Search tasks"
+                                    hide-details
+                                    variant="outlined"
+                                    density="compact"
+                                    clearable
+                                    data-testid="link-subtask-search"
+                                    @click.stop
+                                />
+                            </v-list-item>
+                            <v-divider />
                             <v-list-item
-                                :data-testid="`subtask-rename-${index}`"
-                                @click="renameSubtask(subtask.id, index)"
+                                v-for="todo in linkableTodos"
+                                :key="todo.id"
+                                :data-testid="`link-subtask-option-${todo.id}`"
+                                @click="linkExistingTodo(todo)"
                             >
-                                <template #prepend>
-                                    <v-icon>mdi-pencil</v-icon>
-                                </template>
-                                <v-list-item-title>Rename subtask</v-list-item-title>
+                                <v-list-item-title>
+                                    {{ todo.name }}
+                                </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item v-if="!baseLinkableTodos.length">
+                                <v-list-item-title> No tasks available to link </v-list-item-title>
                             </v-list-item>
                             <v-list-item
-                                :data-testid="`subtask-delete-${index}`"
-                                @click="deleteSubtask(subtask.id)"
+                                v-else-if="baseLinkableTodos.length && !linkableTodos.length"
                             >
-                                <template #prepend>
-                                    <v-icon color="error">mdi-delete</v-icon>
-                                </template>
-                                <v-list-item-title>Delete subtask</v-list-item-title>
+                                <v-list-item-title> No tasks match your search </v-list-item-title>
                             </v-list-item>
                         </v-list>
                     </v-menu>
                 </div>
-            </li>
-        </ul>
-
-        <p v-if="!total" class="subtasks__empty">
-            No subtasks yet. Add one above, or link an existing task.
-        </p>
-
-        <!-- Done group -->
-        <template v-if="showDone && closedSubtasks.length">
-            <div class="subtasks__section-label" data-testid="subtasks-done-label">
-                Done · {{ closedSubtasks.length }}
-            </div>
-            <ul class="subtasks__list" data-testid="subtasks-list-done">
-                <li
-                    v-for="(subtask, index) in closedSubtasks"
-                    :key="subtask.id"
-                    class="subtasks__row subtasks__row--done"
-                    :data-testid="`subtask-done-item-${index}`"
-                    @click="navigateToSubtask(subtask.id)"
+                <v-virtual-scroll
+                    height="300"
+                    :items="filteredAndSortedSubtasks"
+                    data-testid="subtasks-list"
                 >
-                    <label class="subtasks__checkbox" @click.stop>
-                        <input
-                            type="checkbox"
-                            :checked="true"
-                            :data-testid="`subtask-done-checkbox-${index}`"
-                            @change="toggleStatus(subtask)"
-                        />
-                        <span
-                            class="subtasks__checkbox-box subtasks__checkbox-box--checked"
-                            aria-hidden="true"
+                    <template #default="{ item: subtask, index }">
+                        <v-list-item
+                            :key="subtask.id"
+                            class="py-0 px-0 align-center"
+                            style="cursor: pointer"
+                            :data-testid="`subtask-item-${index}`"
+                            @click="navigateToSubtask(subtask.id)"
                         >
-                            <v-icon size="10" color="white">mdi-check</v-icon>
-                        </span>
-                    </label>
-
-                    <div class="subtasks__name subtasks__name--done">{{ subtask.name }}</div>
-
-                    <div class="subtasks__row-actions" @click.stop>
-                        <v-menu>
-                            <template #activator="{ props }">
-                                <button
-                                    v-bind="props"
-                                    type="button"
-                                    class="subtasks__icon-btn"
-                                    :data-testid="`subtask-done-menu-${index}`"
-                                    @click.stop
-                                >
-                                    <v-icon size="14">mdi-dots-horizontal</v-icon>
-                                </button>
+                            <template #prepend>
+                                <div class="">
+                                    <v-checkbox
+                                        v-model="subtask.status"
+                                        :true-value="'Closed'"
+                                        :false-value="'Open'"
+                                        density="compact"
+                                        class="mr-1"
+                                        :data-testid="`subtask-checkbox-${index}`"
+                                        @click.stop
+                                        @change="listsStore.updateTodo(subtask)"
+                                    />
+                                </div>
+                            </template>
+                            <div
+                                v-if="subtask.status === 'Closed' || !isEditingSubtask(subtask.id)"
+                                :data-testid="`subtask-name-${index}`"
+                                class="subtask-name-readonly"
+                                :class="{
+                                    'text-decoration-line-through text-disabled':
+                                        subtask.status === 'Closed',
+                                }"
+                                @click.stop="navigateToSubtask(subtask.id)"
+                            >
+                                {{ subtask.name }}
+                            </div>
+                            <v-text-field
+                                v-else
+                                :ref="(el) => (subtaskNameRefs[index] = el)"
+                                v-model="subtask.name"
+                                hide-details
+                                variant="plain"
+                                :class="{
+                                    'text-decoration-line-through text-disabled':
+                                        subtask.status === 'Closed',
+                                }"
+                                :data-testid="`subtask-name-input-${index}`"
+                                @blur="onSubtaskBlur(subtask)"
+                            />
+                            <template #append>
+                                <v-row class="d-flex align-center gap-4" min-width="500px">
+                                    <v-col>
+                                        <SubtaskPriority
+                                            :subtask="subtask"
+                                            :index="index"
+                                            @update-priority="
+                                                (level) => updatePriority(subtask, level)
+                                            "
+                                        />
+                                    </v-col>
+                                    <v-col>
+                                        <v-menu>
+                                            <template #activator="{ props }">
+                                                <v-btn
+                                                    v-bind="props"
+                                                    icon="mdi-dots-vertical"
+                                                    size="small"
+                                                    variant="text"
+                                                    density="compact"
+                                                    :data-testid="`subtask-menu-${index}`"
+                                                    @click.stop
+                                                />
+                                            </template>
+                                            <v-list density="compact">
+                                                <v-list-item
+                                                    :data-testid="`subtask-rename-${index}`"
+                                                    @click="renameSubtask(subtask.id, index)"
+                                                >
+                                                    <template #prepend>
+                                                        <v-icon> mdi-pencil </v-icon>
+                                                    </template>
+                                                    <v-list-item-title>
+                                                        Rename subtask
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item
+                                                    :data-testid="`subtask-delete-${index}`"
+                                                    @click="deleteSubtask(subtask.id)"
+                                                >
+                                                    <template #prepend>
+                                                        <v-icon color="error"> mdi-delete </v-icon>
+                                                    </template>
+                                                    <v-list-item-title>
+                                                        Delete subtask
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                            </v-list>
+                                        </v-menu>
+                                    </v-col>
+                                </v-row>
                             </template>
                             <v-list density="compact">
                                 <v-list-item

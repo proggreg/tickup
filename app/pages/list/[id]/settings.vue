@@ -20,8 +20,8 @@ onBeforeMount(async () => {
 
     // Initialize local selected value from the loaded list
     if (
-        listsStore.currentList.defaultView &&
-        defaultViewOptions.value.includes(listsStore.currentList.defaultView)
+        listsStore.currentList.defaultView
+        && defaultViewOptions.value.includes(listsStore.currentList.defaultView)
     ) {
         selectedDefaultView.value = listsStore.currentList.defaultView;
     }
@@ -66,7 +66,10 @@ const updateList = async () => {
                 description="Default GitHub repository"
             >
                 <v-row>
-                    <v-col cols="12" md="8">
+                    <v-col
+                        cols="12"
+                        md="8"
+                    >
                         <GithubRepoSelect @update-repo="updateList" />
                     </v-col>
                 </v-row>

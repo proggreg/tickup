@@ -13,13 +13,13 @@ export default defineEventHandler(async (event) => {
             .ilike('name', `%${query}%`)
             .order('created_at', { ascending: false });
 
-        const listIds = todos.filter((todo) => todo.list_id).map((todo) => todo.list_id);
+        const listIds = todos.filter(todo => todo.list_id).map(todo => todo.list_id);
 
         const { data: lists } = await supabase.from('Lists').select('*').in('id', listIds);
 
         todos.forEach((todo) => {
             if (!todo.list_id) return;
-            const list = lists.find((list) => list.id === todo.list_id);
+            const list = lists.find(list => list.id === todo.list_id);
             todo.list = list;
         });
 
@@ -32,7 +32,8 @@ export default defineEventHandler(async (event) => {
         }
 
         return objectToCamel(todos);
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Todo search error:', error);
         throw createError({
             statusCode: 500,

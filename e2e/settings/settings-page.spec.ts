@@ -44,7 +44,7 @@ test.describe('Settings page', () => {
 
         await Promise.all([
             page.waitForResponse(
-                (r) => r.url().includes('/api/settings') && r.request().method() === 'PUT',
+                r => r.url().includes('/api/settings') && r.request().method() === 'PUT',
             ),
             page.getByRole('button', { name: /save/i }).click(),
         ]);
