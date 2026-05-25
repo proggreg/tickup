@@ -39,18 +39,39 @@ function updateListType(listType) {
 </script>
 
 <template>
-    <v-container fluid class="fill-height">
+    <v-container
+        fluid
+        class="fill-height"
+    >
         <v-row class="fill-height">
             <ListHeader />
-            <v-col class="fill-height d-flex flex-column" cols="12">
+            <v-col
+                class="fill-height d-flex flex-column"
+                cols="12"
+            >
                 <v-tabs v-model="currentTab">
-                    <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
+                    <v-tab
+                        v-for="tab in tabs"
+                        :key="tab"
+                        :text="tab"
+                        :value="tab"
+                    />
                 </v-tabs>
-                <v-window v-model="currentTab" :touch="false" class="mt-4">
-                    <v-window-item value="board" class="">
+                <v-window
+                    v-model="currentTab"
+                    :touch="false"
+                    class="mt-4"
+                >
+                    <v-window-item
+                        value="board"
+                        class=""
+                    >
                         <Board />
                     </v-window-item>
-                    <v-window-item value="list" class="fill-height">
+                    <v-window-item
+                        value="list"
+                        class="fill-height"
+                    >
                         <v-row>
                             <v-col>
                                 <TodoNew />

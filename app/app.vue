@@ -33,10 +33,10 @@ function dismissError() {
 }
 
 if (
-    import.meta.server &&
-    config.public.VERCEL_ENV === 'production' &&
-    event?.headers.get('host') &&
-    !event?.headers.get('host')?.includes('tickup.gregfield.dev')
+    import.meta.server
+        && config.public.VERCEL_ENV === 'production'
+        && event?.headers.get('host')
+        && !event?.headers.get('host')?.includes('tickup.gregfield.dev')
 ) {
     navigateTo('https://tickup.gregfield.dev/login', { external: true });
 }
@@ -45,16 +45,38 @@ if (
 <template>
     <div>
         <NuxtPwaManifest />
-        <v-snackbar v-model="showErrorToast" color="error" location="top" timeout="5000">
+        <v-snackbar
+            v-model="showErrorToast"
+            color="error"
+            location="top"
+            timeout="5000"
+        >
             {{ errorMessage }}
             <template #actions>
-                <v-btn variant="text" @click="dismissError"> Close </v-btn>
+                <v-btn
+                    variant="text"
+                    @click="dismissError"
+                >
+                    Close
+                </v-btn>
             </template>
         </v-snackbar>
-        <v-snackbar v-model="showNotification" location="bottom right" timeout="2000">
+        <v-snackbar
+            v-model="showNotification"
+            location="bottom right"
+            timeout="2000"
+        >
             {{ notificationMessage }}
-            <template v-if="notificationLink" #actions>
-                <v-btn variant="text" :to="notificationLink"> View </v-btn>
+            <template
+                v-if="notificationLink"
+                #actions
+            >
+                <v-btn
+                    variant="text"
+                    :to="notificationLink"
+                >
+                    View
+                </v-btn>
             </template>
         </v-snackbar>
         <TodoDialog />
@@ -65,6 +87,16 @@ if (
 </template>
 
 <style>
+:root {
+    --color-background: #f7f9fb;
+    --color-surface-lowest: #ffffff;
+    --color-surface-low: #f0f4f7;
+    --color-primary: #005ac2;
+    --color-primary-container: #dce8ff;
+    --color-on-primary-container: #004eaa;
+    --color-tertiary: #ba1b24;
+}
+
 * {
     scrollbar-width: none;
 }

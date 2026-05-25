@@ -50,7 +50,9 @@ function getPriorityIcon(priority: string | undefined): string {
                 @click="emit('updatePriority', 'high')"
             >
                 <template #prepend>
-                    <v-icon color="error"> mdi-flag </v-icon>
+                    <v-icon color="error">
+                        mdi-flag
+                    </v-icon>
                 </template>
                 <v-list-item-title>High</v-list-item-title>
             </v-list-item>
@@ -59,7 +61,9 @@ function getPriorityIcon(priority: string | undefined): string {
                 @click="emit('updatePriority', 'medium')"
             >
                 <template #prepend>
-                    <v-icon color="warning"> mdi-flag </v-icon>
+                    <v-icon color="warning">
+                        mdi-flag
+                    </v-icon>
                 </template>
                 <v-list-item-title>Medium</v-list-item-title>
             </v-list-item>
@@ -68,7 +72,9 @@ function getPriorityIcon(priority: string | undefined): string {
                 @click="emit('updatePriority', 'low')"
             >
                 <template #prepend>
-                    <v-icon color="success"> mdi-flag </v-icon>
+                    <v-icon color="success">
+                        mdi-flag
+                    </v-icon>
                 </template>
                 <v-list-item-title>Low</v-list-item-title>
             </v-list-item>
@@ -77,7 +83,9 @@ function getPriorityIcon(priority: string | undefined): string {
                 @click="emit('updatePriority', '')"
             >
                 <template #prepend>
-                    <v-icon color="grey"> mdi-flag-outline </v-icon>
+                    <v-icon color="grey">
+                        mdi-flag-outline
+                    </v-icon>
                 </template>
                 <v-list-item-title>None</v-list-item-title>
             </v-list-item>

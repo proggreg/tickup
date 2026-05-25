@@ -6,7 +6,8 @@ const dialog = useDialog();
 function addEventHandler() {
     if (route.name === 'lists') {
         dialog.value.page = 'list';
-    } else if (route.name === 'index' || route.name === 'list-id') {
+    }
+    else if (route.name === 'index' || route.name === 'list-id') {
         dialog.value.page = 'todo';
     }
 
@@ -17,18 +18,24 @@ const { smAndDown } = useDisplay();
 
 const showFab = computed(() => {
     return (
-        smAndDown.value &&
-        (route.name === 'lists' || route.name === 'list-id' || route.name === 'index')
+        smAndDown.value
+        && (route.name === 'lists' || route.name === 'list-id' || route.name === 'index')
     );
 });
 </script>
 
 <template>
     <ColorScheme>
-        <v-theme-provider with-background :theme="colorMode.preference">
+        <v-theme-provider
+            with-background
+            :theme="colorMode.preference"
+        >
             <v-app>
                 <v-main>
-                    <v-container class="pa-0" fluid>
+                    <v-container
+                        class="pa-0"
+                        fluid
+                    >
                         <NuxtPage />
                         <AppNavMobile />
                     </v-container>

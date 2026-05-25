@@ -1,19 +1,25 @@
 <script setup lang="ts">
-definePageMeta({
-    layout: 'mobile',
-});
-const supabase = useSupabaseClient();
+definePageMeta({ layout: 'settings' });
+
+const { mdAndUp } = useDisplay();
 const store = useSettingsStore();
+const supabase = useSupabaseClient();
+const router = useRouter();
 const route = useRoute();
+const { user } = useCurrentUser();
+
+const activeSection = ref('account');
+
 const githubConnected = ref(false);
 const githubLoading = ref(false);
 
 async function checkGithubStatus() {
     githubLoading.value = true;
     try {
-        const connected = await $fetch('/api/github/check');
-        githubConnected.value = !!connected;
-    } catch {
+        const result = await $fetch('/api/github/check');
+        githubConnected.value = !!result;
+    }
+    catch {
         githubConnected.value = false;
     }
     githubLoading.value = false;
@@ -21,17 +27,34 @@ async function checkGithubStatus() {
 
 await useAsyncData(() => store.getUserSettings().then(() => true));
 
-function getRandomHexColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
+const savedStatuses = ref<Status[]>(store.userStatuses.map(s => ({ ...s })));
 
-function isMiddle(index: number) {
-    return index > 0 && index < store.userStatuses.length - 1;
+const isDirty = computed(() => {
+    const curr = store.userStatuses;
+    const saved = savedStatuses.value;
+    if (curr.length !== saved.length) return true;
+    return curr.some((s, i) => s.name !== saved[i]?.name || s.color !== saved[i]?.color);
+});
+
+const palette = [
+    '#506076',
+    '#005ac2',
+    '#d23f7f',
+    '#e8a92b',
+    '#1a7a4a',
+    '#ba1b24',
+    '#7a3fb2',
+    '#0096a5',
+    '#b35b00',
+    '#3c5b8a',
+    '#5f7d4f',
+    '#88607a',
+];
+
+function isLocked(index: number): 'start' | 'end' | false {
+    if (index === 0) return 'start';
+    if (index === store.userStatuses.length - 1) return 'end';
+    return false;
 }
 
 function canMove(evt: { draggedContext: { index: number }; relatedContext: { index: number } }) {
@@ -48,31 +71,47 @@ function addStatus() {
         prev.Edit = true;
         return;
     }
-    store.userStatuses.splice(insertAt, 0, { name: '', color: getRandomHexColor(), Edit: true });
+    const color = palette[Math.floor(Math.random() * palette.length)];
+    store.userStatuses.splice(insertAt, 0, { name: 'New status', color, Edit: false });
 }
 
+function updateStatusName(index: number, name: string) {
+    store.userStatuses[index].name = name;
+}
+
+function updateStatusColor(index: number, color: string) {
+    store.userStatuses[index].color = color;
+}
+
+function deleteStatus(index: number) {
+    if (index > 0 && index < store.userStatuses.length - 1) {
+        store.userStatuses.splice(index, 1);
+    }
+}
+
+const isSaving = ref(false);
+
 async function save() {
+    isSaving.value = true;
     for (let i = store.userStatuses.length - 2; i >= 1; i--) {
         if (store.userStatuses[i].name === '') {
             store.userStatuses.splice(i, 1);
         }
     }
-    store.userStatuses.forEach((s) => {
-        s.Edit = false;
-    });
-
     await $fetch('/api/settings', {
         method: 'PUT',
         body: { statuses: store.userStatuses },
     });
+    savedStatuses.value = store.userStatuses.map(s => ({ ...s }));
+    isSaving.value = false;
 }
 
-function deleteStatus(status: Status) {
-    const idx = store.userStatuses.indexOf(status);
-    if (idx > 0 && idx < store.userStatuses.length - 1) {
-        store.userStatuses.splice(idx, 1);
-        save();
-    }
+function discard() {
+    store.userStatuses.splice(
+        0,
+        store.userStatuses.length,
+        ...savedStatuses.value.map(s => ({ ...s })),
+    );
 }
 
 async function signOut() {
@@ -81,11 +120,10 @@ async function signOut() {
         console.error(error);
         return;
     }
-    navigateTo('login');
+    router.push('/login');
 }
 
 onMounted(async () => {
-    // Handle pending GitHub connection (redirected from callback when server-side auth wasn't available)
     if (route.query.github === 'pending' && route.query.installation_id) {
         githubLoading.value = true;
         try {
@@ -97,220 +135,446 @@ onMounted(async () => {
                 },
             });
             githubConnected.value = true;
-        } catch (e) {
+        }
+        catch (e) {
             console.error('Failed to complete GitHub connection:', e);
         }
         githubLoading.value = false;
-    } else {
+    }
+    else {
         await checkGithubStatus();
         if (route.query.github === 'connected') {
             githubConnected.value = true;
         }
     }
 });
+
+const sectionMeta: Record<string, { title: string; description: string }> = {
+    workflow: {
+        title: 'Workflow statuses',
+        description:
+            'Define the states your tasks move through. The first and last are anchors — they can\'t be moved or deleted.',
+    },
+    integrations: {
+        title: 'Integrations',
+        description: 'Connect Tickup to the rest of your stack.',
+    },
+    account: {
+        title: 'Account',
+        description: 'Profile, password, and session.',
+    },
+};
 </script>
 
 <template>
-    <div class="d-flex flex-column h-100 pb-20">
-        <div class="d-flex align-center ga-3 px-5 pt-8 pb-4 flex-shrink-0">
-            <span class="text-h5 font-weight-bold">Settings</span>
-        </div>
+    <!-- ── Desktop: two-column ── -->
+    <div
+        v-if="mdAndUp"
+        class="settings-desktop"
+    >
+        <SettingsSettingsNav
+            :active-section="activeSection"
+            @navigate="activeSection = $event"
+        />
 
-        <div class="flex-grow-1" style="overflow-y: auto">
-            <!-- Statuses -->
+        <main class="settings-desktop__main">
+            <!-- Section header -->
             <div
-                class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-5 mb-2"
+                v-if="sectionMeta[activeSection]"
+                class="section-header"
             >
-                Statuses
+                <h2 class="section-header__title">
+                    {{ sectionMeta[activeSection].title }}
+                </h2>
+                <p class="section-header__desc">
+                    {{ sectionMeta[activeSection].description }}
+                </p>
             </div>
 
-            <v-list class="px-3 bg-transparent mb-2">
+            <!-- Workflow -->
+            <template v-if="activeSection === 'workflow'">
+                <div class="settings-card">
+                    <draggable
+                        :list="store.userStatuses"
+                        item-key="name"
+                        handle=".drag-handle"
+                        :move="canMove"
+                    >
+                        <template #item="{ element: status, index: i }">
+                            <SettingsStatusRow
+                                :status="status"
+                                :index="i"
+                                :total="store.userStatuses.length"
+                                :locked="isLocked(i)"
+                                @update:name="updateStatusName(i, $event)"
+                                @update:color="updateStatusColor(i, $event)"
+                                @delete="deleteStatus(i)"
+                            />
+                        </template>
+                    </draggable>
+                    <button
+                        class="add-status-btn"
+                        @click="addStatus"
+                    >
+                        <v-icon
+                            icon="mdi-plus"
+                            :size="16"
+                        />
+                        Add status
+                    </button>
+                </div>
+                <div class="save-row">
+                    <button
+                        v-if="isDirty"
+                        class="btn-discard"
+                        @click="discard"
+                    >
+                        Discard
+                    </button>
+                    <button
+                        class="btn-save"
+                        :class="{ 'btn-save--clean': !isDirty }"
+                        :disabled="!isDirty || isSaving"
+                        @click="save"
+                    >
+                        Save changes
+                    </button>
+                </div>
+            </template>
+
+            <!-- Integrations -->
+            <template v-else-if="activeSection === 'integrations'">
+                <div class="settings-card">
+                    <SettingsIntegrationRow
+                        icon="mdi-github"
+                        name="GitHub"
+                        description="Connect repositories, issues, branches, and pull requests to your tasks."
+                        :connected="githubConnected"
+                        @click="$router.push('/settings/github')"
+                    />
+                </div>
+            </template>
+
+            <!-- Account -->
+            <template v-else-if="activeSection === 'account'">
+                <div class="settings-card">
+                    <SettingsAccountRow
+                        icon="mdi-account-outline"
+                        label="Profile"
+                        :value="user?.email"
+                        action="Edit"
+                        @click="() => {}"
+                    />
+                    <div class="card-divider" />
+                    <SettingsAccountRow
+                        icon="mdi-key-outline"
+                        label="Password"
+                        action="Change"
+                        @click="() => {}"
+                    />
+                    <div class="card-divider" />
+                    <SettingsAccountRow
+                        icon="mdi-logout"
+                        label="Sign out"
+                        action-icon="mdi-arrow-right"
+                        :danger="true"
+                        @click="signOut"
+                    />
+                </div>
+            </template>
+
+            <!-- Appearance / Notifications placeholders -->
+            <template v-else>
+                <p class="coming-soon">
+                    Coming soon
+                </p>
+            </template>
+        </main>
+    </div>
+
+    <!-- ── Mobile: single column ── -->
+    <div
+        v-else
+        class="settings-mobile"
+    >
+        <h1 class="settings-mobile__title">
+            Settings
+        </h1>
+
+        <!-- Workflow -->
+        <div class="mobile-section">
+            <div class="mobile-section__label">
+                Workflow
+            </div>
+            <div class="settings-card settings-card--mobile">
                 <draggable
                     :list="store.userStatuses"
                     item-key="name"
                     handle=".drag-handle"
                     :move="canMove"
                 >
-                    <template #item="{ element: status, index }">
-                        <v-list-item
-                            :key="status.name"
-                            rounded="xl"
-                            class="mb-2"
-                            base-color="surface-variant"
-                            variant="tonal"
-                            min-height="62"
-                        >
-                            <template #prepend>
-                                <v-icon
-                                    v-if="isMiddle(index)"
-                                    icon="mdi-drag"
-                                    class="drag-handle mr-1 text-disabled"
-                                    style="cursor: grab"
-                                />
-                                <v-icon
-                                    v-else
-                                    icon="mdi-lock-outline"
-                                    class="mr-1 text-disabled"
-                                    size="small"
-                                />
-                                <v-menu :close-on-content-click="false">
-                                    <template #activator="{ props }">
-                                        <v-btn
-                                            v-bind="props"
-                                            min-width="32"
-                                            size="small"
-                                            :color="status.color"
-                                            variant="flat"
-                                            class="mr-2"
-                                            rounded="lg"
-                                            :title="`Color: ${status.color}`"
-                                        />
-                                    </template>
-                                    <v-color-picker
-                                        v-model="status.color"
-                                        class="ma-4"
-                                        show-swatches
-                                    />
-                                </v-menu>
-                            </template>
-
-                            <v-text-field
-                                v-if="status.Edit"
-                                v-model="status.name"
-                                density="compact"
-                                variant="plain"
-                                autofocus
-                                hide-details
-                                class="font-weight-bold"
-                            />
-                            <v-list-item-title
-                                v-else
-                                class="font-weight-bold"
-                                style="cursor: pointer"
-                                @click="status.Edit = true"
-                            >
-                                {{ status.name }}
-                            </v-list-item-title>
-
-                            <template #append>
-                                <v-chip
-                                    v-if="index === 0"
-                                    size="x-small"
-                                    variant="tonal"
-                                    color="success"
-                                    class="mr-1"
-                                >
-                                    Start
-                                </v-chip>
-                                <v-chip
-                                    v-else-if="index === store.userStatuses.length - 1"
-                                    size="x-small"
-                                    variant="tonal"
-                                    color="error"
-                                    class="mr-1"
-                                >
-                                    End
-                                </v-chip>
-                                <v-menu v-if="isMiddle(index)">
-                                    <template #activator="{ props }">
-                                        <v-btn
-                                            v-bind="props"
-                                            icon="mdi-dots-vertical"
-                                            variant="text"
-                                            size="small"
-                                            @click.stop
-                                        />
-                                    </template>
-                                    <v-list>
-                                        <v-list-item
-                                            append-icon="mdi-delete"
-                                            class="text-red"
-                                            @click.passive="deleteStatus(status)"
-                                        >
-                                            <v-list-item-title class="text-body-2">
-                                                Delete
-                                            </v-list-item-title>
-                                        </v-list-item>
-                                    </v-list>
-                                </v-menu>
-                            </template>
-                        </v-list-item>
+                    <template #item="{ element: status, index: i }">
+                        <SettingsStatusRow
+                            :status="status"
+                            :index="i"
+                            :total="store.userStatuses.length"
+                            :locked="isLocked(i)"
+                            @update:name="updateStatusName(i, $event)"
+                            @update:color="updateStatusColor(i, $event)"
+                            @delete="deleteStatus(i)"
+                        />
                     </template>
                 </draggable>
-            </v-list>
-
-            <div class="d-flex ga-2 px-4 mb-6">
-                <v-btn variant="tonal" prepend-icon="mdi-plus" rounded="xl" @click="addStatus">
-                    Add Status
-                </v-btn>
-                <v-btn color="primary" variant="tonal" rounded="xl" @click="save"> Save </v-btn>
+                <div class="mobile-card-footer">
+                    <button
+                        class="mobile-add-btn"
+                        @click="addStatus"
+                    >
+                        <v-icon
+                            icon="mdi-plus"
+                            :size="14"
+                            color="var(--color-primary, #005ac2)"
+                        />
+                        Add status
+                    </button>
+                    <button
+                        class="mobile-save-btn"
+                        :class="{ 'mobile-save-btn--dirty': isDirty }"
+                        :disabled="!isDirty || isSaving"
+                        @click="save"
+                    >
+                        Save
+                    </button>
+                </div>
             </div>
+        </div>
 
-            <!-- Integrations -->
-            <div
-                class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-5 mb-2"
-            >
+        <!-- Integrations -->
+        <div class="mobile-section">
+            <div class="mobile-section__label">
                 Integrations
             </div>
+            <div class="settings-card settings-card--mobile">
+                <SettingsIntegrationRow
+                    icon="mdi-github"
+                    name="GitHub"
+                    description="Connect repositories, issues, branches, and pull requests to your tasks."
+                    short-description="Issues, branches, PRs"
+                    :connected="githubConnected"
+                    @click="$router.push('/settings/github')"
+                />
+            </div>
+        </div>
 
-            <v-list class="px-3 bg-transparent mb-6">
-                <v-list-item
-                    to="/settings/github"
-                    rounded="xl"
-                    base-color="surface-variant"
-                    variant="tonal"
-                    min-height="62"
-                    class="mb-2"
-                >
-                    <template #prepend>
-                        <v-icon icon="mdi-github" size="18" class="mr-3" />
-                    </template>
-
-                    <v-list-item-title class="font-weight-bold">
-                        GitHub Integration
-                    </v-list-item-title>
-                    <v-list-item-subtitle v-if="githubLoading" class="text-caption">
-                        Checking...
-                    </v-list-item-subtitle>
-                    <v-list-item-subtitle
-                        v-else-if="githubConnected"
-                        class="text-caption text-success"
-                    >
-                        Connected
-                    </v-list-item-subtitle>
-                    <v-list-item-subtitle v-else class="text-caption text-medium-emphasis">
-                        Not connected
-                    </v-list-item-subtitle>
-
-                    <template #append>
-                        <v-icon icon="mdi-chevron-right" size="18" />
-                    </template>
-                </v-list-item>
-            </v-list>
-
-            <!-- Account -->
-            <div
-                class="text-caption text-medium-emphasis text-uppercase font-weight-medium px-5 mb-2"
-            >
+        <!-- Account -->
+        <div class="mobile-section">
+            <div class="mobile-section__label">
                 Account
             </div>
-
-            <v-list class="px-3 bg-transparent">
-                <v-list-item
-                    rounded="xl"
-                    base-color="surface-variant"
-                    variant="tonal"
-                    min-height="62"
+            <div class="settings-card settings-card--mobile">
+                <SettingsAccountRow
+                    icon="mdi-account-outline"
+                    label="Profile"
+                    :value="user?.email"
+                    action="Edit"
+                    @click="() => {}"
+                />
+                <div class="card-divider" />
+                <SettingsAccountRow
+                    icon="mdi-logout"
+                    label="Sign out"
+                    action-icon="mdi-arrow-right"
+                    :danger="true"
                     @click="signOut"
-                >
-                    <template #prepend>
-                        <v-icon icon="mdi-logout" size="18" class="mr-3" />
-                    </template>
-                    <v-list-item-title class="font-weight-bold text-error">
-                        Sign Out
-                    </v-list-item-title>
-                </v-list-item>
-            </v-list>
+                />
+            </div>
         </div>
     </div>
 </template>
+
+<style scoped>
+/* ── Shared ── */
+.settings-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow:
+        0 1px 2px rgba(42, 52, 57, 0.04),
+        0 0 0 1px rgba(113, 124, 130, 0.1);
+    padding: 4px;
+    overflow: hidden;
+}
+.settings-card--mobile {
+    border-radius: 12px;
+}
+.card-divider {
+    height: 1px;
+    background: rgba(113, 124, 130, 0.16);
+    margin-left: 52px;
+}
+.add-status-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 2px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-primary, #005ac2);
+    transition: background 0.12s;
+    text-align: left;
+}
+.add-status-btn:hover {
+    background: rgba(113, 124, 130, 0.07);
+}
+.section-header {
+    margin-bottom: 24px;
+}
+.section-header__title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #2a3439;
+    margin: 0 0 4px;
+}
+.section-header__desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(42, 52, 57, 0.62);
+    max-width: 520px;
+    line-height: 1.5;
+    margin: 0;
+}
+.coming-soon {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: rgba(42, 52, 57, 0.62);
+}
+
+/* ── Desktop ── */
+.settings-desktop {
+    display: flex;
+    min-height: 100%;
+    background: var(--color-background, #f7f9fb);
+}
+.settings-desktop__main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 36px 44px;
+    background: var(--color-background, #f7f9fb);
+}
+.save-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+}
+.btn-discard {
+    padding: 8px 16px;
+    border-radius: 7px;
+    border: 1px solid rgba(113, 124, 130, 0.28);
+    background: white;
+    color: #2a3439;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+.btn-discard:hover {
+    background: rgba(113, 124, 130, 0.07);
+}
+.btn-save {
+    padding: 8px 20px;
+    border-radius: 7px;
+    border: none;
+    background: var(--color-primary, #005ac2);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background 0.12s,
+        color 0.12s;
+}
+.btn-save--clean,
+.btn-save:disabled {
+    background: var(--color-surface-low, #f0f4f7);
+    color: rgba(42, 52, 57, 0.42);
+    cursor: default;
+}
+
+/* ── Mobile ── */
+.settings-mobile {
+    padding: 24px 20px 80px;
+    background: var(--color-background, #f7f9fb);
+    min-height: 100%;
+}
+.settings-mobile__title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: #2a3439;
+    letter-spacing: -0.01em;
+    margin: 0 0 24px;
+}
+.mobile-section {
+    margin-bottom: 20px;
+}
+.mobile-section__label {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(42, 52, 57, 0.62);
+    padding: 0 4px 8px;
+}
+.mobile-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(113, 124, 130, 0.16);
+    padding: 8px 12px;
+}
+.mobile-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-primary, #005ac2);
+    cursor: pointer;
+    padding: 0;
+}
+.mobile-save-btn {
+    padding: 6px 14px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(42, 52, 57, 0.42);
+    cursor: default;
+    transition:
+        background 0.12s,
+        color 0.12s;
+}
+.mobile-save-btn--dirty {
+    background: var(--color-primary, #005ac2);
+    color: white;
+    cursor: pointer;
+}
+</style>

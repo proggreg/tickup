@@ -53,7 +53,9 @@ async function focusDeleteButton() {
                     >
                         Yes
                     </v-btn>
-                    <v-btn @click="isActive.value = false"> No </v-btn>
+                    <v-btn @click="isActive.value = false">
+                        No
+                    </v-btn>
                 </v-card-actions>
             </v-card>
         </template>

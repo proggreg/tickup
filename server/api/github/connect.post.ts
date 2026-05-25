@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Accept: 'application/json',
+                    'Accept': 'application/json',
                 },
                 body: JSON.stringify({
                     client_id: config.github.clientId,
@@ -40,7 +40,8 @@ export default defineEventHandler(async (event) => {
                 const githubUser = await userRes.json();
                 githubUsername = githubUser.login;
             }
-        } catch (e) {
+        }
+        catch (e) {
             console.error('Failed to exchange GitHub code:', e);
         }
     }

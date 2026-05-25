@@ -15,8 +15,14 @@ const emit = defineEmits<{
 
 <template>
     <div>
-        <div v-if="props.loading" class="d-flex align-center ga-2 pa-4">
-            <v-progress-circular indeterminate size="18" />
+        <div
+            v-if="props.loading"
+            class="d-flex align-center ga-2 pa-4"
+        >
+            <v-progress-circular
+                indeterminate
+                size="18"
+            />
             Loading webhooks...
         </div>
 
@@ -30,12 +36,22 @@ const emit = defineEmits<{
             {{ props.error }}
         </v-alert>
 
-        <div v-else-if="props.webhooks.length === 0" class="text-medium-emphasis text-body-2 pa-2">
+        <div
+            v-else-if="props.webhooks.length === 0"
+            class="text-medium-emphasis text-body-2 pa-2"
+        >
             No webhooks found.
         </div>
 
-        <v-list v-else density="compact">
-            <v-list-item v-for="hook in props.webhooks" :key="hook.id" class="px-0">
+        <v-list
+            v-else
+            density="compact"
+        >
+            <v-list-item
+                v-for="hook in props.webhooks"
+                :key="hook.id"
+                class="px-0"
+            >
                 <v-list-item-title class="text-body-2 font-weight-medium">
                     {{ hook.repoFullName }}
                 </v-list-item-title>

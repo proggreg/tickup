@@ -35,8 +35,14 @@ const {
     <v-row class="fill-height">
         <v-col cols="12">
             <div class="d-flex align-center mb-4">
-                <v-btn icon="mdi-arrow-left" variant="text" to="/settings" />
-                <h2 class="ml-2">GitHub Integration</h2>
+                <v-btn
+                    icon="mdi-arrow-left"
+                    variant="text"
+                    to="/settings"
+                />
+                <h2 class="ml-2">
+                    GitHub Integration
+                </h2>
             </div>
 
             <GithubSettingsConnectionCard
@@ -46,7 +52,11 @@ const {
                 @disconnect="disconnectGithub"
             />
 
-            <v-card v-if="githubConnected" variant="flat" class="pa-4 mb-4">
+            <v-card
+                v-if="githubConnected"
+                variant="flat"
+                class="pa-4 mb-4"
+            >
                 <v-card-title>Webhooks</v-card-title>
                 <v-card-text>
                     <GithubSettingsWebhookList
@@ -59,11 +69,19 @@ const {
                 </v-card-text>
             </v-card>
 
-            <v-card v-if="githubConnected" variant="flat" class="pa-4">
+            <v-card
+                v-if="githubConnected"
+                variant="flat"
+                class="pa-4"
+            >
                 <v-card-title class="d-flex align-center justify-space-between ga-2">
                     <div class="d-flex align-center ga-2">
                         <span>Repositories</span>
-                        <v-chip v-if="repos.length" size="small" variant="tonal">
+                        <v-chip
+                            v-if="repos.length"
+                            size="small"
+                            variant="tonal"
+                        >
                             {{ repos.length }}
                         </v-chip>
                     </div>
