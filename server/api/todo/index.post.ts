@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
         }
     }
     catch (e) {
-        const errorMsg = e instanceof Error ? e.message : String(e);
+        console.error('error', e);
         throw createError({
             statusCode: 500,
             statusMessage: errorMsg,

@@ -129,7 +129,8 @@ const deleteTodo = async (todo: Task, closeDialog?: () => void) => {
                                     <template #default="{ isActive }">
                                         <v-card>
                                             <v-card-text>
-                                                Are you sure you want to delete this todo?
+                                                Are you sure you want to delete this
+                                                todo?
                                             </v-card-text>
                                             <v-card-actions>
                                                 <v-spacer />
@@ -212,7 +213,8 @@ const deleteTodo = async (todo: Task, closeDialog?: () => void) => {
                                     <template #default="{ isActive }">
                                         <v-card>
                                             <v-card-text>
-                                                Are you sure you want to delete this todo?
+                                                Are you sure you want to delete this
+                                                todo?
                                             </v-card-text>
                                             <v-card-actions>
                                                 <v-spacer />

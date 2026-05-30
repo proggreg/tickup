@@ -11,6 +11,8 @@ export const useListsStore = defineStore('lists', {
         todos: [],
         todaysTodos: [],
         overdueTodos: [],
+        recentTodos: [],
+        panelOpen: false,
     }),
     actions: {
         async addList(): Promise<List> {
@@ -101,7 +103,7 @@ export const useListsStore = defineStore('lists', {
             if (!listId) {
                 listId = this.currentList.id;
             }
-            const todos = await $fetch<Task[]>(`/api/list/todos`, { query: { listId } });
+            const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { listId } });
             const list = this.lists.find(l => l.id === listId);
             if (list) {
                 list.todos = todos;
@@ -134,7 +136,7 @@ export const useListsStore = defineStore('lists', {
             }
             return valid;
         },
-        async addTodo(newTodo?: Task) {
+        async addTodo(newTodo?: Todo) {
             const todo
                 = newTodo !== undefined && !(newTodo instanceof Event) ? newTodo : this.newTodo;
             console.debug('Create Todo', todo);
@@ -321,6 +323,14 @@ export const useListsStore = defineStore('lists', {
 
             if (todos) {
                 this.todaysTodos = todos;
+            }
+        },
+        async getRecentTodos() {
+            const todos = await $fetch<Todo[]>('/api/todos', {
+                query: { recent: true },
+            });
+            if (todos) {
+                this.recentTodos = todos;
             }
         },
         async getOverdueTodos() {

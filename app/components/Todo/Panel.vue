@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { Button, Dialog } from '@vuetify/v0';
-
 const listsStore = useListsStore();
 const router = useRouter();
+const deleteDialog = ref(false);
 
 defineEmits(['close']);
 
 function openFullPage() {
     router.push(`/todo/${listsStore.currentTodo.id}`);
+}
+
+async function confirmDelete() {
+    await listsStore.deleteTodo(listsStore.currentTodo.id);
+    deleteDialog.value = false;
 }
 </script>
 
@@ -16,67 +20,68 @@ function openFullPage() {
         <!-- Panel header -->
         <div class="panel-header">
             <div class="panel-header__start">
-                <Button.Root
+                <button
                     class="icon-btn"
                     title="Open full page"
                     aria-label="Open full page"
                     @click="openFullPage"
                 >
-                    <Button.Icon>
-                        <i class="mdi mdi-arrow-expand" />
-                    </Button.Icon>
-                </Button.Root>
+                    <i class="mdi mdi-arrow-expand" />
+                </button>
             </div>
 
             <div class="panel-header__end">
                 <!-- Delete with confirm dialog -->
-                <Dialog.Root>
-                    <Dialog.Activator>
-                        <Button.Root
+                <v-dialog
+                    v-model="deleteDialog"
+                    max-width="280"
+                >
+                    <template #activator="{ props }">
+                        <button
+                            v-bind="props"
                             class="icon-btn icon-btn--danger"
                             title="Delete task"
                             aria-label="Delete task"
                         >
-                            <Button.Icon>
-                                <i class="mdi mdi-trash-can-outline" />
-                            </Button.Icon>
-                        </Button.Root>
-                    </Dialog.Activator>
-                    <!-- Background on inner div, not on <dialog> element -->
-                    <Dialog.Content class="confirm-shell">
-                        <div class="confirm-dialog">
-                            <Dialog.Title class="confirm-dialog__title">
-                                Delete task
-                            </Dialog.Title>
-                            <Dialog.Description class="confirm-dialog__desc">
-                                Are you sure you want to delete "{{ listsStore.currentTodo.name }}"?
-                            </Dialog.Description>
-                            <div class="confirm-dialog__actions">
-                                <Dialog.Close class="btn">
-                                    Cancel
-                                </Dialog.Close>
-                                <Dialog.Close
-                                    class="btn btn--danger"
-                                    @click="listsStore.deleteTodo(listsStore.currentTodo.id)"
-                                >
-                                    Delete
-                                </Dialog.Close>
-                            </div>
+                            <i class="mdi mdi-trash-can-outline" />
+                        </button>
+                    </template>
+                    <div class="confirm-dialog">
+                        <div class="confirm-dialog__title">
+                            Delete task
                         </div>
-                    </Dialog.Content>
-                </Dialog.Root>
+                        <div class="confirm-dialog__desc">
+                            Are you sure you want to delete "{{ listsStore.currentTodo.name }}"?
+                        </div>
+                        <div class="confirm-dialog__actions">
+                            <button
+                                class="btn"
+                                @click="deleteDialog = false"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                class="btn btn--danger"
+                                @click="
+                                    confirmDelete();
+                                    $emit('close');
+                                "
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </v-dialog>
 
                 <!-- Close panel -->
-                <Button.Root
+                <button
                     class="icon-btn"
                     title="Close panel"
                     aria-label="Close panel"
                     @click="$emit('close')"
                 >
-                    <Button.Icon>
-                        <i class="mdi mdi-close" />
-                    </Button.Icon>
-                </Button.Root>
+                    <i class="mdi mdi-close" />
+                </button>
             </div>
         </div>
 
@@ -156,18 +161,6 @@ function openFullPage() {
     font-size: 15px;
 }
 
-/* Dialog.Content shell — sizing only, no display override */
-.confirm-shell {
-    border: none;
-    padding: 0;
-    width: 280px;
-    max-width: 90vw;
-    margin: auto;
-    background: transparent;
-    overflow: visible;
-}
-
-/* Inner card carries the background */
 .confirm-dialog {
     background: rgb(var(--v-theme-surface));
     color: rgb(var(--v-theme-on-surface));
@@ -222,12 +215,5 @@ function openFullPage() {
 
 .btn--danger:hover {
     background: rgba(var(--v-theme-tertiary), 0.08);
-}
-</style>
-
-<style>
-/* ::backdrop can't be scoped */
-.confirm-shell::backdrop {
-    background: rgba(0, 0, 0, 0.4);
 }
 </style>

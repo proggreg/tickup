@@ -44,15 +44,13 @@ test.describe('subtasks filtering', () => {
         // Add 3 subtasks
         const subtaskNames = ['Subtask 1', 'Subtask 2', 'Subtask 3'];
         for (const name of subtaskNames) {
-            const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+            const subtaskInput = page.getByTestId('add-subtask-input');
             await page.waitForTimeout(500);
             await subtaskInput.click();
             await subtaskInput.fill(name);
             await page.waitForTimeout(500);
 
-            const addSubtaskButton = page.getByTestId('add-subtask-button');
-            await expect(addSubtaskButton).toBeEnabled({ timeout: 5000 });
-            await addSubtaskButton.click();
+            await subtaskInput.press('Enter');
             await page.waitForLoadState('networkidle');
         }
 
@@ -149,13 +147,12 @@ test.describe('subtasks filtering', () => {
 
         // Add 2 subtasks
         for (let i = 1; i <= 2; i++) {
-            const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+            const subtaskInput = page.getByTestId('add-subtask-input');
             await page.waitForTimeout(500);
             await subtaskInput.click();
             await subtaskInput.fill(`Subtask ${i}`);
 
-            const addSubtaskButton = page.getByTestId('add-subtask-button');
-            await addSubtaskButton.click();
+            await subtaskInput.press('Enter');
             await page.waitForLoadState('networkidle');
         }
 
@@ -226,13 +223,12 @@ test.describe('subtasks filtering', () => {
         await page.waitForLoadState('networkidle');
 
         // Add a subtask and mark it complete
-        const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+        const subtaskInput = page.getByTestId('add-subtask-input');
         await page.waitForTimeout(500);
         await subtaskInput.click();
         await subtaskInput.fill('Completed subtask');
 
-        const addSubtaskButton = page.getByTestId('add-subtask-button');
-        await addSubtaskButton.click();
+        await subtaskInput.press('Enter');
         await page.waitForLoadState('networkidle');
 
         const checkbox = page.getByTestId('subtask-checkbox-0');
@@ -252,7 +248,7 @@ test.describe('subtasks filtering', () => {
         await subtaskInput.click();
         await subtaskInput.fill('New active subtask');
         await page.waitForTimeout(500);
-        await addSubtaskButton.click();
+        await subtaskInput.press('Enter');
         await page.waitForLoadState('networkidle');
 
         // Verify the new subtask is visible (it's active)

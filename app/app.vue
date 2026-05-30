@@ -87,6 +87,16 @@ if (
 </template>
 
 <style>
+:root {
+    --color-background: #f7f9fb;
+    --color-surface-lowest: #ffffff;
+    --color-surface-low: #f0f4f7;
+    --color-primary: #005ac2;
+    --color-primary-container: #dce8ff;
+    --color-on-primary-container: #004eaa;
+    --color-tertiary: #ba1b24;
+}
+
 * {
     scrollbar-width: none;
 }

@@ -64,12 +64,12 @@ declare global {
         lists: List[];
         currentList: List;
         newList: List;
-        currentTodo: Task;
-        todos?: Task[];
-        todaysTodos: Task[];
-        overdueTodos: Task[];
+        currentTodo: Todo;
+        todos?: Todo[];
+        todaysTodos: Todo[];
+        overdueTodos: Todo[];
         view: ViewType;
-        newTodo: Task;
+        newTodo: Todo;
     }
 
     interface Settings {

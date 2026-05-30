@@ -3,19 +3,6 @@ const dialog = useDialog();
 const { smAndDown } = useDisplay();
 const user = useSupabaseUser();
 const loggedIn = computed(() => !!user.value);
-const contextMenuOpen = ref(false);
-const selectedList = ref<List>();
-const listsStore = useListsStore();
-
-function openContextMenu(_event: MouseEvent, list: List) {
-    contextMenuOpen.value = true;
-    selectedList.value = list;
-}
-
-function deleteList() {
-    contextMenuOpen.value = false;
-    listsStore.deleteList(selectedList.value.id);
-}
 </script>
 
 <template>
@@ -56,11 +43,14 @@ function deleteList() {
                 title="Home"
                 to="/"
             />
-            <v-list-item
-                prepend-icon="mdi-cog"
-                title="Settings"
-                to="/settings"
-            />
+            <v-list-item>
+                <v-list-item
+                    prepend-icon="mdi-cog"
+                    title="Settings"
+                    class="pa-0"
+                    to="/settings"
+                />
+            </v-list-item>
             <v-list-item
                 prepend-icon="mdi-plus"
                 title="New List"
@@ -81,24 +71,8 @@ function deleteList() {
                 :open="dialog"
                 @close="dialog.open = false"
             />
-            <AppNavItems @open="openContextMenu" />
+            <AppNavItems />
         </v-list>
-
-        <v-menu
-            v-model="contextMenuOpen"
-            location-strategy="connected"
-        >
-            <v-list nav>
-                <v-list-item>
-                    <v-btn
-                        variant="text"
-                        color="red"
-                        icon="mdi-trash-can"
-                        @click="deleteList"
-                    />
-                </v-list-item>
-            </v-list>
-        </v-menu>
 
         <template #append>
             <AppMenu v-if="smAndDown" />
