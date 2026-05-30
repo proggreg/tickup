@@ -46,7 +46,7 @@ function addStatus() {
                 <SettingsStatusRow
                     :ref="
                         (el) => {
-                            if (el) rowRefs[i] = el as { startEdit: () => void };
+                            if (el) rowRefs[i] = el as unknown as { startEdit: () => void };
                         }
                     "
                     :status="status"
