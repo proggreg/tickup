@@ -71,6 +71,7 @@ declare global {
         todos?: Todo[];
         todaysTodos: Todo[];
         overdueTodos: Todo[];
+        recentTodos: Todo[];
         view: ViewType;
         newTodo: Todo;
     }
