@@ -52,7 +52,10 @@ const isSelected = (todo: Todo) => listsStore.currentTodo?.id === todo.id && lis
 </script>
 
 <template>
-    <template v-for="todo in props.todos" :key="todo.id">
+    <template
+        v-for="todo in props.todos"
+        :key="todo.id"
+    >
         <div
             v-if="todo.status === props.status"
             class="todo-item"
@@ -70,7 +73,10 @@ const isSelected = (todo: Todo) => listsStore.currentTodo?.id === todo.id && lis
                     :aria-label="`Toggle ${todo.name}`"
                     @click.stop="toggleStatus(todo)"
                 >
-                    <i v-if="todo.status === 'Closed'" class="mdi mdi-check check-btn__icon" />
+                    <i
+                        v-if="todo.status === 'Closed'"
+                        class="mdi mdi-check check-btn__icon"
+                    />
                 </button>
             </div>
 
