@@ -11,6 +11,7 @@ export const useListsStore = defineStore('lists', {
         todos: [],
         todaysTodos: [],
         overdueTodos: [],
+        recentTodos: [],
     }),
     actions: {
         async addList(): Promise<List> {
@@ -321,6 +322,14 @@ export const useListsStore = defineStore('lists', {
 
             if (todos) {
                 this.todaysTodos = todos;
+            }
+        },
+        async getRecentTodos() {
+            const todos = await $fetch<Todo[]>('/api/todos', {
+                query: { recent: true },
+            });
+            if (todos) {
+                this.recentTodos = todos;
             }
         },
         async getOverdueTodos() {
