@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const palette = usePalette();
 interface Props {
     status: { name: string; color: string };
     index: number;
@@ -10,42 +11,29 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
     'update:name': [name: string];
     'update:color': [color: string];
-    'delete': [];
+    delete: [];
 }>();
 
-const palette = [
-    '#506076',
-    '#005ac2',
-    '#d23f7f',
-    '#e8a92b',
-    '#1a7a4a',
-    '#ba1b24',
-    '#7a3fb2',
-    '#0096a5',
-    '#b35b00',
-    '#3c5b8a',
-    '#5f7d4f',
-    '#88607a',
-];
-
-const isEditing = ref(false);
+const isEditingStatus = ref(false);
 const editName = ref('');
 const showColorPicker = ref(false);
 const swatchWrapRef = ref<HTMLElement | null>(null);
+const inputRef = ref<HTMLInputElement | null>(null);
 
 function startEdit() {
     if (props.locked) return;
     editName.value = props.status.name;
-    isEditing.value = true;
+    isEditingStatus.value = true;
+    nextTick(() => inputRef.value?.focus());
 }
 
 function commitEdit() {
-    isEditing.value = false;
+    isEditingStatus.value = false;
     emit('update:name', editName.value);
 }
 
 function cancelEdit() {
-    isEditing.value = false;
+    isEditingStatus.value = false;
     editName.value = props.status.name;
 }
 
@@ -61,9 +49,9 @@ function selectColor(c: string) {
 
 function onDocPointerdown(e: PointerEvent) {
     if (
-        showColorPicker.value
-        && swatchWrapRef.value
-        && !swatchWrapRef.value.contains(e.target as Node)
+        showColorPicker.value &&
+        swatchWrapRef.value &&
+        !swatchWrapRef.value.contains(e.target as Node)
     ) {
         showColorPicker.value = false;
     }
@@ -71,6 +59,8 @@ function onDocPointerdown(e: PointerEvent) {
 
 onMounted(() => document.addEventListener('pointerdown', onDocPointerdown));
 onUnmounted(() => document.removeEventListener('pointerdown', onDocPointerdown));
+
+defineExpose({ startEdit });
 </script>
 
 <template>
@@ -91,19 +81,13 @@ onUnmounted(() => document.removeEventListener('pointerdown', onDocPointerdown))
             />
         </div>
 
-        <div
-            ref="swatchWrapRef"
-            class="status-row__swatch-wrap"
-        >
+        <div ref="swatchWrapRef" class="status-row__swatch-wrap">
             <div
                 class="status-row__swatch"
                 :style="{ background: status.color }"
                 @click="showColorPicker = !showColorPicker"
             />
-            <div
-                v-if="showColorPicker"
-                class="color-picker-popover"
-            >
+            <div v-if="showColorPicker" class="color-picker-popover">
                 <div
                     v-for="c in palette"
                     :key="c"
@@ -116,45 +100,28 @@ onUnmounted(() => document.removeEventListener('pointerdown', onDocPointerdown))
 
         <div class="status-row__name">
             <input
-                v-if="isEditing"
+                v-if="isEditingStatus"
+                ref="inputRef"
                 v-model="editName"
                 class="status-row__input"
-                autofocus
                 @blur="commitEdit"
                 @keydown="onNameKeydown"
-            >
+            />
             <span
                 v-else
                 class="status-row__label"
                 :style="{ cursor: locked ? 'default' : 'pointer' }"
                 @click="startEdit"
-            >{{ status.name }}</span>
+                >{{ status.name }}</span
+            >
         </div>
 
-        <div
-            v-if="index === 0"
-            class="anchor-pill anchor-pill--start"
-        >
-            Start
-        </div>
-        <div
-            v-else-if="index === total - 1"
-            class="anchor-pill anchor-pill--end"
-        >
-            End
-        </div>
+        <div v-if="index === 0" class="anchor-pill anchor-pill--start">Start</div>
+        <div v-else-if="index === total - 1" class="anchor-pill anchor-pill--end">End</div>
 
         <div class="status-row__delete-slot">
-            <button
-                v-if="!locked"
-                class="status-row__delete"
-                @click="emit('delete')"
-            >
-                <v-icon
-                    icon="mdi-trash-can-outline"
-                    :size="13"
-                    color="#ba1b24"
-                />
+            <button v-if="!locked" class="status-row__delete" @click="emit('delete')">
+                <v-icon icon="mdi-trash-can-outline" :size="13" color="#ba1b24" />
             </button>
         </div>
     </div>
@@ -169,9 +136,11 @@ onUnmounted(() => document.removeEventListener('pointerdown', onDocPointerdown))
     border-radius: 8px;
     transition: background 0.1s;
 }
+
 .status-row:hover {
     background: rgba(113, 124, 130, 0.07);
 }
+
 .status-row__handle {
     width: 18px;
     display: flex;
@@ -179,16 +148,20 @@ onUnmounted(() => document.removeEventListener('pointerdown', onDocPointerdown))
     justify-content: center;
     flex-shrink: 0;
 }
+
 .status-row .drag-handle {
     opacity: 0.5;
 }
+
 .status-row:hover .drag-handle {
     opacity: 1;
 }
+
 .status-row__swatch-wrap {
     position: relative;
     flex-shrink: 0;
 }
+
 .status-row__swatch {
     width: 18px;
     height: 18px;
@@ -196,6 +169,7 @@ onUnmounted(() => document.removeEventListener('pointerdown', onDocPointerdown))
     border: 1px solid rgba(0, 0, 0, 0.08);
     cursor: pointer;
 }
+
 .color-picker-popover {
     position: absolute;
     top: calc(100% + 6px);
@@ -210,6 +184,7 @@ onUnmounted(() => document.removeEventListener('pointerdown', onDocPointerdown))
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
     border: 1px solid rgba(113, 124, 130, 0.16);
 }
+
 .color-picker-swatch {
     width: 20px;
     height: 20px;
@@ -217,13 +192,16 @@ onUnmounted(() => document.removeEventListener('pointerdown', onDocPointerdown))
     cursor: pointer;
     transition: transform 0.1s;
 }
+
 .color-picker-swatch:hover {
     transform: scale(1.15);
 }
+
 .status-row__name {
     flex: 1;
     min-width: 0;
 }
+
 .status-row__label {
     display: block;
     font-family: 'Inter', sans-serif;
@@ -231,6 +209,7 @@ onUnmounted(() => document.removeEventListener('pointerdown', onDocPointerdown))
     font-weight: 600;
     color: #2a3439;
 }
+
 .status-row__input {
     font-family: 'Inter', sans-serif;
     font-size: 14px;
@@ -241,6 +220,7 @@ onUnmounted(() => document.removeEventListener('pointerdown', onDocPointerdown))
     outline: none;
     width: 100%;
 }
+
 .anchor-pill {
     flex-shrink: 0;
     font-family: 'Inter', sans-serif;
@@ -249,14 +229,17 @@ onUnmounted(() => document.removeEventListener('pointerdown', onDocPointerdown))
     padding: 2px 8px;
     border-radius: 10px;
 }
+
 .anchor-pill--start {
     color: #1a7a4a;
     background: rgba(26, 122, 74, 0.1);
 }
+
 .anchor-pill--end {
     color: #ba1b24;
     background: rgba(186, 27, 36, 0.08);
 }
+
 .status-row__delete-slot {
     width: 28px;
     flex-shrink: 0;
@@ -264,6 +247,7 @@ onUnmounted(() => document.removeEventListener('pointerdown', onDocPointerdown))
     align-items: center;
     justify-content: center;
 }
+
 .status-row__delete {
     width: 24px;
     height: 24px;
@@ -277,9 +261,11 @@ onUnmounted(() => document.removeEventListener('pointerdown', onDocPointerdown))
     transition: background 0.12s;
     visibility: hidden;
 }
+
 .status-row:hover .status-row__delete {
     visibility: visible;
 }
+
 .status-row__delete:hover {
     background: rgba(186, 27, 36, 0.08);
 }
