@@ -25,7 +25,7 @@ const getPriorityOrder = (priority: string | null | undefined): number => {
 
 const allSubtasks = computed(() => listsStore.currentTodo?.subtasks || []);
 const total = computed(() => allSubtasks.value.length);
-const doneCount = computed(() => allSubtasks.value.filter((s) => s.status === 'Closed').length);
+const doneCount = computed(() => allSubtasks.value.filter(s => s.status === 'Closed').length);
 
 function sortBy(list: Todo[]): Todo[] {
     if (subtasksSortBy.value !== 'priority') return list;
@@ -35,10 +35,10 @@ function sortBy(list: Todo[]): Todo[] {
 }
 
 const activeSubtasks = computed(() =>
-    sortBy(allSubtasks.value.filter((s) => s.status !== 'Closed')),
+    sortBy(allSubtasks.value.filter(s => s.status !== 'Closed')),
 );
 const closedSubtasks = computed(() =>
-    sortBy(allSubtasks.value.filter((s) => s.status === 'Closed')),
+    sortBy(allSubtasks.value.filter(s => s.status === 'Closed')),
 );
 
 const baseLinkableTodos = computed(() => {
@@ -46,7 +46,7 @@ const baseLinkableTodos = computed(() => {
     return todos.filter((todo) => {
         if (!todo.id || listsStore.currentTodo?.id === todo.id) return false;
         if ((todo as any).parentId) return false;
-        if (listsStore.currentTodo?.subtasks?.some((st) => st.id === todo.id)) return false;
+        if (listsStore.currentTodo?.subtasks?.some(st => st.id === todo.id)) return false;
         return true;
     });
 });
@@ -56,7 +56,7 @@ const linkableTodos = computed(() => {
     const q = String(linkSearch.value ?? '')
         .trim()
         .toLowerCase();
-    if (q) todos = todos.filter((todo) => todo.name?.toLowerCase().includes(q));
+    if (q) todos = todos.filter(todo => todo.name?.toLowerCase().includes(q));
 
     todos.sort((a, b) => {
         const getTime = (t: any) => {
@@ -89,7 +89,7 @@ async function linkExistingTodo(todo: Todo) {
     todo.parentId = listsStore.currentTodo.id;
     const updated = await listsStore.updateTodo(todo);
     if (!listsStore.currentTodo.subtasks) listsStore.currentTodo.subtasks = [];
-    if (!listsStore.currentTodo.subtasks.some((st) => st.id === updated.id)) {
+    if (!listsStore.currentTodo.subtasks.some(st => st.id === updated.id)) {
         listsStore.currentTodo.subtasks.push(updated);
     }
 }
@@ -109,7 +109,7 @@ function renameSubtask(subtaskId: string | number, index: number) {
 }
 
 function onSubtaskBlur(subtask: Todo) {
-    editingSubtaskIds.value = editingSubtaskIds.value.filter((id) => id !== subtask.id);
+    editingSubtaskIds.value = editingSubtaskIds.value.filter(id => id !== subtask.id);
     listsStore.updateTodo(subtask);
 }
 
@@ -134,18 +134,28 @@ function formatDueDate(date: Date | string | undefined): string {
 </script>
 
 <template>
-    <section class="subtasks" data-testid="subtasks-section">
+    <section
+        class="subtasks"
+        data-testid="subtasks-section"
+    >
         <!-- Header -->
         <header class="subtasks__header">
             <div class="subtasks__title-group">
-                <h3 class="subtasks__title">Subtasks</h3>
-                <span v-if="total" class="subtasks__count" data-testid="subtasks-count"
-                    >{{ doneCount }}/{{ total }}</span
-                >
+                <h3 class="subtasks__title">
+                    Subtasks
+                </h3>
+                <span
+                    v-if="total"
+                    class="subtasks__count"
+                    data-testid="subtasks-count"
+                >{{ doneCount }}/{{ total }}</span>
             </div>
 
             <div class="subtasks__header-actions">
-                <v-tooltip v-if="total" location="bottom">
+                <v-tooltip
+                    v-if="total"
+                    location="bottom"
+                >
                     <template #activator="{ props }">
                         <button
                             v-bind="props"
@@ -155,7 +165,9 @@ function formatDueDate(date: Date | string | undefined): string {
                             data-testid="subtasks-sort-button"
                             @click="toggleSort"
                         >
-                            <v-icon size="16">mdi-sort-variant</v-icon>
+                            <v-icon size="16">
+                                mdi-sort-variant
+                            </v-icon>
                         </button>
                     </template>
                     <span>{{
@@ -172,26 +184,43 @@ function formatDueDate(date: Date | string | undefined): string {
                     data-testid="subtasks-toggle-done"
                     @click="showDone = !showDone"
                 >
-                    <v-icon size="14">{{
-                        showDone ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
-                    }}</v-icon>
+                    <v-icon size="14">
+                        {{
+                            showDone ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
+                        }}
+                    </v-icon>
                     {{ showDone ? 'Hide done' : 'Show done' }}
                 </button>
             </div>
         </header>
 
         <!-- Add subtask -->
-        <form class="subtasks__add" data-testid="add-subtask-form" @submit.prevent="addSubtask">
-            <v-icon class="subtasks__add-icon" size="16">mdi-plus</v-icon>
+        <form
+            class="subtasks__add"
+            data-testid="add-subtask-form"
+            @submit.prevent="addSubtask"
+        >
+            <v-icon
+                class="subtasks__add-icon"
+                size="16"
+            >
+                mdi-plus
+            </v-icon>
             <input
                 v-model="newSubtaskName"
                 type="text"
                 placeholder="Add subtask"
                 class="subtasks__add-input"
                 data-testid="add-subtask-input"
-            />
-            <kbd v-if="newSubtaskName" class="subtasks__kbd">↵</kbd>
-            <v-menu :width="400" location="bottom end">
+            >
+            <kbd
+                v-if="newSubtaskName"
+                class="subtasks__kbd"
+            >↵</kbd>
+            <v-menu
+                :width="400"
+                location="bottom end"
+            >
                 <template #activator="{ props }">
                     <button
                         v-bind="props"
@@ -200,7 +229,9 @@ function formatDueDate(date: Date | string | undefined): string {
                         data-testid="link-subtask-button"
                         @click.stop
                     >
-                        <v-icon size="14">mdi-link-variant</v-icon>
+                        <v-icon size="14">
+                            mdi-link-variant
+                        </v-icon>
                     </button>
                 </template>
                 <v-list density="compact">
@@ -236,7 +267,11 @@ function formatDueDate(date: Date | string | undefined): string {
         </form>
 
         <!-- Active list -->
-        <ul v-if="activeSubtasks.length" class="subtasks__list" data-testid="subtasks-list-active">
+        <ul
+            v-if="activeSubtasks.length"
+            class="subtasks__list"
+            data-testid="subtasks-list-active"
+        >
             <li
                 v-for="(subtask, index) in activeSubtasks"
                 :key="subtask.id"
@@ -244,14 +279,20 @@ function formatDueDate(date: Date | string | undefined): string {
                 :data-testid="`subtask-item-${index}`"
                 @click="navigateToSubtask(subtask.id)"
             >
-                <label class="subtasks__checkbox" @click.stop>
+                <label
+                    class="subtasks__checkbox"
+                    @click.stop
+                >
                     <input
                         type="checkbox"
                         :checked="false"
                         :data-testid="`subtask-checkbox-${index}`"
                         @change="toggleStatus(subtask)"
+                    >
+                    <span
+                        class="subtasks__checkbox-box"
+                        aria-hidden="true"
                     />
-                    <span class="subtasks__checkbox-box" aria-hidden="true" />
                 </label>
 
                 <div class="subtasks__row-body">
@@ -272,7 +313,7 @@ function formatDueDate(date: Date | string | undefined): string {
                         @blur="onSubtaskBlur(subtask)"
                         @click.stop
                         @keyup.enter="onSubtaskBlur(subtask)"
-                    />
+                    >
                 </div>
 
                 <span
@@ -305,7 +346,10 @@ function formatDueDate(date: Date | string | undefined): string {
                     />
                 </div>
 
-                <div class="subtasks__row-actions" @click.stop>
+                <div
+                    class="subtasks__row-actions"
+                    @click.stop
+                >
                     <v-menu>
                         <template #activator="{ props }">
                             <button
@@ -315,7 +359,9 @@ function formatDueDate(date: Date | string | undefined): string {
                                 :data-testid="`subtask-menu-${index}`"
                                 @click.stop
                             >
-                                <v-icon size="14">mdi-dots-horizontal</v-icon>
+                                <v-icon size="14">
+                                    mdi-dots-horizontal
+                                </v-icon>
                             </button>
                         </template>
                         <v-list density="compact">
@@ -333,7 +379,9 @@ function formatDueDate(date: Date | string | undefined): string {
                                 @click="deleteSubtask(subtask.id)"
                             >
                                 <template #prepend>
-                                    <v-icon color="error">mdi-delete</v-icon>
+                                    <v-icon color="error">
+                                        mdi-delete
+                                    </v-icon>
                                 </template>
                                 <v-list-item-title>Delete subtask</v-list-item-title>
                             </v-list-item>
@@ -343,16 +391,25 @@ function formatDueDate(date: Date | string | undefined): string {
             </li>
         </ul>
 
-        <p v-if="!total" class="subtasks__empty">
+        <p
+            v-if="!total"
+            class="subtasks__empty"
+        >
             No subtasks yet. Add one above, or link an existing task.
         </p>
 
         <!-- Done group -->
         <template v-if="showDone && closedSubtasks.length">
-            <div class="subtasks__section-label" data-testid="subtasks-done-label">
+            <div
+                class="subtasks__section-label"
+                data-testid="subtasks-done-label"
+            >
                 Done · {{ closedSubtasks.length }}
             </div>
-            <ul class="subtasks__list" data-testid="subtasks-list-done">
+            <ul
+                class="subtasks__list"
+                data-testid="subtasks-list-done"
+            >
                 <li
                     v-for="(subtask, index) in closedSubtasks"
                     :key="subtask.id"
@@ -360,24 +417,35 @@ function formatDueDate(date: Date | string | undefined): string {
                     :data-testid="`subtask-done-item-${index}`"
                     @click="navigateToSubtask(subtask.id)"
                 >
-                    <label class="subtasks__checkbox" @click.stop>
+                    <label
+                        class="subtasks__checkbox"
+                        @click.stop
+                    >
                         <input
                             type="checkbox"
                             :checked="true"
                             :data-testid="`subtask-done-checkbox-${index}`"
                             @change="toggleStatus(subtask)"
-                        />
+                        >
                         <span
                             class="subtasks__checkbox-box subtasks__checkbox-box--checked"
                             aria-hidden="true"
                         >
-                            <v-icon size="10" color="white">mdi-check</v-icon>
+                            <v-icon
+                                size="10"
+                                color="white"
+                            >mdi-check</v-icon>
                         </span>
                     </label>
 
-                    <div class="subtasks__name subtasks__name--done">{{ subtask.name }}</div>
+                    <div class="subtasks__name subtasks__name--done">
+                        {{ subtask.name }}
+                    </div>
 
-                    <div class="subtasks__row-actions" @click.stop>
+                    <div
+                        class="subtasks__row-actions"
+                        @click.stop
+                    >
                         <v-menu>
                             <template #activator="{ props }">
                                 <button
@@ -387,7 +455,9 @@ function formatDueDate(date: Date | string | undefined): string {
                                     :data-testid="`subtask-done-menu-${index}`"
                                     @click.stop
                                 >
-                                    <v-icon size="14">mdi-dots-horizontal</v-icon>
+                                    <v-icon size="14">
+                                        mdi-dots-horizontal
+                                    </v-icon>
                                 </button>
                             </template>
                             <v-list density="compact">
@@ -396,7 +466,9 @@ function formatDueDate(date: Date | string | undefined): string {
                                     @click="deleteSubtask(subtask.id)"
                                 >
                                     <template #prepend>
-                                        <v-icon color="error">mdi-delete</v-icon>
+                                        <v-icon color="error">
+                                            mdi-delete
+                                        </v-icon>
                                     </template>
                                     <v-list-item-title>Delete subtask</v-list-item-title>
                                 </v-list-item>

@@ -7,11 +7,13 @@ onMounted(async () => {
     try {
         const connected = await $fetch('/api/github/check');
         githubConnected.value = !!connected;
-    } catch {
+    }
+    catch {
         githubConnected.value = false;
     }
 });
 </script>
+
 <template>
     <v-card class="settings-card">
         <SettingsIntegrationRow
@@ -23,6 +25,7 @@ onMounted(async () => {
         />
     </v-card>
 </template>
+
 <style scoped>
 .settings-card {
     background: #ffffff;
