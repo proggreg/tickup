@@ -9,6 +9,17 @@ export default defineMcpTool({
         id: z.string().describe('The list ID to delete'),
     },
     handler: async ({ id }) => {
+        const elicit = useMcpElicitation();
+
+        if (elicit.supports()) {
+            const confirmed = await elicit.confirm(
+                `Are you sure you want to permanently delete list "${id}"? This cannot be undone.`,
+            );
+            if (!confirmed) {
+                return 'Deletion cancelled.';
+            }
+        }
+
         return await callApi(`/api/list/${encodeURIComponent(id)}`, {
             method: 'DELETE',
         });

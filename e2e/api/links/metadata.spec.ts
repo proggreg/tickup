@@ -7,7 +7,7 @@ test.describe('Links', () => {
         const response = await request.get(`/api/metadata?urls=${urls}`);
 
         const titles = await response.json();
-        const title = titles.find((title) => title.url === url);
+        const title = titles.find(title => title.url === url);
         expect(title.title).toBe(
             'Deploying AI Models with Hugging Face – Hands-On Course - YouTube',
         );

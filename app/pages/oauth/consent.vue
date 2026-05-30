@@ -37,7 +37,8 @@ watchEffect(async () => {
     });
     if (err) {
         error.value = err.message;
-    } else {
+    }
+    else {
         details.value = data;
     }
     loading.value = false;
@@ -79,15 +80,36 @@ async function deny() {
 </script>
 
 <template>
-    <v-row width="100%" align="center" justify="center" class="fill-height">
-        <v-col cols="12" sm="8" md="6" lg="5" xl="4">
-            <v-card class="pa-8" elevation="2" width="100%" data-testid="oauth-consent-card">
+    <v-row
+        width="100%"
+        align="center"
+        justify="center"
+        class="fill-height"
+    >
+        <v-col
+            cols="12"
+            sm="8"
+            md="6"
+            lg="5"
+            xl="4"
+        >
+            <v-card
+                class="pa-8"
+                elevation="2"
+                width="100%"
+                data-testid="oauth-consent-card"
+            >
                 <v-card-title class="pa-2">
-                    <h2 class="text-h5 font-weight-bold">Authorize access</h2>
+                    <h2 class="text-h5 font-weight-bold">
+                        Authorize access
+                    </h2>
                 </v-card-title>
 
                 <v-card-text class="pt-4">
-                    <v-progress-circular v-if="loading" indeterminate />
+                    <v-progress-circular
+                        v-if="loading"
+                        indeterminate
+                    />
 
                     <v-alert
                         v-else-if="error"
@@ -110,9 +132,19 @@ async function deny() {
                             Signed in as {{ details.user.email }}
                         </p> -->
 
-                        <div v-if="scopes.length" class="mb-6">
-                            <p class="text-subtitle-2 mb-2">Requested scopes</p>
-                            <v-chip v-for="s in scopes" :key="s" class="mr-2 mb-2" size="small">
+                        <div
+                            v-if="scopes.length"
+                            class="mb-6"
+                        >
+                            <p class="text-subtitle-2 mb-2">
+                                Requested scopes
+                            </p>
+                            <v-chip
+                                v-for="s in scopes"
+                                :key="s"
+                                class="mr-2 mb-2"
+                                size="small"
+                            >
                                 {{ s }}
                             </v-chip>
                         </div>

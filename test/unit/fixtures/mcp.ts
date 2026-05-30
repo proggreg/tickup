@@ -100,7 +100,8 @@ export const mcpTest = test.extend<MCPTestContext>({
             await use(client);
             await client.close();
             await transport.close();
-        } finally {
+        }
+        finally {
             globalThis.fetch = originalFetch;
         }
 
@@ -109,7 +110,8 @@ export const mcpTest = test.extend<MCPTestContext>({
             if (error) {
                 console.warn('Failed to delete test user:', error.message);
             }
-        } catch (err) {
+        }
+        catch (err) {
             console.warn('Error deleting test user:', err);
         }
     },

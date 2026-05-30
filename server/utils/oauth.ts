@@ -32,7 +32,8 @@ export async function verifySupabaseAccessToken(
         });
         if (typeof payload.sub !== 'string') return null;
         return payload as McpAccessTokenClaims;
-    } catch {
+    }
+    catch {
         return null;
     }
 }
