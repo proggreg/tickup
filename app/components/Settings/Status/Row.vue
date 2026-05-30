@@ -11,7 +11,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
     'update:name': [name: string];
     'update:color': [color: string];
-    delete: [];
+    'delete': [];
 }>();
 
 const isEditingStatus = ref(false);
@@ -49,9 +49,9 @@ function selectColor(c: string) {
 
 function onDocPointerdown(e: PointerEvent) {
     if (
-        showColorPicker.value &&
-        swatchWrapRef.value &&
-        !swatchWrapRef.value.contains(e.target as Node)
+        showColorPicker.value
+        && swatchWrapRef.value
+        && !swatchWrapRef.value.contains(e.target as Node)
     ) {
         showColorPicker.value = false;
     }
@@ -81,13 +81,19 @@ defineExpose({ startEdit });
             />
         </div>
 
-        <div ref="swatchWrapRef" class="status-row__swatch-wrap">
+        <div
+            ref="swatchWrapRef"
+            class="status-row__swatch-wrap"
+        >
             <div
                 class="status-row__swatch"
                 :style="{ background: status.color }"
                 @click="showColorPicker = !showColorPicker"
             />
-            <div v-if="showColorPicker" class="color-picker-popover">
+            <div
+                v-if="showColorPicker"
+                class="color-picker-popover"
+            >
                 <div
                     v-for="c in palette"
                     :key="c"
@@ -106,22 +112,39 @@ defineExpose({ startEdit });
                 class="status-row__input"
                 @blur="commitEdit"
                 @keydown="onNameKeydown"
-            />
+            >
             <span
                 v-else
                 class="status-row__label"
                 :style="{ cursor: locked ? 'default' : 'pointer' }"
                 @click="startEdit"
-                >{{ status.name }}</span
-            >
+            >{{ status.name }}</span>
         </div>
 
-        <div v-if="index === 0" class="anchor-pill anchor-pill--start">Start</div>
-        <div v-else-if="index === total - 1" class="anchor-pill anchor-pill--end">End</div>
+        <div
+            v-if="index === 0"
+            class="anchor-pill anchor-pill--start"
+        >
+            Start
+        </div>
+        <div
+            v-else-if="index === total - 1"
+            class="anchor-pill anchor-pill--end"
+        >
+            End
+        </div>
 
         <div class="status-row__delete-slot">
-            <button v-if="!locked" class="status-row__delete" @click="emit('delete')">
-                <v-icon icon="mdi-trash-can-outline" :size="13" color="#ba1b24" />
+            <button
+                v-if="!locked"
+                class="status-row__delete"
+                @click="emit('delete')"
+            >
+                <v-icon
+                    icon="mdi-trash-can-outline"
+                    :size="13"
+                    color="#ba1b24"
+                />
             </button>
         </div>
     </div>

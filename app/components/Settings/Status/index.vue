@@ -3,49 +3,60 @@ const store = useSettingsStore();
 const isSaving = ref(false);
 
 async function save() {
-  isSaving.value = true;
-  for (let i = store.userStatuses.length - 2; i >= 1; i--) {
-    if (store.userStatuses[i].name === '') {
-      store.userStatuses.splice(i, 1);
+    isSaving.value = true;
+    for (let i = store.userStatuses.length - 2; i >= 1; i--) {
+        if (store.userStatuses[i].name === '') {
+            store.userStatuses.splice(i, 1);
+        }
     }
-  }
-  await $fetch('/api/settings', {
-    method: 'PUT',
-    body: { statuses: store.userStatuses },
-  });
-  savedStatuses.value = store.userStatuses.map(s => ({ ...s }));
-  isSaving.value = false;
+    await $fetch('/api/settings', {
+        method: 'PUT',
+        body: { statuses: store.userStatuses },
+    });
+    savedStatuses.value = store.userStatuses.map(s => ({ ...s }));
+    isSaving.value = false;
 }
 
 const savedStatuses = ref<Status[]>(store.userStatuses.map(s => ({ ...s })));
 
 const isDirty = computed(() => {
-  const curr = store.userStatuses;
-  const saved = savedStatuses.value;
-  if (curr.length !== saved.length) return true;
-  return curr.some((s, i) => s.name !== saved[i]?.name || s.color !== saved[i]?.color);
+    const curr = store.userStatuses;
+    const saved = savedStatuses.value;
+    if (curr.length !== saved.length) return true;
+    return curr.some((s, i) => s.name !== saved[i]?.name || s.color !== saved[i]?.color);
 });
 
 function discard() {
-  store.userStatuses.splice(
-    0,
-    store.userStatuses.length,
-    ...savedStatuses.value.map(s => ({ ...s })),
-  );
+    store.userStatuses.splice(
+        0,
+        store.userStatuses.length,
+        ...savedStatuses.value.map(s => ({ ...s })),
+    );
 }
 </script>
-<template>
-  <SettingsStatusCard />
 
-  <div class="save-row">
-    <button v-if="isDirty" class="btn-discard" @click="discard">
-      Discard
-    </button>
-    <button class="btn-save" :class="{ 'btn-save--clean': !isDirty }" :disabled="!isDirty || isSaving" @click="save">
-      Save changes
-    </button>
-  </div>
+<template>
+    <SettingsStatusCard />
+
+    <div class="save-row">
+        <button
+            v-if="isDirty"
+            class="btn-discard"
+            @click="discard"
+        >
+            Discard
+        </button>
+        <button
+            class="btn-save"
+            :class="{ 'btn-save--clean': !isDirty }"
+            :disabled="!isDirty || isSaving"
+            @click="save"
+        >
+            Save changes
+        </button>
+    </div>
 </template>
+
 <style scoped>
 .status-row {
   display: flex;
@@ -209,8 +220,6 @@ function discard() {
   background: rgba(113, 124, 130, 0.16);
   margin-left: 52px;
 }
-
-
 
 .section-header {
   margin-bottom: 24px;
