@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
             }
 
             // Transform snake_case fields to camelCase for API response
-            return (data || []).map((todo) => ({
+            return (data || []).map(todo => ({
                 ...todo,
                 dueDate: todo.due_date,
                 completedDate: todo.completed_date,
@@ -33,7 +33,8 @@ export default defineEventHandler(async (event) => {
             }));
         }
         return [];
-    } catch (e) {
+    }
+    catch (e) {
         console.error('Error fetching list todos:', e);
         throw createError({
             statusCode: 500,

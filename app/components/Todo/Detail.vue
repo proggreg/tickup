@@ -14,7 +14,11 @@ function updateName() {
 </script>
 
 <template>
-    <v-card width="100%" elevation="0" class="pa-0 d-flex flex-column rounded-lg todo-detail-card">
+    <v-card
+        width="100%"
+        elevation="0"
+        class="pa-0 d-flex flex-column rounded-lg todo-detail-card"
+    >
         <v-card-title>
             <v-text-field
                 v-model="listsStore.currentTodo.name"
@@ -32,12 +36,19 @@ function updateName() {
                     <TodoStatus />
                 </v-col>
                 <v-col cols="auto">
-                    <GithubButton v-if="hasGithub" :todo="listsStore.currentTodo" />
+                    <GithubButton
+                        v-if="hasGithub"
+                        :todo="listsStore.currentTodo"
+                    />
                 </v-col>
                 <v-col />
                 <v-spacer />
 
-                <v-col sm="4" md="4" cols="6">
+                <v-col
+                    sm="4"
+                    md="4"
+                    cols="6"
+                >
                     <AppDueDate
                         :todo-due-date="listsStore.currentTodo.dueDate"
                         :todo="listsStore.currentTodo"

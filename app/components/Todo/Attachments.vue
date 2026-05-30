@@ -94,9 +94,11 @@ async function handleFileUpload(event: Event) {
         if (fileInput.value) {
             fileInput.value.value = '';
         }
-    } catch (error) {
+    }
+    catch (error) {
         uploadError.value = error instanceof Error ? error.message : 'Upload failed';
-    } finally {
+    }
+    finally {
         uploading.value = false;
     }
 }
@@ -120,10 +122,11 @@ async function deleteAttachment(attachmentId: string) {
 
         // Remove attachment from local state
         listsStore.currentTodo.attachments = listsStore.currentTodo.attachments?.filter(
-            (a) => a.id !== attachmentId,
+            a => a.id !== attachmentId,
         );
         await listsStore.updateTodo(listsStore.currentTodo);
-    } catch (error) {
+    }
+    catch (error) {
         console.error(error as Error, {
             component: 'TodoAttachments',
             function: 'deleteAttachment',
@@ -138,7 +141,9 @@ function openFile(attachment: any) {
 
 <template>
     <div class="pa-4 rounded-lg">
-        <div class="mb-4 text-subtitle-1 font-weight-bold">Attachments</div>
+        <div class="mb-4 text-subtitle-1 font-weight-bold">
+            Attachments
+        </div>
 
         <div class="mb-4">
             <v-file-input
@@ -160,14 +165,20 @@ function openFile(attachment: any) {
         </div>
 
         <div v-if="attachments.length > 0">
-            <v-list density="compact" class="pa-0">
+            <v-list
+                density="compact"
+                class="pa-0"
+            >
                 <v-list-item
                     v-for="attachment in attachments"
                     :key="attachment.id"
                     class="py-2 px-0 align-center"
                 >
                     <template #prepend>
-                        <v-icon :icon="getFileIcon(attachment.mimeType)" class="me-3" />
+                        <v-icon
+                            :icon="getFileIcon(attachment.mimeType)"
+                            class="me-3"
+                        />
                     </template>
 
                     <v-list-item-title class="text-body-2">
@@ -201,7 +212,12 @@ function openFile(attachment: any) {
             </v-list>
         </div>
 
-        <div v-else class="text-grey text-body-2 pa-2">No attachments yet. Add files above!</div>
+        <div
+            v-else
+            class="text-grey text-body-2 pa-2"
+        >
+            No attachments yet. Add files above!
+        </div>
     </div>
 </template>
 

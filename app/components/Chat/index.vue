@@ -50,7 +50,10 @@ function sendMessage(message: string) {
 <template>
     <div>
         <NuxtErrorBoundary>
-            <div v-for="(message, index) in chatMessages" :key="index">
+            <div
+                v-for="(message, index) in chatMessages"
+                :key="index"
+            >
                 <p v-if="message.sender === 'user'">
                     {{ message.text }}
                 </p>
@@ -67,7 +70,10 @@ function sendMessage(message: string) {
                 @keyup.enter="sendMessage(prompt)"
             >
                 <template #append>
-                    <v-select v-model="selectedModel" :items="models" />
+                    <v-select
+                        v-model="selectedModel"
+                        :items="models"
+                    />
                 </template>
             </v-text-field>
 

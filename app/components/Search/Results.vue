@@ -18,7 +18,10 @@ function formatDate(dateStr: string) {
 </script>
 
 <template>
-    <v-list v-if="store.loading" class="px-3 bg-transparent">
+    <v-list
+        v-if="store.loading"
+        class="px-3 bg-transparent"
+    >
         <v-list-item
             v-for="n in 5"
             :key="n"
@@ -31,8 +34,14 @@ function formatDate(dateStr: string) {
             <template #prepend>
                 <div class="skeleton-circle mr-3" />
             </template>
-            <div class="skeleton-line mb-2" style="width: 60%" />
-            <div class="skeleton-line" style="width: 35%" />
+            <div
+                class="skeleton-line mb-2"
+                style="width: 60%"
+            />
+            <div
+                class="skeleton-line"
+                style="width: 35%"
+            />
         </v-list-item>
     </v-list>
 
@@ -40,21 +49,41 @@ function formatDate(dateStr: string) {
         v-else-if="store.results.length === 0 && store.searchQuery"
         class="d-flex flex-column align-center justify-center flex-grow-1 pa-8 text-center"
     >
-        <v-icon icon="mdi-magnify-remove-outline" size="56" class="text-disabled mb-3" />
-        <p class="text-body-1 font-weight-medium text-medium-emphasis mb-1">No results found</p>
-        <p class="text-body-2 text-disabled">Try searching with different keywords</p>
+        <v-icon
+            icon="mdi-magnify-remove-outline"
+            size="56"
+            class="text-disabled mb-3"
+        />
+        <p class="text-body-1 font-weight-medium text-medium-emphasis mb-1">
+            No results found
+        </p>
+        <p class="text-body-2 text-disabled">
+            Try searching with different keywords
+        </p>
     </div>
 
     <div
         v-else-if="store.results.length === 0"
         class="d-flex flex-column align-center justify-center flex-grow-1 pa-8 text-center"
     >
-        <v-icon icon="mdi-magnify" size="56" class="text-disabled mb-3" />
-        <p class="text-body-1 font-weight-medium text-medium-emphasis mb-1">Search your todos</p>
-        <p class="text-body-2 text-disabled">Type above to find anything</p>
+        <v-icon
+            icon="mdi-magnify"
+            size="56"
+            class="text-disabled mb-3"
+        />
+        <p class="text-body-1 font-weight-medium text-medium-emphasis mb-1">
+            Search your todos
+        </p>
+        <p class="text-body-2 text-disabled">
+            Type above to find anything
+        </p>
     </div>
 
-    <v-list v-else class="px-3 flex-grow-1 bg-transparent" style="overflow-y: auto">
+    <v-list
+        v-else
+        class="px-3 flex-grow-1 bg-transparent"
+        style="overflow-y: auto"
+    >
         <v-list-item
             v-for="item in store.results"
             :key="item.id"
@@ -67,7 +96,10 @@ function formatDate(dateStr: string) {
         >
             <template #prepend>
                 <div class="mr-3">
-                    <ListStatus :todo="item" :disabled="props.disableStatusButton" />
+                    <ListStatus
+                        :todo="item"
+                        :disabled="props.disableStatusButton"
+                    />
                 </div>
             </template>
 
@@ -76,13 +108,21 @@ function formatDate(dateStr: string) {
             </v-list-item-title>
 
             <v-list-item-subtitle class="d-flex align-center ga-2 mt-1">
-                <v-chip v-if="item.list" size="x-small" variant="tonal" label>
+                <v-chip
+                    v-if="item.list"
+                    size="x-small"
+                    variant="tonal"
+                    label
+                >
                     {{ item.list.name }}
                 </v-chip>
                 <span class="text-caption text-disabled">{{ formatDate(item.updatedAt) }}</span>
             </v-list-item-subtitle>
 
-            <template v-if="!isMobile" #append>
+            <template
+                v-if="!isMobile"
+                #append
+            >
                 <v-btn
                     :to="`/todo/${item.id}`"
                     icon="mdi-open-in-new"
