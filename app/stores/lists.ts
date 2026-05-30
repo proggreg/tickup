@@ -12,6 +12,7 @@ export const useListsStore = defineStore('lists', {
         todaysTodos: [],
         overdueTodos: [],
         recentTodos: [],
+        panelOpen: false,
     }),
     actions: {
         async addList(): Promise<List> {

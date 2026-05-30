@@ -83,15 +83,48 @@ function updateListType(listType) {
                                 />
                             </v-col>
                         </v-row>
-                        <v-row>
-                            <v-col>
+                        <div class="list-layout">
+                            <div class="list-layout__list">
                                 <ListTable v-if="listsStore.currentList.listType === 'table'" />
                                 <ListSimple v-else />
-                            </v-col>
-                        </v-row>
+                            </div>
+                            <Transition name="panel">
+                                <TodoPanel
+                                    v-if="listsStore.panelOpen"
+                                    @close="listsStore.panelOpen = false"
+                                />
+                            </Transition>
+                        </div>
                     </v-window-item>
                 </v-window>
             </v-col>
         </v-row>
     </v-container>
 </template>
+
+<style scoped>
+.list-layout {
+    display: flex;
+    height: calc(100vh - 200px);
+    min-height: 0;
+}
+
+.list-layout__list {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+}
+
+.panel-enter-active,
+.panel-leave-active {
+    transition:
+        transform 0.22s ease,
+        opacity 0.22s;
+}
+
+.panel-enter-from,
+.panel-leave-to {
+    transform: translateX(20px);
+    opacity: 0;
+}
+</style>
