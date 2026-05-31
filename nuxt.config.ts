@@ -111,8 +111,10 @@ export default defineNuxtConfig({
                 include: ['../index.d.ts', '../types/**/*.ts'],
             },
         },
+        experimental: {
+            asyncContext: true,
+        },
     },
-
     vite: {
         server: {
             allowedHosts: ['dev.gregfield.dev'],
@@ -155,6 +157,7 @@ export default defineNuxtConfig({
     mcp: {
         name: 'Tickup',
         description: 'Tickup MCP server — tools and resources for the todo app.',
+        sessions: true,
     } as McpToolkitOptions,
 
     pinia: {},

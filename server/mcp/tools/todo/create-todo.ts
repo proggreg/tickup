@@ -22,7 +22,17 @@ export default defineMcpTool({
         await mcpUserId(event);
         const supabase = await mcpSupabaseClient(event);
         const tasks = new TaskService(supabase);
+        const elicit = await useMcpElicitation();
+        if (!elicit.supports('form')) {
+            return 'Client does not support elicitation.';
+        }
 
+        const result = await elicit.form({
+            message: 'hello',
+            schema: {
+                text: z.string(),
+            },
+        });
         // Remap description to desc (database column name)
         const { description, ...otherArgs } = args;
         const createData = {
