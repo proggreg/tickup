@@ -1,33 +1,25 @@
-import { createMCPClient } from '@ai-sdk/mcp';
-import { generateText, stepCountIs } from 'ai';
+import { streamText, UIMessage, convertToModelMessages, createGateway, generateText } from 'ai';
 
-export default defineEventHandler(async (event) => {
-    const { prompt } = await readBody<{ prompt: string }>(event);
-
-    const cookie = getRequestHeader(event, 'cookie') ?? '';
-    const mcpUrl = new URL('/mcp', getRequestURL(event).origin).toString();
-
-    const mcp = await createMCPClient({
-        transport: {
-            type: 'http',
-            url: mcpUrl,
-            headers: { cookie },
-        },
+export default defineLazyEventHandler(async () => {
+    const apiKey = useRuntimeConfig().aiGatewayApiKey;
+    if (!apiKey) throw new Error('Missing AI Gateway API key');
+    const gateway = createGateway({
+        apiKey: apiKey,
     });
 
-    try {
-        const tools = await mcp.tools();
-        const { content, text } = await generateText({
-            model: 'anthropic/claude-sonnet-4.5',
-            prompt,
-            tools,
-            stopWhen: stepCountIs(5),
-            maxRetries: 10,
-        });
+    return defineEventHandler(async (event: any) => {
+        try {
+            const { messages }: { messages: UIMessage[] } = await readBody(event);
 
-        return { content, text };
-    }
-    finally {
-        await mcp.close();
-    }
+            const result = streamText({
+                model: gateway('anthropic/claude-haiku-4.5'),
+                messages: await convertToModelMessages(messages),
+            });
+
+            return result.toUIMessageStreamResponse();
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    });
 });

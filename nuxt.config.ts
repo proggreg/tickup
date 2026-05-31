@@ -55,6 +55,7 @@ export default defineNuxtConfig({
     },
 
     runtimeConfig: {
+        aiGatewayApiKey: process.env.NUXT_AI_GATEWAY_API_KEY,
         private: {
             vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
             github: {
@@ -79,6 +80,7 @@ export default defineNuxtConfig({
             supabaseUrl: process.env.SUPABASE_URL,
             supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
             githubAppName: process.env.NUXT_PUBLIC_GITHUB_APP_NAME,
+            AI_GATEWAY_API_KEY: process.env.NUXT_AI_GATEWAY_API_KEY,
         },
     },
 

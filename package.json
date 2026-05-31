@@ -78,6 +78,7 @@
         "zod": "^4.4.2"
     },
     "dependencies": {
+        "@ai-sdk/vue": "^3.0.193",
         "@aws-sdk/client-bedrock": "^3.922.0",
         "@aws-sdk/client-bedrock-runtime": "^3.922.0",
         "@aws-sdk/client-s3": "^3.922.0",
