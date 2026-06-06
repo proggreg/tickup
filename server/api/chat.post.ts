@@ -5,8 +5,13 @@ import {
     createGateway,
     ToolSet,
     stepCountIs,
+    Schema,
 } from 'ai';
 import { createMCPClient, ElicitationRequestSchema } from '@ai-sdk/mcp';
+
+async function getInputFromUser(message: string, requestedSchema: Schema) {
+
+}
 
 export default defineLazyEventHandler(async () => {
     const apiKey = useRuntimeConfig().aiGatewayApiKey;
@@ -35,6 +40,11 @@ export default defineLazyEventHandler(async () => {
             const { messages }: { messages: UIMessage[] } = await readBody(event);
             mcp.onElicitationRequest(ElicitationRequestSchema, async (request) => {
                 console.log('elicit', request);
+                const userInput = await getInputFromUser(
+                  request.params.message,
+                  request.params.requestedSchema,
+                );
+
                 return {
                     action: 'accept',
                 };

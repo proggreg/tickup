@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Chat } from "@ai-sdk/vue";
-import { ref } from "vue";
 
 const input = ref("");
 const chat = new Chat({});
 
+
 const handleSubmit = (e: Event) => {
   e.preventDefault();
-  chat.sendMessage({ text: input.value });
+  chat.sendMessage({ text: `Create a todo called test ${new Date()} for list 2` });
   input.value = "";
 };
 </script>

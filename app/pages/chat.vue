@@ -5,7 +5,7 @@ import { McpClient } from '#components';
 <template>
   <v-row class="fill-height pa-6" align="end" justify="center">
     <v-col>
-      <mcp-client />
+      <mcp-client />  
     </v-col>
   </v-row>
 </template>
