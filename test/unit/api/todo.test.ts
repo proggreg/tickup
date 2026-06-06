@@ -54,6 +54,7 @@ describe('Todo API endpoints', () => {
         }
         catch (err) {
             // Expected - todo not found
+            console.error(err);
         }
     });
 

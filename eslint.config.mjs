@@ -9,5 +9,6 @@ export default withNuxt({
         '@typescript-eslint/no-explicit-any': 'off',
         // 'vue/html-indent': 'off',
         '@typescript-eslint/unified-signatures': 'off',
+        'no-empty-pattern': 'off',
     },
 });

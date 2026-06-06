@@ -1,7 +1,7 @@
 import type { ModuleOptions as VitePwaModuleOptions } from '@vite-pwa/nuxt';
 
 const pwa: Partial<VitePwaModuleOptions> = {
-    disable: false,
+    disable: true,
     registerType: 'autoUpdate',
     manifest: {
         name: 'Tickup',

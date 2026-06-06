@@ -1,5 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server';
-import { objectToSnake } from 'ts-case-convert';
+// import { objectToSnake } from 'ts-case-convert';
 
 export default defineEventHandler(async (event) => {
     try {

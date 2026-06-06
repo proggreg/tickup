@@ -54,6 +54,7 @@
         "@vueuse/nuxt": "^14.0.0",
         "c8": "^11.0.0",
         "cross-env": "^10.1.0",
+        "crossws": "^0.4.5",
         "dotenv": "^17.2.3",
         "e2e": "link:@nuxt/test-utils/e2e",
         "eslint": "^9.39.0",
@@ -78,6 +79,7 @@
         "zod": "^4.4.2"
     },
     "dependencies": {
+        "@ai-sdk/openai-compatible": "^2.0.48",
         "@ai-sdk/vue": "^3.0.193",
         "@aws-sdk/client-bedrock": "^3.922.0",
         "@aws-sdk/client-bedrock-runtime": "^3.922.0",
@@ -97,6 +99,7 @@
         "nuxt-bugsnag": "^8.6.0",
         "octokit": "^5.0.5",
         "ollama": "^0.6.2",
+        "ollama-ai-provider": "^1.2.0",
         "pinia": "^3.0.4",
         "pinia-plugin-persistedstate": "^4.7.1",
         "ts-case-convert": "^2.1.0",

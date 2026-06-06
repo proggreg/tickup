@@ -4,10 +4,8 @@ import { TaskService } from '~~/server/utils/tasks';
 export default defineEventHandler(async (event) => {
     const body = await readBody<Task>(event);
     const supabase = event.context.supabase;
-
-    let user;
     const { data } = await supabase.auth.getUser();
-    user = data.user;
+    const user = data.user;
 
     if (!user?.id) {
         throw createError({
