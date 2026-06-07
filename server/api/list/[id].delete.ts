@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server';
+import { broadcastToUser } from '../../routes/ws/lists';
 
 export default defineEventHandler(async (event) => {
     try {
@@ -18,14 +19,20 @@ export default defineEventHandler(async (event) => {
         }
 
         const client = await serverSupabaseClient(event);
+        const {
+            data: { user },
+        } = await client.auth.getUser();
 
         const listDeleted = await client.from('Lists').delete().eq('id', id);
 
         console.log('listDeleted', listDeleted);
 
+        if (user?.id) {
+            broadcastToUser(user.id, { type: 'list:deleted', payload: { id } });
+        }
+
         return listDeleted;
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Delete error:', error);
         throw createError({
             statusCode: 500,

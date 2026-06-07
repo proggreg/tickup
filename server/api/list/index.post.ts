@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server';
+import { broadcastToUser } from '../../routes/ws/lists';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody<List>(event);
@@ -25,8 +26,9 @@ export default defineEventHandler(async (event) => {
         }
 
         // Transform snake_case fields to camelCase for API response
-        const result = data[0];
+        const result = (data as any[])[0] as Record<string, unknown>;
         if (result) {
+            broadcastToUser(result.user_id as string, { type: 'list:created', payload: result });
             return {
                 ...result,
                 userId: result.user_id,
@@ -36,8 +38,7 @@ export default defineEventHandler(async (event) => {
         }
 
         return result;
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error creating list:', error);
         throw createError({
             statusCode: 500,
