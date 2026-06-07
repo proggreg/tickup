@@ -1,4 +1,5 @@
 import { mcpSupabaseClient } from '../../mcp/utils/auth';
+import { broadcastToUser } from '../../routes/ws/lists';
 
 export default defineEventHandler(async (event) => {
     if (!event.context.params || !event.context.params._id) {
@@ -27,6 +28,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const todo = data[0];
+    broadcastToUser(todo.user_id, { type: 'todo:deleted', payload: { id: todoId } });
     return {
         ...todo,
         dueDate: todo.due_date,

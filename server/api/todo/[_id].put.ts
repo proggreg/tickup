@@ -1,5 +1,6 @@
 import { objectToSnake, objectToCamel } from 'ts-case-convert';
 import { mcpSupabaseClient } from '../../mcp/utils/auth';
+import { broadcastToUser } from '../../routes/ws/lists';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
@@ -42,7 +43,12 @@ export default defineEventHandler(async (event) => {
     }
 
     if (data && data.length > 0) {
-        return objectToCamel(data[0] as Record<string, unknown>);
+        const row = data[0] as Record<string, unknown>;
+        broadcastToUser(row.user_id as string, {
+            type: 'todo:updated',
+            payload: objectToCamel(row) as Record<string, unknown>,
+        });
+        return objectToCamel(row);
     }
 
     throw createError({

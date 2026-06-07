@@ -1,5 +1,6 @@
 import { objectToSnake, objectToCamel } from 'ts-case-convert';
 import { TaskService } from '~~/server/utils/tasks';
+import { broadcastToUser } from '../../routes/ws/lists';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody<Task>(event);
@@ -52,14 +53,17 @@ export default defineEventHandler(async (event) => {
         const result = data[0];
         if (result) {
             console.log('todo created', result.id);
+            broadcastToUser(result.user_id, {
+                type: 'todo:created',
+                payload: objectToCamel(result) as Record<string, unknown>,
+            });
             return objectToCamel(result);
         }
-    }
-    catch (e) {
+    } catch (e) {
         console.error('error', e);
         throw createError({
             statusCode: 500,
-            statusMessage: errorMsg,
+            statusMessage: (e as Error).message ?? 'Internal server error',
         });
     }
 });
