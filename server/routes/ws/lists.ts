@@ -12,34 +12,7 @@ export type WsListEvent = {
 };
 
 const userPeers = new Map<string, Set<Peer>>();
-
-function getUserId(peer: Peer): string | null {
-    const cookieHeader = peer.request?.headers.get('cookie') ?? '';
-    const cookies: Record<string, string> = {};
-    for (const pair of cookieHeader.split(';')) {
-        const idx = pair.indexOf('=');
-        if (idx === -1) continue;
-        cookies[pair.slice(0, idx).trim()] = pair.slice(idx + 1).trim();
-    }
-
-    const authKey = Object.keys(cookies).find(
-        (k) => k.startsWith('sb-') && k.endsWith('-auth-token'),
-    );
-    if (!authKey) return null;
-
-    try {
-        const val = decodeURIComponent(cookies[authKey]);
-        const session = JSON.parse(val);
-        const accessToken: string | undefined =
-            typeof session === 'string' ? session : session?.access_token;
-        if (!accessToken) return null;
-        const payloadB64 = accessToken.split('.')[1];
-        const payload = JSON.parse(Buffer.from(payloadB64, 'base64url').toString('utf8'));
-        return typeof payload.sub === 'string' ? payload.sub : null;
-    } catch {
-        return null;
-    }
-}
+const peerUserIds = new Map<Peer, string>();
 
 export function broadcastToUser(userId: string, event: WsListEvent) {
     const peers = userPeers.get(userId);
@@ -51,19 +24,25 @@ export function broadcastToUser(userId: string, event: WsListEvent) {
 }
 
 export default defineWebSocketHandler({
-    open(peer) {
-        const userId = getUserId(peer);
-        if (!userId) return;
-        if (!userPeers.has(userId)) userPeers.set(userId, new Set());
-        userPeers.get(userId)!.add(peer);
+    open(_peer) {},
+    message(peer, message) {
+        try {
+            const msg = message.json() as { type: string; userId: string };
+            if (msg.type === 'auth' && typeof msg.userId === 'string') {
+                const userId = msg.userId;
+                peerUserIds.set(peer, userId);
+                if (!userPeers.has(userId)) userPeers.set(userId, new Set());
+                userPeers.get(userId)!.add(peer);
+            }
+        } catch {}
     },
     close(peer) {
-        const userId = getUserId(peer);
+        const userId = peerUserIds.get(peer);
+        peerUserIds.delete(peer);
         if (!userId) return;
         const peers = userPeers.get(userId);
         if (!peers) return;
         peers.delete(peer);
         if (peers.size === 0) userPeers.delete(userId);
     },
-    message() {},
 });

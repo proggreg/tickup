@@ -15,9 +15,15 @@ function snakeToCamelList(row: Record<string, unknown>): List {
 
 export function useRealtimeLists() {
     const store = useListsStore();
-    const { data } = useWebSocket('/ws/lists', {
+    const user = useSupabaseUser();
+    const { data, send } = useWebSocket('/ws/lists', {
         autoReconnect: { retries: 5, delay: 2000 },
         heartbeat: true,
+        onConnected() {
+            if (user.value?.id) {
+                send(JSON.stringify({ type: 'auth', userId: user.value.id }));
+            }
+        },
     });
 
     watch(data, (raw: string | null) => {

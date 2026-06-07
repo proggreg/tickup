@@ -10,14 +10,7 @@ const {
 
 useShortcutKeys();
 
-const user = useSupabaseUser();
-watch(
-    user,
-    (u) => {
-        if (u) useRealtimeLists();
-    },
-    { immediate: true },
-);
+useRealtimeLists();
 
 const showErrorToast = computed(() => !!error.value);
 const errorMessage = computed(() => {
