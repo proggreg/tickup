@@ -89,9 +89,9 @@ const effectiveDate = computed<Date | null>(() => {
 
 const isOverdue = computed(
   () =>
-    !!effectiveDate.value
-    && startOfDay(effectiveDate.value) < startOfDay(new Date())
-    && props.todo.status !== 'Closed',
+    !!effectiveDate.value &&
+    startOfDay(effectiveDate.value) < startOfDay(new Date()) &&
+    props.todo.status !== 'Closed',
 );
 
 const isToday_ = computed(() => sameDay(effectiveDate.value, new Date()));
@@ -134,16 +134,14 @@ function prevMonth() {
   if (viewMonth.value === 0) {
     viewMonth.value = 11;
     viewYear.value--;
-  }
-  else viewMonth.value--;
+  } else viewMonth.value--;
 }
 
 function nextMonth() {
   if (viewMonth.value === 11) {
     viewMonth.value = 0;
     viewYear.value++;
-  }
-  else viewMonth.value++;
+  } else viewMonth.value++;
 }
 
 // ── Quick options ─────────────────────────────────────────────────────────────
@@ -224,10 +222,10 @@ function handleOutsideClick(e: MouseEvent) {
   if (!open.value) return;
   const t = e.target as Node;
   if (
-    popoverEl.value
-    && !popoverEl.value.contains(t)
-    && triggerEl.value
-    && !triggerEl.value.contains(t)
+    popoverEl.value &&
+    !popoverEl.value.contains(t) &&
+    triggerEl.value &&
+    !triggerEl.value.contains(t)
   )
     closePicker();
 }
