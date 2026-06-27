@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
-const router = useRouter();
 
 const { status } = defineProps<{ status: Status }>();
 
@@ -227,43 +226,92 @@ function onComposerKey(e: KeyboardEvent) {
             </v-card-item>
           </v-card>
         </template>
-      </draggable>
-
-      <!-- Empty state -->
-      <v-btn v-if="todos.length === 0 && !isComposing" variant="outlined" block class="text-medium-emphasis"
-        style="border-style: dashed" @click="isComposing = true">
-        <v-icon>mdi-plus</v-icon>
-        Add a card
-      </v-btn>
-    </div>
-  </div>
+        <v-card-item class="flex-fill list">
+            <draggable
+                :list="todos"
+                item-key="id"
+                group="status"
+                class="draggable-container"
+                @change="handleDragChange"
+            >
+                <template #item="{ element: todo }">
+                    <v-card
+                        :key="todo.id"
+                        class="mb-2 pa-0"
+                        :color="status.color"
+                        style="cursor: pointer"
+                        :max-width="'100%'"
+                        :to="`/todo/${todo.id}`"
+                    >
+                        <v-card-item class="py-2 px-4">
+                            <div class="d-flex align-center justify-space-between">
+                                <v-checkbox
+                                    v-model="todo.selected"
+                                    size="small"
+                                    density="compact"
+                                    hide-details
+                                    class="flex-shrink-0"
+                                    @click.stop
+                                />
+                                <span class="text-truncate text-body-1 font-weight-bold flex-grow-1 mr-2">{{ todo.name }}</span>
+                            </div>
+                        </v-card-item>
+                    </v-card>
+                </template>
+            </draggable>
+        </v-card-item>
+        <v-card-item v-if="isAddingTodo">
+            <v-card>
+                <v-card-item>
+                    <v-text-field
+                        v-model="listsStore.newTodo.name"
+                        placeholder="Add todo"
+                        hide-details
+                        class="ma-0 pa-0"
+                        autofocus
+                        variant="plain"
+                        @blur="handleBlur"
+                        @keyup.enter.stop="addTodo(status)"
+                    />
+                </v-card-item>
+            </v-card>
+        </v-card-item>
+    </v-card>
 </template>
 
 <style scoped>
-.card-check {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  flex-shrink: 0;
-  margin-top: 2px;
-  padding: 0;
-  cursor: pointer;
-  border: 1.5px solid rgba(var(--v-border-color), 0.38);
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background 0.12s,
-    border-color 0.12s;
+.ghost {
+  opacity: 0.5;
+  background-color: inherit;
 }
 
-.card-check--done {
-  border-width: 0;
+:deep(.v-card-title) {
+  font-weight: bold !important;
 }
 
-.todo-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
+.list :deep(.v-card-item__content:first-child) {
+  height: 100% !important;
+
+  .draggable-container {
+    min-height: 100%;
+    overflow-y: auto;
+  }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  :deep(.v-card) {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  :deep(.v-card-item) {
+    padding: 8px 12px !important;
+  }
+
+  :deep(.text-truncate) {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
 }
 </style>
