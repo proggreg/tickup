@@ -43,6 +43,18 @@ const subtaskPct = computed(() =>
     subtaskTotal.value ? Math.round((subtaskDone.value / subtaskTotal.value) * 100) : 0,
 );
 const allDone = computed(() => subtaskTotal.value > 0 && subtaskPct.value === 100);
+
+async function deleteTodo() {
+    if (!listsStore.currentTodo?.id) return;
+    const listId = listsStore.currentTodo.listId;
+    await listsStore.deleteTodo(listsStore.currentTodo.id);
+    if (listId) {
+        router.push(`/list/${listId}`);
+    }
+    else {
+        router.push('/');
+    }
+}
 </script>
 
 <template>
