@@ -49,10 +49,8 @@ async function deleteTodo() {
 </script>
 
 <template>
-  <!-- Two-column layout wrapper -->
   <v-row no-gutters>
-    <!-- LEFT: main content -->
-    <v-col cols="12" md="8" class="todo-main flex-grow-1">
+    <v-col cols="12" :md="mainWidth ? mainWidth : 8" class="todo-main flex-grow-1">
       <!-- Title -->
       <div class="main-section main-section--title">
         <textarea v-model="listsStore.currentTodo.name" class="title-input" data-testid="todo-detail-title" rows="1"

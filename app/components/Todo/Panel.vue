@@ -61,13 +61,13 @@ async function confirmDelete() {
       </div>
     </div>
 
-        <!-- Panel content -->
-        <div class="panel-body">
-            <Suspense>
-                <TodoDetail />
-            </Suspense>
-        </div>
-    </aside>
+    <!-- Panel content -->
+    <div class="panel-body">
+      <Suspense>
+        <TodoDetail main-width="12" />
+      </Suspense>
+    </div>
+  </aside>
 </template>
 
 <style scoped>
