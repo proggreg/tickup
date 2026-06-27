@@ -3,9 +3,14 @@ import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 
 const emit = defineEmits<{
   setDate: [newDate: Date | null, newTodo: Todo];
+  setDate: [newDate: Date | null, newTodo: Todo];
 }>();
 
 const props = defineProps<{
+  todo: Todo;
+  todoDueDate?: Date | string;
+  date?: Date | string; // alias used by Todo/New.vue
+  showDetail?: boolean;
   todo: Todo;
   todoDueDate?: Date | string;
   date?: Date | string; // alias used by Todo/New.vue
@@ -89,9 +94,9 @@ const effectiveDate = computed<Date | null>(() => {
 
 const isOverdue = computed(
   () =>
-    !!effectiveDate.value &&
-    startOfDay(effectiveDate.value) < startOfDay(new Date()) &&
-    props.todo.status !== 'Closed',
+    !!effectiveDate.value
+    && startOfDay(effectiveDate.value) < startOfDay(new Date())
+    && props.todo.status !== 'Closed',
 );
 
 const isToday_ = computed(() => sameDay(effectiveDate.value, new Date()));
@@ -111,9 +116,25 @@ const chipStyle = computed(() => {
     return { color: '#005ac2', background: '#dce8ff', borderColor: 'transparent' };
   }
   return { color: '#2a3439', background: '#f0f4f7', borderColor: 'transparent' };
+  if (!effectiveDate.value) {
+    return {
+      color: 'rgba(42,52,57,0.38)',
+      background: 'transparent',
+      borderColor: 'rgba(113,124,130,0.24)',
+    };
+  }
+  if (isOverdue.value) {
+    return { color: '#ba1b24', background: 'rgba(186,27,36,0.08)', borderColor: 'transparent' };
+  }
+  if (isToday_.value) {
+    return { color: '#005ac2', background: '#dce8ff', borderColor: 'transparent' };
+  }
+  return { color: '#2a3439', background: '#f0f4f7', borderColor: 'transparent' };
 });
 
 const rowStyle = computed(() => ({
+  color: isOverdue.value ? '#ba1b24' : effectiveDate.value ? '#2a3439' : 'rgba(42,52,57,0.38)',
+  fontWeight: isOverdue.value ? 500 : 400,
   color: isOverdue.value ? '#ba1b24' : effectiveDate.value ? '#2a3439' : 'rgba(42,52,57,0.38)',
   fontWeight: isOverdue.value ? 500 : 400,
 }));
@@ -134,18 +155,51 @@ function prevMonth() {
   if (viewMonth.value === 0) {
     viewMonth.value = 11;
     viewYear.value--;
-  } else viewMonth.value--;
+  }
+  else viewMonth.value--;
 }
 
 function nextMonth() {
   if (viewMonth.value === 11) {
     viewMonth.value = 0;
     viewYear.value++;
-  } else viewMonth.value++;
+  }
+  else viewMonth.value++;
 }
 
 // ── Quick options ─────────────────────────────────────────────────────────────
 const quicks = computed(() => {
+  const t = new Date();
+  return [
+    {
+      icon: 'mdi-white-balance-sunny',
+      label: 'Today',
+      accent: '#f07c20',
+      hint: t.toLocaleDateString('en-GB', { weekday: 'short' }),
+      date: startOfDay(t),
+    },
+    {
+      icon: 'mdi-weather-sunset-up',
+      label: 'Tomorrow',
+      accent: '#005ac2',
+      hint: addDays(t, 1).toLocaleDateString('en-GB', { weekday: 'short' }),
+      date: addDays(startOfDay(t), 1),
+    },
+    {
+      icon: 'mdi-calendar-weekend',
+      label: 'This weekend',
+      accent: '#506076',
+      hint: 'Sat',
+      date: nextWeekday(6),
+    },
+    {
+      icon: 'mdi-calendar-arrow-right',
+      label: 'Next week',
+      accent: '#506076',
+      hint: 'Mon',
+      date: nextWeekday(1),
+    },
+  ];
   const t = new Date();
   return [
     {
@@ -222,10 +276,10 @@ function handleOutsideClick(e: MouseEvent) {
   if (!open.value) return;
   const t = e.target as Node;
   if (
-    popoverEl.value &&
-    !popoverEl.value.contains(t) &&
-    triggerEl.value &&
-    !triggerEl.value.contains(t)
+    popoverEl.value
+    && !popoverEl.value.contains(t)
+    && triggerEl.value
+    && !triggerEl.value.contains(t)
   )
     closePicker();
 }
