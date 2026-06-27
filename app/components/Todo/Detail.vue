@@ -52,7 +52,7 @@ async function deleteTodo() {
   <!-- Two-column layout wrapper -->
   <v-row no-gutters>
     <!-- LEFT: main content -->
-    <v-col cols="12" md="8" class="todo-main">
+    <v-col cols="12" md="8" class="todo-main flex-grow-1">
       <!-- Title -->
       <div class="main-section main-section--title">
         <textarea v-model="listsStore.currentTodo.name" class="title-input" data-testid="todo-detail-title" rows="1"
@@ -84,8 +84,8 @@ async function deleteTodo() {
       </div>
     </v-col>
 
-    <v-col class="todo-sidebar">
-      <v-card width="100%" min-width="350" class="sidebar-card">
+    <v-col cols="auto" class="todo-sidebar flex-grow-1">
+      <v-card width=" 100%" min-width="350" class="sidebar-card">
         <div class="prop-row">
           <div class="prop-row__label">
             <i class="mdi mdi-circle-slice-4 prop-row__icon" />
@@ -298,6 +298,15 @@ async function deleteTodo() {
     top: 16px;
 }
 
+.sidebar-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(42, 52, 57, 0.06);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 
 /* Property rows */
 .prop-row {
