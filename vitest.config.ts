@@ -5,12 +5,12 @@ import 'dotenv/config';
 
 export default defineConfig({
     test: {
+        globalSetup: './vitest.global.setup.ts',
         projects: [
             {
                 test: {
                     name: 'unit',
                     include: ['test/unit/**/*.{test,spec}.ts'],
-                    environment: 'node',
                 },
             },
             {
