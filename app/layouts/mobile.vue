@@ -4,10 +4,16 @@ const colorMode = useColorMode();
 
 <template>
     <ColorScheme>
-        <v-theme-provider with-background :theme="colorMode.preference">
+        <v-theme-provider
+            with-background
+            :theme="colorMode.preference"
+        >
             <v-app>
                 <v-main>
-                    <v-container class="pa-0" fluid>
+                    <v-container
+                        class="pa-0"
+                        fluid
+                    >
                         <NuxtPage />
                         <AppNavMobile />
                     </v-container>

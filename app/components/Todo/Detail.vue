@@ -49,7 +49,8 @@ async function deleteTodo() {
     await listsStore.deleteTodo(listsStore.currentTodo.id);
     if (listId) {
         router.push(`/list/${listId}`);
-    } else {
+    }
+    else {
         router.push('/');
     }
 }
@@ -101,7 +102,10 @@ async function deleteTodo() {
                                 {{ subtaskDone }}/{{ subtaskTotal }}
                             </span>
                         </div>
-                        <div v-if="subtaskTotal" class="subtasks-progress">
+                        <div
+                            v-if="subtaskTotal"
+                            class="subtasks-progress"
+                        >
                             <div
                                 class="subtasks-progress__bar"
                                 :class="{ 'subtasks-progress__bar--done': allDone }"
@@ -176,7 +180,10 @@ async function deleteTodo() {
                             <i class="mdi mdi-calendar prop-row__icon" />
                             <span>Due date</span>
                         </div>
-                        <div class="prop-row__value" :class="{ 'prop-row__value--overdue': isOverdue }">
+                        <div
+                            class="prop-row__value"
+                            :class="{ 'prop-row__value--overdue': isOverdue }"
+                        >
                             <AppDueDate
                                 :todo="listsStore.currentTodo"
                                 :todo-due-date="listsStore.currentTodo.dueDate"
@@ -198,7 +205,10 @@ async function deleteTodo() {
                     </div>
 
                     <!-- GitHub (conditional) -->
-                    <div v-if="hasGithub" class="prop-row">
+                    <div
+                        v-if="hasGithub"
+                        class="prop-row"
+                    >
                         <div class="prop-row__label">
                             <i class="mdi mdi-github prop-row__icon" />
                             <span>GitHub</span>
@@ -232,7 +242,10 @@ async function deleteTodo() {
                                     </v-card-text>
                                     <v-card-actions>
                                         <v-spacer />
-                                        <v-btn color="error" @click="deleteTodo">
+                                        <v-btn
+                                            color="error"
+                                            @click="deleteTodo"
+                                        >
                                             Delete
                                         </v-btn>
                                         <v-btn @click="isActive.value = false">

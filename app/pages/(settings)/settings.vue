@@ -3,8 +3,7 @@ definePageMeta({ layout: 'settings' });
 
 const { mdAndUp } = useDisplay();
 const store = useSettingsStore();
-const supabase = useSupabaseClient();
-const router = useRouter();
+
 const route = useRoute();
 
 const activeSection = ref('account');
@@ -25,15 +24,6 @@ async function checkGithubStatus() {
 }
 
 await useAsyncData(() => store.getUserSettings().then(() => true));
-
-async function signOut() {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-        console.error(error);
-        return;
-    }
-    router.push('/login');
-}
 
 onMounted(async () => {
     if (route.query.github === 'pending' && route.query.installation_id) {
