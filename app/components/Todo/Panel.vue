@@ -64,7 +64,7 @@ async function confirmDelete() {
     <!-- Panel content -->
     <div class="panel-body">
       <Suspense>
-        <TodoDetail />
+        <TodoDetail main-width="12" />
       </Suspense>
     </div>
   </aside>
