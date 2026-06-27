@@ -14,7 +14,7 @@ export default defineNuxtConfig({
         '@nuxt/test-utils/module',
         'nuxt-bugsnag',
         '@nuxtjs/supabase',
-        'nuxt-mcp',
+        // 'nuxt-mcp',
     ],
 
     pages: true,
