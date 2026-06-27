@@ -8,12 +8,27 @@ const _emit = defineEmits<{
 }>();
 const { isMobile } = useDevice();
 
-function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit',
-    });
+function relativeDate(dateStr: string | null | Date): string | null {
+    if (!dateStr) return null;
+    const date = new Date(dateStr);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    date.setHours(0, 0, 0, 0);
+    const diffDays = Math.round((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Tomorrow';
+    if (diffDays === -1) return 'Yesterday';
+    if (diffDays > 1) return `In ${diffDays}d`;
+    return `${Math.abs(diffDays)}d ago`;
+}
+
+function isOverdue(item: Todo): boolean {
+    if (!item.dueDate || item.status === 'Closed') return false;
+    const date = new Date(item.dueDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    date.setHours(0, 0, 0, 0);
+    return date.getTime() < today.getTime();
 }
 </script>
 
@@ -116,7 +131,12 @@ function formatDate(dateStr: string) {
                 >
                     {{ item.list.name }}
                 </v-chip>
-                <span class="text-caption text-disabled">{{ formatDate(item.updatedAt) }}</span>
+                <span
+                    v-if="relativeDate(item.dueDate)"
+                    class="text-caption"
+                    :style="isOverdue(item) ? 'color: #ba1b24' : undefined"
+                    :class="!isOverdue(item) ? 'text-disabled' : undefined"
+                >{{ relativeDate(item.dueDate) }}</span>
             </v-list-item-subtitle>
 
             <template

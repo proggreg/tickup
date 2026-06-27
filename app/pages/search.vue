@@ -25,7 +25,7 @@ onMounted(() => {
     <div class="d-flex flex-column h-100 pb-20">
         <div class="px-5 pt-8 pb-4 flex-shrink-0">
             <div class="d-flex align-center ga-3 mb-4">
-                <span class="text-h5 font-weight-bold">Search</span>
+                <span class="text-h5" style="font-family: 'Manrope', sans-serif; font-weight: 800">Search</span>
                 <v-chip
                     v-if="searchStore.results.length"
                     size="small"
