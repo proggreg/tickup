@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
+const router = useRouter();
 
 const { status } = defineProps<{ status: Status }>();
 
@@ -87,18 +88,18 @@ function onComposerKey(e: KeyboardEvent) {
   <div class="d-flex flex-column">
     <!-- Column header -->
     <v-row no-gutters align="center" class="pb-3 px-1">
-      <v-col class="d-flex align-center ga-2">
+      <v-col min-with="300" class="d-flex align-center ga-2">
         <span :style="{
           background: status.color,
           width: '9px',
           height: '9px',
           borderRadius: '50%',
-          flexShrink: 0
+          flexShrink: 0,
         }" />
-        <span class="text-subtitle-2 font-weight-bold text-truncate">{{ status.name }}</span>
+        <span class="text-subtitle-2 font-weight-bold">{{ status.name }}</span>
         <v-chip density="compact" size="x-small" class="font-weight-medium">{{
           todos.length
-          }}</v-chip>
+        }}</v-chip>
       </v-col>
       <v-col />
       <v-col cols="auto" class="d-flex align-center">
@@ -148,8 +149,8 @@ function onComposerKey(e: KeyboardEvent) {
                 <!-- Checkbox -->
                 <v-col cols="auto" class="pt-1 pr-2">
                   <button class="card-check" :class="{ 'card-check--done': todo.status === 'Closed' }" :style="todo.status === 'Closed'
-                    ? { background: status.color }
-                    : {}
+                      ? { background: status.color }
+                      : {}
                     " @click.stop="toggleStatus(todo)">
                     <v-icon v-if="todo.status === 'Closed'" size="11" color="white">mdi-check</v-icon>
                   </button>
@@ -186,8 +187,8 @@ function onComposerKey(e: KeyboardEvent) {
 
                     <v-col v-if="todo.dueDate" cols="auto"
                       class="d-flex align-center ga-1 text-caption font-weight-medium" :class="isOverdue(todo)
-                        ? 'text-error'
-                        : 'text-medium-emphasis'
+                          ? 'text-error'
+                          : 'text-medium-emphasis'
                         ">
                       <v-icon size="13">{{
                         isOverdue(todo)
@@ -201,8 +202,8 @@ function onComposerKey(e: KeyboardEvent) {
                       <span class="d-inline-flex align-center ga-1 text-caption font-weight-medium" :class="todo.subtasks.filter(
                         (s) => s.status === 'Closed',
                       ).length === todo.subtasks.length
-                        ? 'text-success'
-                        : 'text-medium-emphasis'
+                          ? 'text-success'
+                          : 'text-medium-emphasis'
                         ">
                         <v-icon size="13">
                           {{
@@ -226,92 +227,43 @@ function onComposerKey(e: KeyboardEvent) {
             </v-card-item>
           </v-card>
         </template>
-        <v-card-item class="flex-fill list">
-            <draggable
-                :list="todos"
-                item-key="id"
-                group="status"
-                class="draggable-container"
-                @change="handleDragChange"
-            >
-                <template #item="{ element: todo }">
-                    <v-card
-                        :key="todo.id"
-                        class="mb-2 pa-0"
-                        :color="status.color"
-                        style="cursor: pointer"
-                        :max-width="'100%'"
-                        :to="`/todo/${todo.id}`"
-                    >
-                        <v-card-item class="py-2 px-4">
-                            <div class="d-flex align-center justify-space-between">
-                                <v-checkbox
-                                    v-model="todo.selected"
-                                    size="small"
-                                    density="compact"
-                                    hide-details
-                                    class="flex-shrink-0"
-                                    @click.stop
-                                />
-                                <span class="text-truncate text-body-1 font-weight-bold flex-grow-1 mr-2">{{ todo.name }}</span>
-                            </div>
-                        </v-card-item>
-                    </v-card>
-                </template>
-            </draggable>
-        </v-card-item>
-        <v-card-item v-if="isAddingTodo">
-            <v-card>
-                <v-card-item>
-                    <v-text-field
-                        v-model="listsStore.newTodo.name"
-                        placeholder="Add todo"
-                        hide-details
-                        class="ma-0 pa-0"
-                        autofocus
-                        variant="plain"
-                        @blur="handleBlur"
-                        @keyup.enter.stop="addTodo(status)"
-                    />
-                </v-card-item>
-            </v-card>
-        </v-card-item>
-    </v-card>
+      </draggable>
+
+      <!-- Empty state -->
+      <v-btn v-if="todos.length === 0 && !isComposing" variant="outlined" block class="text-medium-emphasis"
+        style="border-style: dashed" @click="isComposing = true">
+        <v-icon>mdi-plus</v-icon>
+        Add a card
+      </v-btn>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-.ghost {
-  opacity: 0.5;
-  background-color: inherit;
+.card-check {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  padding: 0;
+  cursor: pointer;
+  border: 1.5px solid rgba(var(--v-border-color), 0.38);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.12s,
+    border-color 0.12s;
 }
 
-:deep(.v-card-title) {
-  font-weight: bold !important;
+.card-check--done {
+  border-width: 0;
 }
 
-.list :deep(.v-card-item__content:first-child) {
-  height: 100% !important;
-
-  .draggable-container {
-    min-height: 100%;
-    overflow-y: auto;
-  }
-}
-
-/* Mobile-specific styles */
-@media (max-width: 768px) {
-  :deep(.v-card) {
-    min-width: 0 !important;
-    width: 100% !important;
-  }
-
-  :deep(.v-card-item) {
-    padding: 8px 12px !important;
-  }
-
-  :deep(.text-truncate) {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-  }
+.todo-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
 }
 </style>
