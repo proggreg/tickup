@@ -15,10 +15,10 @@ const menu = ref<{ listId: string; x: number; y: number } | null>(null);
 const confirmId = ref<string | null>(null);
 
 const menuList = computed(() =>
-    menu.value ? (listsStore.lists.find(l => l.id === menu.value!.listId) ?? null) : null,
+    menu.value ? (listsStore.lists.find((l) => l.id === menu.value!.listId) ?? null) : null,
 );
 const confirmList = computed(() =>
-    confirmId.value ? (listsStore.lists.find(l => l.id === confirmId.value) ?? null) : null,
+    confirmId.value ? (listsStore.lists.find((l) => l.id === confirmId.value) ?? null) : null,
 );
 
 // ── Context menu ──────────────────────────────────────────────────────────────
@@ -106,10 +106,7 @@ onUnmounted(() => {
                 dialog.open = true;
             "
         >
-            <i
-                class="mdi mdi-plus"
-                style="font-size: 16px"
-            />
+            <i class="mdi mdi-plus" style="font-size: 16px" />
         </button>
     </div>
 
@@ -126,13 +123,6 @@ onUnmounted(() => {
             @click="editingId !== list.id && navigateTo(`/list/${list.id}`)"
             @contextmenu.prevent="openMenuAt(list.id!, $event.clientX, $event.clientY)"
         >
-            <!-- Icon -->
-            <i
-                class="mdi nav-row__icon"
-                :class="list.icon || 'mdi-format-list-bulleted'"
-                :style="{ opacity: listsStore.currentList?.id === list.id ? 1 : 0.55 }"
-            />
-
             <!-- Rename input -->
             <input
                 v-if="editingId === list.id"
@@ -151,12 +141,9 @@ onUnmounted(() => {
                 @blur="commitRename(list)"
                 @keydown.enter.prevent="commitRename(list)"
                 @keydown.esc.prevent="cancelRename"
-            >
+            />
             <!-- Name -->
-            <span
-                v-else
-                class="nav-row__name"
-            >{{ list.name }}</span>
+            <span v-else class="nav-row__name">{{ list.name }}</span>
 
             <!-- Count + dots (not during edit) -->
             <template v-if="editingId !== list.id">
@@ -172,10 +159,7 @@ onUnmounted(() => {
                         }
                     "
                 >
-                    <i
-                        class="mdi mdi-dots-horizontal"
-                        style="font-size: 16px"
-                    />
+                    <i class="mdi mdi-dots-horizontal" style="font-size: 16px" />
                 </button>
             </template>
         </div>
@@ -192,35 +176,19 @@ onUnmounted(() => {
 
     <!-- Delete confirmation -->
     <Teleport to="body">
-        <div
-            v-if="confirmId && confirmList"
-            class="nav-confirm-backdrop"
-            @click="confirmId = null"
-        >
-            <div
-                class="nav-confirm-dialog"
-                @click.stop
-            >
+        <div v-if="confirmId && confirmList" class="nav-confirm-backdrop" @click="confirmId = null">
+            <div class="nav-confirm-dialog" @click.stop>
                 <div class="nav-confirm-icon">
-                    <i
-                        class="mdi mdi-trash-can-outline"
-                        style="font-size: 22px; color: #ba1b24"
-                    />
+                    <i class="mdi mdi-trash-can-outline" style="font-size: 22px; color: #ba1b24" />
                 </div>
-                <div class="nav-confirm-title">
-                    Delete list
-                </div>
+                <div class="nav-confirm-title">Delete list</div>
                 <div class="nav-confirm-body">
                     Are you sure you want to delete
-                    <strong>{{ confirmList.name }}</strong>? All tasks in this list will be permanently removed.
+                    <strong>{{ confirmList.name }}</strong
+                    >? All tasks in this list will be permanently removed.
                 </div>
                 <div class="nav-confirm-actions">
-                    <button
-                        class="nav-confirm-cancel"
-                        @click="confirmId = null"
-                    >
-                        Cancel
-                    </button>
+                    <button class="nav-confirm-cancel" @click="confirmId = null">Cancel</button>
                     <button
                         class="nav-confirm-delete"
                         data-testid="delete-list"
@@ -350,7 +318,7 @@ onUnmounted(() => {
     color: #004eaa;
 }
 
-/* Dots button — hidden by default, shown on row hover */
+/* Dots button — always in flow, invisible until hover */
 .nav-row__dots {
     width: 24px;
     height: 24px;
@@ -358,15 +326,18 @@ onUnmounted(() => {
     border: none;
     background: transparent;
     cursor: pointer;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     color: rgba(42, 52, 57, 0.55);
-    transition: background 0.08s;
+    opacity: 0;
+    transition:
+        opacity 0.1s,
+        background 0.08s;
 }
 .nav-row:hover .nav-row__dots {
-    display: flex;
+    opacity: 1;
 }
 .nav-row--active .nav-row__dots {
     color: #004eaa;
