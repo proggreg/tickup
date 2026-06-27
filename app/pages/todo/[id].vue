@@ -21,8 +21,7 @@ async function loadTodo(id: string | string[]) {
             if (needsNewParent) {
                 parentTodo.value = await $fetch<Todo>(`/api/todo/${todo.parentId}`);
             }
-        }
-        else {
+        } else {
             // No parent for this todo
             parentTodo.value = null;
         }
@@ -35,8 +34,7 @@ async function loadTodo(id: string | string[]) {
         // Only bump the transition key once everything for this todo is loaded,
         // so the fade happens between fully-rendered states.
         transitionKey.value++;
-    }
-    finally {
+    } finally {
         isLoading.value = false;
     }
 }
@@ -48,6 +46,24 @@ watch(
     },
     { immediate: true },
 );
+
+const backTo = computed(() => {
+    if (parentTodo.value) return `/todo/${parentTodo.value.id}`;
+    if (listsStore.currentTodo?.listId) return `/list/${listsStore.currentTodo.listId}`;
+    return '/';
+});
+
+const backLabel = computed(() => {
+    if (parentTodo.value) return parentTodo.value.name;
+    if (listsStore.currentList?.name) return listsStore.currentList.name;
+    return 'Home';
+});
+
+const backTestId = computed(() => {
+    if (parentTodo.value) return 'nav-back-parent';
+    if (listsStore.currentTodo?.listId && listsStore.currentList?.id) return 'nav-back-list';
+    return 'nav-back-home';
+});
 </script>
 
 <template>
@@ -57,46 +73,34 @@ watch(
                 {{ error }}
             </v-alert>
         </template>
-        <v-col
-            cols="12"
-            style="height: 60px"
-        >
-            <v-btn
-                v-if="parentTodo"
-                data-testid="nav-back-parent"
-                :to="`/todo/${parentTodo.id}`"
+
+        <!-- Breadcrumb bar -->
+        <div class="breadcrumb-bar">
+            <NuxtLink
+                v-if="!isLoading"
+                :data-testid="backTestId"
+                :to="backTo"
+                class="breadcrumb-back"
             >
-                <template #prepend>
-                    <v-icon>mdi-arrow-left</v-icon>
-                </template>
-                {{ parentTodo.name }}
-            </v-btn>
-            <v-btn
-                v-else-if="listsStore.currentTodo?.listId && listsStore.currentList?.id"
-                data-testid="nav-back-list"
-                :to="`/list/${listsStore.currentTodo.listId}`"
-            >
-                <template #prepend>
-                    <v-icon>mdi-arrow-left</v-icon>
-                </template>
-                {{ listsStore.currentList.name }}
-            </v-btn>
-            <v-btn
-                v-else-if="!isLoading"
-                data-testid="nav-back-home"
-                to="/"
-            >
-                <template #prepend>
-                    <v-icon>mdi-arrow-left</v-icon>
-                </template>
-                Home
-            </v-btn>
-        </v-col>
-        <v-col>
+                <i class="mdi mdi-arrow-left breadcrumb-back__icon" />
+            </NuxtLink>
+            <div v-if="!isLoading" class="breadcrumb-trail">
+                <NuxtLink :to="backTo" class="breadcrumb-segment breadcrumb-segment--parent">
+                    {{ backLabel }}
+                </NuxtLink>
+                <i class="mdi mdi-chevron-right breadcrumb-chevron" />
+                <span class="breadcrumb-segment breadcrumb-segment--current">
+                    {{ listsStore.currentTodo?.name }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="todo-page-surface">
             <Transition name="todo-fade">
                 <TodoDetail :key="transitionKey" />
             </Transition>
-        </v-col>
+        </div>
     </NuxtErrorBoundary>
 </template>
 
@@ -107,5 +111,82 @@ watch(
 
 .todo-fade-enter-from {
     opacity: 0;
+}
+
+/* Breadcrumb bar */
+.breadcrumb-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    min-height: 48px;
+}
+
+.breadcrumb-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    color: rgba(var(--v-theme-on-surface), 0.6);
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+
+.breadcrumb-back:hover {
+    background: rgba(var(--v-border-color), 0.1);
+    color: rgb(var(--v-theme-on-surface));
+}
+
+.breadcrumb-back__icon {
+    font-size: 18px;
+}
+
+.breadcrumb-trail {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+}
+
+.breadcrumb-segment {
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.breadcrumb-segment--parent {
+    color: rgba(var(--v-theme-on-surface), 0.55);
+    text-decoration: none;
+    transition: color 0.15s;
+}
+
+.breadcrumb-segment--parent:hover {
+    color: rgb(var(--v-theme-primary));
+}
+
+.breadcrumb-segment--current {
+    color: rgb(var(--v-theme-on-surface));
+    font-weight: 500;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.breadcrumb-chevron {
+    font-size: 14px;
+    color: rgba(var(--v-theme-on-surface), 0.35);
+    flex-shrink: 0;
+}
+
+/* Page surface */
+.todo-page-surface {
+    background: #f7f9fb;
+    min-height: calc(100vh - 120px);
+    padding: 0 12px 40px;
 }
 </style>
