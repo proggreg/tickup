@@ -21,7 +21,8 @@ async function loadTodo(id: string | string[]) {
             if (needsNewParent) {
                 parentTodo.value = await $fetch<Todo>(`/api/todo/${todo.parentId}`);
             }
-        } else {
+        }
+        else {
             // No parent for this todo
             parentTodo.value = null;
         }
@@ -34,7 +35,8 @@ async function loadTodo(id: string | string[]) {
         // Only bump the transition key once everything for this todo is loaded,
         // so the fade happens between fully-rendered states.
         transitionKey.value++;
-    } finally {
+    }
+    finally {
         isLoading.value = false;
     }
 }
@@ -84,8 +86,14 @@ const backTestId = computed(() => {
             >
                 <i class="mdi mdi-arrow-left breadcrumb-back__icon" />
             </NuxtLink>
-            <div v-if="!isLoading" class="breadcrumb-trail">
-                <NuxtLink :to="backTo" class="breadcrumb-segment breadcrumb-segment--parent">
+            <div
+                v-if="!isLoading"
+                class="breadcrumb-trail"
+            >
+                <NuxtLink
+                    :to="backTo"
+                    class="breadcrumb-segment breadcrumb-segment--parent"
+                >
                     {{ backLabel }}
                 </NuxtLink>
                 <i class="mdi mdi-chevron-right breadcrumb-chevron" />

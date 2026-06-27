@@ -43,6 +43,18 @@ const subtaskPct = computed(() =>
     subtaskTotal.value ? Math.round((subtaskDone.value / subtaskTotal.value) * 100) : 0,
 );
 const allDone = computed(() => subtaskTotal.value > 0 && subtaskPct.value === 100);
+
+async function deleteTodo() {
+    if (!listsStore.currentTodo?.id) return;
+    const listId = listsStore.currentTodo.listId;
+    await listsStore.deleteTodo(listsStore.currentTodo.id);
+    if (listId) {
+        router.push(`/list/${listId}`);
+    }
+    else {
+        router.push('/');
+    }
+}
 </script>
 
 <template>
@@ -78,37 +90,163 @@ const allDone = computed(() => subtaskTotal.value > 0 && subtaskPct.value === 10
                                     borderColor: `${currentStatus.color}33`,
                                 }"
                             >
-                                <span
-                                    class="status-pill__dot"
-                                    :style="{ background: currentStatus.color }"
-                                />
-                                {{ listsStore.currentTodo.status }}
-                                <i class="mdi mdi-chevron-down status-pill__chevron" />
-                            </button>
-                        </template>
-                        <ul class="pop-menu">
-                            <li
-                                v-for="s in statuses"
-                                :key="s.name"
-                                class="pop-menu__item"
-                                @click="setStatus(s)"
-                            >
-                                <span
-                                    class="pop-menu__dot"
-                                    :style="{ background: s.color }"
-                                />
-                                {{ s.name }}
-                            </li>
-                        </ul>
-                    </v-menu>
+                                {{ subtaskDone }}/{{ subtaskTotal }}
+                            </span>
+                        </div>
+                        <div
+                            v-if="subtaskTotal"
+                            class="subtasks-progress"
+                        >
+                            <div
+                                class="subtasks-progress__bar"
+                                :class="{ 'subtasks-progress__bar--done': allDone }"
+                                :style="{ width: subtaskPct + '%' }"
+                            />
+                        </div>
+                    </div>
+                    <Subtask />
+                </div>
+
+                <div class="divider" />
+
+                <!-- Links -->
+                <div class="main-section">
+                    <div class="section-label">
+                        Links
+                    </div>
+                    <TodoLinks />
                 </div>
             </div>
 
-            <!-- Due date -->
-            <div class="prop-row">
-                <div class="prop-row__label">
-                    <i class="mdi mdi-calendar prop-row__icon" />
-                    <span>Due date</span>
+            <!-- RIGHT: sidebar -->
+            <aside class="todo-sidebar">
+                <div class="sidebar-card">
+                    <!-- Status -->
+                    <div class="prop-row">
+                        <div class="prop-row__label">
+                            <i class="mdi mdi-circle-slice-4 prop-row__icon" />
+                            <span>Status</span>
+                        </div>
+                        <div class="prop-row__value">
+                            <v-menu>
+                                <template #activator="{ props }">
+                                    <button
+                                        v-bind="props"
+                                        class="status-pill"
+                                        :style="{
+                                            background: `${currentStatus.color}18`,
+                                            color: currentStatus.color,
+                                            borderColor: `${currentStatus.color}33`,
+                                        }"
+                                    >
+                                        <span
+                                            class="status-pill__dot"
+                                            :style="{ background: currentStatus.color }"
+                                        />
+                                        {{ listsStore.currentTodo.status }}
+                                        <i class="mdi mdi-chevron-down status-pill__chevron" />
+                                    </button>
+                                </template>
+                                <ul class="pop-menu">
+                                    <li
+                                        v-for="s in statuses"
+                                        :key="s.name"
+                                        class="pop-menu__item"
+                                        @click="setStatus(s)"
+                                    >
+                                        <span
+                                            class="pop-menu__dot"
+                                            :style="{ background: s.color }"
+                                        />
+                                        {{ s.name }}
+                                    </li>
+                                </ul>
+                            </v-menu>
+                        </div>
+                    </div>
+
+                    <!-- Due date -->
+                    <div class="prop-row">
+                        <div class="prop-row__label">
+                            <i class="mdi mdi-calendar prop-row__icon" />
+                            <span>Due date</span>
+                        </div>
+                        <div
+                            class="prop-row__value"
+                            :class="{ 'prop-row__value--overdue': isOverdue }"
+                        >
+                            <AppDueDate
+                                :todo="listsStore.currentTodo"
+                                :todo-due-date="listsStore.currentTodo.dueDate"
+                                :show-detail="true"
+                                @set-date="updateDueDate"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- List -->
+                    <div class="prop-row">
+                        <div class="prop-row__label">
+                            <i class="mdi mdi-format-list-bulleted prop-row__icon" />
+                            <span>List</span>
+                        </div>
+                        <div class="prop-row__value prop-row__value--plain">
+                            {{ listsStore.currentList?.name }}
+                        </div>
+                    </div>
+
+                    <!-- GitHub (conditional) -->
+                    <div
+                        v-if="hasGithub"
+                        class="prop-row"
+                    >
+                        <div class="prop-row__label">
+                            <i class="mdi mdi-github prop-row__icon" />
+                            <span>GitHub</span>
+                        </div>
+                        <div class="prop-row__value">
+                            <GithubButton :todo="listsStore.currentTodo" />
+                        </div>
+                    </div>
+
+                    <div class="sidebar-divider" />
+
+                    <!-- Delete -->
+                    <div class="sidebar-delete">
+                        <v-dialog width="260px">
+                            <template #activator="{ props: activatorProps }">
+                                <v-btn
+                                    v-bind="activatorProps"
+                                    color="error"
+                                    variant="text"
+                                    prepend-icon="mdi-trash-can-outline"
+                                    size="small"
+                                    class="delete-btn"
+                                >
+                                    Delete todo
+                                </v-btn>
+                            </template>
+                            <template #default="{ isActive }">
+                                <v-card rounded="lg">
+                                    <v-card-text>
+                                        Are you sure you want to delete this todo?
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer />
+                                        <v-btn
+                                            color="error"
+                                            @click="deleteTodo"
+                                        >
+                                            Delete
+                                        </v-btn>
+                                        <v-btn @click="isActive.value = false">
+                                            Cancel
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </template>
+                        </v-dialog>
+                    </div>
                 </div>
                 <div class="prop-row__value">
                     <AppDueDate
