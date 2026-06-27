@@ -24,8 +24,9 @@ test.describe('list settings button prevents navigation', () => {
         const newListInput = await page.getByRole('textbox', { name: 'New List' });
         await newListInput.type(listName);
 
-        const createResponse = page.waitForResponse(response =>
-            response.url().includes('/api/list') && response.request().method() === 'POST',
+        const createResponse = page.waitForResponse(
+            (response) =>
+                response.url().includes('/api/list') && response.request().method() === 'POST',
         );
         await page.keyboard.press('Enter');
         const response = await createResponse;
@@ -51,7 +52,10 @@ test.describe('list settings button prevents navigation', () => {
         await expect(deleteMenuItem).toBeVisible();
     });
 
-    test('clicking list item (not settings button) navigates to list page', async ({ page, isMobile }) => {
+    test('clicking list item (not settings button) navigates to list page', async ({
+        page,
+        isMobile,
+    }) => {
         test.skip(isMobile, 'This feature is desktop only');
         await page.goto('/');
 
@@ -72,8 +76,8 @@ test.describe('list settings button prevents navigation', () => {
 
         const newListInput = await page.getByRole('textbox', { name: 'New List' });
         await newListInput.type(listName);
-        const createRequestPromise = page.waitForRequest(request =>
-            request.url().includes('/api/list') && request.method() === 'POST',
+        const createRequestPromise = page.waitForRequest(
+            (request) => request.url().includes('/api/list') && request.method() === 'POST',
         );
         await page.keyboard.press('Enter');
         await createRequestPromise;

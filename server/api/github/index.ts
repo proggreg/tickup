@@ -1,7 +1,7 @@
 import { defineEventHandler, readBody, createError } from 'h3';
 import { App } from 'octokit';
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
-import type { Database } from '~/types/database.types';
+import type { Database } from '~~/types/database.types';
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event);
@@ -14,7 +14,10 @@ export default defineEventHandler(async (event) => {
 
     console.log(userData);
     if (!userData?.github_installation_id) {
-        throw createError({ statusCode: 403, message: 'GitHub integration not connected. Connect it in Settings.' });
+        throw createError({
+            statusCode: 403,
+            message: 'GitHub integration not connected. Connect it in Settings.',
+        });
     }
 
     const config = useRuntimeConfig();
@@ -42,7 +45,10 @@ export default defineEventHandler(async (event) => {
 
         const { data: tokenData } = await supabase.from('user_integrations').select().single();
         if (!tokenData?.access_token) {
-            throw createError({ statusCode: 401, message: 'GitHub token not found. Please reconnect GitHub in Settings.' });
+            throw createError({
+                statusCode: 401,
+                message: 'GitHub token not found. Please reconnect GitHub in Settings.',
+            });
         }
 
         try {
@@ -65,8 +71,7 @@ export default defineEventHandler(async (event) => {
                         alreadyExists: true,
                     };
                 }
-            }
-            catch (error: any) {
+            } catch (error: any) {
                 if (error.status !== 404) {
                     throw error;
                 }
@@ -86,21 +91,23 @@ export default defineEventHandler(async (event) => {
                 return createError({ statusCode: 400, message: 'SHA Cannot be found' });
             }
 
-            const createRefResponse = await octokit.request(`POST /repos/${owner}/${repo.name}/git/refs`, {
-                owner: owner,
-                repo: repo,
-                ref: ref,
-                sha: sha,
-                headers: {
-                    authorization: `Bearer ${tokenData.access_token}`,
+            const createRefResponse = await octokit.request(
+                `POST /repos/${owner}/${repo.name}/git/refs`,
+                {
+                    owner: owner,
+                    repo: repo,
+                    ref: ref,
+                    sha: sha,
+                    headers: {
+                        authorization: `Bearer ${tokenData.access_token}`,
+                    },
                 },
-            });
+            );
 
             createRefResponse.data.url = `https://github.com/${owner}/${repo.name}/tree/${ref}`;
 
             return createRefResponse.data;
-        }
-        catch (error: any) {
+        } catch (error: any) {
             console.error('Error creating branch:', error);
 
             if (error.status === 401 || error.message?.includes('Bad credentials')) {
@@ -110,10 +117,12 @@ export default defineEventHandler(async (event) => {
                 });
             }
 
-            return createError({ statusCode: error.status || 500, message: error.message || 'Failed to create branch' });
+            return createError({
+                statusCode: error.status || 500,
+                message: error.message || 'Failed to create branch',
+            });
         }
-    }
-    else {
+    } else {
         return createError({ statusCode: 405, message: 'Method Not Allowed' });
     }
 });

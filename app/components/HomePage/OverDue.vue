@@ -1,14 +1,14 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
 
-const overdueTodos = computed(() => {
-    return listsStore.overdueTodos || [];
+onBeforeMount(() => {
+    listsStore.getOverdueTodos();
 });
 </script>
 
 <template>
     <HomePageTodoList
-        :todos="overdueTodos"
+        :todos="listsStore.overdueTodos"
         :group-by-status="true"
         :show-due-dates="true"
     />

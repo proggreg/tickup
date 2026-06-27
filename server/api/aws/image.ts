@@ -1,7 +1,4 @@
-import {
-    BedrockRuntimeClient,
-    InvokeModelCommand,
-} from '@aws-sdk/client-bedrock-runtime';
+import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
 
 export default defineEventHandler(async (event) => {
     try {
@@ -16,7 +13,10 @@ export default defineEventHandler(async (event) => {
             contentType: 'application/json',
             accept: 'application/json',
             body: JSON.stringify({
-                text_prompts: [{ text: prompt, weight: 1 }, { text: 'remove text', weight: -1 }],
+                text_prompts: [
+                    { text: prompt, weight: 1 },
+                    { text: 'remove text', weight: -1 },
+                ],
                 width: 1536,
                 height: 640,
                 steps: 10,
@@ -29,8 +29,7 @@ export default defineEventHandler(async (event) => {
         const responseBody = JSON.parse(new TextDecoder().decode(response.body));
         const base64Image = responseBody.artifacts[0].base64;
         return `data:image/png;base64,${base64Image}`;
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error generating image:', error);
         throw createError({
             statusCode: 500,

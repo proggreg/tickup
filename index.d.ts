@@ -1,34 +1,32 @@
-export { Todo, Status, List };
+export { Task, Status, List };
 
 declare global {
-
     type View = 'list' | 'board';
     type ListType = 'simple' | 'table' | '';
 
-    interface Todo {
+    interface Task {
         userId?: string;
         name: string;
+        status?: string;
         id?: string;
         dueDate?: Date;
         listId?: string;
-        status: string;
+        list?: List;
         desc?: string;
-        edit: boolean;
+        edit?: boolean;
         selected?: boolean;
-        color: string;
+        color?: string;
+        priorityLev?: string;
         githubBranchName?: string;
         githubRepo?: string;
         githubLink?: string;
-        links: {
+        links?: {
             id?: string;
             title: string;
             url: string;
         }[];
-        subtasks?: {
-            name: string;
-            status: string;
-            id: string;
-        }[];
+        parentId?: string;
+        subtasks?: Task[];
         attachments?: {
             id: ObjectId;
             attachmentId: string;
@@ -40,36 +38,38 @@ declare global {
         }[];
         notificationDateTime?: string | Date;
         notificationSent?: boolean;
+        createdAt?: string;
+        updatedAt?: string;
     }
 
     interface Status {
         name: string;
         color: string;
-        todos?: Todos[];
+        todos?: Task[];
         Edit?: boolean;
     }
 
     interface List {
-        userId?: string;
         name: string;
-        todos: Todo[];
+        todos?: Task[];
         id?: string;
         image?: string;
         listType: ListType;
-        icon: string;
+        icon?: string;
         githubRepo?: string;
+        defaultView?: View;
     }
 
     interface listsState {
         lists: List[];
         currentList: List;
         newList: List;
-        currentTodo: Todo;
-        todos?: Todo[];
-        todaysTodos: Todo[];
-        overdueTodos: Todo[];
+        currentTodo: Task;
+        todos?: Task[];
+        todaysTodos: Task[];
+        overdueTodos: Task[];
         view: ViewType;
-        newTodo: Todo;
+        newTodo: Task;
     }
 
     interface Settings {
@@ -77,13 +77,13 @@ declare global {
     }
 
     export interface PwaInjection {
-    /**
-     * @deprecated use `isPWAInstalled` instead
-     */
+        /**
+         * @deprecated use `isPWAInstalled` instead
+         */
         isInstalled: boolean;
         /**
-     * From version v0.3.5+.
-     */
+         * From version v0.3.5+.
+         */
         isPWAInstalled: Ref<boolean>;
         showInstallPrompt: Ref<boolean>;
         cancelInstall: () => void;
@@ -97,7 +97,6 @@ declare global {
         getSWRegistration: () => ServiceWorkerRegistration | undefined;
     }
 
-    // types/offline.ts (or add to your existing types file)
     export interface PendingChange {
         id: string | number;
         action: string;
@@ -131,5 +130,4 @@ declare global {
             $pwa: UnwrapNestedRefs<PwaInjection>;
         }
     }
-
 }

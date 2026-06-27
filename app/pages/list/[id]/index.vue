@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ListSimple } from '#components';
-import type { ViewType } from '~/types/table-item.types';
+import type { ViewType } from '~~/types/table-item.types';
 
 const listsStore = useListsStore();
 const tabs = ref<ViewType[]>(['board', 'list']);
@@ -8,7 +8,12 @@ const currentTab = ref<ViewType>('list');
 const on = useToolbar();
 
 onBeforeMount(async () => {
-    listsStore.getCurrentList();
+    await listsStore.getCurrentList();
+
+    const defaultView = listsStore.currentList?.defaultView as ViewType | undefined;
+    if (defaultView && tabs.value.includes(defaultView)) {
+        currentTab.value = defaultView;
+    }
 });
 
 if (!listsStore.currentList) {
@@ -21,9 +26,9 @@ if (listsStore.currentList) {
     });
 }
 
-watch(listsStore.currentList.todos, (todos: Todo[]) => {
+watch(listsStore.currentList.todos, (todos: Task[]) => {
     if (!todos) return;
-    on.value = todos.filter((todo: Todo) => todo.selected).length > 0;
+    on.value = todos.filter((todo: Task) => todo.selected).length > 0;
 });
 
 function updateListType(listType) {
@@ -34,37 +39,18 @@ function updateListType(listType) {
 </script>
 
 <template>
-    <v-container fluid>
+    <v-container fluid class="fill-height">
         <v-row class="fill-height">
             <ListHeader />
-            <v-col
-                class="fill-height"
-                cols="12"
-            >
+            <v-col class="fill-height d-flex flex-column" cols="12">
                 <v-tabs v-model="currentTab">
-                    <v-tab
-                        v-for="tab in tabs"
-                        :key="tab"
-                        :text="tab"
-                        :value="tab"
-                    />
+                    <v-tab v-for="tab in tabs" :key="tab" :text="tab" :value="tab" />
                 </v-tabs>
-                <v-window
-                    v-model="currentTab"
-                    :touch="false"
-                    class="mt-4"
-                    style="height: 100%;"
-                >
-                    <v-window-item
-                        value="board"
-                        class="fill-height"
-                    >
+                <v-window v-model="currentTab" :touch="false" class="mt-4">
+                    <v-window-item value="board" class="">
                         <Board />
                     </v-window-item>
-                    <v-window-item
-                        value="list"
-                        class="fill-height"
-                    >
+                    <v-window-item value="list" class="fill-height">
                         <v-row>
                             <v-col>
                                 <TodoNew />

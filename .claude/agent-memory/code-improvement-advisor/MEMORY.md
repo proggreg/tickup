@@ -1,0 +1,2 @@
+- [Project: MCP Tool Conventions](project_mcp_conventions.md) — MCP tools use snake_case input schema fields; `desc` vs `description` DB mismatch must be manually remapped after objectToSnake
+- [Project: Task Type and DB Column Names](project_task_type.md) — Task interface uses camelCase (`priorityLev`, `desc`, `parentId`); DB columns are snake_case; objectToSnake handles most but `desc`/`description` is a known exception

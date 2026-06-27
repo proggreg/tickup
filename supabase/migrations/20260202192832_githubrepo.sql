@@ -1,1 +1,1 @@
-ALTER TABLE "public"."Lists" ADD COLUMN github_repo text;
+ALTER TABLE "public"."Lists" ADD COLUMN IF NOT EXISTS github_repo text;

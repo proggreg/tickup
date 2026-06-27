@@ -1,3 +1,4 @@
+import type { ModuleOptions as McpToolkitOptions } from '@nuxtjs/mcp-toolkit';
 import { defineNuxtConfig } from 'nuxt/config';
 import vuetify from './config/vuetify';
 
@@ -6,7 +7,6 @@ export default defineNuxtConfig({
         '@vite-pwa/nuxt',
         'vuetify-nuxt-module',
         '@pinia/nuxt',
-        // "pinia-plugin-persistedstate/nuxt",
         '@vueuse/nuxt',
         '@nuxtjs/color-mode',
         '@nuxt/eslint',
@@ -14,7 +14,7 @@ export default defineNuxtConfig({
         '@nuxt/test-utils/module',
         'nuxt-bugsnag',
         '@nuxtjs/supabase',
-        'nuxt-mcp',
+        '@nuxtjs/mcp-toolkit',
     ],
 
     pages: true,
@@ -34,8 +34,18 @@ export default defineNuxtConfig({
         enabled: true,
     },
 
-    runtimeConfig: {
+    vite: {
+        server: {
+            allowedHosts: ['dev.gregfield.dev'],
+            // hmr: {
+            //   protocol: 'wss',
+            //   host: 'localhost',
+            //   clientPort: 443
+            // }
+        },
+    },
 
+    runtimeConfig: {
         private: {
             vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
             github: {
@@ -43,8 +53,10 @@ export default defineNuxtConfig({
                 appId: process.env.GITHUB_APP_ID,
                 clientId: process.env.GITHUB_CLIENT_ID,
                 clientSecret: process.env.GITHUB_CLIENT_SECRET,
+                webhookSecret: process.env.GITHUB_WEBHOOK_SECRET,
             },
         },
+
         public: {
             apiBase: '/api',
             hotjarId: process.env.HOTJAR_ID,
@@ -61,38 +73,50 @@ export default defineNuxtConfig({
         },
     },
 
+    ignore: [
+        '**/.claude',
+        'e2e',
+        'e2e-screenshots',
+        'playwright',
+        'playwright-report',
+        'test',
+        'test-results',
+    ],
+
     experimental: {
         payloadExtraction: false,
         typedPages: false,
+        asyncContext: true,
     },
-
+    compatibilityDate: '2026-02-28',
     nitro: {
         esbuild: {
             options: {
                 target: 'esnext',
             },
         },
-    },
-
-    vite: {
-        server: {
-            allowedHosts: ['dev.gregfield.dev'],
+        typescript: {
+            tsConfig: {
+                include: ['../index.d.ts', '../types/**/*.ts'],
+            },
         },
     },
 
     typescript: {
         strict: false,
         typeCheck: false,
-
+        tsConfig: {
+            include: ['../types/**/*.ts'],
+        },
     },
 
     bugsnag: {
-        disabled: process.env.NODE_ENV === 'development', // Disable in development
+        // disabled: process.env.NODE_ENV === 'development', // Disable in development
         publishRelease: true,
         config: {
             apiKey: process.env.BUGSNAG_API_KEY,
-            enabledReleaseStages: ['staging', 'production'],
-            releaseStage: process.env.NUXT_PUBLIC_VERCEL_ENV || 'development',
+            enabledReleaseStages: ['preview', 'production'],
+            releaseStage: process.env.VERCEL_ENV || 'development',
         },
     },
 
@@ -105,6 +129,11 @@ export default defineNuxtConfig({
             },
         },
     },
+
+    mcp: {
+        name: 'Tickup',
+        description: 'Tickup MCP server — tools and resources for the todo app.',
+    } as McpToolkitOptions,
 
     pinia: {},
 
@@ -198,7 +227,7 @@ export default defineNuxtConfig({
             login: '/login',
             callback: '/confirm',
             include: undefined,
-            exclude: [],
+            exclude: ['/oauth/consent'],
             saveRedirectToCookie: false,
         },
     },

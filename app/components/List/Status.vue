@@ -1,11 +1,13 @@
 <script setup lang="ts">
 const settings = useSettingsStore();
 const store = useListsStore();
-const statusProps = defineProps<{ todo: Todo }>();
+const statusProps = withDefaults(defineProps<{ todo: Task; disabled?: boolean }>(), {
+    disabled: false,
+});
 const statuses = computed(() => settings.statuses);
 function getStatusColor(todoStatus: string) {
     if (!statuses.value) return;
-    const status = statuses.value.filter(status => status.name === todoStatus);
+    const status = statuses.value.filter((status) => status.name === todoStatus);
     if (status.length > 0) {
         return status[0].color;
     }
@@ -19,13 +21,15 @@ const updateStatus = (status: string) => {
 </script>
 
 <template>
-    <v-menu>
+    <v-menu :disabled="statusProps.disabled">
         <template #activator="{ props }">
             <v-btn
                 v-bind="props"
+                data-testid="status-button"
                 min-width="20px"
                 size="x-small"
                 rounded="xl"
+                :disabled="statusProps.disabled"
                 :style="{
                     backgroundColor: getStatusColor(statusProps.todo.status),
                 }"
@@ -59,8 +63,8 @@ const updateStatus = (status: string) => {
 
 <style scoped>
 .status-icon {
-  width: 1.5em;
-  height: 1.5em;
-  border-radius: 50%;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
 }
 </style>

@@ -5,7 +5,7 @@ import type { Endpoints } from '@octokit/types';
 type ListBranchesData = Endpoints['GET /repos/{owner}/{repo}/branches']['response']['data'];
 type BranchItem = ListBranchesData[number];
 const listStore = useListsStore();
-const selectedBranch = useState('githubBranch', () => null);
+const selectedBranch = useState<BranchItem | null>('githubBranch', () => null);
 const selectedRepo = useState('githubRepo', () => null);
 const githubBranchName = useState('githubBranchName');
 const branches = ref<BranchItem[]>([]);
@@ -15,6 +15,11 @@ const selectBranchInput = ref();
 
 const hasBranch = useState('hasBranch', () => false);
 
+const emit = defineEmits<{
+    /** Fired when user picks or clears a branch. Parent can update list settings here. */
+    'branch-selected': [branch: BranchItem | null];
+}>();
+
 async function loadBranches() {
     loading.value = true;
     error.value = '';
@@ -22,6 +27,7 @@ async function loadBranches() {
         loading.value = false;
         return;
     }
+    console.log('load branches', selectedRepo.value);
     try {
         const data = await $fetch<ListBranchesData>('/api/github/branches', {
             query: {
@@ -33,13 +39,14 @@ async function loadBranches() {
         branches.value = data;
 
         if (branches.value && branches.value.length > 0) {
-            const foundBranch = branches.value.find(branch => branch.name === githubBranchName.value);
+            const foundBranch = branches.value.find(
+                (branch) => branch.name === githubBranchName.value,
+            );
 
             if (foundBranch) {
                 hasBranch.value = true;
                 selectedBranch.value = foundBranch;
-            }
-            else {
+            } else {
                 hasBranch.value = false;
             }
 
@@ -55,15 +62,19 @@ async function loadBranches() {
                 }
             }, 150);
         }
-    }
-    catch (e: any) {
+    } catch (e: any) {
         error.value = e?.data?.message || 'Failed to load branches';
         branches.value = [];
-    }
-    finally {
+    } finally {
         loading.value = false;
     }
 }
+
+// When the selected branch changes, notify parent so it can update list settings
+watch(selectedBranch, (newBranch, oldBranch) => {
+    if (newBranch === oldBranch) return;
+    emit('branch-selected', newBranch);
+});
 
 watch(selectedRepo, (newVal, oldVal) => {
     console.log('selectedRepo changed:', { newVal, oldVal });
@@ -71,8 +82,7 @@ watch(selectedRepo, (newVal, oldVal) => {
         selectedBranch.value = '';
         loadBranches();
     }
-},
-);
+});
 
 onMounted(() => {
     if (selectedRepo.value) {
@@ -86,9 +96,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <v-chip
-        v-if="listStore.currentTodo.githubBranchName"
-    >
+    <v-chip v-if="listStore.currentTodo.githubBranchName">
         <v-icon icon="mdi-source-branch" />
         {{ listStore.currentTodo.githubBranchName }}
         <template #append>
@@ -115,10 +123,7 @@ onUnmounted(() => {
         clearable
     >
         <template #item="{ props, item }">
-            <v-list-item
-                v-bind="props"
-                :subtitle="item.raw.commit.sha"
-            />
+            <v-list-item v-bind="props" :subtitle="item.raw.commit.sha" />
         </template>
 
         <template #append>

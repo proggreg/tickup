@@ -1,7 +1,7 @@
 import { defineEventHandler, createError } from 'h3';
 import { App } from 'octokit';
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
-import type { Database } from '~/types/database.types';
+import type { Database } from '~~/types/database.types';
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event);
@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
 
         return {
             total_count: data.total_count,
-            repositories: data.repositories.map(repo => ({
+            repositories: data.repositories.map((repo) => ({
                 id: repo.id,
                 name: repo.name,
                 full_name: repo.full_name,
@@ -44,8 +44,7 @@ export default defineEventHandler(async (event) => {
                 updated_at: repo.updated_at,
             })),
         };
-    }
-    catch (error: any) {
+    } catch (error: any) {
         console.error('Error listing repos:', error);
         throw createError({
             statusCode: error.status || 500,

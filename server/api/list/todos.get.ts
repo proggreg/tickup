@@ -8,7 +8,8 @@ export default defineEventHandler(async (event) => {
             const { data, error } = await supabase
                 .from('Todos')
                 .select('*')
-                .eq('list_id', listId);
+                .eq('list_id', listId)
+                .is('parent_id', null);
 
             if (error) {
                 throw createError({
@@ -18,7 +19,7 @@ export default defineEventHandler(async (event) => {
             }
 
             // Transform snake_case fields to camelCase for API response
-            return (data || []).map(todo => ({
+            return (data || []).map((todo) => ({
                 ...todo,
                 dueDate: todo.due_date,
                 completedDate: todo.completed_date,
@@ -32,8 +33,7 @@ export default defineEventHandler(async (event) => {
             }));
         }
         return [];
-    }
-    catch (e) {
+    } catch (e) {
         console.error('Error fetching list todos:', e);
         throw createError({
             statusCode: 500,

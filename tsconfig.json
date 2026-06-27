@@ -1,17 +1,11 @@
 {
-  // https://v3.nuxtjs.org/concepts/typescript
-  "extends": "./.nuxt/tsconfig.json",
-  "compilerOptions": {
-    "types": [
-      "vite-plugin-pwa/client"
-    ],
-    "lib": [
-      "ESNext",
-      "DOM",
-      "WebWorker"
-    ]
-  },
-  "vueCompilerOptions": {
-    "globalTypesPath": "./node_modules"
-  }
+    // https://v3.nuxtjs.org/concepts/typescript
+    "extends": "./.nuxt/tsconfig.json",
+    "compilerOptions": {
+        "types": ["node", "vite-plugin-pwa/client"],
+        "lib": ["ESNext", "DOM", "WebWorker"]
+    },
+    "vueCompilerOptions": {
+        "globalTypesPath": "./node_modules"
+    }
 }

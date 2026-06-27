@@ -2,7 +2,7 @@ import { defineEventHandler, createError, getQuery } from 'h3';
 import { App } from 'octokit';
 import type { Endpoints } from '@octokit/types';
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
-import type { Database } from '~/types/database.types';
+import type { Database } from '~~/types/database.types';
 
 type ListBranchesData = Endpoints['GET /repos/{owner}/{repo}/branches']['response']['data'];
 
@@ -71,8 +71,7 @@ export default defineEventHandler(async (event): Promise<ListBranchesData> => {
         } while (link);
 
         return branches;
-    }
-    catch (error: any) {
+    } catch (error: any) {
         console.error('Error listing repos:', error);
         throw createError({
             statusCode: error.status || 500,
