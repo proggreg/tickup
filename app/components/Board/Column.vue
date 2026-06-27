@@ -88,18 +88,18 @@ function onComposerKey(e: KeyboardEvent) {
   <div class="d-flex flex-column">
     <!-- Column header -->
     <v-row no-gutters align="center" class="pb-3 px-1">
-      <v-col min-with="300" class="d-flex align-center ga-2">
+      <v-col class="d-flex align-center ga-2">
         <span :style="{
           background: status.color,
           width: '9px',
           height: '9px',
           borderRadius: '50%',
-          flexShrink: 0,
+          flexShrink: 0
         }" />
-        <span class="text-subtitle-2 font-weight-bold">{{ status.name }}</span>
+        <span class="text-subtitle-2 font-weight-bold text-truncate">{{ status.name }}</span>
         <v-chip density="compact" size="x-small" class="font-weight-medium">{{
           todos.length
-        }}</v-chip>
+          }}</v-chip>
       </v-col>
       <v-col />
       <v-col cols="auto" class="d-flex align-center">
@@ -149,8 +149,8 @@ function onComposerKey(e: KeyboardEvent) {
                 <!-- Checkbox -->
                 <v-col cols="auto" class="pt-1 pr-2">
                   <button class="card-check" :class="{ 'card-check--done': todo.status === 'Closed' }" :style="todo.status === 'Closed'
-                      ? { background: status.color }
-                      : {}
+                    ? { background: status.color }
+                    : {}
                     " @click.stop="toggleStatus(todo)">
                     <v-icon v-if="todo.status === 'Closed'" size="11" color="white">mdi-check</v-icon>
                   </button>
@@ -187,8 +187,8 @@ function onComposerKey(e: KeyboardEvent) {
 
                     <v-col v-if="todo.dueDate" cols="auto"
                       class="d-flex align-center ga-1 text-caption font-weight-medium" :class="isOverdue(todo)
-                          ? 'text-error'
-                          : 'text-medium-emphasis'
+                        ? 'text-error'
+                        : 'text-medium-emphasis'
                         ">
                       <v-icon size="13">{{
                         isOverdue(todo)
@@ -202,8 +202,8 @@ function onComposerKey(e: KeyboardEvent) {
                       <span class="d-inline-flex align-center ga-1 text-caption font-weight-medium" :class="todo.subtasks.filter(
                         (s) => s.status === 'Closed',
                       ).length === todo.subtasks.length
-                          ? 'text-success'
-                          : 'text-medium-emphasis'
+                        ? 'text-success'
+                        : 'text-medium-emphasis'
                         ">
                         <v-icon size="13">
                           {{
