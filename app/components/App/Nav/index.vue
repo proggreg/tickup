@@ -60,8 +60,6 @@ async function signOut() {
         </v-list>
 
         <template #append>
-            <AppMenu v-if="smAndDown" />
-
             <!-- Account footer -->
             <div ref="footerEl" class="nav-account-footer">
                 <!-- Popover — opens upward -->
