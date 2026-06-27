@@ -6,15 +6,15 @@ export const useSettingsStore = defineStore('settings', () => {
     const defaultStatuses: Status[] = [
         {
             name: 'Open',
-            color: '#87909e',
+            color: '#005ac2',
         },
         {
             name: 'In Progress',
-            color: '#ee5e99',
+            color: '#e07b1f',
         },
         {
             name: 'Closed',
-            color: '#008844',
+            color: '#2f8a5c',
         },
     ];
 
