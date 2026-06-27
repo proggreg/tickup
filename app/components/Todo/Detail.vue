@@ -35,153 +35,187 @@ function updateDueDate(newDate: Date) {
   listsStore.updateTodo(listsStore.currentTodo);
 }
 
-
-async function deleteTodo() {
-  if (!listsStore.currentTodo?.id) return;
-  const listId = listsStore.currentTodo.listId;
-  await listsStore.deleteTodo(listsStore.currentTodo.id);
-  if (listId) {
-    router.push(`/list/${listId}`);
-  } else {
-    router.push('/');
-  }
-}
+const subtaskTotal = computed(() => listsStore.currentTodo.subtasks?.length ?? 0);
+const subtaskDone = computed(
+    () => listsStore.currentTodo.subtasks?.filter(s => s.status === 'Closed').length ?? 0,
+);
+const subtaskPct = computed(() =>
+    subtaskTotal.value ? Math.round((subtaskDone.value / subtaskTotal.value) * 100) : 0,
+);
+const allDone = computed(() => subtaskTotal.value > 0 && subtaskPct.value === 100);
 </script>
 
 <template>
-  <v-row no-gutters>
-    <v-col cols="12" :md="mainWidth ? mainWidth : 8" class="todo-main flex-grow-1">
-      <!-- Title -->
-      <div class="main-section main-section--title">
-        <textarea v-model="listsStore.currentTodo.name" class="title-input" data-testid="todo-detail-title" rows="1"
-          @blur="updateName" />
-      </div>
-
-      <!-- Description -->
-      <div class="main-section">
-        <div class="section-label">
-          Description
-        </div>
-        <textarea v-model="listsStore.currentTodo.desc" class="desc-textarea" placeholder="Add a description…"
-          @input="listsStore.debounceUpdateTodo(listsStore.currentTodo)"
-          @blur="listsStore.updateTodo(listsStore.currentTodo)" />
-      </div>
-
-      <div class="divider" />
-
-      <Subtasks />
-
-      <div class="divider" />
-
-      <!-- Links -->
-      <div class="main-section">
-        <div class="section-label">
-          Links
-        </div>
-        <TodoLinks />
-      </div>
-    </v-col>
-
-    <v-col cols="auto" class="todo-sidebar flex-grow-1">
-      <v-card width=" 100%" min-width="350" class="sidebar-card">
-        <div class="prop-row">
-          <div class="prop-row__label">
-            <i class="mdi mdi-circle-slice-4 prop-row__icon" />
-            <span>Status</span>
-          </div>
-          <div class="prop-row__value">
-            <v-menu>
-              <template #activator="{ props }">
-                <button v-bind="props" class="status-pill" :style="{
-                  background: `${currentStatus.color}18`,
-                  color: currentStatus.color,
-                  borderColor: `${currentStatus.color}33`,
-                }">
-                  <span class="status-pill__dot" :style="{ background: currentStatus.color }" />
-                  {{ listsStore.currentTodo.status }}
-                  <i class="mdi mdi-chevron-down status-pill__chevron" />
-                </button>
-              </template>
-              <ul class="pop-menu">
-                <li v-for="s in statuses" :key="s.name" class="pop-menu__item" @click="setStatus(s)">
-                  <span class="pop-menu__dot" :style="{ background: s.color }" />
-                  {{ s.name }}
-                </li>
-              </ul>
-            </v-menu>
-          </div>
+    <div class="todo-detail">
+        <!-- Title -->
+        <div class="detail-section detail-section--title">
+            <textarea
+                v-model="listsStore.currentTodo.name"
+                class="title-input"
+                data-testid="todo-detail-title"
+                rows="1"
+                @blur="updateName"
+            />
         </div>
 
-        <div class="prop-row">
-          <div class="prop-row__label">
-            <i class="mdi mdi-calendar prop-row__icon" />
-            <span>Due date</span>
-          </div>
-          <div class="prop-row__value" :class="{ 'prop-row__value--overdue': isOverdue }">
-            <AppDueDate :todo="listsStore.currentTodo" :todo-due-date="listsStore.currentTodo.dueDate"
-              :show-detail="true" @set-date="updateDueDate" />
-          </div>
-        </div>
-        <div class="prop-row">
-          <div class="prop-row__label">
-            <i class="mdi mdi-format-list-bulleted prop-row__icon" />
-            <span>List</span>
-          </div>
-          <div class="prop-row__value prop-row__value--plain">
-            {{ listsStore.currentList?.name }}
-          </div>
+        <!-- Properties -->
+        <div class="detail-section detail-section--props">
+            <!-- Status -->
+            <div class="prop-row">
+                <div class="prop-row__label">
+                    <i class="mdi mdi-circle-slice-4 prop-row__icon" />
+                    <span>Status</span>
+                </div>
+                <div class="prop-row__value">
+                    <v-menu>
+                        <template #activator="{ props }">
+                            <button
+                                v-bind="props"
+                                class="status-pill"
+                                :style="{
+                                    background: `${currentStatus.color}18`,
+                                    color: currentStatus.color,
+                                    borderColor: `${currentStatus.color}33`,
+                                }"
+                            >
+                                <span
+                                    class="status-pill__dot"
+                                    :style="{ background: currentStatus.color }"
+                                />
+                                {{ listsStore.currentTodo.status }}
+                                <i class="mdi mdi-chevron-down status-pill__chevron" />
+                            </button>
+                        </template>
+                        <ul class="pop-menu">
+                            <li
+                                v-for="s in statuses"
+                                :key="s.name"
+                                class="pop-menu__item"
+                                @click="setStatus(s)"
+                            >
+                                <span
+                                    class="pop-menu__dot"
+                                    :style="{ background: s.color }"
+                                />
+                                {{ s.name }}
+                            </li>
+                        </ul>
+                    </v-menu>
+                </div>
+            </div>
+
+            <!-- Due date -->
+            <div class="prop-row">
+                <div class="prop-row__label">
+                    <i class="mdi mdi-calendar prop-row__icon" />
+                    <span>Due date</span>
+                </div>
+                <div class="prop-row__value">
+                    <AppDueDate
+                        :todo="listsStore.currentTodo"
+                        :todo-due-date="listsStore.currentTodo.dueDate"
+                        :show-detail="true"
+                        :class="{ 'due-date--overdue': isOverdue }"
+                        @set-date="updateDueDate"
+                    />
+                </div>
+            </div>
+
+            <!-- List -->
+            <div class="prop-row">
+                <div class="prop-row__label">
+                    <i class="mdi mdi-format-list-bulleted prop-row__icon" />
+                    <span>List</span>
+                </div>
+                <div class="prop-row__value prop-row__value--plain">
+                    {{ listsStore.currentList?.name }}
+                </div>
+            </div>
+
+            <!-- GitHub (conditional) -->
+            <div
+                v-if="hasGithub"
+                class="prop-row"
+            >
+                <div class="prop-row__label">
+                    <i class="mdi mdi-github prop-row__icon" />
+                    <span>GitHub</span>
+                </div>
+                <div class="prop-row__value">
+                    <GithubButton :todo="listsStore.currentTodo" />
+                </div>
+            </div>
         </div>
 
-        <div v-if="hasGithub" class="prop-row">
-          <div class="prop-row__label">
-            <i class="mdi mdi-github prop-row__icon" />
-            <span>GitHub</span>
-          </div>
-          <div class="prop-row__value">
-            <GithubButton :todo="listsStore.currentTodo" />
-          </div>
+        <!-- Description -->
+        <div class="detail-section">
+            <div class="section-label">
+                Description
+            </div>
+            <textarea
+                v-model="listsStore.currentTodo.desc"
+                class="desc-textarea"
+                placeholder="Add a description…"
+                @input="listsStore.debounceUpdateTodo(listsStore.currentTodo)"
+                @blur="listsStore.updateTodo(listsStore.currentTodo)"
+            />
         </div>
 
-        <div class="sidebar-divider" />
+        <div class="divider" />
 
-        <div class="sidebar-delete">
-          <v-dialog width="260px">
-            <template #activator="{ props: activatorProps }">
-              <v-btn v-bind="activatorProps" color="error" variant="text" prepend-icon="mdi-trash-can-outline"
-                size="small" class="delete-btn">
-              </v-btn>
-            </template>
-            <template #default="{ isActive }">
-              <v-card rounded="lg">
-                <v-card-text>
-                  Are you sure you want to delete this todo?
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer />
-                  <v-btn color="error" @click="deleteTodo">
-                    Delete
-                  </v-btn>
-                  <v-btn @click="isActive.value = false">
-                    Cancel
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </template>
-          </v-dialog>
+        <!-- Subtasks -->
+        <div class="detail-section">
+            <div class="subtasks-header">
+                <div class="subtasks-header__left">
+                    <span class="section-label">Subtasks</span>
+                    <span
+                        v-if="subtaskTotal"
+                        class="subtasks-badge"
+                        :class="{ 'subtasks-badge--done': allDone }"
+                    >
+                        {{ subtaskDone }}/{{ subtaskTotal }}
+                    </span>
+                </div>
+                <div
+                    v-if="subtaskTotal"
+                    class="subtasks-progress"
+                >
+                    <div
+                        class="subtasks-progress__bar"
+                        :class="{ 'subtasks-progress__bar--done': allDone }"
+                        :style="{ width: subtaskPct + '%' }"
+                    />
+                </div>
+            </div>
+            <Subtask />
         </div>
-      </v-card>
-    </v-col>
-  </v-row>
 
+        <div class="divider" />
+
+        <!-- Links -->
+        <div class="detail-section">
+            <div class="section-label">
+                Links
+            </div>
+            <TodoLinks />
+        </div>
+    </div>
 </template>
 
 <style scoped>
-.main-section {
-  padding: 12px 20px;
+.todo-detail {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 40px;
 }
 
-.main-section--title {
-  padding: 18px 20px 10px;
+.detail-section {
+    padding: 12px 20px;
+}
+
+.detail-section--title {
+    padding: 18px 20px 10px;
 }
 
 .divider {
@@ -192,118 +226,25 @@ async function deleteTodo() {
 
 /* Title input */
 .title-input {
-  width: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  font-family: 'Manrope', sans-serif;
-  font-size: 1.3125rem;
-  font-weight: 700;
-  color: rgb(var(--v-theme-on-surface));
-  line-height: 1.3;
-  padding: 2px 0;
-  resize: none;
-  box-sizing: border-box;
-  overflow: hidden;
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.1875rem;
+    font-weight: 700;
+    color: rgb(var(--v-theme-on-surface));
+    line-height: 1.3;
+    padding: 2px 0;
+    resize: none;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .title-input:focus {
   outline: 2px solid rgb(var(--v-theme-primary));
   outline-offset: 2px;
   border-radius: 4px;
-}
-
-/* Section label */
-.section-label {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(var(--v-theme-on-surface), 0.45);
-  margin-bottom: 8px;
-}
-
-/* Description textarea */
-.desc-textarea {
-  width: 100%;
-  min-height: 80px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: rgb(var(--v-theme-on-surface));
-  font-size: 0.9rem;
-  font-family: inherit;
-  line-height: 1.6;
-  resize: none;
-  outline: none;
-}
-
-.desc-textarea::placeholder {
-  color: rgba(var(--v-theme-on-surface), 0.35);
-}
-
-/* Subtasks header */
-.subtasks-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.subtasks-header__left {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.subtasks-badge {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  background: rgb(var(--v-theme-primary-container));
-  color: rgb(var(--v-theme-on-primary-container));
-  padding: 1px 7px;
-  border-radius: 8px;
-  transition: background 0.2s, color 0.2s;
-}
-
-.subtasks-badge--done {
-  background: rgba(26, 122, 74, 0.12);
-  color: #1a7a4a;
-}
-
-.subtasks-progress {
-  width: 64px;
-  height: 3px;
-  border-radius: 2px;
-  background: rgba(var(--v-border-color), 0.2);
-  overflow: hidden;
-}
-
-.subtasks-progress__bar {
-  height: 100%;
-  border-radius: 2px;
-  background: rgb(var(--v-theme-primary));
-  transition: width 0.3s ease, background 0.3s;
-}
-
-.subtasks-progress__bar--done {
-  background: #1a7a4a;
-}
-
-/* RIGHT sidebar */
-.todo-sidebar {
-  position: sticky;
-  top: 16px;
-}
-
-.sidebar-card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(42, 52, 57, 0.06);
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
 
 /* Property rows */
@@ -314,15 +255,15 @@ async function deleteTodo() {
 }
 
 .prop-row__label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  width: 80px;
-  flex-shrink: 0;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: rgba(var(--v-theme-on-surface), 0.5);
-  user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 108px;
+    flex-shrink: 0;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: rgba(var(--v-theme-on-surface), 0.5);
+    user-select: none;
 }
 
 .prop-row__icon {
@@ -333,9 +274,8 @@ async function deleteTodo() {
 }
 
 .prop-row__value {
-  flex: 1;
-  font-size: 0.875rem;
-  min-width: 0;
+    flex: 1;
+    font-size: 0.875rem;
 }
 
 .prop-row__value--plain {
@@ -343,25 +283,19 @@ async function deleteTodo() {
   font-size: 0.875rem;
 }
 
-.prop-row__value--overdue :deep(*) {
-  color: #ba1b24 !important;
-  font-weight: 500;
-}
-
 /* Status pill */
 .status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 10px 3px 7px;
-  border-radius: 20px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  font-family: inherit;
-  transition: opacity 0.15s;
-  white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px 3px 7px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-family: inherit;
+    transition: opacity 0.15s;
 }
 
 .status-pill:hover {
@@ -413,20 +347,90 @@ async function deleteTodo() {
   flex-shrink: 0;
 }
 
-/* Sidebar divider and delete */
-.sidebar-divider {
-  height: 1px;
-  background: rgba(var(--v-border-color), 0.14);
-  margin: 8px 0;
+/* Due date overdue */
+:deep(.due-date--overdue .date-field__input) {
+    color: rgb(var(--v-theme-tertiary));
+    font-weight: 500;
 }
 
-.sidebar-delete {
-  display: flex;
-  justify-content: flex-start;
+/* Section label */
+.section-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(var(--v-theme-on-surface), 0.45);
+    margin-bottom: 8px;
 }
 
-.delete-btn {
-  padding-left: 0 !important;
-  font-size: 0.8125rem;
+/* Description textarea */
+.desc-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: rgb(var(--v-theme-on-surface));
+    font-size: 0.9rem;
+    font-family: inherit;
+    line-height: 1.6;
+    resize: none;
+    outline: none;
+}
+
+.desc-textarea::placeholder {
+    color: rgba(var(--v-theme-on-surface), 0.35);
+}
+
+/* Subtasks header */
+.subtasks-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.subtasks-header__left {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.subtasks-badge {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    background: rgb(var(--v-theme-primary-container));
+    color: rgb(var(--v-theme-on-primary-container));
+    padding: 1px 7px;
+    border-radius: 8px;
+    transition:
+        background 0.2s,
+        color 0.2s;
+}
+
+.subtasks-badge--done {
+    background: rgba(26, 122, 74, 0.12);
+    color: #1a7a4a;
+}
+
+.subtasks-progress {
+    width: 64px;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(var(--v-border-color), 0.2);
+    overflow: hidden;
+}
+
+.subtasks-progress__bar {
+    height: 100%;
+    border-radius: 2px;
+    background: rgb(var(--v-theme-primary));
+    transition:
+        width 0.3s ease,
+        background 0.3s;
+}
+
+.subtasks-progress__bar--done {
+    background: #1a7a4a;
 }
 </style>
