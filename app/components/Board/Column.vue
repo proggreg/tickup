@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const isAddingTodo = ref(false);
 const listsStore = useListsStore();
-const statusStore = useSettingsStore();
 
 interface Props {
     status: Status;
@@ -112,9 +111,7 @@ function handleDragChange(evt: any) {
                                     class="flex-shrink-0"
                                     @click.stop
                                 />
-                                <span
-                                    class="text-truncate text-body-1 font-weight-bold flex-grow-1 mr-2"
-                                >{{ todo.name }}</span>
+                                <span class="text-truncate text-body-1 font-weight-bold flex-grow-1 mr-2">{{ todo.name }}</span>
                             </div>
                         </v-card-item>
                     </v-card>
@@ -142,37 +139,37 @@ function handleDragChange(evt: any) {
 
 <style scoped>
 .ghost {
-    opacity: 0.5;
-    background-color: inherit;
+  opacity: 0.5;
+  background-color: inherit;
 }
 
 :deep(.v-card-title) {
-    font-weight: bold !important;
+  font-weight: bold !important;
 }
 
 .list :deep(.v-card-item__content:first-child) {
-    height: 100% !important;
+  height: 100% !important;
 
-    .draggable-container {
-        min-height: 100%;
-        overflow-y: auto;
-    }
+  .draggable-container {
+    min-height: 100%;
+    overflow-y: auto;
+  }
 }
 
 /* Mobile-specific styles */
 @media (max-width: 768px) {
-    :deep(.v-card) {
-        min-width: 0 !important;
-        width: 100% !important;
-    }
+  :deep(.v-card) {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
 
-    :deep(.v-card-item) {
-        padding: 8px 12px !important;
-    }
+  :deep(.v-card-item) {
+    padding: 8px 12px !important;
+  }
 
-    :deep(.text-truncate) {
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
+  :deep(.text-truncate) {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
 }
 </style>

@@ -89,9 +89,9 @@ const effectiveDate = computed<Date | null>(() => {
 
 const isOverdue = computed(
     () =>
-        !!effectiveDate.value &&
-        startOfDay(effectiveDate.value) < startOfDay(new Date()) &&
-        props.todo.status !== 'Closed',
+        !!effectiveDate.value
+        && startOfDay(effectiveDate.value) < startOfDay(new Date())
+        && props.todo.status !== 'Closed',
 );
 
 const isToday_ = computed(() => sameDay(effectiveDate.value, new Date()));
@@ -134,14 +134,16 @@ function prevMonth() {
     if (viewMonth.value === 0) {
         viewMonth.value = 11;
         viewYear.value--;
-    } else viewMonth.value--;
+    }
+    else viewMonth.value--;
 }
 
 function nextMonth() {
     if (viewMonth.value === 11) {
         viewMonth.value = 0;
         viewYear.value++;
-    } else viewMonth.value++;
+    }
+    else viewMonth.value++;
 }
 
 // ── Quick options ─────────────────────────────────────────────────────────────
@@ -222,10 +224,10 @@ function handleOutsideClick(e: MouseEvent) {
     if (!open.value) return;
     const t = e.target as Node;
     if (
-        popoverEl.value &&
-        !popoverEl.value.contains(t) &&
-        triggerEl.value &&
-        !triggerEl.value.contains(t)
+        popoverEl.value
+        && !popoverEl.value.contains(t)
+        && triggerEl.value
+        && !triggerEl.value.contains(t)
     )
         closePicker();
 }
@@ -272,7 +274,11 @@ onUnmounted(() => {
         data-testid="due-date-trigger"
         @click="openPicker"
     >
-        <i v-if="isOverdue" class="mdi mdi-alert-circle-outline" style="font-size: 13px" />
+        <i
+            v-if="isOverdue"
+            class="mdi mdi-alert-circle-outline"
+            style="font-size: 13px"
+        />
         <span>{{ effectiveDate ? formatRelative(effectiveDate) : 'Add due date' }}</span>
     </button>
 
@@ -318,23 +324,41 @@ onUnmounted(() => {
                 <div class="due-cal__header">
                     <span class="due-cal__month-label">{{ MONTHS[viewMonth] }} {{ viewYear }}</span>
                     <div style="display: flex; gap: 2px">
-                        <button class="due-cal__nav" @click="prevMonth">
-                            <i class="mdi mdi-chevron-left" style="font-size: 18px" />
+                        <button
+                            class="due-cal__nav"
+                            @click="prevMonth"
+                        >
+                            <i
+                                class="mdi mdi-chevron-left"
+                                style="font-size: 18px"
+                            />
                         </button>
-                        <button class="due-cal__nav" @click="nextMonth">
-                            <i class="mdi mdi-chevron-right" style="font-size: 18px" />
+                        <button
+                            class="due-cal__nav"
+                            @click="nextMonth"
+                        >
+                            <i
+                                class="mdi mdi-chevron-right"
+                                style="font-size: 18px"
+                            />
                         </button>
                     </div>
                 </div>
 
                 <div class="due-cal__weekdays">
-                    <div v-for="d in DAYS" :key="d">
+                    <div
+                        v-for="d in DAYS"
+                        :key="d"
+                    >
                         {{ d }}
                     </div>
                 </div>
 
                 <div class="due-cal__grid">
-                    <template v-for="(d, i) in calendarCells" :key="i">
+                    <template
+                        v-for="(d, i) in calendarCells"
+                        :key="i"
+                    >
                         <div v-if="!d" />
                         <button
                             v-else
@@ -354,8 +378,14 @@ onUnmounted(() => {
 
             <!-- Footer -->
             <div class="due-footer">
-                <button class="due-clear" @click="handleClear">
-                    <i class="mdi mdi-close-circle-outline" style="font-size: 15px" />
+                <button
+                    class="due-clear"
+                    @click="handleClear"
+                >
+                    <i
+                        class="mdi mdi-close-circle-outline"
+                        style="font-size: 15px"
+                    />
                     Clear
                 </button>
                 <span class="due-footer__preview">
