@@ -52,7 +52,7 @@ async function deleteTodo() {
   <!-- Two-column layout wrapper -->
   <v-row no-gutters>
     <!-- LEFT: main content -->
-    <v-col cols="12" md="8" class="todo-main">
+    <v-col cols="12" md="8" class="todo-main flex-grow-1">
       <!-- Title -->
       <div class="main-section main-section--title">
         <textarea v-model="listsStore.currentTodo.name" class="title-input" data-testid="todo-detail-title" rows="1"
@@ -84,35 +84,35 @@ async function deleteTodo() {
         </div>
       </div>
 
-      <aside class="todo-sidebar">
-        <div class="sidebar-card">
-          <div class="prop-row">
-            <div class="prop-row__label">
-              <i class="mdi mdi-circle-slice-4 prop-row__icon" />
-              <span>Status</span>
-            </div>
-            <div class="prop-row__value">
-              <v-menu>
-                <template #activator="{ props }">
-                  <button v-bind="props" class="status-pill" :style="{
-                    background: `${currentStatus.color}18`,
-                    color: currentStatus.color,
-                    borderColor: `${currentStatus.color}33`,
-                  }">
-                    <span class="status-pill__dot" :style="{ background: currentStatus.color }" />
-                    {{ listsStore.currentTodo.status }}
-                    <i class="mdi mdi-chevron-down status-pill__chevron" />
-                  </button>
-                </template>
-                <ul class="pop-menu">
-                  <li v-for="s in statuses" :key="s.name" class="pop-menu__item" @click="setStatus(s)">
-                    <span class="pop-menu__dot" :style="{ background: s.color }" />
-                    {{ s.name }}
-                  </li>
-                </ul>
-              </v-menu>
-            </div>
+    <v-col cols="auto" class="todo-sidebar flex-grow-1">
+      <v-card width=" 100%" min-width="350" class="sidebar-card">
+        <div class="prop-row">
+          <div class="prop-row__label">
+            <i class="mdi mdi-circle-slice-4 prop-row__icon" />
+            <span>Status</span>
           </div>
+          <div class="prop-row__value">
+            <v-menu>
+              <template #activator="{ props }">
+                <button v-bind="props" class="status-pill" :style="{
+                  background: `${currentStatus.color}18`,
+                  color: currentStatus.color,
+                  borderColor: `${currentStatus.color}33`,
+                }">
+                  <span class="status-pill__dot" :style="{ background: currentStatus.color }" />
+                  {{ listsStore.currentTodo.status }}
+                  <i class="mdi mdi-chevron-down status-pill__chevron" />
+                </button>
+              </template>
+              <ul class="pop-menu">
+                <li v-for="s in statuses" :key="s.name" class="pop-menu__item" @click="setStatus(s)">
+                  <span class="pop-menu__dot" :style="{ background: s.color }" />
+                  {{ s.name }}
+                </li>
+              </ul>
+            </v-menu>
+          </div>
+        </div>
 
           <div class="prop-row">
             <div class="prop-row__label">
