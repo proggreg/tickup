@@ -35,14 +35,6 @@ function updateDueDate(newDate: Date) {
   listsStore.updateTodo(listsStore.currentTodo);
 }
 
-const subtaskTotal = computed(() => listsStore.currentTodo.subtasks?.length ?? 0);
-const subtaskDone = computed(
-  () => listsStore.currentTodo.subtasks?.filter(s => s.status === 'Closed').length ?? 0,
-);
-const subtaskPct = computed(() =>
-  subtaskTotal.value ? Math.round((subtaskDone.value / subtaskTotal.value) * 100) : 0,
-);
-const allDone = computed(() => subtaskTotal.value > 0 && subtaskPct.value === 100);
 
 async function deleteTodo() {
   if (!listsStore.currentTodo?.id) return;
@@ -89,32 +81,7 @@ async function deleteTodo() {
 
                 <div class="divider" />
 
-                <!-- Subtasks -->
-                <div class="main-section">
-                    <div class="subtasks-header">
-                        <div class="subtasks-header__left">
-                            <span class="section-label">Subtasks</span>
-                            <span
-                                v-if="subtaskTotal"
-                                class="subtasks-badge"
-                                :class="{ 'subtasks-badge--done': allDone }"
-                            >
-                                {{ subtaskDone }}/{{ subtaskTotal }}
-                            </span>
-                        </div>
-                        <div
-                            v-if="subtaskTotal"
-                            class="subtasks-progress"
-                        >
-                            <div
-                                class="subtasks-progress__bar"
-                                :class="{ 'subtasks-progress__bar--done': allDone }"
-                                :style="{ width: subtaskPct + '%' }"
-                            />
-                        </div>
-                    </div>
-                    <Subtask />
-                </div>
+        <Subtasks />
 
                 <div class="divider" />
 
