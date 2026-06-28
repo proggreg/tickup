@@ -2,8 +2,8 @@
 const listsStore = useListsStore();
 const { smAndDown } = useDisplay();
 const itemProps = defineProps<{
-  todos: Task[];
-  status: string;
+    todos: Task[];
+    status: string;
 }>();
 
 const emit = defineEmits(['TodoClicked', 'updateTodos']);
@@ -12,73 +12,96 @@ const today = new Date();
 today.setHours(0, 0, 0, 0);
 
 function isOverdue(todo: Task) {
-  if (!todo.dueDate || todo.status === 'Closed') return false;
-  const d = new Date(todo.dueDate);
-  d.setHours(0, 0, 0, 0);
-  return d < today;
+    if (!todo.dueDate || todo.status === 'Closed') return false;
+    const d = new Date(todo.dueDate);
+    d.setHours(0, 0, 0, 0);
+    return d < today;
 }
 
 function isToday(todo: Task) {
-  if (!todo.dueDate) return false;
-  const d = new Date(todo.dueDate);
-  d.setHours(0, 0, 0, 0);
-  return d.getTime() === today.getTime();
+    if (!todo.dueDate) return false;
+    const d = new Date(todo.dueDate);
+    d.setHours(0, 0, 0, 0);
+    return d.getTime() === today.getTime();
 }
 
 function formatDue(todo: Task) {
-  if (!todo.dueDate) return '';
-  const d = new Date(todo.dueDate);
-  d.setHours(0, 0, 0, 0);
-  const diff = Math.round((d.getTime() - today.getTime()) / 86400000);
-  if (diff === -1) return 'Yesterday';
-  if (diff === 0) return 'Today';
-  if (diff === 1) return 'Tomorrow';
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    if (!todo.dueDate) return '';
+    const d = new Date(todo.dueDate);
+    d.setHours(0, 0, 0, 0);
+    const diff = Math.round((d.getTime() - today.getTime()) / 86400000);
+    if (diff === -1) return 'Yesterday';
+    if (diff === 0) return 'Today';
+    if (diff === 1) return 'Tomorrow';
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 }
 
 function selectTodo(todo: Task) {
-  listsStore.setCurrentTodo(todo);
-  listsStore.panelOpen = true;
-  emit('TodoClicked');
+    listsStore.setCurrentTodo(todo);
+    listsStore.panelOpen = true;
+    emit('TodoClicked');
 }
 
 function toggleStatus(todo: Task) {
-  todo.status = todo.status === 'Closed' ? 'Open' : 'Closed';
-  $fetch(`/api/todo/${todo.id}`, { method: 'PUT', body: todo });
+    todo.status = todo.status === 'Closed' ? 'Open' : 'Closed';
+    $fetch(`/api/todo/${todo.id}`, { method: 'PUT', body: todo });
 }
 
 const isSelected = (todo: Task) => listsStore.currentTodo?.id === todo.id && listsStore.panelOpen;
 </script>
 
 <template>
-  <template v-for="todo in itemProps.todos" :key="todo.id">
-    <div v-if="todo.status === itemProps.status" class="todo-item" :class="{
-      'todo-item--selected': isSelected(todo),
-      'todo-item--closed': todo.status === 'Closed',
-    }" @click="selectTodo(todo)">
-      <!-- Checkbox / status toggle -->
-      <div class="todo-item__check">
-        <button class="check-btn" :class="{ 'check-btn--done': todo.status === 'Closed' }"
-          :aria-label="`Toggle ${todo.name}`" @click.stop="toggleStatus(todo)">
-          <i v-if="todo.status === 'Closed'" class="mdi mdi-check check-btn__icon" />
-        </button>
-      </div>
+    <template
+        v-for="todo in itemProps.todos"
+        :key="todo.id"
+    >
+        <div
+            v-if="todo.status === itemProps.status"
+            class="todo-item"
+            :class="{
+                'todo-item--selected': isSelected(todo),
+                'todo-item--closed': todo.status === 'Closed',
+            }"
+            @click="selectTodo(todo)"
+        >
+            <!-- Checkbox / status toggle -->
+            <div class="todo-item__check">
+                <button
+                    class="check-btn"
+                    :class="{ 'check-btn--done': todo.status === 'Closed' }"
+                    :aria-label="`Toggle ${todo.name}`"
+                    @click.stop="toggleStatus(todo)"
+                >
+                    <i
+                        v-if="todo.status === 'Closed'"
+                        class="mdi mdi-check check-btn__icon"
+                    />
+                </button>
+            </div>
 
-      <!-- Title -->
-      <div class="todo-item__title">
-        {{ todo.name }}
-      </div>
+            <!-- Title -->
+            <div class="todo-item__title">
+                {{ todo.name }}
+            </div>
 
-      <!-- Due date -->
-      <div v-if="todo.dueDate && !smAndDown" class="todo-item__due" :class="{
-        'todo-item__due--overdue': isOverdue(todo),
-        'todo-item__due--today': isToday(todo),
-      }">
-        <i v-if="isOverdue(todo)" class="mdi mdi-alert-circle-outline" style="font-size: 12px" />
-        {{ formatDue(todo) }}
-      </div>
-    </div>
-  </template>
+            <!-- Due date -->
+            <div
+                v-if="todo.dueDate && !smAndDown"
+                class="todo-item__due"
+                :class="{
+                    'todo-item__due--overdue': isOverdue(todo),
+                    'todo-item__due--today': isToday(todo),
+                }"
+            >
+                <i
+                    v-if="isOverdue(todo)"
+                    class="mdi mdi-alert-circle-outline"
+                    style="font-size: 12px"
+                />
+                {{ formatDue(todo) }}
+            </div>
+        </div>
+    </template>
 </template>
 
 <style scoped>

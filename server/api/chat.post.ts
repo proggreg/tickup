@@ -26,7 +26,8 @@ export default defineEventHandler(async (event) => {
         });
 
         return { content, text };
-    } finally {
+    }
+    finally {
         await mcp.close();
     }
 });

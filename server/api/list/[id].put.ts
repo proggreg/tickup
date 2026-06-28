@@ -30,7 +30,8 @@ export default defineEventHandler(async (event) => {
         const snakeUpdateData = objectToSnake(updateData);
 
         return await client.from('Lists').update(snakeUpdateData).eq('id', body.id).select();
-    } catch (error) {
+    }
+    catch (error) {
         return error;
     }
 });

@@ -56,7 +56,8 @@ export default defineEventHandler(async (event) => {
             console.log('todo created', result.id);
             return objectToCamel(result);
         }
-    } catch (e) {
+    }
+    catch (e) {
         const errorMsg = e instanceof Error ? e.message : String(e);
         throw createError({
             statusCode: 500,

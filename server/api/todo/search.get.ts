@@ -18,7 +18,8 @@ export default defineEventHandler(async (event) => {
 
     if (name) {
         queryBuilder = queryBuilder.eq('name', name);
-    } else if (githubBranchName) {
+    }
+    else if (githubBranchName) {
         queryBuilder = queryBuilder.eq('github_branch_name', githubBranchName);
     }
 

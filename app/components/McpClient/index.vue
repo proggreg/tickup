@@ -24,9 +24,11 @@ async function send() {
             body: { prompt: userText.value },
         });
         reply.value = text;
-    } catch (err: any) {
+    }
+    catch (err: any) {
         notify(err?.data?.message ?? err?.message ?? 'Request failed', { timeout: 5000 });
-    } finally {
+    }
+    finally {
         loading.value = false;
     }
 }
@@ -34,10 +36,22 @@ async function send() {
 
 <template>
     <v-container>
-        <v-text-field v-model="userText" label="Ask something" @keydown.enter="send" />
-        <v-btn :loading="loading" @click="send"> Send </v-btn>
+        <v-text-field
+            v-model="userText"
+            label="Ask something"
+            @keydown.enter="send"
+        />
+        <v-btn
+            :loading="loading"
+            @click="send"
+        >
+            Send
+        </v-btn>
 
-        <v-card v-if="reply" class="mt-4 pa-4">
+        <v-card
+            v-if="reply"
+            class="mt-4 pa-4"
+        >
             {{ reply }}
         </v-card>
 

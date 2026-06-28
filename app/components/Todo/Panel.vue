@@ -6,68 +6,92 @@ const deleteDialog = ref(false);
 defineEmits(['close']);
 
 function openFullPage() {
-  router.push(`/todo/${listsStore.currentTodo.id}`);
+    router.push(`/todo/${listsStore.currentTodo.id}`);
 }
 
 async function confirmDelete() {
-  await listsStore.deleteTodo(listsStore.currentTodo.id);
-  deleteDialog.value = false;
+    await listsStore.deleteTodo(listsStore.currentTodo.id);
+    deleteDialog.value = false;
 }
 </script>
 
 <template>
-  <aside class="todo-panel">
-    <!-- Panel header -->
-    <div class="panel-header">
-      <div class="panel-header__start">
-        <button class="icon-btn" title="Open full page" aria-label="Open full page" @click="openFullPage">
-          <i class="mdi mdi-arrow-expand" />
-        </button>
-      </div>
-
-      <div class="panel-header__end">
-        <!-- Delete with confirm dialog -->
-        <v-dialog v-model="deleteDialog" max-width="280">
-          <template #activator="{ props }">
-            <button v-bind="props" class="icon-btn icon-btn--danger" title="Delete task" aria-label="Delete task">
-              <i class="mdi mdi-trash-can-outline" />
-            </button>
-          </template>
-          <div class="confirm-dialog">
-            <div class="confirm-dialog__title">
-              Delete task
+    <aside class="todo-panel">
+        <!-- Panel header -->
+        <div class="panel-header">
+            <div class="panel-header__start">
+                <button
+                    class="icon-btn"
+                    title="Open full page"
+                    aria-label="Open full page"
+                    @click="openFullPage"
+                >
+                    <i class="mdi mdi-arrow-expand" />
+                </button>
             </div>
-            <div class="confirm-dialog__desc">
-              Are you sure you want to delete "{{ listsStore.currentTodo.name }}"?
-            </div>
-            <div class="confirm-dialog__actions">
-              <button class="btn" @click="deleteDialog = false">
-                Cancel
-              </button>
-              <button class="btn btn--danger" @click="
-                confirmDelete();
-              $emit('close');
-              ">
-                Delete
-              </button>
-            </div>
-          </div>
-        </v-dialog>
 
-        <!-- Close panel -->
-        <button class="icon-btn" title="Close panel" aria-label="Close panel" @click="$emit('close')">
-          <i class="mdi mdi-close" />
-        </button>
-      </div>
-    </div>
+            <div class="panel-header__end">
+                <!-- Delete with confirm dialog -->
+                <v-dialog
+                    v-model="deleteDialog"
+                    max-width="280"
+                >
+                    <template #activator="{ props }">
+                        <button
+                            v-bind="props"
+                            class="icon-btn icon-btn--danger"
+                            title="Delete task"
+                            aria-label="Delete task"
+                        >
+                            <i class="mdi mdi-trash-can-outline" />
+                        </button>
+                    </template>
+                    <div class="confirm-dialog">
+                        <div class="confirm-dialog__title">
+                            Delete task
+                        </div>
+                        <div class="confirm-dialog__desc">
+                            Are you sure you want to delete "{{ listsStore.currentTodo.name }}"?
+                        </div>
+                        <div class="confirm-dialog__actions">
+                            <button
+                                class="btn"
+                                @click="deleteDialog = false"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                class="btn btn--danger"
+                                @click="
+                                    confirmDelete();
+                                    $emit('close');
+                                "
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </v-dialog>
 
-    <!-- Panel content -->
-    <div class="panel-body">
-      <Suspense>
-        <TodoDetail main-width="12" />
-      </Suspense>
-    </div>
-  </aside>
+                <!-- Close panel -->
+                <button
+                    class="icon-btn"
+                    title="Close panel"
+                    aria-label="Close panel"
+                    @click="$emit('close')"
+                >
+                    <i class="mdi mdi-close" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Panel content -->
+        <div class="panel-body">
+            <Suspense>
+                <TodoDetail main-width="12" />
+            </Suspense>
+        </div>
+    </aside>
 </template>
 
 <style scoped>
