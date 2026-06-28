@@ -28,17 +28,31 @@ export async function handlePullRequest(
     supabase,
     body: PullRequestEvent,
     subscribedUserIds,
-    branchName,
+    _branchName,
 ) {
     const pr = body.pull_request;
-    const merged = pr?.merged;
+    const prBranchName = pr?.head?.ref;
 
-    if (merged) {
+    if (!prBranchName) return;
+
+    if (body.action === 'opened') {
+        const { error } = await supabase
+            .from('Todos')
+            .update({ github_pr_link: pr.html_url })
+            .in('user_id', subscribedUserIds)
+            .eq('github_branch_name', prBranchName);
+
+        if (error) {
+            console.error('Error updating todo github_pr_link for pull request event:', error);
+        }
+    }
+
+    if (pr?.merged) {
         const { error } = await supabase
             .from('Todos')
             .update({ status: 'Closed' })
             .in('user_id', subscribedUserIds)
-            .eq('github_branch_name', branchName);
+            .eq('github_branch_name', prBranchName);
 
         if (error) {
             console.error('Error updating todo status for pull request event:', error);

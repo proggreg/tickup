@@ -20,6 +20,7 @@ declare global {
         githubBranchName?: string;
         githubRepo?: string;
         githubLink?: string;
+        githubPrLink?: string;
         links: {
             id?: string;
             title: string;
