@@ -52,39 +52,36 @@ async function deleteTodo() {
   <v-row no-gutters>
     <v-col cols="12" :md="mainWidth ? mainWidth : 8" class="todo-main flex-grow-1">
       <!-- Title -->
-      <div class="main-section main-section--title">
+      <v-col>
         <textarea v-model="listsStore.currentTodo.name" class="title-input" data-testid="todo-detail-title" rows="1"
           @blur="updateName" />
-      </div>
+      </v-col>
 
       <!-- Description -->
-      <div class="main-section">
+      <v-col>
         <div class="section-label">
           Description
         </div>
         <textarea v-model="listsStore.currentTodo.desc" class="desc-textarea" placeholder="Add a description…"
           @input="listsStore.debounceUpdateTodo(listsStore.currentTodo)"
           @blur="listsStore.updateTodo(listsStore.currentTodo)" />
-      </div>
+      </v-col>
 
-      <div class="divider" />
+      <v-divider />
 
       <v-col>
         <SubtaskItems />
       </v-col>
 
-      <div class="divider" />
+      <v-divider />
 
       <!-- Links -->
-      <div class="main-section">
-        <div class="section-label">
-          Links
-        </div>
+      <v-col>
         <TodoLinks />
-      </div>
+      </v-col>
     </v-col>
 
-    <v-col cols="auto" class="todo-sidebar flex-grow-1">
+    <!-- <v-col cols="auto" class="todo-sidebar flex-grow-1">
       <v-card width=" 100%" min-width="350" class="sidebar-card pa-4">
         <div class="prop-row">
           <div class="prop-row__label">
@@ -104,55 +101,55 @@ async function deleteTodo() {
                   <i class="mdi mdi-chevron-down status-pill__chevron" />
                 </button>
               </template>
-              <ul class="pop-menu">
-                <li v-for="s in statuses" :key="s.name" class="pop-menu__item" @click="setStatus(s)">
-                  <span class="pop-menu__dot" :style="{ background: s.color }" />
-                  {{ s.name }}
-                </li>
-              </ul>
-            </v-menu>
-          </div>
-        </div>
+<ul class="pop-menu">
+  <li v-for="s in statuses" :key="s.name" class="pop-menu__item" @click="setStatus(s)">
+    <span class="pop-menu__dot" :style="{ background: s.color }" />
+    {{ s.name }}
+  </li>
+</ul>
+</v-menu>
+</div>
+</div>
 
-        <div class="prop-row">
-          <div class="prop-row__label">
-            <i class="mdi mdi-calendar prop-row__icon" />
-            <span>Due date</span>
-          </div>
-          <div class="prop-row__value" :class="{ 'prop-row__value--overdue': isOverdue }">
-            <AppDueDate :todo="listsStore.currentTodo" :todo-due-date="listsStore.currentTodo.dueDate"
-              :show-detail="true" @set-date="updateDueDate" />
-          </div>
-        </div>
-        <div class="prop-row">
-          <div class="prop-row__label">
-            <i class="mdi mdi-format-list-bulleted prop-row__icon" />
-            <span>List</span>
-          </div>
-          <div class="prop-row__value prop-row__value--plain">
-            {{ listsStore.currentList?.name }}
-          </div>
-        </div>
+<div class="prop-row">
+  <div class="prop-row__label">
+    <i class="mdi mdi-calendar prop-row__icon" />
+    <span>Due date</span>
+  </div>
+  <div class="prop-row__value" :class="{ 'prop-row__value--overdue': isOverdue }">
+    <AppDueDate :todo="listsStore.currentTodo" :todo-due-date="listsStore.currentTodo.dueDate" :show-detail="true"
+      @set-date="updateDueDate" />
+  </div>
+</div>
+<div class="prop-row">
+  <div class="prop-row__label">
+    <i class="mdi mdi-format-list-bulleted prop-row__icon" />
+    <span>List</span>
+  </div>
+  <div class="prop-row__value prop-row__value--plain">
+    {{ listsStore.currentList?.name }}
+  </div>
+</div>
 
-        <div v-if="hasGithub" class="prop-row">
-          <div class="prop-row__label">
-            <i class="mdi mdi-github prop-row__icon" />
-            <span>GitHub</span>
-          </div>
-          <div class="prop-row__value">
-            <GithubButton :todo="listsStore.currentTodo" />
-          </div>
-        </div>
+<div v-if="hasGithub" class="prop-row">
+  <div class="prop-row__label">
+    <i class="mdi mdi-github prop-row__icon" />
+    <span>GitHub</span>
+  </div>
+  <div class="prop-row__value">
+    <GithubButton :todo="listsStore.currentTodo" />
+  </div>
+</div>
 
-        <div class="sidebar-divider" />
+<div class="sidebar-divider" />
 
-        <div class="sidebar-delete">
-          <v-dialog width="260px">
-            <template #activator="{ props: activatorProps }">
+<div class="sidebar-delete">
+  <v-dialog width="260px">
+    <template #activator="{ props: activatorProps }">
               <v-btn v-bind="activatorProps" color="error" variant="text" prepend-icon="mdi-trash-can-outline"
                 size="small" class="delete-btn" />
             </template>
-            <template #default="{ isActive }">
+    <template #default="{ isActive }">
               <v-card rounded="lg">
                 <v-card-text>
                   Are you sure you want to delete this todo?
@@ -168,10 +165,10 @@ async function deleteTodo() {
                 </v-card-actions>
               </v-card>
             </template>
-          </v-dialog>
-        </div>
-      </v-card>
-    </v-col>
+  </v-dialog>
+</div>
+</v-card>
+</v-col> -->
   </v-row>
 </template>
 
@@ -211,19 +208,8 @@ async function deleteTodo() {
   padding-bottom: 8px;
 }
 
-.main-section {
-  padding: 12px 20px;
-}
 
-.main-section--title {
-  padding: 18px 20px 10px;
-}
 
-.divider {
-  height: 1px;
-  background: rgba(var(--v-border-color), 0.14);
-  margin: 0 20px;
-}
 
 /* Title input */
 .title-input {
