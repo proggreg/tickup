@@ -200,37 +200,6 @@ const quicks = computed(() => {
       date: nextWeekday(1),
     },
   ];
-  const t = new Date();
-  return [
-    {
-      icon: 'mdi-white-balance-sunny',
-      label: 'Today',
-      accent: '#f07c20',
-      hint: t.toLocaleDateString('en-GB', { weekday: 'short' }),
-      date: startOfDay(t),
-    },
-    {
-      icon: 'mdi-weather-sunset-up',
-      label: 'Tomorrow',
-      accent: '#005ac2',
-      hint: addDays(t, 1).toLocaleDateString('en-GB', { weekday: 'short' }),
-      date: addDays(startOfDay(t), 1),
-    },
-    {
-      icon: 'mdi-calendar-weekend',
-      label: 'This weekend',
-      accent: '#506076',
-      hint: 'Sat',
-      date: nextWeekday(6),
-    },
-    {
-      icon: 'mdi-calendar-arrow-right',
-      label: 'Next week',
-      accent: '#506076',
-      hint: 'Mon',
-      date: nextWeekday(1),
-    },
-  ];
 });
 
 // ── Popover open/close/position ───────────────────────────────────────────────
