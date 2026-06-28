@@ -118,3 +118,4 @@ tickup-github.2026-02-01.private-key.pem
 .gstack/
 .coverage
 .claude/scheduled_tasks.lock
+.mcp.json
