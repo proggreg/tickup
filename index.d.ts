@@ -11,16 +11,16 @@ declare global {
         dueDate?: Date;
         listId?: string;
         list?: List;
-        status: string;
+        status?: string;
         desc?: string;
-        edit: boolean;
+        edit?: boolean;
         selected?: boolean;
-        color: string;
-        priorityLev: string;
+        color?: string;
+        priorityLev?: string;
         githubBranchName?: string;
         githubRepo?: string;
         githubLink?: string;
-        links: {
+        links?: {
             id?: string;
             title: string;
             url: string;
