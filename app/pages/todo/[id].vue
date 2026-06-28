@@ -8,15 +8,11 @@
             </v-alert>
         </template>
 
-        <v-row cols="12">
+        <div class="overflow-y-auto fill-height">
             <AppBreadCrumb />
-        </v-row>
-
-        <!-- Main content -->
-        <v-row class="todo-page-surface">
-            <Transition name="todo-fade">
+            <Suspense>
                 <TodoDetail />
-            </Transition>
-        </v-row>
+            </Suspense>
+        </div>
     </NuxtErrorBoundary>
 </template>
