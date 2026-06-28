@@ -4,6 +4,8 @@ const router = useRouter();
 
 const completedOpen = ref(false);
 const quickAddText = ref('');
+const tabs = ref([])
+const currentTab = ref('')
 
 onBeforeMount(async () => {
   await listsStore.getCurrentList();
