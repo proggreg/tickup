@@ -94,9 +94,9 @@ const effectiveDate = computed<Date | null>(() => {
 
 const isOverdue = computed(
     () =>
-        !!effectiveDate.value
-        && startOfDay(effectiveDate.value) < startOfDay(new Date())
-        && props.todo.status !== 'Closed',
+        !!effectiveDate.value &&
+        startOfDay(effectiveDate.value) < startOfDay(new Date()) &&
+        props.todo.status !== 'Closed',
 );
 
 const isToday_ = computed(() => sameDay(effectiveDate.value, new Date()));
@@ -155,16 +155,14 @@ function prevMonth() {
     if (viewMonth.value === 0) {
         viewMonth.value = 11;
         viewYear.value--;
-    }
-    else viewMonth.value--;
+    } else viewMonth.value--;
 }
 
 function nextMonth() {
     if (viewMonth.value === 11) {
         viewMonth.value = 0;
         viewYear.value++;
-    }
-    else viewMonth.value++;
+    } else viewMonth.value++;
 }
 
 // ── Quick options ─────────────────────────────────────────────────────────────
@@ -245,10 +243,10 @@ function handleOutsideClick(e: MouseEvent) {
     if (!open.value) return;
     const t = e.target as Node;
     if (
-        popoverEl.value
-        && !popoverEl.value.contains(t)
-        && triggerEl.value
-        && !triggerEl.value.contains(t)
+        popoverEl.value &&
+        !popoverEl.value.contains(t) &&
+        triggerEl.value &&
+        !triggerEl.value.contains(t)
     )
         closePicker();
 }
@@ -295,11 +293,7 @@ onUnmounted(() => {
         data-testid="due-date-trigger"
         @click="openPicker"
     >
-        <i
-            v-if="isOverdue"
-            class="mdi mdi-alert-circle-outline"
-            style="font-size: 13px"
-        />
+        <i v-if="isOverdue" class="mdi mdi-alert-circle-outline" style="font-size: 13px" />
         <span>{{ effectiveDate ? formatRelative(effectiveDate) : 'Add due date' }}</span>
     </button>
 
@@ -345,41 +339,23 @@ onUnmounted(() => {
                 <div class="due-cal__header">
                     <span class="due-cal__month-label">{{ MONTHS[viewMonth] }} {{ viewYear }}</span>
                     <div style="display: flex; gap: 2px">
-                        <button
-                            class="due-cal__nav"
-                            @click="prevMonth"
-                        >
-                            <i
-                                class="mdi mdi-chevron-left"
-                                style="font-size: 18px"
-                            />
+                        <button class="due-cal__nav" @click="prevMonth">
+                            <i class="mdi mdi-chevron-left" style="font-size: 18px" />
                         </button>
-                        <button
-                            class="due-cal__nav"
-                            @click="nextMonth"
-                        >
-                            <i
-                                class="mdi mdi-chevron-right"
-                                style="font-size: 18px"
-                            />
+                        <button class="due-cal__nav" @click="nextMonth">
+                            <i class="mdi mdi-chevron-right" style="font-size: 18px" />
                         </button>
                     </div>
                 </div>
 
                 <div class="due-cal__weekdays">
-                    <div
-                        v-for="d in DAYS"
-                        :key="d"
-                    >
+                    <div v-for="d in DAYS" :key="d">
                         {{ d }}
                     </div>
                 </div>
 
                 <div class="due-cal__grid">
-                    <template
-                        v-for="(d, i) in calendarCells"
-                        :key="i"
-                    >
+                    <template v-for="(d, i) in calendarCells" :key="i">
                         <div v-if="!d" />
                         <button
                             v-else
@@ -399,14 +375,8 @@ onUnmounted(() => {
 
             <!-- Footer -->
             <div class="due-footer">
-                <button
-                    class="due-clear"
-                    @click="handleClear"
-                >
-                    <i
-                        class="mdi mdi-close-circle-outline"
-                        style="font-size: 15px"
-                    />
+                <button class="due-clear" @click="handleClear">
+                    <i class="mdi mdi-close-circle-outline" style="font-size: 15px" />
                     Clear
                 </button>
                 <span class="due-footer__preview">
@@ -420,221 +390,222 @@ onUnmounted(() => {
 <style scoped>
 /* ── Chip trigger ─────────────────────────────────────────────────────────── */
 .due-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  border: 1px solid transparent;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  font-family: Inter, sans-serif;
-  cursor: pointer;
-  transition: opacity 0.08s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-family: Inter, sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.08s;
 }
 
 .due-chip:hover {
-  opacity: 0.8;
+    opacity: 0.8;
 }
 
 /* ── Row trigger ──────────────────────────────────────────────────────────── */
 .due-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  border-radius: 7px;
-  border: none;
-  background: transparent;
-  font-size: 0.875rem;
-  font-family: Inter, sans-serif;
-  cursor: pointer;
-  transition: background 0.08s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    font-size: 0.875rem;
+    font-family: Inter, sans-serif;
+    cursor: pointer;
+    transition: background 0.08s;
 }
 
 .due-row:hover {
-  background: rgba(113, 124, 130, 0.1);
+    background: rgba(113, 124, 130, 0.1);
 }
 
 /* ── Popover panel ────────────────────────────────────────────────────────── */
 .due-popover {
-  position: fixed;
-  z-index: 2000;
-  width: 300px;
-  background: #ffffff;
-  border: 1px solid rgba(113, 124, 130, 0.16);
-  border-radius: 14px;
-  box-shadow:
-    0 12px 40px rgba(42, 52, 57, 0.18),
-    0 2px 8px rgba(42, 52, 57, 0.06);
-  overflow: hidden;
-  transition:
-    opacity 0.12s,
-    transform 0.12s;
+    position: fixed;
+    z-index: 2000;
+    width: 300px;
+    background: #ffffff;
+    border: 1px solid rgba(113, 124, 130, 0.16);
+    border-radius: 14px;
+    box-shadow:
+        0 12px 40px rgba(42, 52, 57, 0.18),
+        0 2px 8px rgba(42, 52, 57, 0.06);
+    overflow: hidden;
+    transition:
+        opacity 0.12s,
+        transform 0.12s;
 }
 
 /* ── Quick options ────────────────────────────────────────────────────────── */
 .due-quicks {
-  padding: 6px;
-  border-bottom: 1px solid rgba(113, 124, 130, 0.16);
+    padding: 6px;
+    border-bottom: 1px solid rgba(113, 124, 130, 0.16);
 }
 
 .due-quick {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  width: 100%;
-  padding: 8px 10px;
-  border: none;
-  border-radius: 7px;
-  cursor: pointer;
-  background: transparent;
-  color: #2a3439;
-  font-family: Inter, sans-serif;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-align: left;
-  transition: background 0.08s;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    background: transparent;
+    color: #2a3439;
+    font-family: Inter, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: left;
+    transition: background 0.08s;
 }
 
 .due-quick:hover {
-  background: rgba(113, 124, 130, 0.1);
+    background: rgba(113, 124, 130, 0.1);
 }
 
 .due-quick__label {
-  flex: 1;
+    flex: 1;
 }
 
 .due-quick__hint {
-  font-size: 0.75rem;
-  color: rgba(42, 52, 57, 0.38);
+    font-size: 0.75rem;
+    color: rgba(42, 52, 57, 0.38);
 }
 
 /* ── Calendar ─────────────────────────────────────────────────────────────── */
 .due-calendar {
-  padding: 8px 10px;
+    padding: 8px 10px;
 }
 
 .due-cal__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 4px 6px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 6px 10px;
 }
 
 .due-cal__month-label {
-  font-family: Manrope, sans-serif;
-  font-weight: 700;
-  font-size: 0.875rem;
-  color: #2a3439;
+    font-family: Manrope, sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #2a3439;
 }
 
 .due-cal__nav {
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(42, 52, 57, 0.55);
-  transition: background 0.08s;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(42, 52, 57, 0.55);
+    transition: background 0.08s;
 }
 
 .due-cal__nav:hover {
-  background: rgba(113, 124, 130, 0.1);
+    background: rgba(113, 124, 130, 0.1);
 }
 
 .due-cal__weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 2px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 2px;
 }
 
-.due-cal__weekdays>div {
-  text-align: center;
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: rgba(42, 52, 57, 0.38);
-  padding: 4px 0;
+.due-cal__weekdays > div {
+    text-align: center;
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(42, 52, 57, 0.38);
+    padding: 4px 0;
 }
 
 .due-cal__grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
 }
 
 /* ── Day cell ─────────────────────────────────────────────────────────────── */
 .due-day {
-  aspect-ratio: 1;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  background: transparent;
-  color: #2a3439;
-  cursor: pointer;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  font-family: Inter, sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.08s;
+    aspect-ratio: 1;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: #2a3439;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-family: Inter, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.08s;
 }
 
 .due-day:hover {
-  background: rgba(113, 124, 130, 0.1);
+    background: rgba(113, 124, 130, 0.1);
 }
 
 .due-day--today {
-  border-color: #005ac2;
-  color: #005ac2;
-  font-weight: 700;
+    border-color: #005ac2;
+    color: #005ac2;
+    font-weight: 700;
 }
 
 .due-day--selected {
-  background: #005ac2 !important;
-  color: #ffffff;
-  font-weight: 700;
-  border-color: transparent;
+    background: #005ac2 !important;
+    color: #ffffff;
+    font-weight: 700;
+    border-color: transparent;
 }
 
 /* ── Footer ───────────────────────────────────────────────────────────────── */
 .due-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 10px;
-  border-top: 1px solid rgba(113, 124, 130, 0.16);
-  background: #f7f9fb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-top: 1px solid rgba(113, 124, 130, 0.16);
+    background: #f7f9fb;
 }
 
 .due-clear {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 8px;
-  border: none;
-  background: transparent;
-  border-radius: 6px;
-  cursor: pointer;
-  color: #ba1b24;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  font-family: Inter, sans-serif;
-  transition: background 0.08s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 8px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #ba1b24;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-family: Inter, sans-serif;
+    transition: background 0.08s;
 }
 
 .due-clear:hover {
-  background: rgba(186, 27, 36, 0.08);
+    background: rgba(186, 27, 36, 0.08);
 }
 
 .due-footer__preview {
-  font-size: 0.75rem;
-  color: rgba(42, 52, 57, 0.38);
+    font-size: 0.75rem;
+    color: rgba(42, 52, 57, 0.38);
 }
 </style>

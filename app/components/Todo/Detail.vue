@@ -81,7 +81,7 @@ async function deleteTodo() {
       </v-col>
     </v-col>
 
-    <!-- <v-col cols="auto" class="todo-sidebar flex-grow-1">
+    <v-col cols="auto" class="todo-sidebar flex-grow-1">
       <v-card width=" 100%" min-width="350" class="sidebar-card pa-4">
         <div class="prop-row">
           <div class="prop-row__label">
@@ -101,55 +101,55 @@ async function deleteTodo() {
                   <i class="mdi mdi-chevron-down status-pill__chevron" />
                 </button>
               </template>
-<ul class="pop-menu">
-  <li v-for="s in statuses" :key="s.name" class="pop-menu__item" @click="setStatus(s)">
-    <span class="pop-menu__dot" :style="{ background: s.color }" />
-    {{ s.name }}
-  </li>
-</ul>
-</v-menu>
-</div>
-</div>
+              <ul class="pop-menu">
+                <li v-for="s in statuses" :key="s.name" class="pop-menu__item" @click="setStatus(s)">
+                  <span class="pop-menu__dot" :style="{ background: s.color }" />
+                  {{ s.name }}
+                </li>
+              </ul>
+            </v-menu>
+          </div>
+        </div>
 
-<div class="prop-row">
-  <div class="prop-row__label">
-    <i class="mdi mdi-calendar prop-row__icon" />
-    <span>Due date</span>
-  </div>
-  <div class="prop-row__value" :class="{ 'prop-row__value--overdue': isOverdue }">
-    <AppDueDate :todo="listsStore.currentTodo" :todo-due-date="listsStore.currentTodo.dueDate" :show-detail="true"
-      @set-date="updateDueDate" />
-  </div>
-</div>
-<div class="prop-row">
-  <div class="prop-row__label">
-    <i class="mdi mdi-format-list-bulleted prop-row__icon" />
-    <span>List</span>
-  </div>
-  <div class="prop-row__value prop-row__value--plain">
-    {{ listsStore.currentList?.name }}
-  </div>
-</div>
+        <div class="prop-row">
+          <div class="prop-row__label">
+            <i class="mdi mdi-calendar prop-row__icon" />
+            <span>Due date</span>
+          </div>
+          <div class="prop-row__value" :class="{ 'prop-row__value--overdue': isOverdue }">
+            <AppDueDate :todo="listsStore.currentTodo" :todo-due-date="listsStore.currentTodo.dueDate"
+              :show-detail="true" @set-date="updateDueDate" />
+          </div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-row__label">
+            <i class="mdi mdi-format-list-bulleted prop-row__icon" />
+            <span>List</span>
+          </div>
+          <div class="prop-row__value prop-row__value--plain">
+            {{ listsStore.currentList?.name }}
+          </div>
+        </div>
 
-<div v-if="hasGithub" class="prop-row">
-  <div class="prop-row__label">
-    <i class="mdi mdi-github prop-row__icon" />
-    <span>GitHub</span>
-  </div>
-  <div class="prop-row__value">
-    <GithubButton :todo="listsStore.currentTodo" />
-  </div>
-</div>
+        <div v-if="hasGithub" class="prop-row">
+          <div class="prop-row__label">
+            <i class="mdi mdi-github prop-row__icon" />
+            <span>GitHub</span>
+          </div>
+          <div class="prop-row__value">
+            <GithubButton :todo="listsStore.currentTodo" />
+          </div>
+        </div>
 
-<div class="sidebar-divider" />
+        <div class="sidebar-divider" />
 
-<div class="sidebar-delete">
-  <v-dialog width="260px">
-    <template #activator="{ props: activatorProps }">
+        <div class="sidebar-delete">
+          <v-dialog width="260px">
+            <template #activator="{ props: activatorProps }">
               <v-btn v-bind="activatorProps" color="error" variant="text" prepend-icon="mdi-trash-can-outline"
                 size="small" class="delete-btn" />
             </template>
-    <template #default="{ isActive }">
+            <template #default="{ isActive }">
               <v-card rounded="lg">
                 <v-card-text>
                   Are you sure you want to delete this todo?
@@ -165,10 +165,10 @@ async function deleteTodo() {
                 </v-card-actions>
               </v-card>
             </template>
-  </v-dialog>
-</div>
-</v-card>
-</v-col> -->
+          </v-dialog>
+        </div>
+      </v-card>
+    </v-col>
   </v-row>
 </template>
 
