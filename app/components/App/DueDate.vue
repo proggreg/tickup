@@ -3,9 +3,14 @@ import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 
 const emit = defineEmits<{
   setDate: [newDate: Date | null, newTodo: Todo];
+  setDate: [newDate: Date | null, newTodo: Todo];
 }>();
 
 const props = defineProps<{
+  todo: Todo;
+  todoDueDate?: Date | string;
+  date?: Date | string; // alias used by Todo/New.vue
+  showDetail?: boolean;
   todo: Todo;
   todoDueDate?: Date | string;
   date?: Date | string; // alias used by Todo/New.vue
@@ -89,9 +94,9 @@ const effectiveDate = computed<Date | null>(() => {
 
 const isOverdue = computed(
   () =>
-    !!effectiveDate.value
-    && startOfDay(effectiveDate.value) < startOfDay(new Date())
-    && props.todo.status !== 'Closed',
+    !!effectiveDate.value &&
+    startOfDay(effectiveDate.value) < startOfDay(new Date()) &&
+    props.todo.status !== 'Closed',
 );
 
 const isToday_ = computed(() => sameDay(effectiveDate.value, new Date()));
@@ -130,6 +135,8 @@ const chipStyle = computed(() => {
 const rowStyle = computed(() => ({
   color: isOverdue.value ? '#ba1b24' : effectiveDate.value ? '#2a3439' : 'rgba(42,52,57,0.38)',
   fontWeight: isOverdue.value ? 500 : 400,
+  color: isOverdue.value ? '#ba1b24' : effectiveDate.value ? '#2a3439' : 'rgba(42,52,57,0.38)',
+  fontWeight: isOverdue.value ? 500 : 400,
 }));
 
 // ── Popover state ─────────────────────────────────────────────────────────────
@@ -148,16 +155,14 @@ function prevMonth() {
   if (viewMonth.value === 0) {
     viewMonth.value = 11;
     viewYear.value--;
-  }
-  else viewMonth.value--;
+  } else viewMonth.value--;
 }
 
 function nextMonth() {
   if (viewMonth.value === 11) {
     viewMonth.value = 0;
     viewYear.value++;
-  }
-  else viewMonth.value++;
+  } else viewMonth.value++;
 }
 
 // ── Quick options ─────────────────────────────────────────────────────────────
@@ -238,10 +243,10 @@ function handleOutsideClick(e: MouseEvent) {
   if (!open.value) return;
   const t = e.target as Node;
   if (
-    popoverEl.value
-    && !popoverEl.value.contains(t)
-    && triggerEl.value
-    && !triggerEl.value.contains(t)
+    popoverEl.value &&
+    !popoverEl.value.contains(t) &&
+    triggerEl.value &&
+    !triggerEl.value.contains(t)
   )
     closePicker();
 }

@@ -26,7 +26,7 @@ const today = new Date();
 today.setHours(0, 0, 0, 0);
 
 function relativeDue(
-  dueDate: string | Date | null | undefined,
+  dueDate: string | null | undefined,
   done: boolean,
 ): { text: string; overdue: boolean } | null {
   if (!dueDate) return null;

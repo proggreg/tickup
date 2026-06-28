@@ -3,12 +3,14 @@ import { nextTick } from 'vue';
 
 const listsStore = useListsStore();
 const router = useRouter();
-const linkSearch = ref('')
+
 const newSubtaskName = ref('');
+const linkSearch = ref('');
+const showDone = ref(true);
 const subtasksSortBy = ref<'none' | 'priority'>('none');
+
 const subtaskNameRefs = ref<any[]>([]);
 const editingSubtaskIds = ref<(string | number)[]>([]);
-const showDone = ref(false)
 
 const isEditingSubtask = (id: string | number) => editingSubtaskIds.value.includes(id);
 
