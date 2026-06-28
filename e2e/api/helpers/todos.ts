@@ -9,6 +9,7 @@ export async function createTodo(
     dueDate?: Date;
     listId?: string;
     parentId?: string;
+    status?: string;
   },
 ): Promise<Todo> {
   const payload: Todo = { ...createNewTodoState(), ...todo };
