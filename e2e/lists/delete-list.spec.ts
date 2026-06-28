@@ -19,7 +19,7 @@ test.describe('a user can delete a list', () => {
 
         const [createResponse] = await Promise.all([
             page.waitForResponse(
-                (r) => r.url().includes('/api/list') && r.request().method() === 'POST',
+                r => r.url().includes('/api/list') && r.request().method() === 'POST',
             ),
             page.keyboard.press('Enter'),
         ]);
@@ -50,8 +50,8 @@ test.describe('a user can delete a list', () => {
 
         await Promise.all([
             page.waitForResponse((r) => {
-                const isDelete =
-                    r.url().includes('/api/list/') && r.request().method() === 'DELETE';
+                const isDelete
+                    = r.url().includes('/api/list/') && r.request().method() === 'DELETE';
                 if (isDelete) {
                     console.log('DELETE request URL:', r.url());
                     console.log('DELETE response status:', r.status());

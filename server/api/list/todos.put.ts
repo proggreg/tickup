@@ -23,25 +23,26 @@ export default defineEventHandler(async (event) => {
         const results = await Promise.all(updatePromises);
 
         // Transform results to camelCase for API response
-        const transformedResults = results.map((result) =>
+        const transformedResults = results.map(result =>
             result
-                ? result.map((todo) => ({
-                      ...todo,
-                      dueDate: todo.due_date,
-                      completedDate: todo.completed_date,
-                      userId: todo.user_id,
-                      listId: todo.list_id,
-                      githubBranchName: todo.github_branch_name,
-                      notificationDateTime: todo.notification_date_time,
-                      notificationSent: todo.notification_sent,
-                      createdAt: todo.created_at,
-                      updatedAt: todo.updated_at,
-                  }))
+                ? result.map(todo => ({
+                        ...todo,
+                        dueDate: todo.due_date,
+                        completedDate: todo.completed_date,
+                        userId: todo.user_id,
+                        listId: todo.list_id,
+                        githubBranchName: todo.github_branch_name,
+                        notificationDateTime: todo.notification_date_time,
+                        notificationSent: todo.notification_sent,
+                        createdAt: todo.created_at,
+                        updatedAt: todo.updated_at,
+                    }))
                 : result,
         );
 
         return { modified: results.length, results: transformedResults };
-    } catch (e) {
+    }
+    catch (e) {
         console.error('Error updating todo orders:', e);
         throw createError({
             statusCode: 500,

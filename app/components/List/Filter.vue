@@ -7,5 +7,9 @@ const value = ref('');
 </script>
 
 <template>
-    <v-select v-model="value" label="filter" :items="items" />
+    <v-select
+        v-model="value"
+        label="filter"
+        :items="items"
+    />
 </template>

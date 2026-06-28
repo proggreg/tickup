@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
             name: string;
             github_repo: string;
             list_type: ListType;
-            default_view: View;
+            default_view: ViewType;
         }> = {};
 
         if (body.name !== undefined) updateData.name = body.name;

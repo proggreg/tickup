@@ -34,14 +34,13 @@ test.describe('subtasks priority and sorting', () => {
         await page.waitForLoadState('networkidle');
 
         // Add a subtask
-        const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+        const subtaskInput = page.getByTestId('add-subtask-input');
         await page.waitForTimeout(500);
         await subtaskInput.click();
         await subtaskInput.fill('Test Subtask');
         await page.waitForTimeout(500);
 
-        const addSubtaskButton = page.getByTestId('add-subtask-button');
-        await addSubtaskButton.click();
+        await subtaskInput.press('Enter');
         await page.waitForLoadState('networkidle');
 
         // Verify priority button exists with default (no priority) state
@@ -132,14 +131,13 @@ test.describe('subtasks priority and sorting', () => {
         ];
 
         for (const subtaskData of subtasksData) {
-            const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+            const subtaskInput = page.getByTestId('add-subtask-input');
             await page.waitForTimeout(500);
             await subtaskInput.click();
             await subtaskInput.fill(subtaskData.name);
             await page.waitForTimeout(500);
 
-            const addSubtaskButton = page.getByTestId('add-subtask-button');
-            await addSubtaskButton.click();
+            await subtaskInput.press('Enter');
             await page.waitForLoadState('networkidle');
         }
 
@@ -234,14 +232,13 @@ test.describe('subtasks priority and sorting', () => {
         await page.waitForLoadState('networkidle');
 
         // Add a subtask
-        const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+        const subtaskInput = page.getByTestId('add-subtask-input');
         await page.waitForTimeout(500);
         await subtaskInput.click();
         await subtaskInput.fill('High Priority Subtask');
         await page.waitForTimeout(500);
 
-        const addSubtaskButton = page.getByTestId('add-subtask-button');
-        await addSubtaskButton.click();
+        await subtaskInput.press('Enter');
         await page.waitForLoadState('networkidle');
 
         // Set priority to high
@@ -302,14 +299,13 @@ test.describe('subtasks priority and sorting', () => {
         ];
 
         for (const subtaskData of subtasksData) {
-            const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+            const subtaskInput = page.getByTestId('add-subtask-input');
             await page.waitForTimeout(500);
             await subtaskInput.click();
             await subtaskInput.fill(subtaskData.name);
             await page.waitForTimeout(500);
 
-            const addSubtaskButton = page.getByTestId('add-subtask-button');
-            await addSubtaskButton.click();
+            await subtaskInput.press('Enter');
             await page.waitForLoadState('networkidle');
         }
 

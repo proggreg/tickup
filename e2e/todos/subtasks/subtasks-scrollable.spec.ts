@@ -43,7 +43,7 @@ test.describe('subtasks are scrollable', () => {
         // Add multiple subtasks (enough to require scrolling)
         const subtaskNames: string[] = [];
         for (let i = 0; i < 15; i++) {
-            const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+            const subtaskInput = page.getByTestId('add-subtask-input');
             await page.waitForTimeout(500);
             const subtaskName = `Subtask ${i + 1} - ${uuidv4().substring(0, 8)}`;
             subtaskNames.push(subtaskName);
@@ -52,14 +52,12 @@ test.describe('subtasks are scrollable', () => {
             await subtaskInput.fill(subtaskName);
             await page.waitForTimeout(200);
 
-            const addSubtaskButton = page.getByTestId('add-subtask-button');
-            await expect(addSubtaskButton).toBeEnabled({ timeout: 3000 });
-            await addSubtaskButton.click();
+            await subtaskInput.press('Enter');
             await page.waitForTimeout(300);
         }
 
         // Verify all subtasks were created
-        const subtasksList = page.getByTestId('subtasks-list').first();
+        const subtasksList = page.getByTestId('subtasks-list-active');
         await expect(subtasksList).toBeVisible();
 
         // Verify the count badge shows correct number
@@ -132,14 +130,13 @@ test.describe('subtasks are scrollable', () => {
 
         // Add 10 subtasks
         for (let i = 0; i < 10; i++) {
-            const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+            const subtaskInput = page.getByTestId('add-subtask-input');
             await page.waitForTimeout(500);
             await subtaskInput.click();
             await subtaskInput.fill(`Subtask ${i + 1}`);
             await page.waitForTimeout(200);
 
-            const addSubtaskButton = page.getByTestId('add-subtask-button');
-            await addSubtaskButton.click();
+            await subtaskInput.press('Enter');
             await page.waitForTimeout(300);
         }
 
@@ -149,7 +146,7 @@ test.describe('subtasks are scrollable', () => {
             el.scrollTop = el.scrollHeight / 2;
         });
 
-        const scrollPosition = await scrollableContainer.evaluate((el) => el.scrollTop);
+        const scrollPosition = await scrollableContainer.evaluate(el => el.scrollTop);
 
         // Check a checkbox in the middle
         const checkbox = page.getByTestId('subtask-checkbox-5');
@@ -157,7 +154,7 @@ test.describe('subtasks are scrollable', () => {
         await page.waitForTimeout(200);
 
         // Verify scroll position is maintained
-        const newScrollPosition = await scrollableContainer.evaluate((el) => el.scrollTop);
+        const newScrollPosition = await scrollableContainer.evaluate(el => el.scrollTop);
         expect(Math.abs(newScrollPosition - scrollPosition)).toBeLessThan(50); // Allow small variance
     });
 });

@@ -1,7 +1,7 @@
 export { Task, Status, List };
 
 declare global {
-    type View = 'list' | 'board';
+    type ViewType = 'list' | 'board';
     type ListType = 'simple' | 'table' | '';
 
     interface Task {
@@ -20,6 +20,7 @@ declare global {
         githubBranchName?: string;
         githubRepo?: string;
         githubLink?: string;
+        githubPrLink?: string;
         links?: {
             id?: string;
             title: string;
@@ -70,6 +71,7 @@ declare global {
         overdueTodos: Task[];
         view: ViewType;
         newTodo: Task;
+        panelOpen: boolean;
     }
 
     interface Settings {
