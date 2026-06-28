@@ -1,6 +1,6 @@
 import { createNewListState } from '../../../app/stores/helpers';
 import type { List } from '../../../index';
-import { APIRequestContext } from '@playwright/test';
+import type { APIRequestContext } from '@playwright/test';
 
 export async function createList(request: APIRequestContext, payload: { name: string }) {
     const listPayload: List = { ...createNewListState(), ...payload };
