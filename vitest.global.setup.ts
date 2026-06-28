@@ -1,5 +1,5 @@
 // vitest.global-setup.ts
-import { execSync, spawn } from 'node:child_process';
+import { spawn } from 'node:child_process';
 
 let nuxtProcess: ReturnType<typeof spawn>;
 

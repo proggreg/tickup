@@ -47,14 +47,8 @@ describe('Todo API endpoints', () => {
 
         await deleteTodo(created.id as string | number);
 
-        // Verify it's deleted by trying to fetch it
-        try {
-            await getTodo(created.id as string | number);
-            expect.fail('Should have thrown error for deleted todo');
-        }
-        catch (err) {
-            // Expected - todo not found
-        }
+        await getTodo(created.id as string | number);
+        expect.fail('Should have thrown error for deleted todo');
     });
 
     apiTest(

@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { describe, expect } from 'vitest';
 import { mcpTest } from '../fixtures/mcp';
+import type { callTool } from '@modelcontextprotocol/sdk/type';
 
 type SupabaseListResponse = {
     data: {
@@ -18,14 +19,14 @@ function parseContent(result: unknown): unknown {
     return JSON.parse(content[0].text);
 }
 
-async function createList(client: { callTool: Function }, name: string): Promise<string> {
+async function createList(client: { callTool: callTool }, name: string): Promise<string> {
     const result = await client.callTool({ name: 'create_list', arguments: { name } });
     expect((result as { isError?: boolean }).isError).toBeFalsy();
     const list = parseContent(result) as { id: unknown };
     return String(list.id);
 }
 
-async function deleteList(client: { callTool: Function }, id: string): Promise<void> {
+async function deleteList(client: { callTool: callTool }, id: string): Promise<void> {
     await client.callTool({ name: 'delete_list', arguments: { id } });
 }
 
