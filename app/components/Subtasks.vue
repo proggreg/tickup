@@ -11,7 +11,7 @@ const allDone = computed(() => subtaskTotal.value > 0 && subtaskPct.value === 10
 
 </script>
 <template>
-  <div class="main-section">
+  <div class="py-2">
     <div class="subtasks-header">
       <div class="subtasks-header__left">
         <span class="section-label">Subtasks</span>
@@ -61,14 +61,6 @@ const allDone = computed(() => subtaskTotal.value > 0 && subtaskPct.value === 10
   border-radius: 8px;
   box-shadow: 0 8px 32px rgba(42, 52, 57, 0.06);
   padding-bottom: 8px;
-}
-
-.main-section {
-  padding: 12px 20px;
-}
-
-.main-section--title {
-  padding: 18px 20px 10px;
 }
 
 .divider {

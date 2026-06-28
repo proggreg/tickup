@@ -1,42 +1,44 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
-const { mobile } = useDisplay()
-
-const openGroupExpanded = ref(true);
-const closedGroupExpanded = ref(false);
+const settingsStore = useSettingsStore();
+const { mobile } = useDisplay();
 
 function selectTodo(todo: Todo) {
   listsStore.setCurrentTodo(todo);
   if (mobile.value) {
-    navigateTo(`/todo/${todo.id}`)
+    navigateTo(`/todo/${todo.id}`);
   } else {
     listsStore.panelOpen = true;
   }
 }
 
-function setClosed(todo: Todo) {
-  todo.status = 'Closed';
+function toggleTodo(todo: Todo) {
+  todo.status = todo.status === 'Closed' ? 'Open' : 'Closed';
   listsStore.updateTodo(todo);
 }
 
-function setOpen(todo: Todo) {
-  todo.status = 'Open';
-  listsStore.updateTodo(todo);
-}
-
-function formatDate(date: Date) {
-  if (!date) return '';
-  return new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+function statusColor(status: string): string {
+  return settingsStore.statuses.find((s: Status) => s.name === status)?.color ?? '#005ac2';
 }
 
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
-function isOverdue(todo: Todo) {
-  if (!todo.dueDate || todo.status === 'Closed') return false;
-  const d = new Date(todo.dueDate);
+function relativeDue(
+  dueDate: string | null | undefined,
+  done: boolean,
+): { text: string; overdue: boolean } | null {
+  if (!dueDate) return null;
+  const d = new Date(dueDate);
   d.setHours(0, 0, 0, 0);
-  return d < today;
+  const diff = Math.round((d.getTime() - today.getTime()) / 86400000);
+  const overdue = diff < 0 && !done;
+  let text: string;
+  if (diff < 0) text = diff === -1 ? 'Yesterday' : `${-diff}d ago`;
+  else if (diff === 0) text = 'Today';
+  else if (diff === 1) text = 'Tomorrow';
+  else text = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  return { text, overdue };
 }
 
 const openTodos = computed(
@@ -49,250 +51,130 @@ const closedTodos = computed(
 </script>
 
 <template>
-  <div class="list-view">
-    <div v-if="listsStore.currentList.todos?.length" class="simple-list">
-      <!-- Open group -->
-      <div class="group">
-        <button class="group__header" @click="openGroupExpanded = !openGroupExpanded">
-          <i :class="`mdi ${openGroupExpanded ? 'mdi-chevron-down' : 'mdi-chevron-right'} group__chevron`" />
-          <span class="group__title">Open</span>
-          <span class="group__count">{{ openTodos.length }}</span>
-        </button>
-
-        <ul v-if="openGroupExpanded" class="todo-list">
-          <li v-for="todo in openTodos" :key="todo.id" class="todo-item" :class="{
-            'todo-item--selected':
-              listsStore.currentTodo?.id === todo.id && listsStore.panelOpen,
-          }" @click="selectTodo(todo)">
-            <button class="todo-checkbox" :aria-label="`Close ${todo.name}`" @click.stop="setClosed(todo)" />
-
-            <div class="todo-item__content">
-              <span class="todo-title" data-testid="todo-title">{{ todo.name }}</span>
-              <span v-if="todo.dueDate" class="todo-subtitle" :class="{ 'todo-subtitle--overdue': isOverdue(todo) }">
-                <i v-if="isOverdue(todo)" class="mdi mdi-alert-circle-outline" style="font-size: 11px" />
-                {{ formatDate(todo.dueDate) }}
-              </span>
-            </div>
-
-            <i class="mdi mdi-chevron-right todo-item__arrow" />
-          </li>
-        </ul>
+  <div>
+    <!-- Open todos -->
+    <div class="todo-card mb-5" :class="{ 'pa-2': openTodos.length }">
+      <div v-if="openTodos.length === 0" class="text-center pa-8 text-medium-emphasis text-body-2">
+        No open tasks. You're all caught up.
       </div>
-
-      <!-- Closed group -->
-      <div class="group">
-        <button class="group__header" @click="closedGroupExpanded = !closedGroupExpanded">
-          <i :class="`mdi ${closedGroupExpanded ? 'mdi-chevron-down' : 'mdi-chevron-right'} group__chevron`" />
-          <span class="group__title">Closed</span>
-          <span class="group__count">{{ closedTodos.length }}</span>
-        </button>
-
-        <ul v-if="closedGroupExpanded" class="todo-list">
-          <li v-for="todo in closedTodos" :key="todo.id" class="todo-item todo-item--closed" :class="{
-            'todo-item--selected':
-              listsStore.currentTodo?.id === todo.id && listsStore.panelOpen,
-          }" @click="selectTodo(todo)">
-            <button class="todo-checkbox todo-checkbox--checked" :aria-label="`Reopen ${todo.name}`"
-              @click.stop="setOpen(todo)">
-              <i class="mdi mdi-check todo-checkbox__indicator" />
-            </button>
-
-            <div class="todo-item__content">
-              <span class="todo-title todo-title--closed">{{ todo.name }}</span>
-              <span v-if="todo.dueDate" class="todo-subtitle">{{
-                formatDate(todo.dueDate)
-              }}</span>
-            </div>
-
-            <i class="mdi mdi-chevron-right todo-item__arrow" />
-          </li>
-        </ul>
+      <div v-for="todo in openTodos" :key="todo.id" class="todo-row d-flex align-center ga-3 px-4 py-3 rounded-lg"
+        :class="{
+          'todo-row--selected':
+            listsStore.currentTodo?.id === todo.id && listsStore.panelOpen,
+        }" @click="selectTodo(todo)">
+        <button class="todo-check d-flex align-center justify-center flex-shrink-0"
+          :style="{ border: `2px solid ${statusColor(todo.status)}` }" @click.stop="toggleTodo(todo)" />
+        <span class="flex-grow-1 text-truncate text-body-2 font-weight-medium todo-name">
+          {{ todo.name }}
+        </span>
+        <v-icon v-if="todo.priorityLev === 'high'" size="14" color="error">
+          mdi-flag
+        </v-icon>
+        <span v-if="relativeDue(todo.dueDate, false)"
+          class="d-inline-flex align-center ga-1 text-caption font-weight-medium flex-shrink-0" :class="relativeDue(todo.dueDate, false)?.overdue ? 'text-error' : 'text-disabled'
+            ">
+          <v-icon size="13">
+            {{
+              relativeDue(todo.dueDate, false)?.overdue
+                ? 'mdi-calendar-alert'
+                : 'mdi-calendar-blank-outline'
+            }}
+          </v-icon>
+          {{ relativeDue(todo.dueDate, false)?.text }}
+        </span>
+        <v-icon class="todo-chevron flex-shrink-0" size="18" color="medium-emphasis">
+          mdi-chevron-right
+        </v-icon>
       </div>
     </div>
 
-    <div v-else class="empty-wrapper">
-      <AppEmptyState />
-    </div>
+    <!-- Completed todos -->
+    <template v-if="closedTodos.length">
+      <div class="text-caption font-weight-bold text-uppercase text-disabled mb-2 px-2" style="letter-spacing: 0.07em">
+        Completed · {{ closedTodos.length }}
+      </div>
+      <div class="todo-card pa-2">
+        <div v-for="todo in closedTodos" :key="todo.id"
+          class="todo-row todo-row--closed d-flex align-center ga-3 px-4 py-3 rounded-lg" @click="selectTodo(todo)">
+          <button class="todo-check todo-check--done d-flex align-center justify-center flex-shrink-0"
+            :style="{ background: statusColor(todo.status) }" @click.stop="toggleTodo(todo)">
+            <v-icon size="11" color="white">mdi-check</v-icon>
+          </button>
+          <span class="flex-grow-1 text-truncate text-body-2 font-weight-medium todo-name todo-name--done">
+            {{ todo.name }}
+          </span>
+          <span v-if="relativeDue(todo.dueDate, true)"
+            class="d-inline-flex align-center ga-1 text-caption font-weight-medium text-disabled flex-shrink-0">
+            <v-icon size="13">mdi-calendar-blank-outline</v-icon>
+            {{ relativeDue(todo.dueDate, true)?.text }}
+          </span>
+          <v-icon class="todo-chevron flex-shrink-0" size="18" color="medium-emphasis">
+            mdi-chevron-right
+          </v-icon>
+        </div>
+      </div>
+    </template>
+
+    <AppEmptyState v-if="!listsStore.currentList.todos?.length" />
   </div>
 </template>
 
 <style scoped>
-.list-view {
-  height: 100%;
-  overflow-y: auto;
-  padding: 4px 0 40px;
+.todo-card {
+  background: white;
+  border: 1px solid rgba(113, 124, 130, 0.18);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(42, 52, 57, 0.06);
 }
 
-.simple-list {
-  padding: 0;
-}
-
-/* Group */
-.group {
-  margin-bottom: 4px;
-}
-
-.group__header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
-  padding: 6px 12px;
-  background: transparent;
-  border: none;
+.todo-row {
   cursor: pointer;
-  text-align: left;
-  border-radius: 8px;
-  font-family: inherit;
   transition: background 0.1s;
 }
 
-.group__header:hover {
-  background: rgba(var(--v-border-color), 0.06);
+.todo-row:hover {
+  background: rgba(80, 96, 118, 0.06);
 }
 
-.group__chevron {
-  font-size: 16px;
-  color: rgba(var(--v-theme-on-surface), 0.4);
-}
-
-.group__title {
-  font-weight: 600;
-  font-size: 0.8125rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: rgba(var(--v-theme-on-surface), 0.5);
-}
-
-.group__count {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: rgba(var(--v-theme-on-surface), 0.35);
-  margin-left: 2px;
-}
-
-/* Todo list */
-.todo-list {
-  list-style: none;
-  margin: 0;
-  padding: 0 4px;
-}
-
-.todo-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 1px;
-  border-left: 3px solid transparent;
-  transition: background 0.1s;
-}
-
-.todo-item:hover {
-  background: rgba(var(--v-border-color), 0.07);
-}
-
-.todo-item--selected {
-  background: rgb(var(--v-theme-primary-container));
-  border-left-color: rgb(var(--v-theme-primary));
-}
-
-.todo-item--selected:hover {
-  background: rgb(var(--v-theme-primary-container));
-}
-
-.todo-item--closed {
-  opacity: 0.6;
-}
-
-.todo-item__arrow {
-  font-size: 15px;
-  color: rgba(var(--v-theme-on-surface), 0.25);
-  opacity: 0;
-  transition: opacity 0.1s;
-  flex-shrink: 0;
-}
-
-.todo-item:hover .todo-item__arrow,
-.todo-item--selected .todo-item__arrow {
+.todo-row:hover .todo-chevron {
   opacity: 1;
 }
 
-/* Checkbox */
-.todo-checkbox {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 17px;
-  height: 17px;
-  border: 2px solid rgba(var(--v-border-color), 0.38);
+.todo-row--selected {
+  background: rgb(var(--v-theme-primary-container));
+}
+
+.todo-row--closed {
+  opacity: 0.65;
+}
+
+.todo-check {
+  width: 18px;
+  height: 18px;
   border-radius: 4px;
-  cursor: pointer;
   background: transparent;
-  flex-shrink: 0;
-  transition:
-    border-color 0.15s,
-    background 0.15s;
+  cursor: pointer;
   padding: 0;
+  transition:
+    background 0.12s,
+    border-color 0.12s;
 }
 
-.todo-checkbox:hover {
-  border-color: rgb(var(--v-theme-primary));
+.todo-check--done {
+  border: none !important;
 }
 
-.todo-checkbox--checked {
-  background: rgb(var(--v-theme-primary));
-  border-color: rgb(var(--v-theme-primary));
-}
-
-.todo-checkbox__indicator {
-  color: rgb(var(--v-theme-on-primary));
-  font-size: 10px;
-}
-
-/* Todo content */
-.todo-item__content {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.todo-title {
-  font-weight: 500;
+.todo-name {
   font-size: 0.9375rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: rgb(var(--v-theme-on-surface));
 }
 
-.todo-title--closed {
+.todo-name--done {
   text-decoration: line-through;
+  color: rgba(42, 52, 57, 0.6);
 }
 
-.todo-subtitle {
-  font-size: 0.75rem;
-  color: rgba(var(--v-theme-on-surface), 0.45);
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
-.todo-subtitle--overdue {
-  color: rgb(var(--v-theme-tertiary));
-  font-weight: 500;
-}
-
-/* Empty state */
-.empty-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 48px 24px;
+.todo-chevron {
+  opacity: 0;
+  transition: opacity 0.1s;
 }
 </style>

@@ -3,9 +3,14 @@ import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 
 const emit = defineEmits<{
   setDate: [newDate: Date | null, newTodo: Todo];
+  setDate: [newDate: Date | null, newTodo: Todo];
 }>();
 
 const props = defineProps<{
+  todo: Todo;
+  todoDueDate?: Date | string;
+  date?: Date | string; // alias used by Todo/New.vue
+  showDetail?: boolean;
   todo: Todo;
   todoDueDate?: Date | string;
   date?: Date | string; // alias used by Todo/New.vue
@@ -111,9 +116,25 @@ const chipStyle = computed(() => {
     return { color: '#005ac2', background: '#dce8ff', borderColor: 'transparent' };
   }
   return { color: '#2a3439', background: '#f0f4f7', borderColor: 'transparent' };
+  if (!effectiveDate.value) {
+    return {
+      color: 'rgba(42,52,57,0.38)',
+      background: 'transparent',
+      borderColor: 'rgba(113,124,130,0.24)',
+    };
+  }
+  if (isOverdue.value) {
+    return { color: '#ba1b24', background: 'rgba(186,27,36,0.08)', borderColor: 'transparent' };
+  }
+  if (isToday_.value) {
+    return { color: '#005ac2', background: '#dce8ff', borderColor: 'transparent' };
+  }
+  return { color: '#2a3439', background: '#f0f4f7', borderColor: 'transparent' };
 });
 
 const rowStyle = computed(() => ({
+  color: isOverdue.value ? '#ba1b24' : effectiveDate.value ? '#2a3439' : 'rgba(42,52,57,0.38)',
+  fontWeight: isOverdue.value ? 500 : 400,
   color: isOverdue.value ? '#ba1b24' : effectiveDate.value ? '#2a3439' : 'rgba(42,52,57,0.38)',
   fontWeight: isOverdue.value ? 500 : 400,
 }));

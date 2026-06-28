@@ -1,7 +1,7 @@
 export { Todo, Status, List };
 
 declare global {
-    type View = 'list' | 'board';
+    type ViewType = 'list' | 'board';
     type ListType = 'simple' | 'table' | '';
 
     interface Todo {
