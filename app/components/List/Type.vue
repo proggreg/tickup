@@ -2,19 +2,23 @@
 const listTypeOptions = ref<ListType[]>(['table', 'simple']);
 const props = defineProps<{ currentListType?: ListType }>();
 const selectedType = ref<ListType>(
-    props.currentListType && props.currentListType !== '' ? props.currentListType : 'simple',
+    props.currentListType ? props.currentListType : 'simple',
 );
 const emit = defineEmits<{
     listTypeUpdated: [listType: ListType];
 }>();
 
+const listsStore = useListsStore();
+
 // Watch for prop changes to update selectedType
 watch(
     () => props.currentListType,
     (newVal) => {
-        const validValue = newVal && newVal !== '' ? newVal : 'simple';
-        if (validValue !== selectedType.value) {
-            selectedType.value = validValue;
+        if (newVal !== selectedType.value) {
+            selectedType.value = newVal;
+            if (newVal === 'table' && !listsStore.panelOpen) {
+                listsStore.panelOpen = false;
+            }
         }
     },
     { immediate: true },
@@ -44,9 +48,9 @@ watch(selectedType, (newVal: ListType, oldVal: ListType) => {
 
 <style scoped>
 :deep(.v-field__input) {
-    padding: 0.75em;
-    min-height: 0;
-    height: 100%;
-    /* max-height: 48px; */
+  padding: 0.75em;
+  min-height: 0;
+  height: 100%;
+  /* max-height: 48px; */
 }
 </style>

@@ -1,7 +1,7 @@
 export { Todo, Status, List };
 
 declare global {
-    type View = 'list' | 'board';
+    type ViewType = 'list' | 'board';
     type ListType = 'simple' | 'table' | '';
 
     interface Todo {
@@ -71,8 +71,10 @@ declare global {
         todos?: Todo[];
         todaysTodos: Todo[];
         overdueTodos: Todo[];
+        recentTodos: Todo[];
         view: ViewType;
         newTodo: Todo;
+        panelOpen: boolean;
     }
 
     interface Settings {

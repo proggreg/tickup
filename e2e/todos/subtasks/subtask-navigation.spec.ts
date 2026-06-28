@@ -47,20 +47,18 @@ test.describe('subtask navigation', () => {
         await page.waitForLoadState('networkidle');
 
         // Add a subtask
-        const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+        const subtaskInput = page.getByTestId('add-subtask-input');
         await page.waitForTimeout(500);
         const subtaskName = `Subtask ${uuidv4()}`;
         await subtaskInput.click();
         await subtaskInput.fill(subtaskName);
         await page.waitForTimeout(500);
 
-        const addSubtaskButton = page.getByTestId('add-subtask-button');
-        await expect(addSubtaskButton).toBeEnabled({ timeout: 5000 });
-        await addSubtaskButton.click();
+        await subtaskInput.press('Enter');
         await page.waitForLoadState('networkidle');
 
         // Verify the subtask appears
-        const subtasksList = page.getByTestId('subtasks-list').first();
+        const subtasksList = page.getByTestId('subtasks-list-active');
         await expect(subtasksList).toBeVisible();
 
         // Click the subtask link to navigate to subtask detail page
@@ -98,7 +96,7 @@ test.describe('subtask navigation', () => {
         await expect(parentTitleField).toHaveValue(todoName);
 
         // Verify the subtask is still visible
-        await expect(subtasksList).toBeVisible();
+        await expect(page.getByTestId('subtasks-list-active')).toBeVisible();
         const subtaskNameField = page.getByTestId('subtask-name-0');
         await expect(subtaskNameField).toHaveText(subtaskName);
 

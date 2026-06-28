@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
             }
 
             // Transform snake_case fields to camelCase
-            return (data || []).map((todo) => ({
+            return (data || []).map(todo => ({
                 ...todo,
                 dueDate: todo.due_date,
                 completedDate: todo.completed_date,
@@ -35,6 +35,34 @@ export default defineEventHandler(async (event) => {
                 notificationSent: todo.notification_sent,
                 createdAt: todo.created_at,
                 updatedAt: todo.updated_at,
+            }));
+        }
+
+        if (query.recent) {
+            const { data, error } = await supabase
+                .from('Todos')
+                .select('*, Lists(id, name)')
+                .is('parent_id', null)
+                .order('updated_at', { ascending: false, nullsFirst: false })
+                .limit(25);
+
+            if (error) {
+                console.error('Supabase error:', error);
+                return [];
+            }
+
+            return (data || []).map(todo => ({
+                ...todo,
+                dueDate: todo.due_date,
+                completedDate: todo.completed_date,
+                userId: todo.user_id,
+                listId: todo.list_id,
+                githubBranchName: todo.github_branch_name,
+                notificationDateTime: todo.notification_date_time,
+                notificationSent: todo.notification_sent,
+                createdAt: todo.created_at,
+                updatedAt: todo.updated_at,
+                list: todo.Lists ? { id: todo.Lists.id, name: todo.Lists.name } : null,
             }));
         }
 
@@ -55,7 +83,7 @@ export default defineEventHandler(async (event) => {
             }
 
             // Transform snake_case fields to camelCase
-            return (data || []).map((todo) => ({
+            return (data || []).map(todo => ({
                 ...todo,
                 dueDate: todo.due_date,
                 completedDate: todo.completed_date,
@@ -81,7 +109,7 @@ export default defineEventHandler(async (event) => {
         }
 
         // Transform snake_case fields to camelCase
-        return (data || []).map((todo) => ({
+        return (data || []).map(todo => ({
             ...todo,
             dueDate: todo.due_date,
             completedDate: todo.completed_date,
@@ -93,7 +121,8 @@ export default defineEventHandler(async (event) => {
             createdAt: todo.created_at,
             updatedAt: todo.updated_at,
         }));
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error fetching todos:', error);
         return [];
     }

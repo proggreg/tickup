@@ -12,5 +12,5 @@ export default defineEventHandler(async (event) => {
         .eq('parent_id', event.context.params._id)
         .order('created_at', { ascending: true });
     if (error) throw createError({ statusCode: 500, statusMessage: error.message });
-    return (data || []).map((todo) => objectToCamel(todo));
+    return (data || []).map(todo => objectToCamel(todo));
 });
