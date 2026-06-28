@@ -5,6 +5,9 @@
     },
     "nuxt-docs": {
       "url": "https://mcp.nuxt.com/sse"
+    },
+    "tickup-oabmmvtcd-greg-fields-projects": {
+      "url": "https://tickup-oabmmvtcd-greg-fields-projects.vercel.app/mcp"
     }
   }
 }

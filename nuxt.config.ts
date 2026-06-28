@@ -1,3 +1,4 @@
+import type { ModuleOptions as McpToolkitOptions } from '@nuxtjs/mcp-toolkit';
 import { defineNuxtConfig } from 'nuxt/config';
 import vuetify from './config/vuetify';
 
@@ -6,7 +7,6 @@ export default defineNuxtConfig({
         '@vite-pwa/nuxt',
         'vuetify-nuxt-module',
         '@pinia/nuxt',
-        // "pinia-plugin-persistedstate/nuxt",
         '@vueuse/nuxt',
         '@nuxtjs/color-mode',
         '@nuxt/eslint',
@@ -14,7 +14,7 @@ export default defineNuxtConfig({
         '@nuxt/test-utils/module',
         'nuxt-bugsnag',
         '@nuxtjs/supabase',
-        // 'nuxt-mcp',
+        '@nuxtjs/mcp-toolkit',
     ],
 
     pages: true,
@@ -51,6 +51,17 @@ export default defineNuxtConfig({
                     href: 'https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&display=swap',
                 },
             ],
+        },
+    },
+
+    vite: {
+        server: {
+            allowedHosts: ['dev.gregfield.dev'],
+            // hmr: {
+            //   protocol: 'wss',
+            //   host: 'localhost',
+            //   clientPort: 443
+            // }
         },
     },
 
@@ -95,13 +106,18 @@ export default defineNuxtConfig({
     experimental: {
         payloadExtraction: false,
         typedPages: false,
+        asyncContext: true,
     },
     compatibilityDate: '2026-02-28',
-
     nitro: {
         esbuild: {
             options: {
                 target: 'esnext',
+            },
+        },
+        typescript: {
+            tsConfig: {
+                include: ['../index.d.ts', '../types/**/*.ts'],
             },
         },
     },
@@ -109,6 +125,9 @@ export default defineNuxtConfig({
     typescript: {
         strict: false,
         typeCheck: false,
+        tsConfig: {
+            include: ['../types/**/*.ts'],
+        },
     },
 
     bugsnag: {
@@ -130,6 +149,11 @@ export default defineNuxtConfig({
             },
         },
     },
+
+    mcp: {
+        name: 'Tickup',
+        description: 'Tickup MCP server — tools and resources for the todo app.',
+    } as McpToolkitOptions,
 
     pinia: {},
 
@@ -223,7 +247,7 @@ export default defineNuxtConfig({
             login: '/login',
             callback: '/confirm',
             include: undefined,
-            exclude: [],
+            exclude: ['/oauth/consent'],
             saveRedirectToCookie: false,
         },
     },

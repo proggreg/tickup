@@ -5,12 +5,12 @@
 export const useTodoActions = () => {
     const listsStore = useListsStore();
 
-    const selectTodo = (todo: Todo) => {
+    const selectTodo = (todo: Task) => {
         listsStore.setCurrentTodo(todo);
         navigateTo(`/todo/${todo.id}`);
     };
 
-    const setTodoStatus = async (todo: Todo, status: 'Open' | 'Closed', delay = 0) => {
+    const setTodoStatus = async (todo: Task, status: 'Open' | 'Closed', delay = 0) => {
         return new Promise<void>((resolve) => {
             setTimeout(() => {
                 todo.status = status;
@@ -20,11 +20,11 @@ export const useTodoActions = () => {
         });
     };
 
-    const setClosed = (todo: Todo, delay = 0) => {
+    const setClosed = (todo: Task, delay = 0) => {
         return setTodoStatus(todo, 'Closed', delay);
     };
 
-    const setOpen = (todo: Todo, delay = 0) => {
+    const setOpen = (todo: Task, delay = 0) => {
         return setTodoStatus(todo, 'Open', delay);
     };
 

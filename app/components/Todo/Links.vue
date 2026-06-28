@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Meta } from '~/types/link.types';
+import type { Meta } from '~~/types/link.types';
 import { logger } from '../../../utils/logger';
 
 const listsStore = useListsStore();

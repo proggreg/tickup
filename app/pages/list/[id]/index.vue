@@ -23,7 +23,7 @@ if (listsStore.currentList) {
 }
 
 const openCount = computed(
-    () => listsStore.currentList?.todos?.filter((t: Todo) => t.status !== 'Closed').length ?? 0,
+    () => listsStore.currentList?.todos?.filter((t: Task) => t.status !== 'Closed').length ?? 0,
 );
 
 async function addTodo() {

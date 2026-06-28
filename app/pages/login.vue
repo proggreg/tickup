@@ -1,17 +1,21 @@
 <script setup lang="ts">
-definePageMeta({
-    layout: 'login-register',
-});
-
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
+const route = useRoute();
 const email = ref('');
 const password = ref('');
 const loginError = ref('');
 
+const redirectTarget = computed(() => {
+    const r = route.query.redirect;
+    const raw = Array.isArray(r) ? r[0] : r;
+    if (typeof raw !== 'string' || !raw.startsWith('/')) return '/';
+    return raw;
+});
+
 watchEffect(async () => {
     if (user.value) {
-        return navigateTo('/');
+        return navigateTo(redirectTarget.value);
     }
 });
 

@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-    layout: 'settings',
-});
-
 const config = useRuntimeConfig();
 const githubAppName = config.public.githubAppName;
 

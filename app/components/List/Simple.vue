@@ -3,7 +3,7 @@ const listsStore = useListsStore();
 const settingsStore = useSettingsStore();
 const { mobile } = useDisplay();
 
-function selectTodo(todo: Todo) {
+function selectTodo(todo: Task) {
     listsStore.setCurrentTodo(todo);
     if (mobile.value) {
         navigateTo(`/todo/${todo.id}`);
@@ -43,11 +43,11 @@ function relativeDue(
 }
 
 const openTodos = computed(
-    () => listsStore.currentList.todos?.filter((t: Todo) => t.status !== 'Closed') ?? [],
+    () => listsStore.currentList.todos?.filter((t: Task) => t.status !== 'Closed') ?? [],
 );
 
 const closedTodos = computed(
-    () => listsStore.currentList.todos?.filter((t: Todo) => t.status === 'Closed') ?? [],
+    () => listsStore.currentList.todos?.filter((t: Task) => t.status === 'Closed') ?? [],
 );
 </script>
 

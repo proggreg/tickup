@@ -1,7 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-    layout: 'default',
-});
 useHead({ title: 'TickUp:Home' });
 
 const tab = ref('todo');

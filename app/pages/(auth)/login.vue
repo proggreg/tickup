@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-    layout: 'login-register',
-});
-
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const email = ref('');

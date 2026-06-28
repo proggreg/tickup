@@ -10,7 +10,7 @@ const name = ref('');
 const dueDate = ref<Date | undefined>(undefined);
 const selectedListId = ref<string | null>(null);
 
-const todo = computed<Todo>(() => ({
+const todo = computed<Task>(() => ({
     name: name.value,
     dueDate: dueDate.value,
     listId: selectedListId.value ?? undefined,
