@@ -13,10 +13,20 @@ const githubBranchCommand = computed(() => {
     return `git checkout -b "${githubBranchName.value}"`;
 });
 const showLinkDialog = useState('showLinkDialog', () => null);
-const selectedRepo = useState<Endpoints['GET /repos/{owner}/{repo}']['response']['data']>('githubRepo', () => null);
+const selectedRepo = useState<Endpoints['GET /repos/{owner}/{repo}']['response']['data']>(
+    'githubRepo',
+    () => null,
+);
 const pendingBranchResponse = useState('pendingBranchResponse', () => null);
 
-const filteredTodoName = computed(() => todo.name.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2700}-\u{27BF}]|[\u{1F000}-\u{1F02F}]|[\u{1F0A0}-\u{1F0FF}]|[\u{1F100}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2B00}-\u{2BFF}]/gu, '').trim());
+const filteredTodoName = computed(() =>
+    todo.name
+        .replace(
+            /[\u{1F300}-\u{1F9FF}]|[\u{2700}-\u{27BF}]|[\u{1F000}-\u{1F02F}]|[\u{1F0A0}-\u{1F0FF}]|[\u{1F100}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2B00}-\u{2BFF}]/gu,
+            '',
+        )
+        .trim(),
+);
 
 watchEffect(() => {
     if (todo?.githubBranchName) {
@@ -139,8 +149,8 @@ onUnmounted(() => {
                 Branch Already Exists
             </v-card-title>
             <v-card-text>
-                The branch <strong>{{ githubBranchName }}</strong> already exists in this repository.
-                Would you like to link this todo to the existing branch?
+                The branch <strong>{{ githubBranchName }}</strong> already exists in this
+                repository. Would you like to link this todo to the existing branch?
             </v-card-text>
             <v-card-actions>
                 <v-spacer />

@@ -134,7 +134,9 @@ function toRepoTestId(fullName: string): string {
                             :data-testid="`github-webhook-toggle-button-${toRepoTestId(repo.full_name)}`"
                             @click.stop.prevent="emit('toggleDirect', repo.full_name)"
                         >
-                            {{ props.isRepoSubscribed(repo.full_name) ? 'Unsubscribe' : 'Subscribe' }}
+                            {{
+                                props.isRepoSubscribed(repo.full_name) ? 'Unsubscribe' : 'Subscribe'
+                            }}
                         </v-btn>
                         <span
                             v-if="repo.language"

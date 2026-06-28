@@ -14,15 +14,20 @@ export default defineEventHandler(async (event) => {
     const rawSubscriptions = body?.subscriptions;
 
     if (!Array.isArray(rawSubscriptions)) {
-        throw createError({ statusCode: 400, message: 'subscriptions must be an array of repository full names' });
+        throw createError({
+            statusCode: 400,
+            message: 'subscriptions must be an array of repository full names',
+        });
     }
 
-    const subscriptions = Array.from(new Set(
-        rawSubscriptions
-            .filter((item): item is string => typeof item === 'string')
-            .map(item => item.trim())
-            .filter(Boolean),
-    ));
+    const subscriptions = Array.from(
+        new Set(
+            rawSubscriptions
+                .filter((item): item is string => typeof item === 'string')
+                .map(item => item.trim())
+                .filter(Boolean),
+        ),
+    );
 
     const supabase = await serverSupabaseClient<Database>(event);
     const { data: userData, error: userError } = await supabase
@@ -59,14 +64,22 @@ export default defineEventHandler(async (event) => {
     };
 
     const previousSubscriptions = Array.isArray(userData?.github_webhook_subscriptions)
-        ? userData.github_webhook_subscriptions.filter((item): item is string => typeof item === 'string')
+        ? userData.github_webhook_subscriptions.filter(
+                (item): item is string => typeof item === 'string',
+            )
         : [];
-    const deletedSubscriptions = previousSubscriptions.filter(fullName => !subscriptions.includes(fullName));
+    const deletedSubscriptions = previousSubscriptions.filter(
+        fullName => !subscriptions.includes(fullName),
+    );
 
     try {
         for (const fullName of subscriptions) {
             const { owner, repo } = toRepoParts(fullName);
-            const { data: hooks } = await octokit.rest.repos.listWebhooks({ owner, repo, per_page: 100 });
+            const { data: hooks } = await octokit.rest.repos.listWebhooks({
+                owner,
+                repo,
+                per_page: 100,
+            });
             const existingHook = hooks.find(hook => hook.config?.url === webhookUrl);
 
             if (existingHook) {
@@ -93,7 +106,11 @@ export default defineEventHandler(async (event) => {
 
         for (const fullName of deletedSubscriptions) {
             const { owner, repo } = toRepoParts(fullName);
-            const { data: hooks } = await octokit.rest.repos.listWebhooks({ owner, repo, per_page: 100 });
+            const { data: hooks } = await octokit.rest.repos.listWebhooks({
+                owner,
+                repo,
+                per_page: 100,
+            });
             const matchingHooks = hooks.filter(hook => hook.config?.url === webhookUrl);
             for (const hook of matchingHooks) {
                 await octokit.rest.repos.deleteWebhook({ owner, repo, hook_id: hook.id });

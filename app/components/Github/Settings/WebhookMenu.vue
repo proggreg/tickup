@@ -45,9 +45,7 @@ function toRepoTestId(fullName: string): string {
             <v-card-title class="text-subtitle-1">
                 Webhook subscriptions
             </v-card-title>
-            <v-card-subtitle>
-                Choose which repos trigger todo status updates.
-            </v-card-subtitle>
+            <v-card-subtitle> Choose which repos trigger todo status updates. </v-card-subtitle>
             <v-card-text>
                 <div
                     v-if="props.subscriptionsLoading"
@@ -91,8 +89,12 @@ function toRepoTestId(fullName: string): string {
                                 hide-details
                                 :disabled="props.subscriptionsSaving"
                                 :data-testid="`github-webhook-switch-${toRepoTestId(repo.full_name)}`"
-                                :data-subscribed="props.isRepoSubscribed(repo.full_name) ? 'true' : 'false'"
-                                @update:model-value="value => emit('toggle', repo.full_name, !!value)"
+                                :data-subscribed="
+                                    props.isRepoSubscribed(repo.full_name) ? 'true' : 'false'
+                                "
+                                @update:model-value="
+                                    (value) => emit('toggle', repo.full_name, !!value)
+                                "
                             />
                         </div>
                     </v-list-item>

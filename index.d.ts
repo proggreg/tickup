@@ -1,8 +1,7 @@
 export { Todo, Status, List };
 
 declare global {
-
-    type View = 'list' | 'board';
+    type ViewType = 'list' | 'board';
     type ListType = 'simple' | 'table' | '';
 
     interface Todo {
@@ -12,16 +11,16 @@ declare global {
         dueDate?: Date;
         listId?: string;
         list?: List;
-        status: string;
+        status?: string;
         desc?: string;
-        edit: boolean;
+        edit?: boolean;
         selected?: boolean;
-        color: string;
-        priorityLev: string;
+        color?: string;
+        priorityLev?: string;
         githubBranchName?: string;
         githubRepo?: string;
         githubLink?: string;
-        links: {
+        links?: {
             id?: string;
             title: string;
             url: string;
@@ -51,13 +50,12 @@ declare global {
     }
 
     interface List {
-        userId?: string;
         name: string;
-        todos: Todo[];
+        todos?: Todo[];
         id?: string;
         image?: string;
         listType: ListType;
-        icon: string;
+        icon?: string;
         githubRepo?: string;
         /**
          * Default view when opening this list ("list" or "board").
@@ -73,8 +71,10 @@ declare global {
         todos?: Todo[];
         todaysTodos: Todo[];
         overdueTodos: Todo[];
+        recentTodos: Todo[];
         view: ViewType;
         newTodo: Todo;
+        panelOpen: boolean;
     }
 
     interface Settings {
@@ -82,13 +82,13 @@ declare global {
     }
 
     export interface PwaInjection {
-    /**
-     * @deprecated use `isPWAInstalled` instead
-     */
+        /**
+         * @deprecated use `isPWAInstalled` instead
+         */
         isInstalled: boolean;
         /**
-     * From version v0.3.5+.
-     */
+         * From version v0.3.5+.
+         */
         isPWAInstalled: Ref<boolean>;
         showInstallPrompt: Ref<boolean>;
         cancelInstall: () => void;
@@ -136,5 +136,4 @@ declare global {
             $pwa: UnwrapNestedRefs<PwaInjection>;
         }
     }
-
 }

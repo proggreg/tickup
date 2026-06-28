@@ -5,7 +5,7 @@
         justify="center"
     >
         <v-col>
-            <Chat />
+            <!-- <Chat /> -->
         </v-col>
     </v-row>
 </template>

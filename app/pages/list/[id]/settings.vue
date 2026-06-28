@@ -19,7 +19,10 @@ onBeforeMount(async () => {
     await listsStore.getList(route.params.id as string);
 
     // Initialize local selected value from the loaded list
-    if (listsStore.currentList.defaultView && defaultViewOptions.value.includes(listsStore.currentList.defaultView)) {
+    if (
+        listsStore.currentList.defaultView
+        && defaultViewOptions.value.includes(listsStore.currentList.defaultView)
+    ) {
         selectedDefaultView.value = listsStore.currentList.defaultView;
     }
 });

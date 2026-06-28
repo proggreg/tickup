@@ -3,7 +3,8 @@ import type { Endpoints } from '@octokit/types';
 
 const { notify } = useNotification();
 const githubBranchName = useState('githubBranchName');
-const selectedRepo = useState<Endpoints['GET /repos/{owner}/{repo}']['response']['data']>('githubRepo');
+const selectedRepo
+    = useState<Endpoints['GET /repos/{owner}/{repo}']['response']['data']>('githubRepo');
 const listStore = useListsStore();
 const hasBranch = useState('hasBranch', () => false);
 const pendingBranchResponse = useState('pendingBranchResponse');

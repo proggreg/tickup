@@ -1,18 +1,12 @@
-export type Json
-    = | string
-        | number
-        | boolean
-        | null
-        | { [key: string]: Json | undefined }
-        | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
     graphql_public: {
         Tables: {
-            [_ in never]: never
+            [_ in never]: never;
         };
         Views: {
-            [_ in never]: never
+            [_ in never]: never;
         };
         Functions: {
             graphql: {
@@ -26,10 +20,10 @@ export type Database = {
             };
         };
         Enums: {
-            [_ in never]: never
+            [_ in never]: never;
         };
         CompositeTypes: {
-            [_ in never]: never
+            [_ in never]: never;
         };
     };
     public: {
@@ -182,6 +176,7 @@ export type Database = {
                     github_webhook_subscriptions: Json | null;
                     id: string;
                     push_subscriptions: Json | null;
+                    statuses: Json | null;
                     username: string | null;
                 };
                 Insert: {
@@ -190,6 +185,7 @@ export type Database = {
                     github_webhook_subscriptions?: Json | null;
                     id: string;
                     push_subscriptions?: Json | null;
+                    statuses?: Json | null;
                     username?: string | null;
                 };
                 Update: {
@@ -198,22 +194,23 @@ export type Database = {
                     github_webhook_subscriptions?: Json | null;
                     id?: string;
                     push_subscriptions?: Json | null;
+                    statuses?: Json | null;
                     username?: string | null;
                 };
                 Relationships: [];
             };
         };
         Views: {
-            [_ in never]: never
+            [_ in never]: never;
         };
         Functions: {
-            [_ in never]: never
+            [_ in never]: never;
         };
         Enums: {
-            [_ in never]: never
+            [_ in never]: never;
         };
         CompositeTypes: {
-            [_ in never]: never
+            [_ in never]: never;
         };
     };
 };

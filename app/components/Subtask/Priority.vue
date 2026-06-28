@@ -5,20 +5,28 @@ const emit = defineEmits(['updatePriority']);
 function getPriorityColor(priority: string | undefined): string {
     if (!priority) return 'grey';
     switch (priority.toLowerCase()) {
-        case 'high': return 'error';
-        case 'medium': return 'warning';
-        case 'low': return 'success';
-        default: return 'grey';
+        case 'high':
+            return 'error';
+        case 'medium':
+            return 'warning';
+        case 'low':
+            return 'success';
+        default:
+            return 'grey';
     }
 }
 
 function getPriorityIcon(priority: string | undefined): string {
     if (!priority) return 'mdi-flag-outline';
     switch (priority.toLowerCase()) {
-        case 'high': return 'mdi-flag';
-        case 'medium': return 'mdi-flag';
-        case 'low': return 'mdi-flag';
-        default: return 'mdi-flag-outline';
+        case 'high':
+            return 'mdi-flag';
+        case 'medium':
+            return 'mdi-flag';
+        case 'low':
+            return 'mdi-flag';
+        default:
+            return 'mdi-flag-outline';
     }
 }
 </script>

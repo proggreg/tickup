@@ -24,6 +24,7 @@ coverage
 
 # nyc test coverage
 .nyc_output
+.coverage
 
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
@@ -114,3 +115,5 @@ test-results/example-localhost-chromium/trace.zip
 /playwright/.auth
 *user.json
 tickup-github.2026-02-01.private-key.pem
+.gstack/
+.claude/scheduled_tasks.lock

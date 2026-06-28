@@ -56,9 +56,7 @@ export default defineEventHandler(async (event) => {
         updateData.github_username = githubUsername;
     }
 
-    const { error } = await supabase
-        .from('Users')
-        .upsert(updateData);
+    const { error } = await supabase.from('Users').upsert(updateData);
 
     if (error) {
         throw createError({ statusCode: 500, statusMessage: error.message });

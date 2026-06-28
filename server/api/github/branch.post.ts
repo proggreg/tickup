@@ -76,15 +76,18 @@ export default defineEventHandler(async (event) => {
             return createError({ statusCode: 400, message: 'SHA Cannot be found' });
         }
 
-        const createRefResponse = await octokit.request(`POST /repos/${owner}/${repo.name}/git/refs`, {
-            owner: owner,
-            repo: repo,
-            ref: ref,
-            sha: sha,
-            headers: {
-                authorization: `Bearer ${accessToken}`,
+        const createRefResponse = await octokit.request(
+            `POST /repos/${owner}/${repo.name}/git/refs`,
+            {
+                owner: owner,
+                repo: repo,
+                ref: ref,
+                sha: sha,
+                headers: {
+                    authorization: `Bearer ${accessToken}`,
+                },
             },
-        });
+        );
 
         createRefResponse.data.url = `https://github.com/${owner}/${repo.name}/tree/${ref}`;
 
@@ -101,6 +104,9 @@ export default defineEventHandler(async (event) => {
             });
         }
 
-        return createError({ statusCode: error.status || 500, message: error.message || 'Failed to create branch' });
+        return createError({
+            statusCode: error.status || 500,
+            message: error.message || 'Failed to create branch',
+        });
     }
 });

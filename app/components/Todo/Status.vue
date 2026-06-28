@@ -52,6 +52,6 @@ function updateStatus(statusName: string) {
 
 <style scoped>
 :deep(.v-field__input) {
-  padding: 0;
+    padding: 0;
 }
 </style>

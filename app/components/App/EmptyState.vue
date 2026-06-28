@@ -1,5 +1,5 @@
 <template>
-    <div style="display: flex; flex-direction: column;">
+    <div style="display: flex; flex-direction: column">
         <v-empty-state
             class="fill-height"
             icon="$success"
@@ -24,9 +24,9 @@
 
             <template #text>
                 <div class="text-medium-emphasis text-caption">
-                    Great job on completing all your tasks! This might be a good time to relax or consider planning your
-                    next
-                    set of goals. If you think of something new, just hit the button below to add a new task.
+                    Great job on completing all your tasks! This might be a good time to relax or
+                    consider planning your next set of goals. If you think of something new, just
+                    hit the button below to add a new task.
                 </div>
             </template>
         </v-empty-state>

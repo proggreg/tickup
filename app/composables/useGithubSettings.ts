@@ -70,7 +70,9 @@ export function useGithubSettings() {
         subscriptionsLoading.value = true;
         subscriptionsError.value = '';
         try {
-            const data = await $fetch<{ subscriptions: WebhookItem[] }>('/api/github/webhook/subscriptions');
+            const data = await $fetch<{ subscriptions: WebhookItem[] }>(
+                '/api/github/webhook/subscriptions',
+            );
             subscribedRepos.value = data.subscriptions || [];
         }
         catch (e: any) {
@@ -120,7 +122,9 @@ export function useGithubSettings() {
             }
             return;
         }
-        subscribedRepos.value = subscribedRepos.value.filter(repo => repo.repoFullName !== fullName);
+        subscribedRepos.value = subscribedRepos.value.filter(
+            repo => repo.repoFullName !== fullName,
+        );
     }
 
     function isDirectSaveLoading(fullName: string) {
@@ -177,7 +181,9 @@ export function useGithubSettings() {
             subscriptionsError.value = e?.data?.message || 'Failed to save webhook subscriptions';
         }
         finally {
-            directSaveLoadingRepos.value = directSaveLoadingRepos.value.filter(repo => repo !== fullName);
+            directSaveLoadingRepos.value = directSaveLoadingRepos.value.filter(
+                repo => repo !== fullName,
+            );
         }
     }
 

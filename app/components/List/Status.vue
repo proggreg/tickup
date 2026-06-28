@@ -63,8 +63,8 @@ const updateStatus = (status: string) => {
 
 <style scoped>
 .status-icon {
-  width: 1.5em;
-  height: 1.5em;
-  border-radius: 50%;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
 }
 </style>

@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
         return { ...objectToCamel(list), todos: objectToCamel(listTodos) };
     }
     catch (error: any) {
-    // If it's already a createError, re-throw it
+        // If it's already a createError, re-throw it
         if (error.statusCode) {
             throw error;
         }

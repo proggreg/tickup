@@ -127,7 +127,10 @@ async function deleteAttachment(attachmentId: string) {
         await listsStore.updateTodo(listsStore.currentTodo);
     }
     catch (error) {
-        console.error(error as Error, { component: 'TodoAttachments', function: 'deleteAttachment' });
+        console.error(error as Error, {
+            component: 'TodoAttachments',
+            function: 'deleteAttachment',
+        });
     }
 }
 
@@ -220,10 +223,10 @@ function openFile(attachment: any) {
 
 <style scoped>
 .v-file-input {
-  flex-grow: 0;
+    flex-grow: 0;
 }
 
 :deep(.v-file-input .v-input__control) {
-  display: none;
+    display: none;
 }
 </style>

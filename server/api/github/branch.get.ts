@@ -24,7 +24,9 @@ export default defineEventHandler(async (event) => {
     try {
         const { owner, repo, branch } = getQuery(event);
         console.log({
-            owner, repo, branch,
+            owner,
+            repo,
+            branch,
         });
 
         // Ensure owner, repo, and branch are strings (as getQuery may return string|string[])

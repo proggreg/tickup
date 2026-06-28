@@ -34,8 +34,14 @@ const headers = reactive([
     { title: 'Date', key: 'dueDate', sortable: true },
     { title: '', key: 'actions', sortable: false },
     {
-        title: 'Status', key: 'status', sortable: true, sort: (a: string, b: string) => {
-            return settingsStore.statuses.findIndex(status => status.name === a) - settingsStore.statuses.findIndex(status => status.name === b);
+        title: 'Status',
+        key: 'status',
+        sortable: true,
+        sort: (a: string, b: string) => {
+            return (
+                settingsStore.statuses.findIndex(status => status.name === a)
+                - settingsStore.statuses.findIndex(status => status.name === b)
+            );
         },
     },
 ]);
@@ -92,7 +98,7 @@ const group = ref([
 </template>
 
 <style scoped>
-  .table-header {
+.table-header {
     padding: 0 !important;
-  }
+}
 </style>

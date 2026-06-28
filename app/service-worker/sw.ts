@@ -9,12 +9,12 @@ declare const self: ServiceWorkerGlobalScope & {
 // Precache build assets
 precacheAndRoute(self.__WB_MANIFEST);
 
-registerRoute(({ url }) => url.pathname == '/'
-    || url.pathname.startsWith('/list')
-    || url.pathname.startsWith('/todo'),
-new StaleWhileRevalidate({
-    cacheName: 'pages',
-}),
+registerRoute(
+    ({ url }) =>
+        url.pathname == '/' || url.pathname.startsWith('/list') || url.pathname.startsWith('/todo'),
+    new StaleWhileRevalidate({
+        cacheName: 'pages',
+    }),
 );
 
 // Dynamic todo/list APIs: network first so new/updated todos appear without refresh.
@@ -22,9 +22,13 @@ new StaleWhileRevalidate({
 registerRoute(
     ({ url }) => {
         const p = url.pathname;
-        return p === '/api/todos' || p === '/api/lists' || p === '/api/list/todos'
+        return (
+            p === '/api/todos'
+            || p === '/api/lists'
+            || p === '/api/list/todos'
             || p.startsWith('/api/todo/')
-            || (p.startsWith('/api/list/') && p !== '/api/list/todos');
+            || (p.startsWith('/api/list/') && p !== '/api/list/todos')
+        );
     },
     new NetworkFirst({
         cacheName: 'api-cache',
@@ -44,7 +48,7 @@ registerRoute(
     ({ request }) => request.destination === 'image',
     new CacheFirst({
         cacheName: 'image-cache',
-    // You can add plugins here for expiration, etc.
+        // You can add plugins here for expiration, etc.
     }),
 );
 

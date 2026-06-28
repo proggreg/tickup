@@ -14,7 +14,10 @@ export default defineEventHandler(async (event) => {
 
     console.log(userData);
     if (!userData?.github_installation_id) {
-        throw createError({ statusCode: 403, message: 'GitHub integration not connected. Connect it in Settings.' });
+        throw createError({
+            statusCode: 403,
+            message: 'GitHub integration not connected. Connect it in Settings.',
+        });
     }
 
     const config = useRuntimeConfig();
@@ -42,7 +45,10 @@ export default defineEventHandler(async (event) => {
 
         const { data: tokenData } = await supabase.from('user_integrations').select().single();
         if (!tokenData?.access_token) {
-            throw createError({ statusCode: 401, message: 'GitHub token not found. Please reconnect GitHub in Settings.' });
+            throw createError({
+                statusCode: 401,
+                message: 'GitHub token not found. Please reconnect GitHub in Settings.',
+            });
         }
 
         try {
@@ -86,15 +92,18 @@ export default defineEventHandler(async (event) => {
                 return createError({ statusCode: 400, message: 'SHA Cannot be found' });
             }
 
-            const createRefResponse = await octokit.request(`POST /repos/${owner}/${repo.name}/git/refs`, {
-                owner: owner,
-                repo: repo,
-                ref: ref,
-                sha: sha,
-                headers: {
-                    authorization: `Bearer ${tokenData.access_token}`,
+            const createRefResponse = await octokit.request(
+                `POST /repos/${owner}/${repo.name}/git/refs`,
+                {
+                    owner: owner,
+                    repo: repo,
+                    ref: ref,
+                    sha: sha,
+                    headers: {
+                        authorization: `Bearer ${tokenData.access_token}`,
+                    },
                 },
-            });
+            );
 
             createRefResponse.data.url = `https://github.com/${owner}/${repo.name}/tree/${ref}`;
 
@@ -110,7 +119,10 @@ export default defineEventHandler(async (event) => {
                 });
             }
 
-            return createError({ statusCode: error.status || 500, message: error.message || 'Failed to create branch' });
+            return createError({
+                statusCode: error.status || 500,
+                message: error.message || 'Failed to create branch',
+            });
         }
     }
     else {

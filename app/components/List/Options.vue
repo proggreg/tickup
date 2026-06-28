@@ -19,22 +19,24 @@ async function deleteList() {
 function renameList() {
     emit('rename');
 }
-const options = reactive([{
-    name: 'Rename',
-    handler: renameList,
-    icon: 'mdi-pencil',
-},
-// {
-//   name: 'Settings',
-//   handler: handleSettings,
-//   icon: 'mdi-cog',
-// },
-{
-    name: 'Delete',
-    handler: deleteList,
-    icon: 'mdi-delete',
-    destructive: true,
-}]);
+const options = reactive([
+    {
+        name: 'Rename',
+        handler: renameList,
+        icon: 'mdi-pencil',
+    },
+    // {
+    //   name: 'Settings',
+    //   handler: handleSettings,
+    //   icon: 'mdi-cog',
+    // },
+    {
+        name: 'Delete',
+        handler: deleteList,
+        icon: 'mdi-delete',
+        destructive: true,
+    },
+]);
 </script>
 
 <template>

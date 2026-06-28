@@ -43,7 +43,11 @@ function toggleExpanded() {
                     @click.stop="toggleSort"
                 />
             </template>
-            <span>{{ sortBy === 'priority' ? 'Sorted by priority (click to unsort)' : 'Click to sort by priority' }}</span>
+            <span>{{
+                sortBy === 'priority'
+                    ? 'Sorted by priority (click to unsort)'
+                    : 'Click to sort by priority'
+            }}</span>
         </v-tooltip>
 
         <v-spacer />
@@ -77,8 +81,7 @@ function toggleExpanded() {
         <v-btn
             :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
             variant="text"
-            size="x-small"
-            density="compact"
+            size="small"
             class="ml-2"
             data-testid="subtasks-toggle"
             @click.stop="toggleExpanded"

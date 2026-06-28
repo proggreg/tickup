@@ -1,5 +1,13 @@
 <script setup lang="ts">
-const { groupItem, isGroupOpen, columns, toggleGroup, sortBy, toggleSort, expanded: _expanded } = defineProps<{
+const {
+    groupItem,
+    isGroupOpen,
+    columns,
+    toggleGroup,
+    sortBy,
+    toggleSort,
+    expanded: _expanded,
+} = defineProps<{
     groupItem: Record<string, unknown>; // Using Record<string, unknown> for Vuetify's internal types
     isGroupOpen: (item: Record<string, unknown>) => boolean;
     columns: Record<string, unknown>[]; // Using Record<string, unknown>[] since Vuetify's internal header type is complex
@@ -76,12 +84,13 @@ function isSortedIndex(sortBy: { key: string; order: string }[], column: { key: 
                 :key="column.key"
             >
                 <v-hover
-                    v-if="column.key !== 'data-table-group'
-                        && column.key !== 'data-table-expand'
-                        && column.key !== 'status'
-                        && column.key !== 'desc'
-                        && column.key !== 'dueDate'
-                        && column.key !== 'actions'
+                    v-if="
+                        column.key !== 'data-table-group'
+                            && column.key !== 'data-table-expand'
+                            && column.key !== 'status'
+                            && column.key !== 'desc'
+                            && column.key !== 'dueDate'
+                            && column.key !== 'actions'
                     "
                 >
                     <template #default="{ isHovering, props }">
@@ -92,7 +101,7 @@ function isSortedIndex(sortBy: { key: string; order: string }[], column: { key: 
                             class="table-header text-h6"
                             @click="toggleSort(column)"
                         >
-                            <div style="display: flex;">
+                            <div style="display: flex">
                                 {{ column.title }} {{ column.key }}
                                 <div style="width: 42px">
                                     <v-icon v-if="isHovering && !isSorted(sortBy, column)">
@@ -103,10 +112,14 @@ function isSortedIndex(sortBy: { key: string; order: string }[], column: { key: 
                                         v-for="sort in sortBy"
                                         :key="sort.key"
                                     >
-                                        <v-icon v-if="sort.key === column.key && sort.order === 'asc'">
+                                        <v-icon
+                                            v-if="sort.key === column.key && sort.order === 'asc'"
+                                        >
                                             mdi-arrow-up
                                         </v-icon>
-                                        <v-icon v-if="sort.key === column.key && sort.order === 'desc'">
+                                        <v-icon
+                                            v-if="sort.key === column.key && sort.order === 'desc'"
+                                        >
                                             mdi-arrow-down
                                         </v-icon>
                                     </template>
@@ -115,8 +128,7 @@ function isSortedIndex(sortBy: { key: string; order: string }[], column: { key: 
                                         v-if="isSortedIndex(sortBy, column)"
                                         class="v-data-table-header__sort-badge"
                                     >
-                                        {{
-                                            isSortedIndex(sortBy, column) }}
+                                        {{ isSortedIndex(sortBy, column) }}
                                     </div>
                                 </div>
                             </div>

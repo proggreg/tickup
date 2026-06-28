@@ -45,7 +45,7 @@ function formatDate(date: Date) {
                     <v-text
                         class="text-h6 text-truncate"
                         data-testid="todo-title"
-                        style="max-width: 250px; display: block;"
+                        style="max-width: 250px; display: block"
                         lines="1"
                     >
                         {{ item.columns[column.key] }}
@@ -58,7 +58,7 @@ function formatDate(date: Date) {
                 >
                     <v-text
                         class="text-h6 text-truncate"
-                        style="max-width: 120px; display: block;"
+                        style="max-width: 120px; display: block"
                         lines="1"
                     >
                         {{ formatDate(item.columns[column.key]) }}
@@ -87,9 +87,9 @@ function formatDate(date: Date) {
 
 <style scoped>
 .table-row {
-  cursor: pointer;
+    cursor: pointer;
 }
 .status-cell {
-  width: 10px;
+    width: 10px;
 }
 </style>

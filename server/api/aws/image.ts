@@ -1,7 +1,4 @@
-import {
-    BedrockRuntimeClient,
-    InvokeModelCommand,
-} from '@aws-sdk/client-bedrock-runtime';
+import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
 
 export default defineEventHandler(async (event) => {
     try {
@@ -16,7 +13,10 @@ export default defineEventHandler(async (event) => {
             contentType: 'application/json',
             accept: 'application/json',
             body: JSON.stringify({
-                text_prompts: [{ text: prompt, weight: 1 }, { text: 'remove text', weight: -1 }],
+                text_prompts: [
+                    { text: prompt, weight: 1 },
+                    { text: 'remove text', weight: -1 },
+                ],
                 width: 1536,
                 height: 640,
                 steps: 10,

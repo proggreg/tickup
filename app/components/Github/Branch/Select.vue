@@ -39,7 +39,9 @@ async function loadBranches() {
         branches.value = data;
 
         if (branches.value && branches.value.length > 0) {
-            const foundBranch = branches.value.find(branch => branch.name === githubBranchName.value);
+            const foundBranch = branches.value.find(
+                branch => branch.name === githubBranchName.value,
+            );
 
             if (foundBranch) {
                 hasBranch.value = true;
@@ -83,8 +85,7 @@ watch(selectedRepo, (newVal, oldVal) => {
         selectedBranch.value = '';
         loadBranches();
     }
-},
-);
+});
 
 onMounted(() => {
     if (selectedRepo.value) {
@@ -98,9 +99,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <v-chip
-        v-if="listStore.currentTodo.githubBranchName"
-    >
+    <v-chip v-if="listStore.currentTodo.githubBranchName">
         <v-icon icon="mdi-source-branch" />
         {{ listStore.currentTodo.githubBranchName }}
         <template #append>

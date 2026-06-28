@@ -11,6 +11,8 @@ export const useListsStore = defineStore('lists', {
         todos: [],
         todaysTodos: [],
         overdueTodos: [],
+        recentTodos: [],
+        panelOpen: false,
     }),
     actions: {
         async addList(): Promise<List> {
@@ -35,7 +37,8 @@ export const useListsStore = defineStore('lists', {
                     this.lists.pop();
 
                     // Set error using showError to trigger useError()
-                    const errorMessage = error?.data?.message || error?.message || 'Failed to create list';
+                    const errorMessage
+                        = error?.data?.message || error?.message || 'Failed to create list';
                     showError({
                         statusCode: error?.statusCode || 500,
                         statusMessage: errorMessage,
@@ -97,13 +100,17 @@ export const useListsStore = defineStore('lists', {
             this.currentList.todos = todos;
         },
         async getListTodos(listId?: string): Promise<Todo[]> {
-            console.log('getListTodos');
             if (!listId) {
                 listId = this.currentList.id;
             }
             const todos = await $fetch<Todo[]>(`/api/list/todos`, { query: { listId } });
-            console.log('getListTodos num of todos', todos.length);
-            this.currentList.todos = todos;
+            const list = this.lists.find(l => l.id === listId);
+            if (list) {
+                list.todos = todos;
+            }
+            if (this.currentList?.id === listId) {
+                this.currentList.todos = todos;
+            }
             return todos || [];
         },
         setCurrentList(list: List) {
@@ -130,8 +137,10 @@ export const useListsStore = defineStore('lists', {
             return valid;
         },
         async addTodo(newTodo?: Todo) {
-            const todo = newTodo !== undefined ? newTodo : this.newTodo;
+            const todo
+                = newTodo !== undefined && !(newTodo instanceof Event) ? newTodo : this.newTodo;
             console.debug('Create Todo', todo);
+
             if (!this.validateTodo(todo)) {
                 return;
             }
@@ -172,24 +181,15 @@ export const useListsStore = defineStore('lists', {
             }
         },
         setTodoDetails(todo: Todo) {
-            const route = useRoute();
-            const isListRoute = route.path.includes('list');
+            this.addListId(todo);
 
-            if (isListRoute) {
-                this.addListId(route, todo);
-            }
-            else {
-                const now = new Date();
-                this.setNewTodoDueDate(now);
-            }
+            const now = new Date();
+
+            this.setNewTodoDueDate(now);
         },
-        addListId(route, todo) {
-            const listIdParam = route.params?.id;
-            if (Array.isArray(listIdParam)) {
-                todo.listId = listIdParam[0];
-            }
-            else {
-                todo.listId = listIdParam;
+        addListId(todo) {
+            if (!todo.listId) {
+                todo.listId = this?.currentList?.id;
             }
         },
         setNewTodoDueDate(newDueDate: Date) {
@@ -223,7 +223,14 @@ export const useListsStore = defineStore('lists', {
         async addSubtask(name: string, parentId: string | number) {
             const subtask = await $fetch<Todo>('/api/todo', {
                 method: 'POST',
-                body: { name, status: 'Open', parentId: Number(parentId), color: '#87909e', edit: false, links: [] },
+                body: {
+                    name,
+                    status: 'Open',
+                    parentId: Number(parentId),
+                    color: '#87909e',
+                    edit: false,
+                    links: [],
+                },
             });
             if (this.currentTodo?.subtasks) this.currentTodo.subtasks.push(subtask);
             else if (this.currentTodo) this.currentTodo.subtasks = [subtask];
@@ -244,9 +251,15 @@ export const useListsStore = defineStore('lists', {
         async deleteTodo(id: string) {
             await $fetch(`/api/todo/${id}`, { method: 'DELETE' });
 
-            this.currentList.todos = this.currentList.todos.filter(
-                (todo: Todo) => todo.id !== id,
-            );
+            this.currentList.todos = this.currentList.todos.filter((todo: Todo) => todo.id !== id);
+            this.todaysTodos = this.todaysTodos.filter((todo: Todo) => todo.id !== id);
+            this.overdueTodos = this.overdueTodos.filter((todo: Todo) => todo.id !== id);
+            this.todos = this.todos.filter((todo: Todo) => todo.id !== id);
+            for (const list of this.lists) {
+                if (list.todos) {
+                    list.todos = list.todos.filter((todo: Todo) => todo.id !== id);
+                }
+            }
         },
         async getTodo(id: string) {
             const { data } = await useFetch<Todo>(`/api/todo/${id}`);
@@ -310,6 +323,14 @@ export const useListsStore = defineStore('lists', {
 
             if (todos) {
                 this.todaysTodos = todos;
+            }
+        },
+        async getRecentTodos() {
+            const todos = await $fetch<Todo[]>('/api/todos', {
+                query: { recent: true },
+            });
+            if (todos) {
+                this.recentTodos = todos;
             }
         },
         async getOverdueTodos() {

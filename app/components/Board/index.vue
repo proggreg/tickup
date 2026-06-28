@@ -3,28 +3,20 @@ const statusStore = useSettingsStore();
 </script>
 
 <template>
-    <div class="board-container">
+    <div class="overflow-x-auto pa-1 pb-6">
         <v-row
-            class="board-row"
             no-gutters
+            class="flex-nowrap align-start"
+            style="min-width: max-content"
         >
             <v-col
                 v-for="status in statusStore.statuses"
                 :key="status.name"
-                class="board-col"
+                class="pr-6"
+                min-width="300"
             >
                 <BoardColumn :status="status" />
             </v-col>
         </v-row>
     </div>
 </template>
-
-<style scoped>
-.board-row {
-  height: 100%;
-}
-
-.board-col {
-  display: flex;
-}
-</style>

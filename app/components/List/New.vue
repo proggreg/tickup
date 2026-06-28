@@ -32,7 +32,7 @@ async function createNewList() {
         <template #open />
         <v-container
             justify-center
-            style="overflow-y: hidden;"
+            style="overflow-y: hidden"
         >
             <v-text-field
                 v-model="listsStore.newList.name"

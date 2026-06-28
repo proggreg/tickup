@@ -68,25 +68,28 @@ function handleMenuUpdate(isOpen: boolean) {
 onBeforeMount(async () => {
     await loadRepos();
     if (!listStore.currentList.githubRepo) return;
-    selectedRepo.value = repos.value.find(repo => repo?.name === listStore.currentList.githubRepo);
+    selectedRepo.value = repos.value.find(
+        repo => repo?.name === listStore.currentList.githubRepo,
+    );
 });
 onUnmounted(() => {
     selectedRepo.value = null;
 });
 
-watch(() => liststore.currentList.githubRepo, (repo) => {
-    const listsDefaultRepo = repos.value.find(r => r.name === repo);
-    if (listsDefaultRepo) {
-        selectedRepo.value = listsDefaultRepo;
-    }
-});
+watch(
+    () => liststore.currentList.githubRepo,
+    (repo) => {
+        const listsDefaultRepo = repos.value.find(r => r.name === repo);
+        if (listsDefaultRepo) {
+            selectedRepo.value = listsDefaultRepo;
+        }
+    },
+);
 </script>
 
 <template>
-    <v-chip
-        v-if="listStore.currentTodo.githubRepo && listStore.currentTodo.githubLink"
-    >
-        <v-icon icon="mdi-source-repository" />   {{ listStore.currentTodo.githubRepo }}
+    <v-chip v-if="listStore.currentTodo.githubRepo && listStore.currentTodo.githubLink">
+        <v-icon icon="mdi-source-repository" /> {{ listStore.currentTodo.githubRepo }}
     </v-chip>
     <v-autocomplete
         v-else

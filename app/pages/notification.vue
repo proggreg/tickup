@@ -13,7 +13,7 @@ const notificationData = computed(() => {
 <template>
     <v-container
         class="py-10 d-flex justify-center align-center"
-        style="min-height: 80vh;"
+        style="min-height: 80vh"
     >
         <v-card
             elevation="4"

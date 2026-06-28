@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { Endpoints } from '@octokit/types';
 
-const selectedRepo = useState<Endpoints['GET /repos/{owner}/{repo}']['response']['data']>('githubRepo');
+const selectedRepo
+    = useState<Endpoints['GET /repos/{owner}/{repo}']['response']['data']>('githubRepo');
 const githubBranchName = useState('githubBranchName');
 const { notify } = useNotification();
 const listStore = useListsStore();
@@ -24,7 +25,8 @@ function openInIDE(ide: IDE) {
         return;
     }
 
-    const repoUrl = selectedRepo.value.html_url || `https://github.com/${selectedRepo.value.full_name}`;
+    const repoUrl
+        = selectedRepo.value.html_url || `https://github.com/${selectedRepo.value.full_name}`;
     const branchName = listStore.currentTodo.githubBranchName || githubBranchName.value;
 
     let ideUrl = '';

@@ -6,7 +6,7 @@ const listsStore = useListsStore();
 const editLinks = ref([]);
 async function removeLink(link) {
     const newLinks = listsStore.currentTodo.links.filter((l) => {
-        return l.id !== link.id;
+        return l.url !== link.url;
     });
 
     listsStore.currentTodo.links = newLinks;
@@ -36,40 +36,45 @@ function cancelEditLink(link) {
     editLinks.value = editLinks.value.filter(url => url !== link.url);
 }
 
-watch(() => listsStore.currentTodo.desc, async () => {
-    if (!listsStore.currentTodo.desc) return;
-    try {
-        const linkTitles = await fetchUrlsTitles();
-
-        if (!linkTitles || !linkTitles.length) return;
-
+watch(
+    () => listsStore.currentTodo.desc,
+    async () => {
         if (!listsStore.currentTodo.desc) return;
+        try {
+            const linkTitles = await fetchUrlsTitles();
 
-        for (const linkTitle of linkTitles) {
-            if (!listsStore.currentTodo.links.find((l) => {
-                return l.url === linkTitle.url;
-            })) {
-                listsStore.currentTodo.links.push(linkTitle);
+            if (!linkTitles || !linkTitles.length) return;
+
+            if (!listsStore.currentTodo.desc) return;
+
+            for (const linkTitle of linkTitles) {
+                if (
+                    !listsStore.currentTodo.links.find((l) => {
+                        return l.url === linkTitle.url;
+                    })
+                ) {
+                    listsStore.currentTodo.links.push(linkTitle);
+                }
             }
+
+            const urlPattern = /(https?:\/\/[^\s]+)/g;
+
+            const urls = listsStore.currentTodo.desc.match(urlPattern);
+
+            for (const url of urls) {
+                listsStore.currentTodo.desc = listsStore.currentTodo.desc.replace(url, '');
+            }
+            listsStore.updateTodo(listsStore.currentTodo);
         }
-
-        const urlPattern = /(https?:\/\/[^\s]+)/g;
-
-        const urls = listsStore.currentTodo.desc.match(urlPattern);
-
-        for (const url of urls) {
-            listsStore.currentTodo.desc = listsStore.currentTodo.desc.replace(url, '');
+        catch (e) {
+            logger.error(e as Error, { component: 'TodoLinks', function: 'watchDesc' });
         }
-        listsStore.updateTodo(listsStore.currentTodo);
-    }
-    catch (e) {
-        logger.error(e as Error, { component: 'TodoLinks', function: 'watchDesc' });
-    }
-});
+    },
+);
 </script>
 
 <template>
-    <v-list>
+    <v-list title="adsa">
         <v-list-subheader>Links</v-list-subheader>
 
         <v-list-item
@@ -81,7 +86,9 @@ watch(() => listsStore.currentTodo.desc, async () => {
                     v-if="!editLinks.includes(link.url)"
                     :href="link.url"
                     target="_blank"
-                >{{ link.title }}</a>
+                >{{
+                    link.title
+                }}</a>
                 <v-text-field
                     v-else
                     v-model="link.title"

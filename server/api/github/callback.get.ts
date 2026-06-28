@@ -59,7 +59,9 @@ export default defineEventHandler(async (event) => {
                     refresh_token: tokenData.refresh_token,
                     expires_at: expiresAt.toISOString(),
                 };
-                const { error } = await supabase.from('user_integrations').upsert(integrationtokenData);
+                const { error } = await supabase
+                    .from('user_integrations')
+                    .upsert(integrationtokenData);
 
                 console.error(error);
             }
@@ -77,9 +79,7 @@ export default defineEventHandler(async (event) => {
         updateData.github_username = githubUsername;
     }
 
-    const { error } = await supabase
-        .from('Users')
-        .upsert(updateData);
+    const { error } = await supabase.from('Users').upsert(updateData);
 
     if (error) {
         console.error('Failed to save GitHub installation:', error);

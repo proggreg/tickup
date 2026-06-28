@@ -2,7 +2,6 @@ import { defineNuxtConfig } from 'nuxt/config';
 import vuetify from './config/vuetify';
 
 export default defineNuxtConfig({
-
     modules: [
         '@vite-pwa/nuxt',
         'vuetify-nuxt-module',
@@ -15,7 +14,7 @@ export default defineNuxtConfig({
         '@nuxt/test-utils/module',
         'nuxt-bugsnag',
         '@nuxtjs/supabase',
-        'nuxt-mcp',
+        // 'nuxt-mcp',
     ],
 
     pages: true,
@@ -33,6 +32,26 @@ export default defineNuxtConfig({
 
     devtools: {
         enabled: true,
+    },
+
+    app: {
+        head: {
+            link: [
+                {
+                    rel: 'preconnect',
+                    href: 'https://fonts.googleapis.com',
+                },
+                {
+                    rel: 'preconnect',
+                    href: 'https://fonts.gstatic.com',
+                    crossorigin: '',
+                },
+                {
+                    rel: 'stylesheet',
+                    href: 'https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&display=swap',
+                },
+            ],
+        },
     },
 
     runtimeConfig: {
@@ -90,7 +109,6 @@ export default defineNuxtConfig({
     typescript: {
         strict: false,
         typeCheck: false,
-
     },
 
     bugsnag: {
