@@ -7,24 +7,6 @@ const loggedIn = computed(() => !!user.value);
 const searchRef = ref<{ open: boolean } | null>(null);
 
 const acctOpen = ref(false);
-const footerEl = ref<HTMLElement | null>(null);
-
-function toggleAcct() {
-    acctOpen.value = !acctOpen.value;
-}
-
-function handleOutside(e: MouseEvent) {
-    if (footerEl.value && !footerEl.value.contains(e.target as Node)) {
-        acctOpen.value = false;
-    }
-}
-
-watch(acctOpen, (val) => {
-    if (val) document.addEventListener('mousedown', handleOutside);
-    else document.removeEventListener('mousedown', handleOutside);
-});
-
-onUnmounted(() => document.removeEventListener('mousedown', handleOutside));
 
 async function signOut() {
     acctOpen.value = false;
@@ -61,37 +43,46 @@ async function signOut() {
         </v-list>
 
         <template #append>
-            <div ref="footerEl" class="nav-account-footer">
-                <div v-if="acctOpen" class="nav-account-popover">
-                    <button
-                        class="nav-account-popover-item"
-                        @click="
-                            navigateTo('/settings');
-                            acctOpen = false;
-                        "
-                    >
-                        <i class="mdi mdi-cog-outline nav-account-popover-item__icon" />
-                        Settings
-                    </button>
-                    <button class="nav-account-popover-item" @click="signOut">
-                        <i class="mdi mdi-logout nav-account-popover-item__icon" />
-                        Sign out
-                    </button>
-                </div>
-                <button
-                    class="nav-account-row"
-                    :class="{ 'nav-account-row--open': acctOpen }"
-                    @click="toggleAcct"
+            <div class="nav-account-footer">
+                <v-menu
+                    v-model="acctOpen"
+                    location="top"
+                    :offset="6"
+                    :close-on-content-click="true"
                 >
-                    <div class="nav-account-avatar">
-                        <i class="mdi mdi-account" style="font-size: 16px" />
+                    <template #activator="{ props: menuProps }">
+                        <button
+                            class="nav-account-row"
+                            :class="{ 'nav-account-row--open': acctOpen }"
+                            v-bind="menuProps"
+                        >
+                            <div class="nav-account-avatar">
+                                <i class="mdi mdi-account" style="font-size: 16px" />
+                            </div>
+                            <span class="nav-account-email">{{ user?.email }}</span>
+                            <i
+                                class="mdi nav-account-chevron"
+                                :class="acctOpen ? 'mdi-chevron-down' : 'mdi-chevron-up'"
+                            />
+                        </button>
+                    </template>
+                    <div class="nav-account-popover">
+                        <button
+                            class="nav-account-popover-item"
+                            @click="
+                                navigateTo('/settings');
+                                acctOpen = false;
+                            "
+                        >
+                            <i class="mdi mdi-cog-outline nav-account-popover-item__icon" />
+                            Settings
+                        </button>
+                        <button class="nav-account-popover-item" @click="signOut">
+                            <i class="mdi mdi-logout nav-account-popover-item__icon" />
+                            Sign out
+                        </button>
                     </div>
-                    <span class="nav-account-email">{{ user?.email }}</span>
-                    <i
-                        class="mdi nav-account-chevron"
-                        :class="acctOpen ? 'mdi-chevron-down' : 'mdi-chevron-up'"
-                    />
-                </button>
+                </v-menu>
             </div>
         </template>
     </v-navigation-drawer>
@@ -122,47 +113,6 @@ async function signOut() {
 .nav-account-footer {
     border-top: 1px solid rgba(113, 124, 130, 0.16);
     padding: 8px;
-    position: relative;
-}
-
-.nav-account-popover {
-    position: absolute;
-    left: 8px;
-    right: 8px;
-    bottom: calc(100% + 6px);
-    background: #ffffff;
-    border: 1px solid rgba(113, 124, 130, 0.16);
-    border-radius: 10px;
-    padding: 6px;
-    box-shadow: 0 12px 32px rgba(42, 52, 57, 0.18);
-    z-index: 200;
-}
-
-.nav-account-popover-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 8px 10px;
-    border: none;
-    border-radius: 7px;
-    background: transparent;
-    color: #2a3439;
-    font-family: Inter, sans-serif;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.08s;
-}
-
-.nav-account-popover-item:hover {
-    background: rgba(113, 124, 130, 0.1);
-}
-
-.nav-account-popover-item__icon {
-    font-size: 18px;
-    opacity: 0.6;
 }
 
 .nav-account-row {
@@ -212,5 +162,42 @@ async function signOut() {
     font-size: 16px;
     color: rgba(42, 52, 57, 0.38);
     flex-shrink: 0;
+}
+</style>
+
+<style>
+.nav-account-popover {
+    background: #ffffff;
+    border: 1px solid rgba(113, 124, 130, 0.16);
+    border-radius: 10px;
+    padding: 6px;
+    box-shadow: 0 12px 32px rgba(42, 52, 57, 0.18);
+}
+
+.nav-account-popover-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: #2a3439;
+    font-family: Inter, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.08s;
+}
+
+.nav-account-popover-item:hover {
+    background: rgba(113, 124, 130, 0.1);
+}
+
+.nav-account-popover-item__icon {
+    font-size: 18px;
+    opacity: 0.6;
 }
 </style>
