@@ -42,8 +42,8 @@ const views: { key: View; icon: string; label: string }[] = [
 </script>
 
 <template>
-  <v-row class="overflow-y-auto fill-height">
-    <div class="mx-auto px-7 pt-7 pb-12" style="width: 100%;">
+  <div class="overflow-y-auto fill-height flex-grow-1">
+    <div class="mx-auto px-7 pt-7 pb-12" style="width: 100%">
       <div>
         <!-- Header -->
         <v-row no-gutters align="center" class="mb-4 flex-nowrap ga-3">
@@ -91,7 +91,7 @@ const views: { key: View; icon: string; label: string }[] = [
       </div>
       <Board v-else-if="currentView === 'board'" />
     </div>
-  </v-row>
+  </div>
 </template>
 
 <style scoped>

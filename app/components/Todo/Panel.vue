@@ -76,9 +76,9 @@ async function confirmDelete() {
         </div>
 
         <!-- Panel content -->
-        <div class="panel-body pa-2">
+        <div class="panel-body">
             <Suspense>
-                <TodoDetail main-width="12" />
+                <TodoDetail />
             </Suspense>
         </div>
     </aside>
@@ -86,12 +86,11 @@ async function confirmDelete() {
 
 <style scoped>
 .todo-panel {
-    width: 50%;
+    width: 400px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    border: 1px solid rgba(113, 124, 130, 0.18);
-    border-radius: 14px;
+    border-left: 1px solid rgba(var(--v-border-color), 0.14);
     background: rgb(var(--v-theme-surface));
     height: 100%;
     overflow: hidden;
