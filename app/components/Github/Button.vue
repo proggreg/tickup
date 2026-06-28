@@ -111,6 +111,7 @@ onUnmounted(() => {
                         <GithubBranchOpen />
                         <GithubBranchOpenInIde />
                         <GithubBranchCreate />
+                        <GithubPROpen />
                     </template>
                 </v-text-field>
             </v-list-item>
