@@ -12,7 +12,7 @@ function updateName() {
 }
 
 const currentStatus = computed(
-  () => statuses.find((s) => s.name === listsStore.currentTodo.status) ?? statuses[0],
+  () => statuses.find(s => s.name === listsStore.currentTodo.status) ?? statuses[0],
 );
 
 function setStatus(status: Status) {
@@ -41,7 +41,8 @@ async function deleteTodo() {
   await listsStore.deleteTodo(listsStore.currentTodo.id);
   if (listId) {
     router.push(`/list/${listId}`);
-  } else {
+  }
+  else {
     router.push('/');
   }
 }
@@ -69,7 +70,7 @@ async function deleteTodo() {
       <div class="divider" />
 
       <v-col>
-        <Subtasks />
+        <SubtaskItems />
       </v-col>
 
       <div class="divider" />
@@ -149,8 +150,7 @@ async function deleteTodo() {
           <v-dialog width="260px">
             <template #activator="{ props: activatorProps }">
               <v-btn v-bind="activatorProps" color="error" variant="text" prepend-icon="mdi-trash-can-outline"
-                size="small" class="delete-btn">
-              </v-btn>
+                size="small" class="delete-btn" />
             </template>
             <template #default="{ isActive }">
               <v-card rounded="lg">
@@ -173,7 +173,6 @@ async function deleteTodo() {
       </v-card>
     </v-col>
   </v-row>
-
 </template>
 
 <style scoped>
@@ -299,7 +298,9 @@ async function deleteTodo() {
   color: rgb(var(--v-theme-on-primary-container));
   padding: 1px 7px;
   border-radius: 8px;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .subtasks-badge--done {
@@ -319,7 +320,9 @@ async function deleteTodo() {
   height: 100%;
   border-radius: 2px;
   background: rgb(var(--v-theme-primary));
-  transition: width 0.3s ease, background 0.3s;
+  transition:
+    width 0.3s ease,
+    background 0.3s;
 }
 
 .subtasks-progress__bar--done {

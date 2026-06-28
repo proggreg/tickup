@@ -7,7 +7,8 @@ function selectTodo(todo: Todo) {
     listsStore.setCurrentTodo(todo);
     if (mobile.value) {
         navigateTo(`/todo/${todo.id}`);
-    } else {
+    }
+    else {
         listsStore.panelOpen = true;
     }
 }
@@ -53,7 +54,10 @@ const closedTodos = computed(
 <template>
     <div>
         <!-- Open todos -->
-        <div class="todo-card mb-5" :class="{ 'pa-2': openTodos.length }">
+        <div
+            class="todo-card mb-5"
+            :class="{ 'pa-2': openTodos.length }"
+        >
             <div
                 v-if="openTodos.length === 0"
                 class="text-center pa-8 text-medium-emphasis text-body-2"
@@ -78,14 +82,17 @@ const closedTodos = computed(
                 <span class="flex-grow-1 text-truncate text-body-2 font-weight-medium todo-name">
                     {{ todo.name }}
                 </span>
-                <v-icon v-if="todo.priorityLev === 'high'" size="14" color="error">
+                <v-icon
+                    v-if="todo.priorityLev === 'high'"
+                    size="14"
+                    color="error"
+                >
                     mdi-flag
                 </v-icon>
                 <span
                     v-if="relativeDue(todo.dueDate, false)"
                     class="d-inline-flex align-center ga-1 text-caption font-weight-medium flex-shrink-0"
-                    :class="
-                        relativeDue(todo.dueDate, false)?.overdue ? 'text-error' : 'text-disabled'
+                    :class="relativeDue(todo.dueDate, false)?.overdue ? 'text-error' : 'text-disabled'
                     "
                 >
                     <v-icon size="13">
@@ -97,7 +104,11 @@ const closedTodos = computed(
                     </v-icon>
                     {{ relativeDue(todo.dueDate, false)?.text }}
                 </span>
-                <v-icon class="todo-chevron flex-shrink-0" size="18" color="medium-emphasis">
+                <v-icon
+                    class="todo-chevron flex-shrink-0"
+                    size="18"
+                    color="medium-emphasis"
+                >
                     mdi-chevron-right
                 </v-icon>
             </div>
@@ -123,11 +134,14 @@ const closedTodos = computed(
                         :style="{ background: statusColor(todo.status) }"
                         @click.stop="toggleTodo(todo)"
                     >
-                        <v-icon size="11" color="white">mdi-check</v-icon>
+                        <v-icon
+                            size="11"
+                            color="white"
+                        >
+                            mdi-check
+                        </v-icon>
                     </button>
-                    <span
-                        class="flex-grow-1 text-truncate text-body-2 font-weight-medium todo-name todo-name--done"
-                    >
+                    <span class="flex-grow-1 text-truncate text-body-2 font-weight-medium todo-name todo-name--done">
                         {{ todo.name }}
                     </span>
                     <span
@@ -137,7 +151,11 @@ const closedTodos = computed(
                         <v-icon size="13">mdi-calendar-blank-outline</v-icon>
                         {{ relativeDue(todo.dueDate, true)?.text }}
                     </span>
-                    <v-icon class="todo-chevron flex-shrink-0" size="18" color="medium-emphasis">
+                    <v-icon
+                        class="todo-chevron flex-shrink-0"
+                        size="18"
+                        color="medium-emphasis"
+                    >
                         mdi-chevron-right
                     </v-icon>
                 </div>
