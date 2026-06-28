@@ -69,6 +69,7 @@ declare global {
         todos?: Task[];
         todaysTodos: Task[];
         overdueTodos: Task[];
+        recentTodos: Task[];
         view: ViewType;
         newTodo: Task;
         panelOpen: boolean;
