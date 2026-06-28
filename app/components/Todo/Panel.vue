@@ -32,7 +32,10 @@ async function confirmDelete() {
 
             <div class="panel-header__end">
                 <!-- Delete with confirm dialog -->
-                <v-dialog v-model="deleteDialog" max-width="280">
+                <v-dialog
+                    v-model="deleteDialog"
+                    max-width="280"
+                >
                     <template #activator="{ props }">
                         <button
                             v-bind="props"
@@ -44,12 +47,19 @@ async function confirmDelete() {
                         </button>
                     </template>
                     <div class="confirm-dialog">
-                        <div class="confirm-dialog__title">Delete task</div>
+                        <div class="confirm-dialog__title">
+                            Delete task
+                        </div>
                         <div class="confirm-dialog__desc">
                             Are you sure you want to delete "{{ listsStore.currentTodo.name }}"?
                         </div>
                         <div class="confirm-dialog__actions">
-                            <button class="btn" @click="deleteDialog = false">Cancel</button>
+                            <button
+                                class="btn"
+                                @click="deleteDialog = false"
+                            >
+                                Cancel
+                            </button>
                             <button
                                 class="btn btn--danger"
                                 @click="

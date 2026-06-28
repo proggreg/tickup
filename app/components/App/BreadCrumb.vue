@@ -6,85 +6,97 @@ const parentTodo = ref<Todo | null>(null);
 const isLoading = ref(true);
 const transitionKey = ref(0);
 
-
 async function loadTodo(id: string | string[]) {
-  try {
-    isLoading.value = true;
+    try {
+        isLoading.value = true;
 
-    const todo = await $fetch<Todo>(`/api/todo/${id}`);
-    listsStore.setCurrentTodo(todo);
+        const todo = await $fetch<Todo>(`/api/todo/${id}`);
+        listsStore.setCurrentTodo(todo);
 
-    // Explicitly fetch subtasks for this todo
-    await listsStore.fetchSubtasks(id as string);
+        // Explicitly fetch subtasks for this todo
+        await listsStore.fetchSubtasks(id as string);
 
-    // If this is a subtask, ensure we have the correct parent todo
-    if (todo.parentId) {
-      const needsNewParent = !parentTodo.value || parentTodo.value.id !== todo.parentId;
-      if (needsNewParent) {
-        parentTodo.value = await $fetch<Todo>(`/api/todo/${todo.parentId}`);
-      }
+        // If this is a subtask, ensure we have the correct parent todo
+        if (todo.parentId) {
+            const needsNewParent = !parentTodo.value || parentTodo.value.id !== todo.parentId;
+            if (needsNewParent) {
+                parentTodo.value = await $fetch<Todo>(`/api/todo/${todo.parentId}`);
+            }
+        }
+        else {
+            // No parent for this todo
+            parentTodo.value = null;
+        }
+
+        if (todo && todo.listId) {
+            const list = await $fetch<List>(`/api/list/${todo.listId}`);
+            listsStore.setCurrentList(list);
+        }
+
+        // Only bump the transition key once everything for this todo is loaded,
+        // so the fade happens between fully-rendered states.
+        transitionKey.value++;
     }
-    else {
-      // No parent for this todo
-      parentTodo.value = null;
+    finally {
+        isLoading.value = false;
     }
-
-    if (todo && todo.listId) {
-      const list = await $fetch<List>(`/api/list/${todo.listId}`);
-      listsStore.setCurrentList(list);
-    }
-
-    // Only bump the transition key once everything for this todo is loaded,
-    // so the fade happens between fully-rendered states.
-    transitionKey.value++;
-  }
-  finally {
-    isLoading.value = false;
-  }
 }
 
 watch(
-  () => route.params.id,
-  (id) => {
-    if (id) loadTodo(id);
-  },
-  { immediate: true },
+    () => route.params.id,
+    (id) => {
+        if (id) loadTodo(id);
+    },
+    { immediate: true },
 );
 
 const backTo = computed(() => {
-  if (parentTodo.value) return `/todo/${parentTodo.value.id}`;
-  if (listsStore.currentTodo?.listId) return `/list/${listsStore.currentTodo.listId}`;
-  return '/';
+    if (parentTodo.value) return `/todo/${parentTodo.value.id}`;
+    if (listsStore.currentTodo?.listId) return `/list/${listsStore.currentTodo.listId}`;
+    return '/';
 });
 
 const backLabel = computed(() => {
-  if (parentTodo.value) return parentTodo.value.name;
-  if (listsStore.currentList?.name) return listsStore.currentList.name;
-  return 'Home';
+    if (parentTodo.value) return parentTodo.value.name;
+    if (listsStore.currentList?.name) return listsStore.currentList.name;
+    return 'Home';
 });
 
 const backTestId = computed(() => {
-  if (parentTodo.value) return 'nav-back-parent';
-  if (listsStore.currentTodo?.listId && listsStore.currentList?.id) return 'nav-back-list';
-  return 'nav-back-home';
+    if (parentTodo.value) return 'nav-back-parent';
+    if (listsStore.currentTodo?.listId && listsStore.currentList?.id) return 'nav-back-list';
+    return 'nav-back-home';
 });
 </script>
+
 <template>
-  <div class="breadcrumb-bar">
-    <NuxtLink v-if="!isLoading" :data-testid="backTestId" @click="router.back" class="breadcrumb-back">
-      <i class="mdi mdi-arrow-left breadcrumb-back__icon" />
-    </NuxtLink>
-    <div v-if="!isLoading" class="breadcrumb-trail">
-      <NuxtLink :to="backTo" class="breadcrumb-segment breadcrumb-segment--parent">
-        {{ backLabel }}
-      </NuxtLink>
-      <i class="mdi mdi-chevron-right breadcrumb-chevron" />
-      <span class="breadcrumb-segment breadcrumb-segment--current">
-        {{ listsStore.currentTodo?.name }}
-      </span>
+    <div class="breadcrumb-bar">
+        <NuxtLink
+            v-if="!isLoading"
+            :data-testid="backTestId"
+            class="breadcrumb-back"
+            @click="router.back"
+        >
+            <i class="mdi mdi-arrow-left breadcrumb-back__icon" />
+        </NuxtLink>
+        <div
+            v-if="!isLoading"
+            class="breadcrumb-trail"
+        >
+            <NuxtLink
+                :to="backTo"
+                class="breadcrumb-segment breadcrumb-segment--parent"
+            >
+                {{ backLabel }}
+            </NuxtLink>
+            <i class="mdi mdi-chevron-right breadcrumb-chevron" />
+            <span class="breadcrumb-segment breadcrumb-segment--current">
+                {{ listsStore.currentTodo?.name }}
+            </span>
+        </div>
     </div>
-  </div>
 </template>
+
 <style scoped>
 .todo-fade-enter-active {
   transition: opacity 0.18s ease;

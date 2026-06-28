@@ -2,141 +2,141 @@
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 
 const emit = defineEmits<{
-  setDate: [newDate: Date | null, newTodo: Todo];
-  setDate: [newDate: Date | null, newTodo: Todo];
+    setDate: [newDate: Date | null, newTodo: Todo];
+    setDate: [newDate: Date | null, newTodo: Todo];
 }>();
 
 const props = defineProps<{
-  todo: Todo;
-  todoDueDate?: Date | string;
-  date?: Date | string; // alias used by Todo/New.vue
-  showDetail?: boolean;
-  todo: Todo;
-  todoDueDate?: Date | string;
-  date?: Date | string; // alias used by Todo/New.vue
-  showDetail?: boolean;
+    todo: Todo;
+    todoDueDate?: Date | string;
+    date?: Date | string; // alias used by Todo/New.vue
+    showDetail?: boolean;
+    todo: Todo;
+    todoDueDate?: Date | string;
+    date?: Date | string; // alias used by Todo/New.vue
+    showDetail?: boolean;
 }>();
 
 // ── Date helpers (ported from prototype) ─────────────────────────────────────
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const MONTHS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
 ];
 
 function startOfDay(d: Date): Date {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  return x;
+    const x = new Date(d);
+    x.setHours(0, 0, 0, 0);
+    return x;
 }
 
 function addDays(d: Date, n: number): Date {
-  const x = new Date(d);
-  x.setDate(x.getDate() + n);
-  return x;
+    const x = new Date(d);
+    x.setDate(x.getDate() + n);
+    return x;
 }
 
 function sameDay(a: Date | null | undefined, b: Date | null | undefined): boolean {
-  return !!(a && b && startOfDay(a).getTime() === startOfDay(b).getTime());
+    return !!(a && b && startOfDay(a).getTime() === startOfDay(b).getTime());
 }
 
 function nextWeekday(target: number): Date {
-  // 0=Sun..6=Sat
-  const t = startOfDay(new Date());
-  for (let i = 1; i <= 7; i++) {
-    const d = addDays(t, i);
-    if (d.getDay() === target) return d;
-  }
-  return t;
+    // 0=Sun..6=Sat
+    const t = startOfDay(new Date());
+    for (let i = 1; i <= 7; i++) {
+        const d = addDays(t, i);
+        if (d.getDay() === target) return d;
+    }
+    return t;
 }
 
 function formatRelative(d: Date | null): string | null {
-  if (!d) return null;
-  const t = startOfDay(new Date());
-  const diff = Math.round((startOfDay(d).getTime() - t.getTime()) / 86400000);
-  if (diff === 0) return 'Today';
-  if (diff === 1) return 'Tomorrow';
-  if (diff === -1) return 'Yesterday';
-  if (diff > 1 && diff < 7) return d.toLocaleDateString('en-GB', { weekday: 'long' });
-  return d.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: d.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined,
-  });
+    if (!d) return null;
+    const t = startOfDay(new Date());
+    const diff = Math.round((startOfDay(d).getTime() - t.getTime()) / 86400000);
+    if (diff === 0) return 'Today';
+    if (diff === 1) return 'Tomorrow';
+    if (diff === -1) return 'Yesterday';
+    if (diff > 1 && diff < 7) return d.toLocaleDateString('en-GB', { weekday: 'long' });
+    return d.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: d.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined,
+    });
 }
 
 function buildMonthGrid(year: number, month: number): (Date | null)[] {
-  const first = new Date(year, month, 1);
-  const startWeekday = (first.getDay() + 6) % 7; // Mon=0
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const cells: (Date | null)[] = [];
-  for (let i = 0; i < startWeekday; i++) cells.push(null);
-  for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(year, month, d));
-  while (cells.length % 7 !== 0) cells.push(null);
-  return cells;
+    const first = new Date(year, month, 1);
+    const startWeekday = (first.getDay() + 6) % 7; // Mon=0
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const cells: (Date | null)[] = [];
+    for (let i = 0; i < startWeekday; i++) cells.push(null);
+    for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(year, month, d));
+    while (cells.length % 7 !== 0) cells.push(null);
+    return cells;
 }
 
 // ── Derived state ─────────────────────────────────────────────────────────────
 const effectiveDate = computed<Date | null>(() => {
-  const raw = props.todoDueDate ?? props.date;
-  return raw ? new Date(raw) : null;
+    const raw = props.todoDueDate ?? props.date;
+    return raw ? new Date(raw) : null;
 });
 
 const isOverdue = computed(
-  () =>
-    !!effectiveDate.value
-    && startOfDay(effectiveDate.value) < startOfDay(new Date())
-    && props.todo.status !== 'Closed',
+    () =>
+        !!effectiveDate.value
+        && startOfDay(effectiveDate.value) < startOfDay(new Date())
+        && props.todo.status !== 'Closed',
 );
 
 const isToday_ = computed(() => sameDay(effectiveDate.value, new Date()));
 
 const chipStyle = computed(() => {
-  if (!effectiveDate.value) {
-    return {
-      color: 'rgba(42,52,57,0.38)',
-      background: 'transparent',
-      borderColor: 'rgba(113,124,130,0.24)',
-    };
-  }
-  if (isOverdue.value) {
-    return { color: '#ba1b24', background: 'rgba(186,27,36,0.08)', borderColor: 'transparent' };
-  }
-  if (isToday_.value) {
-    return { color: '#005ac2', background: '#dce8ff', borderColor: 'transparent' };
-  }
-  return { color: '#2a3439', background: '#f0f4f7', borderColor: 'transparent' };
-  if (!effectiveDate.value) {
-    return {
-      color: 'rgba(42,52,57,0.38)',
-      background: 'transparent',
-      borderColor: 'rgba(113,124,130,0.24)',
-    };
-  }
-  if (isOverdue.value) {
-    return { color: '#ba1b24', background: 'rgba(186,27,36,0.08)', borderColor: 'transparent' };
-  }
-  if (isToday_.value) {
-    return { color: '#005ac2', background: '#dce8ff', borderColor: 'transparent' };
-  }
-  return { color: '#2a3439', background: '#f0f4f7', borderColor: 'transparent' };
+    if (!effectiveDate.value) {
+        return {
+            color: 'rgba(42,52,57,0.38)',
+            background: 'transparent',
+            borderColor: 'rgba(113,124,130,0.24)',
+        };
+    }
+    if (isOverdue.value) {
+        return { color: '#ba1b24', background: 'rgba(186,27,36,0.08)', borderColor: 'transparent' };
+    }
+    if (isToday_.value) {
+        return { color: '#005ac2', background: '#dce8ff', borderColor: 'transparent' };
+    }
+    return { color: '#2a3439', background: '#f0f4f7', borderColor: 'transparent' };
+    if (!effectiveDate.value) {
+        return {
+            color: 'rgba(42,52,57,0.38)',
+            background: 'transparent',
+            borderColor: 'rgba(113,124,130,0.24)',
+        };
+    }
+    if (isOverdue.value) {
+        return { color: '#ba1b24', background: 'rgba(186,27,36,0.08)', borderColor: 'transparent' };
+    }
+    if (isToday_.value) {
+        return { color: '#005ac2', background: '#dce8ff', borderColor: 'transparent' };
+    }
+    return { color: '#2a3439', background: '#f0f4f7', borderColor: 'transparent' };
 });
 
 const rowStyle = computed(() => ({
-  color: isOverdue.value ? '#ba1b24' : effectiveDate.value ? '#2a3439' : 'rgba(42,52,57,0.38)',
-  fontWeight: isOverdue.value ? 500 : 400,
-  color: isOverdue.value ? '#ba1b24' : effectiveDate.value ? '#2a3439' : 'rgba(42,52,57,0.38)',
-  fontWeight: isOverdue.value ? 500 : 400,
+    color: isOverdue.value ? '#ba1b24' : effectiveDate.value ? '#2a3439' : 'rgba(42,52,57,0.38)',
+    fontWeight: isOverdue.value ? 500 : 400,
+    color: isOverdue.value ? '#ba1b24' : effectiveDate.value ? '#2a3439' : 'rgba(42,52,57,0.38)',
+    fontWeight: isOverdue.value ? 500 : 400,
 }));
 
 // ── Popover state ─────────────────────────────────────────────────────────────
@@ -152,204 +152,269 @@ const viewMonth = ref(new Date().getMonth());
 const calendarCells = computed(() => buildMonthGrid(viewYear.value, viewMonth.value));
 
 function prevMonth() {
-  if (viewMonth.value === 0) {
-    viewMonth.value = 11;
-    viewYear.value--;
-  }
-  else viewMonth.value--;
+    if (viewMonth.value === 0) {
+        viewMonth.value = 11;
+        viewYear.value--;
+    }
+    else viewMonth.value--;
 }
 
 function nextMonth() {
-  if (viewMonth.value === 11) {
-    viewMonth.value = 0;
-    viewYear.value++;
-  }
-  else viewMonth.value++;
+    if (viewMonth.value === 11) {
+        viewMonth.value = 0;
+        viewYear.value++;
+    }
+    else viewMonth.value++;
 }
 
 // ── Quick options ─────────────────────────────────────────────────────────────
 const quicks = computed(() => {
-  const t = new Date();
-  return [
-    {
-      icon: 'mdi-white-balance-sunny',
-      label: 'Today',
-      accent: '#f07c20',
-      hint: t.toLocaleDateString('en-GB', { weekday: 'short' }),
-      date: startOfDay(t),
-    },
-    {
-      icon: 'mdi-weather-sunset-up',
-      label: 'Tomorrow',
-      accent: '#005ac2',
-      hint: addDays(t, 1).toLocaleDateString('en-GB', { weekday: 'short' }),
-      date: addDays(startOfDay(t), 1),
-    },
-    {
-      icon: 'mdi-calendar-weekend',
-      label: 'This weekend',
-      accent: '#506076',
-      hint: 'Sat',
-      date: nextWeekday(6),
-    },
-    {
-      icon: 'mdi-calendar-arrow-right',
-      label: 'Next week',
-      accent: '#506076',
-      hint: 'Mon',
-      date: nextWeekday(1),
-    },
-  ];
+    const t = new Date();
+    return [
+        {
+            icon: 'mdi-white-balance-sunny',
+            label: 'Today',
+            accent: '#f07c20',
+            hint: t.toLocaleDateString('en-GB', { weekday: 'short' }),
+            date: startOfDay(t),
+        },
+        {
+            icon: 'mdi-weather-sunset-up',
+            label: 'Tomorrow',
+            accent: '#005ac2',
+            hint: addDays(t, 1).toLocaleDateString('en-GB', { weekday: 'short' }),
+            date: addDays(startOfDay(t), 1),
+        },
+        {
+            icon: 'mdi-calendar-weekend',
+            label: 'This weekend',
+            accent: '#506076',
+            hint: 'Sat',
+            date: nextWeekday(6),
+        },
+        {
+            icon: 'mdi-calendar-arrow-right',
+            label: 'Next week',
+            accent: '#506076',
+            hint: 'Mon',
+            date: nextWeekday(1),
+        },
+    ];
 });
 
 // ── Popover open/close/position ───────────────────────────────────────────────
 async function openPicker() {
-  if (!triggerEl.value) return;
-  const d = effectiveDate.value ?? new Date();
-  viewYear.value = d.getFullYear();
-  viewMonth.value = d.getMonth();
-  open.value = true;
-  await nextTick();
-  positionPopover();
+    if (!triggerEl.value) return;
+    const d = effectiveDate.value ?? new Date();
+    viewYear.value = d.getFullYear();
+    viewMonth.value = d.getMonth();
+    open.value = true;
+    await nextTick();
+    positionPopover();
 }
 
 function positionPopover() {
-  if (!popoverEl.value || !triggerEl.value) return;
-  const a = triggerEl.value.getBoundingClientRect();
-  const r = popoverEl.value.getBoundingClientRect();
-  let left = a.left;
-  let top = a.bottom + 6;
-  if (left + r.width > window.innerWidth - 8) left = window.innerWidth - r.width - 8;
-  if (top + r.height > window.innerHeight - 8) top = a.top - r.height - 6;
-  if (top < 8) top = 8;
-  if (left < 8) left = 8;
-  popoverPos.value = { left, top, ready: true };
+    if (!popoverEl.value || !triggerEl.value) return;
+    const a = triggerEl.value.getBoundingClientRect();
+    const r = popoverEl.value.getBoundingClientRect();
+    let left = a.left;
+    let top = a.bottom + 6;
+    if (left + r.width > window.innerWidth - 8) left = window.innerWidth - r.width - 8;
+    if (top + r.height > window.innerHeight - 8) top = a.top - r.height - 6;
+    if (top < 8) top = 8;
+    if (left < 8) left = 8;
+    popoverPos.value = { left, top, ready: true };
 }
 
 function closePicker() {
-  open.value = false;
-  popoverPos.value = { left: 0, top: 0, ready: false };
+    open.value = false;
+    popoverPos.value = { left: 0, top: 0, ready: false };
 }
 
 function handleSelect(d: Date) {
-  emit('setDate', d, { ...props.todo, dueDate: d });
-  closePicker();
-}
-
-function handleClear() {
-  emit('setDate', null, { ...props.todo, dueDate: undefined });
-  closePicker();
-}
-
-function handleOutsideClick(e: MouseEvent) {
-  if (!open.value) return;
-  const t = e.target as Node;
-  if (
-    popoverEl.value
-    && !popoverEl.value.contains(t)
-    && triggerEl.value
-    && !triggerEl.value.contains(t)
-  )
+    emit('setDate', d, { ...props.todo, dueDate: d });
     closePicker();
 }
 
+function handleClear() {
+    emit('setDate', null, { ...props.todo, dueDate: undefined });
+    closePicker();
+}
+
+function handleOutsideClick(e: MouseEvent) {
+    if (!open.value) return;
+    const t = e.target as Node;
+    if (
+        popoverEl.value
+        && !popoverEl.value.contains(t)
+        && triggerEl.value
+        && !triggerEl.value.contains(t)
+    )
+        closePicker();
+}
+
 function handleEsc(e: KeyboardEvent) {
-  if (e.key === 'Escape' && open.value) closePicker();
+    if (e.key === 'Escape' && open.value) closePicker();
 }
 
 onMounted(() => {
-  document.addEventListener('mousedown', handleOutsideClick);
-  document.addEventListener('keydown', handleEsc);
+    document.addEventListener('mousedown', handleOutsideClick);
+    document.addEventListener('keydown', handleEsc);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('mousedown', handleOutsideClick);
-  document.removeEventListener('keydown', handleEsc);
+    document.removeEventListener('mousedown', handleOutsideClick);
+    document.removeEventListener('keydown', handleEsc);
 });
 </script>
 
 <template>
-  <!-- Chip variant (default) -->
-  <button v-if="!showDetail" ref="triggerEl" class="due-chip" :style="chipStyle" data-testid="due-date-trigger"
-    @click="openPicker">
-    <i class="mdi" :class="isOverdue ? 'mdi-calendar-alert' : 'mdi-calendar'" style="font-size: 14px" />
-    <span>{{ effectiveDate ? formatRelative(effectiveDate) : 'Set date' }}</span>
-  </button>
+    <!-- Chip variant (default) -->
+    <button
+        v-if="!showDetail"
+        ref="triggerEl"
+        class="due-chip"
+        :style="chipStyle"
+        data-testid="due-date-trigger"
+        @click="openPicker"
+    >
+        <i
+            class="mdi"
+            :class="isOverdue ? 'mdi-calendar-alert' : 'mdi-calendar'"
+            style="font-size: 14px"
+        />
+        <span>{{ effectiveDate ? formatRelative(effectiveDate) : 'Set date' }}</span>
+    </button>
 
-  <!-- Row variant (showDetail) -->
-  <button v-else ref="triggerEl" class="due-row" :style="rowStyle" data-testid="due-date-trigger" @click="openPicker">
-    <i v-if="isOverdue" class="mdi mdi-alert-circle-outline" style="font-size: 13px" />
-    <span>{{ effectiveDate ? formatRelative(effectiveDate) : 'Add due date' }}</span>
-  </button>
+    <!-- Row variant (showDetail) -->
+    <button
+        v-else
+        ref="triggerEl"
+        class="due-row"
+        :style="rowStyle"
+        data-testid="due-date-trigger"
+        @click="openPicker"
+    >
+        <i
+            v-if="isOverdue"
+            class="mdi mdi-alert-circle-outline"
+            style="font-size: 13px"
+        />
+        <span>{{ effectiveDate ? formatRelative(effectiveDate) : 'Add due date' }}</span>
+    </button>
 
-  <!-- Popover -->
-  <Teleport to="body">
-    <div v-if="open" ref="popoverEl" class="due-popover" :style="{
-      left: popoverPos.left + 'px',
-      top: popoverPos.top + 'px',
-      opacity: popoverPos.ready ? 1 : 0,
-      transform: popoverPos.ready ? 'translateY(0)' : 'translateY(-4px)',
-    }" data-testid="due-date-popover">
-      <!-- Quick options -->
-      <div class="due-quicks">
-        <button v-for="q in quicks" :key="q.label" class="due-quick" @click="handleSelect(q.date)">
-          <i class="mdi" :class="q.icon" :style="{
-            fontSize: '17px',
-            width: '20px',
-            textAlign: 'center',
-            color: q.accent,
-          }" />
-          <span class="due-quick__label">{{ q.label }}</span>
-          <span class="due-quick__hint">{{ q.hint }}</span>
-        </button>
-      </div>
+    <!-- Popover -->
+    <Teleport to="body">
+        <div
+            v-if="open"
+            ref="popoverEl"
+            class="due-popover"
+            :style="{
+                left: popoverPos.left + 'px',
+                top: popoverPos.top + 'px',
+                opacity: popoverPos.ready ? 1 : 0,
+                transform: popoverPos.ready ? 'translateY(0)' : 'translateY(-4px)',
+            }"
+            data-testid="due-date-popover"
+        >
+            <!-- Quick options -->
+            <div class="due-quicks">
+                <button
+                    v-for="q in quicks"
+                    :key="q.label"
+                    class="due-quick"
+                    @click="handleSelect(q.date)"
+                >
+                    <i
+                        class="mdi"
+                        :class="q.icon"
+                        :style="{
+                            fontSize: '17px',
+                            width: '20px',
+                            textAlign: 'center',
+                            color: q.accent,
+                        }"
+                    />
+                    <span class="due-quick__label">{{ q.label }}</span>
+                    <span class="due-quick__hint">{{ q.hint }}</span>
+                </button>
+            </div>
 
-      <!-- Calendar -->
-      <div class="due-calendar">
-        <div class="due-cal__header">
-          <span class="due-cal__month-label">{{ MONTHS[viewMonth] }} {{ viewYear }}</span>
-          <div style="display: flex; gap: 2px">
-            <button class="due-cal__nav" @click="prevMonth">
-              <i class="mdi mdi-chevron-left" style="font-size: 18px" />
-            </button>
-            <button class="due-cal__nav" @click="nextMonth">
-              <i class="mdi mdi-chevron-right" style="font-size: 18px" />
-            </button>
-          </div>
+            <!-- Calendar -->
+            <div class="due-calendar">
+                <div class="due-cal__header">
+                    <span class="due-cal__month-label">{{ MONTHS[viewMonth] }} {{ viewYear }}</span>
+                    <div style="display: flex; gap: 2px">
+                        <button
+                            class="due-cal__nav"
+                            @click="prevMonth"
+                        >
+                            <i
+                                class="mdi mdi-chevron-left"
+                                style="font-size: 18px"
+                            />
+                        </button>
+                        <button
+                            class="due-cal__nav"
+                            @click="nextMonth"
+                        >
+                            <i
+                                class="mdi mdi-chevron-right"
+                                style="font-size: 18px"
+                            />
+                        </button>
+                    </div>
+                </div>
+
+                <div class="due-cal__weekdays">
+                    <div
+                        v-for="d in DAYS"
+                        :key="d"
+                    >
+                        {{ d }}
+                    </div>
+                </div>
+
+                <div class="due-cal__grid">
+                    <template
+                        v-for="(d, i) in calendarCells"
+                        :key="i"
+                    >
+                        <div v-if="!d" />
+                        <button
+                            v-else
+                            class="due-day"
+                            :class="{
+                                'due-day--selected': sameDay(d, effectiveDate),
+                                'due-day--today':
+                                    sameDay(d, new Date()) && !sameDay(d, effectiveDate),
+                            }"
+                            @click="handleSelect(d)"
+                        >
+                            {{ d.getDate() }}
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="due-footer">
+                <button
+                    class="due-clear"
+                    @click="handleClear"
+                >
+                    <i
+                        class="mdi mdi-close-circle-outline"
+                        style="font-size: 15px"
+                    />
+                    Clear
+                </button>
+                <span class="due-footer__preview">
+                    {{ effectiveDate ? formatRelative(effectiveDate) : 'No date set' }}
+                </span>
+            </div>
         </div>
-
-        <div class="due-cal__weekdays">
-          <div v-for="d in DAYS" :key="d">
-            {{ d }}
-          </div>
-        </div>
-
-        <div class="due-cal__grid">
-          <template v-for="(d, i) in calendarCells" :key="i">
-            <div v-if="!d" />
-            <button v-else class="due-day" :class="{
-              'due-day--selected': sameDay(d, effectiveDate),
-              'due-day--today':
-                sameDay(d, new Date()) && !sameDay(d, effectiveDate),
-            }" @click="handleSelect(d)">
-              {{ d.getDate() }}
-            </button>
-          </template>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div class="due-footer">
-        <button class="due-clear" @click="handleClear">
-          <i class="mdi mdi-close-circle-outline" style="font-size: 15px" />
-          Clear
-        </button>
-        <span class="due-footer__preview">
-          {{ effectiveDate ? formatRelative(effectiveDate) : 'No date set' }}
-        </span>
-      </div>
-    </div>
-  </Teleport>
+    </Teleport>
 </template>
 
 <style scoped>
