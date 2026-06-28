@@ -7,6 +7,6 @@ const listStore = useListsStore();
         v-if="listStore.currentTodo.githubPrLink"
         size="small"
         icon="mdi-source-pull"
-        @click.stop="window.open(listStore.currentTodo.githubPrLink, '_blank')"
+        @click.stop="navigateTo(listStore.currentTodo.githubPrLink, { open: { target: '_blank' } })"
     />
 </template>
