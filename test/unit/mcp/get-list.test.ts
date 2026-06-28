@@ -1,6 +1,6 @@
 import { describe, expect } from 'vitest';
 import { mcpTest } from '../fixtures/mcp';
-
+import { randomUUID } from 'crypto';
 describe('get_list MCP tool', () => {
     mcpTest('should list tools and find get_list', async ({ client }) => {
         const result = await client.listTools();
@@ -72,6 +72,37 @@ describe('get_list MCP tool', () => {
         const content = result.content as unknown[];
         const textContent = content[0] as Record<string, unknown>;
         const text = textContent.text as string;
+
+        // Tool should accept the ID parameter
+        expect(text).not.toContain('Input validation error');
+    });
+
+    mcpTest('should get a list with a todo', async ({ client, createList, createTodo }) => {
+        // Test with different ID formats
+        const listName = `List ${randomUUID()}`;
+        const list = await createList({
+            name: listName,
+        });
+
+        const todo = await createTodo({
+            name: `Todo ${listName}`,
+            list_id: list.id,
+        });
+        const result = await client.callTool({
+            name: 'get_list',
+            arguments: {
+                id: list.id.toString(),
+            },
+        });
+
+        expect(result.content).toBeDefined();
+        const content = result.content as unknown[];
+        const textContent = content[0] as Record<string, unknown>;
+        const text = textContent.text as string;
+
+        const json = JSON.parse(text);
+        const todos = json.todos;
+        expect(todos.length).toBe(1);
 
         // Tool should accept the ID parameter
         expect(text).not.toContain('Input validation error');

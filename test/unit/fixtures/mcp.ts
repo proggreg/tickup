@@ -146,6 +146,32 @@ export const mcpTest = test.extend<MCPTestContext>({
         }
     },
 
+    async createList({ client: _ }, use) {
+        const createdIds: (string | number)[] = [];
+
+        const createList = async (
+            data: Record<string, unknown>,
+        ): Promise<Record<string, unknown>> => {
+            const resp = await fetch('http://localhost:3000/api/list', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+            if (!resp.ok) throw new Error(`Create list failed: ${resp.statusText}`);
+            const list = (await resp.json()) as Record<string, unknown>;
+            createdIds.push(list.id as string | number);
+            return list;
+        };
+
+        await use(createList);
+
+        for (const id of createdIds) {
+            await fetch(`http://localhost:3000/api/todo/${id}`, { method: 'DELETE' }).catch(
+                () => {},
+            );
+        }
+    },
+
     async deleteTodo({ client: _ }, use) {
         const deleteTodo = async (id: string | number): Promise<void> => {
             const resp = await fetch(`http://localhost:3000/api/todo/${id}`, { method: 'DELETE' });

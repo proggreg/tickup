@@ -19,7 +19,10 @@ export const useSettingsStore = defineStore('settings', () => {
     ];
 
     const statuses = computed((): Status[] => {
-        getUserSettings();
+        if (!userStatuses.value) {
+            getUserSettings();
+        }
+
         if (userStatuses.value.length) {
             return userStatuses.value;
         }
