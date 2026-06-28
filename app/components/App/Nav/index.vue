@@ -35,6 +35,7 @@ async function signOut() {
 
 <template>
     <v-navigation-drawer
+        height="100vh"
         v-if="loggedIn"
         :rail="smAndDown"
         :expand-on-hover="smAndDown"
@@ -44,15 +45,8 @@ async function signOut() {
     >
         <Search ref="searchRef" />
 
-        <v-list
-            nav
-            class="flex-shrink-0"
-        >
-            <v-list-item
-                prepend-icon="mdi-view-dashboard-outline"
-                title="My Work"
-                to="/"
-            />
+        <v-list nav class="flex-shrink-0">
+            <v-list-item prepend-icon="mdi-view-dashboard-outline" title="My Work" to="/" />
             <v-list-item
                 prepend-icon="mdi-magnify"
                 title="Search"
@@ -61,28 +55,14 @@ async function signOut() {
             <v-divider class="mt-1 mb-0" />
         </v-list>
 
-        <v-list
-            nav
-            class="overflow-y-auto flex-grow-1"
-        >
-            <ListNew
-                :open="dialog"
-                @close="dialog.open = false"
-            />
+        <v-list nav class="overflow-y-auto flex-grow-1">
+            <ListNew :open="dialog" @close="dialog.open = false" />
             <AppNavItems />
         </v-list>
 
         <template #append>
-            <!-- Account footer -->
-            <div
-                ref="footerEl"
-                class="nav-account-footer"
-            >
-                <!-- Popover — opens upward -->
-                <div
-                    v-if="acctOpen"
-                    class="nav-account-popover"
-                >
+            <div ref="footerEl" class="nav-account-footer">
+                <div v-if="acctOpen" class="nav-account-popover">
                     <button
                         class="nav-account-popover-item"
                         @click="
@@ -93,26 +73,18 @@ async function signOut() {
                         <i class="mdi mdi-cog-outline nav-account-popover-item__icon" />
                         Settings
                     </button>
-                    <button
-                        class="nav-account-popover-item"
-                        @click="signOut"
-                    >
+                    <button class="nav-account-popover-item" @click="signOut">
                         <i class="mdi mdi-logout nav-account-popover-item__icon" />
                         Sign out
                     </button>
                 </div>
-
-                <!-- Trigger row -->
                 <button
                     class="nav-account-row"
                     :class="{ 'nav-account-row--open': acctOpen }"
                     @click="toggleAcct"
                 >
                     <div class="nav-account-avatar">
-                        <i
-                            class="mdi mdi-account"
-                            style="font-size: 16px"
-                        />
+                        <i class="mdi mdi-account" style="font-size: 16px" />
                     </div>
                     <span class="nav-account-email">{{ user?.email }}</span>
                     <i
@@ -129,6 +101,7 @@ async function signOut() {
 :deep(.v-navigation-drawer__content) {
     display: flex;
     flex-direction: column;
+    height: 100%;
     overflow-y: hidden;
 }
 
@@ -182,6 +155,7 @@ async function signOut() {
     text-align: left;
     transition: background 0.08s;
 }
+
 .nav-account-popover-item:hover {
     background: rgba(113, 124, 130, 0.1);
 }
@@ -203,6 +177,7 @@ async function signOut() {
     cursor: pointer;
     transition: background 0.1s;
 }
+
 .nav-account-row:hover,
 .nav-account-row--open {
     background: rgba(113, 124, 130, 0.1);
