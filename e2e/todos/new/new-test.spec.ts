@@ -29,7 +29,9 @@ test.describe('Create Todo', () => {
         const todoName = `Todo ${testId}`;
         await newTodoInput.fill(todoName);
 
+        const responsePromise = page.waitForResponse('**/api/todo');
         await newTodoInput.press('Enter');
+        await responsePromise;
 
         await page.reload();
         await page.waitForLoadState('networkidle');

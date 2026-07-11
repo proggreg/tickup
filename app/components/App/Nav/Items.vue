@@ -45,6 +45,7 @@ function menuItems(list: List): ContextMenuItem[] {
             icon: 'mdi-trash-can-outline',
             label: 'Delete',
             danger: true,
+            testId: 'delete-list-menu-item',
             onClick: () => {
                 confirmId.value = list.id ?? null;
             },

@@ -47,7 +47,7 @@ test.describe('a user can delete a list', () => {
 
         // Opens a context menu with a "Delete" item; selecting it reveals a
         // confirmation dialog with the actual delete action.
-        const deleteMenuItem = page.getByRole('button', { name: 'Delete', exact: true });
+        const deleteMenuItem = page.getByTestId('delete-list-menu-item');
         await expect(deleteMenuItem).toBeVisible();
         await deleteMenuItem.click();
 

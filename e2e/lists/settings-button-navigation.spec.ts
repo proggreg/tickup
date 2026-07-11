@@ -49,7 +49,7 @@ test.describe('list settings button prevents navigation', () => {
 
         // Verify the menu is open (Delete option should be visible) and that
         // clicking the settings button did not navigate away from the homepage
-        const deleteMenuItem = page.getByRole('button', { name: 'Delete', exact: true });
+        const deleteMenuItem = page.getByTestId('delete-list-menu-item');
         await expect(deleteMenuItem).toBeVisible();
         expect(page.url()).not.toMatch(/\/list\//);
     });

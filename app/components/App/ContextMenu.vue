@@ -7,6 +7,7 @@ export interface ContextMenuItem {
     shortcut?: string;
     danger?: boolean;
     divider?: boolean;
+    testId?: string;
     onClick?: () => void;
 }
 
@@ -80,6 +81,7 @@ onUnmounted(() => {
                     v-else
                     class="ctx-item"
                     :class="{ 'ctx-item--danger': item.danger }"
+                    :data-testid="item.testId"
                     @click="
                         item.onClick?.();
                         emit('close');
