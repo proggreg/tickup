@@ -455,7 +455,7 @@ onUnmounted(() => {
 /* ── Popover panel ────────────────────────────────────────────────────────── */
 .due-popover {
   position: fixed;
-  z-index: 2000;
+  z-index: 3000;
   width: 300px;
   background: #ffffff;
   border: 1px solid rgba(113, 124, 130, 0.16);
