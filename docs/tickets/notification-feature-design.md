@@ -5,6 +5,18 @@ title: Design and plan notification feature
 priority: high
 ---
 
+## Implementation status
+
+Phase 1 (finish the push vertical slice) is implemented:
+`server/api/subscribe.post.ts` / `subscribe.delete.ts` persist/remove push
+subscriptions, `service-worker/sw.ts` handles `push`/`notificationclick`,
+`app/composables/useNotificationSettings.ts` + a row in
+`Settings/Integrations` drive opt-in/opt-out, `scheduleNotifications.ts`
+now prunes expired (404/410) subscriptions, and
+`.github/workflows/notifications.yml` triggers the endpoint every 15
+minutes. `server/utils/scheduleNotifications.ts` (dead duplicate) is
+removed. Phase 2 (persistent in-app notification list) is not started.
+
 # Design and plan notification feature
 
 Branch: `claude/notification-feature-design-cju26k`

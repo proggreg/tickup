@@ -89,16 +89,20 @@ export default defineEventHandler(async (event) => {
         );
 
         // Send notification to all subscriptions
-        for (let i = 0; i < user.push_subscriptions.length; i++) {
-            const sub = user.push_subscriptions[i];
+        const subscriptions = user.push_subscriptions as any[];
+        const expiredEndpoints: string[] = [];
+
+        for (let i = 0; i < subscriptions.length; i++) {
+            const sub = subscriptions[i];
             console.log(
-                `📤 Attempting to send notification ${i + 1}/${user.push_subscriptions.length}`,
+                `📤 Attempting to send notification ${i + 1}/${subscriptions.length}`,
             );
 
             try {
                 const payload = JSON.stringify({
                     title: 'Todo Reminder',
-                    message: `Reminder for todo: ${todo.name}`,
+                    body: `Reminder for todo: ${todo.name}`,
+                    link: `/todo/${todo.id}`,
                 });
 
                 console.log('📦 Notification payload:', payload);
@@ -119,6 +123,28 @@ export default defineEventHandler(async (event) => {
                     headers: e?.headers,
                     body: e?.body,
                 });
+
+                // Subscription no longer valid on the push service — prune it.
+                if (e?.statusCode === 404 || e?.statusCode === 410) {
+                    expiredEndpoints.push(sub.endpoint);
+                }
+            }
+        }
+
+        if (expiredEndpoints.length > 0) {
+            const remainingSubscriptions = subscriptions.filter(
+                sub => !expiredEndpoints.includes(sub.endpoint),
+            );
+            const { error: pruneError } = await supabase
+                .from('Users')
+                .update({ push_subscriptions: remainingSubscriptions })
+                .eq('id', user.id);
+
+            if (pruneError) {
+                console.error(`❌ Failed to prune expired subscriptions for ${user.id}:`, pruneError);
+            }
+            else {
+                console.log(`🧹 Pruned ${expiredEndpoints.length} expired subscription(s) for ${user.id}`);
             }
         }
 

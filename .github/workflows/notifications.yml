@@ -1,0 +1,19 @@
+name: Send Scheduled Notifications
+
+on:
+    schedule:
+        # Every 15 minutes
+        - cron: '*/15 * * * *'
+    workflow_dispatch:
+
+jobs:
+    notify:
+        name: Trigger scheduleNotifications endpoint
+        runs-on: ubuntu-latest
+        steps:
+            - name: Call scheduleNotifications endpoint
+              run: |
+                  curl --fail --show-error \
+                    -X POST \
+                    -H "x-cron-secret: ${{ secrets.SCHEDULER_SECRET }}" \
+                    "${{ secrets.APP_URL }}/api/scheduleNotifications"
