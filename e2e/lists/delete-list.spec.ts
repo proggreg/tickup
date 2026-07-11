@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 test.describe('a user can delete a list', () => {
     let listName: string;
+    let listId: string;
 
     test.beforeEach(async ({ page, isMobile }) => {
         test.skip(isMobile, 'This feature is desktop only');
@@ -25,6 +26,8 @@ test.describe('a user can delete a list', () => {
         ]);
 
         expect(createResponse.status()).toBeLessThan(400);
+        const created = await createResponse.json();
+        listId = created.id;
     });
 
     test('using the settings menu', async ({ page, request }) => {
@@ -32,9 +35,6 @@ test.describe('a user can delete a list', () => {
 
         const newListNavItem = page.locator(`[data-test-id="${listName}"]`);
         await expect(newListNavItem).toBeVisible();
-
-        const href = await newListNavItem.getAttribute('href');
-        const listId = href?.split('/').pop();
 
         expect(listId).toBeTruthy();
 
@@ -45,8 +45,14 @@ test.describe('a user can delete a list', () => {
         const settingsButton = page.locator(`[data-testid="setting-button-${listId}"]`);
         await settingsButton.click();
 
-        const deleteMenuItem = page.locator(`[data-test-id="delete-list"]`);
+        // Opens a context menu with a "Delete" item; selecting it reveals a
+        // confirmation dialog with the actual delete action.
+        const deleteMenuItem = page.getByRole('button', { name: 'Delete', exact: true });
         await expect(deleteMenuItem).toBeVisible();
+        await deleteMenuItem.click();
+
+        const confirmDeleteButton = page.getByTestId('delete-list');
+        await expect(confirmDeleteButton).toBeVisible();
 
         await Promise.all([
             page.waitForResponse((r) => {
@@ -58,7 +64,7 @@ test.describe('a user can delete a list', () => {
                 }
                 return isDelete;
             }),
-            deleteMenuItem.click(),
+            confirmDeleteButton.click(),
         ]);
 
         await page.waitForLoadState('networkidle');

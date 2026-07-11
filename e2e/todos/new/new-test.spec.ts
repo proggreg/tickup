@@ -50,9 +50,7 @@ test.describe('Create Todo', () => {
         await newTodoInput.fill(`Todo ${uuidv4()}`);
         await newTodoInput.press('Enter');
         await page.waitForLoadState('networkidle');
-        await page.getByTestId('list-type-select').click();
-        await page.getByRole('option', { name: 'table' }).click();
-        await page.waitForLoadState('networkidle');
+        await page.getByRole('button', { name: 'Table' }).click();
         await page.getByRole('button', { name: 'Add Todo' }).click();
 
         const todoName = `Todo ${uuidv4()}`;

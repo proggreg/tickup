@@ -29,7 +29,9 @@ test.describe('Homepage - todo created via the new-task dialog persists', () => 
         }
         await expect(page.getByTestId('dialog-title')).toHaveText('New Task');
 
-        const newTodoInput = page.getByTestId('new-todo-input').locator('input');
+        // Scope to the dialog: the homepage also renders an inline "Add todo"
+        // field with the same test id, so an unscoped locator is ambiguous.
+        const newTodoInput = page.getByRole('dialog').getByTestId('new-todo-input').locator('input');
         await newTodoInput.fill(todoName);
 
         const responsePromise = page.waitForResponse('**/api/todo');

@@ -47,9 +47,11 @@ test.describe('list settings button prevents navigation', () => {
         // Wait a bit to see if navigation occurs
         await page.waitForTimeout(500);
 
-        // Verify the menu is open (Delete List option should be visible)
-        const deleteMenuItem = page.locator('[data-test-id="delete-list"]');
+        // Verify the menu is open (Delete option should be visible) and that
+        // clicking the settings button did not navigate away from the homepage
+        const deleteMenuItem = page.getByRole('button', { name: 'Delete', exact: true });
         await expect(deleteMenuItem).toBeVisible();
+        expect(page.url()).not.toMatch(/\/list\//);
     });
 
     test('clicking list item (not settings button) navigates to list page', async ({
@@ -88,11 +90,8 @@ test.describe('list settings button prevents navigation', () => {
         const newListNavItem = await page.locator(`[data-test-id="${listName}"]`);
         await expect(newListNavItem).toBeVisible();
 
-        // Get the list item title (not the settings button)
-        const listItemTitle = newListNavItem.locator('..').locator('.v-list-item-title').first();
-
-        // Click on the list item title (not the settings button)
-        await listItemTitle.click();
+        // Click on the list row itself (not the settings button)
+        await newListNavItem.click();
 
         // Wait for navigation to occur
         await page.waitForURL(/\/list\//, { timeout: 5000 });

@@ -84,7 +84,10 @@ const views: { key: View; icon: string; label: string }[] = [
                 </v-row>
 
                 <!-- Add task bar -->
-                <div class="add-task-bar d-flex align-center px-4 mb-5 ga-3">
+                <div
+                    class="add-task-bar d-flex align-center px-4 mb-5 ga-3"
+                    data-testid="new-todo-input"
+                >
                     <v-icon
                         color="primary"
                         size="18"

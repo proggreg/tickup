@@ -101,6 +101,7 @@ onUnmounted(() => {
         <button
             class="nav-add-btn"
             title="New list"
+            data-testid="new-list-button"
             @click="
                 dialog.page = 'list';
                 dialog.open = true;
@@ -123,6 +124,8 @@ onUnmounted(() => {
                 'nav-row--active': listsStore.currentList?.id === list.id,
                 'nav-row--editing': editingId === list.id,
             }"
+            :data-test-id="list.name"
+            :data-list-id="list.id"
             @click="editingId !== list.id && navigateTo(`/list/${list.id}`)"
             @contextmenu.prevent="openMenuAt(list.id!, $event.clientX, $event.clientY)"
         >
