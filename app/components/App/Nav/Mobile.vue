@@ -68,6 +68,7 @@ function isActive(to: string) {
         <div class="mobile-nav__fab-wrap">
             <button
                 class="mobile-nav__fab"
+                data-testid="mobile-new-todo-fab"
                 @click="
                     dialog.page = 'todo';
                     dialog.open = true;

@@ -183,17 +183,17 @@ export const useListsStore = defineStore('lists', {
         setTodoDetails(todo: Task) {
             this.addListId(todo);
 
-            const now = new Date();
-
-            this.setNewTodoDueDate(now);
+            this.setNewTodoDueDate(todo);
         },
         addListId(todo) {
             if (!todo.listId) {
                 todo.listId = this?.currentList?.id;
             }
         },
-        setNewTodoDueDate(newDueDate: Date) {
-            this.newTodo.dueDate = newDueDate;
+        setNewTodoDueDate(todo: Task) {
+            if (!todo.dueDate) {
+                todo.dueDate = new Date();
+            }
         },
         async updateTodo(todo?: Task) {
             if (!todo) {
