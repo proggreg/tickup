@@ -79,7 +79,10 @@ const closedTodos = computed(
                     :style="{ border: `2px solid ${statusColor(todo.status)}` }"
                     @click.stop="toggleTodo(todo)"
                 />
-                <span class="flex-grow-1 text-truncate text-body-2 font-weight-medium todo-name">
+                <span
+                    class="flex-grow-1 text-truncate text-body-2 font-weight-medium todo-name"
+                    data-testid="todo-title"
+                >
                     {{ todo.name }}
                 </span>
                 <v-icon
@@ -141,7 +144,10 @@ const closedTodos = computed(
                             mdi-check
                         </v-icon>
                     </button>
-                    <span class="flex-grow-1 text-truncate text-body-2 font-weight-medium todo-name todo-name--done">
+                    <span
+                        class="flex-grow-1 text-truncate text-body-2 font-weight-medium todo-name todo-name--done"
+                        data-testid="todo-title"
+                    >
                         {{ todo.name }}
                     </span>
                     <span

@@ -1,11 +1,13 @@
 import { test, expect } from '../fixtures/index';
 
 test.describe('Settings page', () => {
-    test.beforeEach(async ({ request }) => {
+    test.beforeEach(async ({ request, isMobile }) => {
+        test.skip(isMobile, 'Settings sections are desktop only');
         await request.put('/api/settings', { data: { statuses: [] } });
     });
 
-    test.afterEach(async ({ request }) => {
+    test.afterEach(async ({ request, isMobile }) => {
+        test.skip(isMobile, 'Settings sections are desktop only');
         await request.put('/api/settings', { data: { statuses: [] } });
     });
 
@@ -13,27 +15,29 @@ test.describe('Settings page', () => {
         await page.goto('/settings');
         await page.waitForLoadState('networkidle');
 
-        await expect(page.getByText('Statuses', { exact: false })).toBeVisible();
+        // The settings sidebar links to each section - "Statuses" is now
+        // labelled "Workflow" but still governs status configuration.
+        await expect(page.getByText('Workflow', { exact: false })).toBeVisible();
         await expect(page.getByText('Integrations', { exact: false })).toBeVisible();
         await expect(page.getByText('Account', { exact: false })).toBeVisible();
     });
 
     test('shows GitHub Integration item', async ({ page }) => {
-        await page.goto('/settings');
+        await page.goto('/settings/integrations');
         await page.waitForLoadState('networkidle');
 
-        await expect(page.getByText('GitHub Integration')).toBeVisible();
+        await expect(page.getByText('GitHub')).toBeVisible();
     });
 
     test('shows Sign Out button', async ({ page }) => {
-        await page.goto('/settings');
+        await page.goto('/settings/account');
         await page.waitForLoadState('networkidle');
 
-        await expect(page.getByText('Sign Out')).toBeVisible();
+        await expect(page.getByText('Sign out')).toBeVisible();
     });
 
     test('can add a new status and save it', async ({ page }) => {
-        await page.goto('/settings');
+        await page.goto('/settings/workflow');
         await page.waitForLoadState('networkidle');
 
         await page.getByRole('button', { name: /add status/i }).click();
@@ -66,13 +70,15 @@ test.describe('Settings page', () => {
             },
         });
 
-        await page.goto('/settings');
+        await page.goto('/settings/workflow');
         await page.waitForLoadState('networkidle');
 
-        await expect(page.getByText('Test Status')).toBeVisible();
+        const statusRow = page.locator('.status-row').filter({ hasText: 'Test Status' });
+        await expect(statusRow).toBeVisible();
 
-        await page.locator('.v-main button:has(.mdi-dots-vertical)').first().click();
-        await page.getByText('Delete').click();
+        // The delete button is only visible while its row is hovered.
+        await statusRow.hover();
+        await statusRow.locator('.status-row__delete').click();
 
         await expect(page.getByText('Test Status')).not.toBeVisible();
     });

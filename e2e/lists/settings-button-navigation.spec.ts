@@ -35,8 +35,10 @@ test.describe('list settings button prevents navigation', () => {
 
         await page.waitForTimeout(500);
 
-        // Verify the list was created and is visible
-        const newListNavItem = await page.locator(`[data-test-id="${listName}"]`);
+        // Verify the list was created and is visible. Select by list id (not
+        // the user-entered name) since names can contain characters that are
+        // unsafe to interpolate into a CSS selector.
+        const newListNavItem = await page.locator(`[data-list-id="${listId}"]`);
         await expect(newListNavItem).toBeVisible();
 
         await page.waitForTimeout(500);
@@ -47,9 +49,11 @@ test.describe('list settings button prevents navigation', () => {
         // Wait a bit to see if navigation occurs
         await page.waitForTimeout(500);
 
-        // Verify the menu is open (Delete List option should be visible)
-        const deleteMenuItem = page.locator('[data-test-id="delete-list"]');
+        // Verify the menu is open (Delete option should be visible) and that
+        // clicking the settings button did not navigate away from the homepage
+        const deleteMenuItem = page.getByTestId('delete-list-menu-item');
         await expect(deleteMenuItem).toBeVisible();
+        expect(page.url()).not.toMatch(/\/list\//);
     });
 
     test('clicking list item (not settings button) navigates to list page', async ({
@@ -76,23 +80,24 @@ test.describe('list settings button prevents navigation', () => {
 
         const newListInput = await page.getByRole('textbox', { name: 'New List' });
         await newListInput.type(listName);
-        const createRequestPromise = page.waitForRequest(
-            request => request.url().includes('/api/list') && request.method() === 'POST',
+        const createResponsePromise = page.waitForResponse(
+            response =>
+                response.url().includes('/api/list') && response.request().method() === 'POST',
         );
         await page.keyboard.press('Enter');
-        await createRequestPromise;
+        const createResponse = await createResponsePromise;
+        const { id: listId } = await createResponse.json();
 
         await page.waitForTimeout(500);
 
-        // Verify the list was created and is visible
-        const newListNavItem = await page.locator(`[data-test-id="${listName}"]`);
+        // Verify the list was created and is visible. Select by list id (not
+        // the user-entered name) since names can contain characters that are
+        // unsafe to interpolate into a CSS selector.
+        const newListNavItem = await page.locator(`[data-list-id="${listId}"]`);
         await expect(newListNavItem).toBeVisible();
 
-        // Get the list item title (not the settings button)
-        const listItemTitle = newListNavItem.locator('..').locator('.v-list-item-title').first();
-
-        // Click on the list item title (not the settings button)
-        await listItemTitle.click();
+        // Click on the list row itself (not the settings button)
+        await newListNavItem.click();
 
         // Wait for navigation to occur
         await page.waitForURL(/\/list\//, { timeout: 5000 });
