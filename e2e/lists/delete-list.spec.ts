@@ -33,10 +33,12 @@ test.describe('a user can delete a list', () => {
     test('using the settings menu', async ({ page, request }) => {
         await page.waitForLoadState('networkidle');
 
-        const newListNavItem = page.locator(`[data-test-id="${listName}"]`);
-        await expect(newListNavItem).toBeVisible();
-
         expect(listId).toBeTruthy();
+
+        // Select by list id (not the user-entered name) since names can
+        // contain characters that are unsafe to interpolate into a CSS selector.
+        const newListNavItem = page.locator(`[data-list-id="${listId}"]`);
+        await expect(newListNavItem).toBeVisible();
 
         const listExistsResponse = await request.get(`/list/${listId}`);
 
