@@ -70,7 +70,7 @@ const sections = computed(() => [
     },
 ]);
 
-const openPanels = ref(['today', 'overdue', 'recent', 'done']);
+const openPanels = ref([]);
 </script>
 
 <template>
