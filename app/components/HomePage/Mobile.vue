@@ -74,22 +74,22 @@ const openPanels = ref(['today', 'overdue', 'recent', 'done']);
 </script>
 
 <template>
-    <div class="pa-4 pb-8">
-        <div class="d-flex align-center justify-space-between mb-4">
+    <div class="px-3 pt-3 pb-4">
+        <div class="d-flex align-center justify-space-between mb-3">
             <div>
                 <div
-                    class="text-h5 font-weight-bold"
+                    class="text-h6 font-weight-bold"
                     style="font-family: 'Manrope', sans-serif"
                 >
                     {{ greetingWord }}, {{ displayName }}
                 </div>
-                <div class="text-caption text-medium-emphasis mt-1">
+                <div class="text-caption text-medium-emphasis">
                     {{ dateStr }}
                 </div>
             </div>
             <v-avatar
                 color="#1e2d47"
-                size="38"
+                size="34"
             >
                 <span
                     class="font-weight-bold"
@@ -100,36 +100,30 @@ const openPanels = ref(['today', 'overdue', 'recent', 'done']);
             </v-avatar>
         </div>
 
-        <v-row
-            dense
-            class="mb-2"
-        >
-            <v-col
+        <div class="d-flex ga-2 mb-3">
+            <v-card
                 v-for="stat in stats"
                 :key="stat.key"
-                cols="4"
+                class="text-center py-2 flex-grow-1"
+                variant="flat"
             >
-                <v-card
-                    class="text-center pa-3"
-                    variant="flat"
+                <div
+                    class="text-h6 font-weight-bold"
+                    :style="{ color: stat.color, fontFamily: 'Manrope, sans-serif' }"
                 >
-                    <div
-                        class="text-h5 font-weight-bold"
-                        :style="{ color: stat.color, fontFamily: 'Manrope, sans-serif' }"
-                    >
-                        {{ stat.count }}
-                    </div>
-                    <div class="text-caption font-weight-medium text-medium-emphasis">
-                        {{ stat.label }}
-                    </div>
-                </v-card>
-            </v-col>
-        </v-row>
+                    {{ stat.count }}
+                </div>
+                <div class="text-caption font-weight-medium text-medium-emphasis">
+                    {{ stat.label }}
+                </div>
+            </v-card>
+        </div>
 
         <v-expansion-panels
             v-model="openPanels"
             multiple
-            gap="12"
+            gap="8"
+            class="mobile-home-panels"
         >
             <v-expansion-panel
                 v-for="section in sections"
@@ -139,17 +133,17 @@ const openPanels = ref(['today', 'overdue', 'recent', 'done']);
                 elevation="1"
             >
                 <v-expansion-panel-title>
-                    <div class="d-flex align-center ga-3">
+                    <div class="d-flex align-center ga-2">
                         <v-avatar
                             :color="section.color"
                             variant="tonal"
-                            size="28"
+                            size="26"
                             rounded="lg"
                         >
                             <v-icon
                                 :icon="section.icon"
                                 :color="section.color"
-                                size="16"
+                                size="15"
                             />
                         </v-avatar>
                         <span
@@ -186,3 +180,14 @@ const openPanels = ref(['today', 'overdue', 'recent', 'done']);
         </v-expansion-panels>
     </div>
 </template>
+
+<style scoped>
+.mobile-home-panels :deep(.v-expansion-panel-title) {
+    padding: 10px 14px;
+    min-height: unset;
+}
+
+.mobile-home-panels :deep(.v-expansion-panel-text__wrapper) {
+    padding: 0 14px 10px;
+}
+</style>
