@@ -64,6 +64,11 @@ export default defineNuxtConfig({
                 clientSecret: process.env.GITHUB_CLIENT_SECRET,
                 webhookSecret: process.env.GITHUB_WEBHOOK_SECRET,
             },
+            vercel: {
+                clientId: process.env.VERCEL_INTEGRATION_CLIENT_ID,
+                clientSecret: process.env.VERCEL_INTEGRATION_CLIENT_SECRET,
+                redirectUri: process.env.VERCEL_INTEGRATION_REDIRECT_URI,
+            },
         },
 
         public: {
@@ -245,7 +250,7 @@ export default defineNuxtConfig({
     supabase: {
         redirectOptions: {
             login: '/login',
-            
+
             callback: '/confirm',
             include: undefined,
             exclude: ['/oauth/consent'],
