@@ -69,6 +69,9 @@ export type Database = {
                     type: string | null;
                     updated_at: string | null;
                     user_id: string | null;
+                    vercel_deployment_status: string | null;
+                    vercel_deployment_url: string | null;
+                    vercel_project_id: string | null;
                 };
                 Insert: {
                     attachments?: Json | null;
@@ -94,6 +97,9 @@ export type Database = {
                     type?: string | null;
                     updated_at?: string | null;
                     user_id?: string | null;
+                    vercel_deployment_status?: string | null;
+                    vercel_deployment_url?: string | null;
+                    vercel_project_id?: string | null;
                 };
                 Update: {
                     attachments?: Json | null;
@@ -119,6 +125,9 @@ export type Database = {
                     type?: string | null;
                     updated_at?: string | null;
                     user_id?: string | null;
+                    vercel_deployment_status?: string | null;
+                    vercel_deployment_url?: string | null;
+                    vercel_project_id?: string | null;
                 };
                 Relationships: [
                     {
@@ -179,6 +188,9 @@ export type Database = {
                     push_subscriptions: Json | null;
                     statuses: Json | null;
                     username: string | null;
+                    vercel_access_token: string | null;
+                    vercel_team_id: string | null;
+                    vercel_webhook_subscriptions: Json | null;
                 };
                 Insert: {
                     github_installation_id?: number | null;
@@ -188,6 +200,9 @@ export type Database = {
                     push_subscriptions?: Json | null;
                     statuses?: Json | null;
                     username?: string | null;
+                    vercel_access_token?: string | null;
+                    vercel_team_id?: string | null;
+                    vercel_webhook_subscriptions?: Json | null;
                 };
                 Update: {
                     github_installation_id?: number | null;
@@ -197,6 +212,9 @@ export type Database = {
                     push_subscriptions?: Json | null;
                     statuses?: Json | null;
                     username?: string | null;
+                    vercel_access_token?: string | null;
+                    vercel_team_id?: string | null;
+                    vercel_webhook_subscriptions?: Json | null;
                 };
                 Relationships: [];
             };
