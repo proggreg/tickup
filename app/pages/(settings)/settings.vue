@@ -90,9 +90,29 @@ onMounted(async () => {
         v-else
         class="settings-mobile"
     >
-        <h1 class="settings-mobile__title">
-            Settings
-        </h1>
+        <template v-if="route.path === '/settings'">
+            <h1 class="settings-mobile__title">
+                Settings
+            </h1>
+            <SettingsNav
+                :active-section="activeSection"
+                @navigate="activeSection = $event"
+            />
+        </template>
+
+        <template v-else>
+            <div class="settings-mobile__header">
+                <v-btn
+                    icon="mdi-arrow-left"
+                    variant="text"
+                    to="/settings"
+                />
+                <h1 class="settings-mobile__title text-capitalize">
+                    {{ route.path.split('/').pop() }}
+                </h1>
+            </div>
+            <NuxtPage />
+        </template>
     </div>
 </template>
 
@@ -235,6 +255,17 @@ onMounted(async () => {
   padding: 24px 20px 80px;
   background: var(--color-background, #f7f9fb);
   min-height: 100%;
+}
+
+.settings-mobile__header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: -8px -8px 16px;
+}
+
+.settings-mobile__header .settings-mobile__title {
+  margin: 0;
 }
 
 .settings-mobile__title {
