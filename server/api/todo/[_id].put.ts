@@ -35,6 +35,7 @@ export default defineEventHandler(async (event) => {
         .select()) as { data: unknown[] | null; error: unknown };
 
     if (error) {
+        console.error('update todo failed:', todoId, error);
         throw createError({
             statusCode: 500,
             statusMessage: (error as Record<string, unknown>).message as string,

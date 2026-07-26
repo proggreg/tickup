@@ -1,5 +1,10 @@
 import { createNewTodoState, createNewListState } from './helpers';
 
+// Serializes updateTodo calls so rapid bulk actions (e.g. checking several
+// todos in quick succession) don't fire a burst of concurrent PUT requests,
+// which was observed causing intermittent 500s (Bugsnag error 6a5cbb44fdca5cb0d6f889aa).
+let updateQueue: Promise<unknown> = Promise.resolve();
+
 export const useListsStore = defineStore('lists', {
     state: (): listsState => ({
         newTodo: createNewTodoState(),
@@ -31,14 +36,13 @@ export const useListsStore = defineStore('lists', {
 
                     this.resetList();
                     return list;
-                }
-                catch (error: any) {
+                } catch (error: any) {
                     // Remove the list from the optimistic update
                     this.lists.pop();
 
                     // Set error using showError to trigger useError()
-                    const errorMessage
-                        = error?.data?.message || error?.message || 'Failed to create list';
+                    const errorMessage =
+                        error?.data?.message || error?.message || 'Failed to create list';
                     showError({
                         statusCode: error?.statusCode || 500,
                         statusMessage: errorMessage,
@@ -81,8 +85,7 @@ export const useListsStore = defineStore('lists', {
                 if (route.path.includes('/list/') && route.params?.id === listId) {
                     navigateTo('/');
                 }
-            }
-            catch {
+            } catch {
                 // logger.error(err as Error, { component: 'ListsStore', function: 'deleteList', listId })
             }
         },
@@ -104,7 +107,7 @@ export const useListsStore = defineStore('lists', {
                 listId = this.currentList.id;
             }
             const todos = await $fetch<Task[]>(`/api/list/todos`, { query: { listId } });
-            const list = this.lists.find(l => l.id === listId);
+            const list = this.lists.find((l) => l.id === listId);
             if (list) {
                 list.todos = todos;
             }
@@ -137,8 +140,8 @@ export const useListsStore = defineStore('lists', {
             return valid;
         },
         async addTodo(newTodo?: Task) {
-            const todo
-                = newTodo !== undefined && !(newTodo instanceof Event) ? newTodo : this.newTodo;
+            const todo =
+                newTodo !== undefined && !(newTodo instanceof Event) ? newTodo : this.newTodo;
             console.debug('Create Todo', todo);
 
             if (!this.validateTodo(todo)) {
@@ -166,8 +169,7 @@ export const useListsStore = defineStore('lists', {
             const route = useRoute();
             if (route.path.includes('list')) {
                 this.currentList.todos[this.currentList.todos.length - 1].id = todo.id;
-            }
-            else {
+            } else {
                 this.todaysTodos[this.todaysTodos.length - 1].id = todo.id;
             }
         },
@@ -175,8 +177,7 @@ export const useListsStore = defineStore('lists', {
             const route = useRoute();
             if (route.path.includes('list')) {
                 this.currentList.todos.push(todo);
-            }
-            else {
+            } else {
                 this.todaysTodos.push(todo);
             }
         },
@@ -199,11 +200,15 @@ export const useListsStore = defineStore('lists', {
             if (!todo) {
                 todo = this.currentTodo;
             }
+            const targetTodo = todo;
 
-            const updatedTodo = await $fetch<Task>(`/api/todo/${todo.id}`, {
-                method: 'PUT',
-                body: todo,
-            });
+            const run = () =>
+                $fetch<Task>(`/api/todo/${targetTodo.id}`, {
+                    method: 'PUT',
+                    body: targetTodo,
+                });
+            updateQueue = updateQueue.then(run, run);
+            const updatedTodo = (await updateQueue) as Task;
 
             // Update local state to match server response
             if (this.currentTodo && this.currentTodo.id === updatedTodo.id) {
@@ -295,10 +300,10 @@ export const useListsStore = defineStore('lists', {
         setTaskName(name: string, index: number) {
             // Ensure the index is valid and the todo exists before setting the name
             if (
-                !this.currentList
-                || !Array.isArray(this.currentList.todos)
-                || index < 0
-                || index >= this.currentList.todos.length
+                !this.currentList ||
+                !Array.isArray(this.currentList.todos) ||
+                index < 0 ||
+                index >= this.currentList.todos.length
             ) {
                 return;
             }
