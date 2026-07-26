@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
                 return [];
             }
 
-            return (data || []).map(todo => ({
+            return (data || []).map(({ Lists, ...todo }) => ({
                 ...todo,
                 dueDate: todo.due_date,
                 completedDate: todo.completed_date,
@@ -62,7 +62,7 @@ export default defineEventHandler(async (event) => {
                 notificationSent: todo.notification_sent,
                 createdAt: todo.created_at,
                 updatedAt: todo.updated_at,
-                list: todo.Lists ? { id: todo.Lists.id, name: todo.Lists.name } : null,
+                list: Lists ? { id: Lists.id, name: Lists.name } : null,
             }));
         }
 

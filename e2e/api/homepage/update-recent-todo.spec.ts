@@ -25,6 +25,9 @@ test.describe('Homepage - update todo from Recent section', () => {
         const todo = recentTodos.find(t => t.name === todoName);
         expect(todo).toBeTruthy();
         expect(todo.list).toBeTruthy();
+        // Raw Supabase relation key from `.select('*, Lists(id, name)')` must not
+        // leak - objectToSnake would turn it into `lists`, an unknown Todos column.
+        expect(todo.Lists).toBeUndefined();
 
         // Mimic the mobile homepage "Recent" checkbox flow: the full todo
         // object (including the joined `list` field, which is not a real
