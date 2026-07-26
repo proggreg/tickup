@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json',
+                    Accept: 'application/json',
                 },
                 body: JSON.stringify({
                     client_id: config.private.github.clientId,
@@ -65,8 +65,7 @@ export default defineEventHandler(async (event) => {
 
                 console.error(error);
             }
-        }
-        catch (e) {
+        } catch (e) {
             console.error('Failed to exchange GitHub code:', e);
         }
     }

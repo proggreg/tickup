@@ -19,6 +19,6 @@ export default defineMcpTool({
             throw createError({ statusCode: 500, statusMessage: error.message });
         }
 
-        return (data || []).map(list => objectToCamel(list));
+        return (data || []).map((list) => objectToCamel(list));
     },
 });

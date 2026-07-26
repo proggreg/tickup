@@ -57,7 +57,7 @@ test.describe('Update Todo', () => {
             // Later saves continue normally to mimic real API behavior.
             if (putRequestCount === 1) {
                 const staleBody = request.postDataJSON() as Record<string, unknown>;
-                await new Promise(resolve => setTimeout(resolve, 1200));
+                await new Promise((resolve) => setTimeout(resolve, 1200));
                 await route.fulfill({
                     status: 200,
                     contentType: 'application/json',

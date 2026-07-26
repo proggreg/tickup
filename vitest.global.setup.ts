@@ -25,8 +25,7 @@ function waitForServer(url: string, timeout = 30_000): Promise<void> {
                 await fetch(url);
                 clearInterval(interval);
                 resolve();
-            }
-            catch {
+            } catch {
                 if (Date.now() - start > timeout) {
                     clearInterval(interval);
                     reject(new Error(`Server at ${url} did not start within ${timeout}ms`));

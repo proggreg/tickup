@@ -23,11 +23,11 @@ registerRoute(
     ({ url }) => {
         const p = url.pathname;
         return (
-            p === '/api/todos'
-            || p === '/api/lists'
-            || p === '/api/list/todos'
-            || p.startsWith('/api/todo/')
-            || (p.startsWith('/api/list/') && p !== '/api/list/todos')
+            p === '/api/todos' ||
+            p === '/api/lists' ||
+            p === '/api/list/todos' ||
+            p.startsWith('/api/todo/') ||
+            (p.startsWith('/api/list/') && p !== '/api/list/todos')
         );
     },
     new NetworkFirst({
@@ -60,12 +60,10 @@ async function requestPersistentStorage() {
             const granted = await navigator.storage.persist();
             if (granted) {
                 console.log('Persistent storage granted!');
-            }
-            else {
+            } else {
                 console.log('Persistent storage not granted.');
             }
-        }
-        else {
+        } else {
             console.log('Storage is already persistent.');
         }
     }
@@ -90,8 +88,7 @@ self.addEventListener('push', (event: PushEvent) => {
     if (event.data) {
         try {
             data = event.data.json();
-        }
-        catch {
+        } catch {
             data = { body: event.data.text() };
         }
     }

@@ -5,8 +5,8 @@ const isKeyboardOpen = ref(false);
 
 if (import.meta.client) {
     const onViewportResize = () => {
-        isKeyboardOpen.value
-            = (window.visualViewport?.height ?? window.innerHeight) < window.innerHeight * 0.75;
+        isKeyboardOpen.value =
+            (window.visualViewport?.height ?? window.innerHeight) < window.innerHeight * 0.75;
     };
     window.visualViewport?.addEventListener('resize', onViewportResize);
     onUnmounted(() => window.visualViewport?.removeEventListener('resize', onViewportResize));
@@ -46,10 +46,7 @@ function isActive(to: string) {
 </script>
 
 <template>
-    <nav
-        v-if="!isKeyboardOpen"
-        class="mobile-nav"
-    >
+    <nav v-if="!isKeyboardOpen" class="mobile-nav">
         <button
             v-for="item in leftItems"
             :key="item.key"
@@ -74,10 +71,7 @@ function isActive(to: string) {
                     dialog.open = true;
                 "
             >
-                <i
-                    class="mdi mdi-plus"
-                    style="font-size: 26px"
-                />
+                <i class="mdi mdi-plus" style="font-size: 26px" />
             </button>
         </div>
 

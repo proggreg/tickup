@@ -36,8 +36,8 @@ export default defineEventHandler(async (event) => {
     try {
         if (!notificationDateTime) {
             let testTitle = 'Tickup Push Test';
-            let testMessage
-                = 'Push notifications are working! You will get reminders for your todos.';
+            let testMessage =
+                'Push notifications are working! You will get reminders for your todos.';
             if (todoId) {
                 // Note: Todo lookup would need to be implemented with Supabase
                 console.log('Todo lookup needed for test notification:', todoId);
@@ -56,8 +56,7 @@ export default defineEventHandler(async (event) => {
         }
         // If scheduling, just update the todo and return
         return { scheduled: true };
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error sending push notification:', error);
         throw error;
     }

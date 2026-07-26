@@ -40,8 +40,7 @@ export default defineEventHandler(async (event) => {
 
     try {
         await octokit.rest.repos.deleteWebhook({ owner, repo, hook_id: hookId });
-    }
-    catch (error: any) {
+    } catch (error: any) {
         throw createError({
             statusCode: error?.status || 500,
             message: error?.message || 'Failed to delete webhook',

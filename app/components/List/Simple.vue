@@ -7,8 +7,7 @@ function selectTodo(todo: Task) {
     listsStore.setCurrentTodo(todo);
     if (mobile.value) {
         navigateTo(`/todo/${todo.id}`);
-    }
-    else {
+    } else {
         listsStore.panelOpen = true;
     }
 }
@@ -54,10 +53,7 @@ const closedTodos = computed(
 <template>
     <div>
         <!-- Open todos -->
-        <div
-            class="todo-card mb-5"
-            :class="{ 'pa-2': openTodos.length }"
-        >
+        <div class="todo-card mb-5" :class="{ 'pa-2': openTodos.length }">
             <div
                 v-if="openTodos.length === 0"
                 class="text-center pa-8 text-medium-emphasis text-body-2"
@@ -85,17 +81,14 @@ const closedTodos = computed(
                 >
                     {{ todo.name }}
                 </span>
-                <v-icon
-                    v-if="todo.priorityLev === 'high'"
-                    size="14"
-                    color="error"
-                >
+                <v-icon v-if="todo.priorityLev === 'high'" size="14" color="error">
                     mdi-flag
                 </v-icon>
                 <span
                     v-if="relativeDue(todo.dueDate, false)"
                     class="d-inline-flex align-center ga-1 text-caption font-weight-medium flex-shrink-0"
-                    :class="relativeDue(todo.dueDate, false)?.overdue ? 'text-error' : 'text-disabled'
+                    :class="
+                        relativeDue(todo.dueDate, false)?.overdue ? 'text-error' : 'text-disabled'
                     "
                 >
                     <v-icon size="13">
@@ -107,11 +100,7 @@ const closedTodos = computed(
                     </v-icon>
                     {{ relativeDue(todo.dueDate, false)?.text }}
                 </span>
-                <v-icon
-                    class="todo-chevron flex-shrink-0"
-                    size="18"
-                    color="medium-emphasis"
-                >
+                <v-icon class="todo-chevron flex-shrink-0" size="18" color="medium-emphasis">
                     mdi-chevron-right
                 </v-icon>
             </div>
@@ -137,12 +126,7 @@ const closedTodos = computed(
                         :style="{ background: statusColor(todo.status) }"
                         @click.stop="toggleTodo(todo)"
                     >
-                        <v-icon
-                            size="11"
-                            color="white"
-                        >
-                            mdi-check
-                        </v-icon>
+                        <v-icon size="11" color="white"> mdi-check </v-icon>
                     </button>
                     <span
                         class="flex-grow-1 text-truncate text-body-2 font-weight-medium todo-name todo-name--done"
@@ -157,11 +141,7 @@ const closedTodos = computed(
                         <v-icon size="13">mdi-calendar-blank-outline</v-icon>
                         {{ relativeDue(todo.dueDate, true)?.text }}
                     </span>
-                    <v-icon
-                        class="todo-chevron flex-shrink-0"
-                        size="18"
-                        color="medium-emphasis"
-                    >
+                    <v-icon class="todo-chevron flex-shrink-0" size="18" color="medium-emphasis">
                         mdi-chevron-right
                     </v-icon>
                 </div>
@@ -174,60 +154,60 @@ const closedTodos = computed(
 
 <style scoped>
 .todo-card {
-  background: white;
-  border: 1px solid rgba(113, 124, 130, 0.18);
-  border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(42, 52, 57, 0.06);
+    background: white;
+    border: 1px solid rgba(113, 124, 130, 0.18);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(42, 52, 57, 0.06);
 }
 
 .todo-row {
-  cursor: pointer;
-  transition: background 0.1s;
+    cursor: pointer;
+    transition: background 0.1s;
 }
 
 .todo-row:hover {
-  background: rgba(80, 96, 118, 0.06);
+    background: rgba(80, 96, 118, 0.06);
 }
 
 .todo-row:hover .todo-chevron {
-  opacity: 1;
+    opacity: 1;
 }
 
 .todo-row--selected {
-  background: rgb(var(--v-theme-primary-container));
+    background: rgb(var(--v-theme-primary-container));
 }
 
 .todo-row--closed {
-  opacity: 0.65;
+    opacity: 0.65;
 }
 
 .todo-check {
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
-  background: transparent;
-  cursor: pointer;
-  padding: 0;
-  transition:
-    background 0.12s,
-    border-color 0.12s;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition:
+        background 0.12s,
+        border-color 0.12s;
 }
 
 .todo-check--done {
-  border: none !important;
+    border: none !important;
 }
 
 .todo-name {
-  font-size: 0.9375rem;
+    font-size: 0.9375rem;
 }
 
 .todo-name--done {
-  text-decoration: line-through;
-  color: rgba(42, 52, 57, 0.6);
+    text-decoration: line-through;
+    color: rgba(42, 52, 57, 0.6);
 }
 
 .todo-chevron {
-  opacity: 0;
-  transition: opacity 0.1s;
+    opacity: 0;
+    transition: opacity 0.1s;
 }
 </style>

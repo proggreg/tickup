@@ -22,8 +22,7 @@ async function loadTodo(id: string | string[]) {
             if (needsNewParent) {
                 parentTodo.value = await $fetch<Todo>(`/api/todo/${todo.parentId}`);
             }
-        }
-        else {
+        } else {
             // No parent for this todo
             parentTodo.value = null;
         }
@@ -36,8 +35,7 @@ async function loadTodo(id: string | string[]) {
         // Only bump the transition key once everything for this todo is loaded,
         // so the fade happens between fully-rendered states.
         transitionKey.value++;
-    }
-    finally {
+    } finally {
         isLoading.value = false;
     }
 }
@@ -79,14 +77,8 @@ const backTestId = computed(() => {
         >
             <i class="mdi mdi-arrow-left breadcrumb-back__icon" />
         </NuxtLink>
-        <div
-            v-if="!isLoading"
-            class="breadcrumb-trail"
-        >
-            <NuxtLink
-                :to="backTo"
-                class="breadcrumb-segment breadcrumb-segment--parent"
-            >
+        <div v-if="!isLoading" class="breadcrumb-trail">
+            <NuxtLink :to="backTo" class="breadcrumb-segment breadcrumb-segment--parent">
                 {{ backLabel }}
             </NuxtLink>
             <i class="mdi mdi-chevron-right breadcrumb-chevron" />
@@ -99,86 +91,88 @@ const backTestId = computed(() => {
 
 <style scoped>
 .todo-fade-enter-active {
-  transition: opacity 0.18s ease;
+    transition: opacity 0.18s ease;
 }
 
 .todo-fade-enter-from {
-  opacity: 0;
+    opacity: 0;
 }
 
 /* Breadcrumb bar */
 .breadcrumb-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
 }
 
 .breadcrumb-back {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  color: rgba(var(--v-theme-on-surface), 0.6);
-  text-decoration: none;
-  transition: background 0.15s, color 0.15s;
-  flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    color: rgba(var(--v-theme-on-surface), 0.6);
+    text-decoration: none;
+    transition:
+        background 0.15s,
+        color 0.15s;
+    flex-shrink: 0;
 }
 
 .breadcrumb-back:hover {
-  background: rgba(var(--v-border-color), 0.1);
-  color: rgb(var(--v-theme-on-surface));
+    background: rgba(var(--v-border-color), 0.1);
+    color: rgb(var(--v-theme-on-surface));
 }
 
 .breadcrumb-back__icon {
-  font-size: 18px;
+    font-size: 18px;
 }
 
 .breadcrumb-trail {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
 }
 
 .breadcrumb-segment {
-  font-size: 0.875rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .breadcrumb-segment--parent {
-  color: rgba(var(--v-theme-on-surface), 0.55);
-  text-decoration: none;
-  transition: color 0.15s;
+    color: rgba(var(--v-theme-on-surface), 0.55);
+    text-decoration: none;
+    transition: color 0.15s;
 }
 
 .breadcrumb-segment--parent:hover {
-  color: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-primary));
 }
 
 .breadcrumb-segment--current {
-  color: rgb(var(--v-theme-on-surface));
-  font-weight: 500;
-  flex-shrink: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    color: rgb(var(--v-theme-on-surface));
+    font-weight: 500;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .breadcrumb-chevron {
-  font-size: 14px;
-  color: rgba(var(--v-theme-on-surface), 0.35);
-  flex-shrink: 0;
+    font-size: 14px;
+    color: rgba(var(--v-theme-on-surface), 0.35);
+    flex-shrink: 0;
 }
 
 /* Page surface */
 .todo-page-surface {
-  background: #f7f9fb;
-  min-height: calc(100vh - 120px);
-  padding: 0 12px 40px;
+    background: #f7f9fb;
+    min-height: calc(100vh - 120px);
+    padding: 0 12px 40px;
 }
 </style>

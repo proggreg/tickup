@@ -4,9 +4,9 @@ export function useAppLayout() {
 
     return computed(() => {
         if (
-            route.name === 'login'
-            || route.name === 'register'
-            || route.name.toString().includes('consent')
+            route.name === 'login' ||
+            route.name === 'register' ||
+            route.name.toString().includes('consent')
         ) {
             return 'login-register';
         }

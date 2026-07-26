@@ -29,8 +29,7 @@ export default defineEventHandler(async (event) => {
         const responseBody = JSON.parse(new TextDecoder().decode(response.body));
         const base64Image = responseBody.artifacts[0].base64;
         return `data:image/png;base64,${base64Image}`;
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error generating image:', error);
         throw createError({
             statusCode: 500,
