@@ -9,6 +9,8 @@
         "test": "vitest",
         "test:unit": "vitest --project=unit",
         "test:unit:ui": "vitest --project=unit --ui",
+        "test:nuxt": "vitest --project=nuxt",
+        "test:nuxt:watch": "vitest --project=nuxt --watch",
         "test:coverage": "vitest --coverage",
         "test:mcp": "vitest --project=unit test/unit/mcp",
         "test:mcp:coverage": "vitest --project=unit --coverage test/unit/mcp",
