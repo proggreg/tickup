@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Meta } from '~~/types/link.types';
 import { logger } from '../../../utils/logger';
+import { extractUrls, matchUrls } from '../../../utils/urls';
 
 const listsStore = useListsStore();
 const editLinks = ref([]);
@@ -16,11 +17,9 @@ async function removeLink(link) {
 
 async function fetchUrlsTitles(): Promise<Meta[]> {
     if (!listsStore.currentTodo.desc) return;
-    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    const urls = extractUrls(listsStore.currentTodo.desc);
 
-    const urls = listsStore.currentTodo.desc.match(urlPattern);
-
-    if (urls) {
+    if (urls.length) {
         return await $fetch('/api/metadata', { query: { urls: JSON.stringify(urls) } });
     }
 
@@ -57,11 +56,9 @@ watch(
                 }
             }
 
-            const urlPattern = /(https?:\/\/[^\s]+)/g;
+            const rawUrls = matchUrls(listsStore.currentTodo.desc);
 
-            const urls = listsStore.currentTodo.desc.match(urlPattern);
-
-            for (const url of urls) {
+            for (const url of rawUrls) {
                 listsStore.currentTodo.desc = listsStore.currentTodo.desc.replace(url, '');
             }
             listsStore.updateTodo(listsStore.currentTodo);
