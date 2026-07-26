@@ -27,10 +27,10 @@ const dateStr = computed(() => {
 });
 
 const openTodayTodos = computed(() =>
-    listsStore.todaysTodos.filter(todo => !isTodoClosed(todo.status)),
+    listsStore.todaysTodos.filter((todo) => !isTodoClosed(todo.status)),
 );
 const doneTodos = computed(() =>
-    listsStore.todaysTodos.filter(todo => isTodoClosed(todo.status)),
+    listsStore.todaysTodos.filter((todo) => isTodoClosed(todo.status)),
 );
 
 const stats = computed(() => [
@@ -70,34 +70,39 @@ const sections = computed(() => [
     },
 ]);
 
-const openPanels = ref([]);
+const STORAGE_KEY = 'home-mobile-open-panels';
+
+const openPanels = ref<string[]>(
+    (() => {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : [];
+        } catch {
+            return [];
+        }
+    })(),
+);
+
+watch(
+    openPanels,
+    (val) => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(val));
+    },
+    { deep: true },
+);
 </script>
 
 <template>
     <div class="px-3 pt-3 pb-4">
         <div class="d-flex align-center justify-space-between mb-3">
             <div>
-                <div
-                    class="text-h6 font-weight-bold"
-                    style="font-family: 'Manrope', sans-serif"
-                >
+                <div class="text-h6 font-weight-bold" style="font-family: 'Manrope', sans-serif">
                     {{ greetingWord }}, {{ displayName }}
                 </div>
                 <div class="text-caption text-medium-emphasis">
                     {{ dateStr }}
                 </div>
             </div>
-            <v-avatar
-                color="#1e2d47"
-                size="34"
-            >
-                <span
-                    class="font-weight-bold"
-                    style="color: #f58c30; font-family: 'Manrope', sans-serif"
-                >
-                    {{ displayName.charAt(0).toUpperCase() }}
-                </span>
-            </v-avatar>
         </div>
 
         <div class="d-flex ga-2 mb-3">
@@ -119,37 +124,20 @@ const openPanels = ref([]);
             </v-card>
         </div>
 
-        <v-expansion-panels
-            v-model="openPanels"
-            multiple
-            gap="8"
-            class="mobile-home-panels"
-        >
+        <v-expansion-panels v-model="openPanels" multiple gap="8" class="mobile-home-panels">
             <v-expansion-panel
                 v-for="section in sections"
                 :key="section.key"
                 :value="section.key"
                 rounded="lg"
-                elevation="1"
+                variant="tonal"
             >
                 <v-expansion-panel-title>
                     <div class="d-flex align-center ga-2">
-                        <v-avatar
-                            :color="section.color"
-                            variant="tonal"
-                            size="26"
-                            rounded="lg"
-                        >
-                            <v-icon
-                                :icon="section.icon"
-                                :color="section.color"
-                                size="15"
-                            />
+                        <v-avatar :color="section.color" variant="tonal" size="26" rounded="lg">
+                            <v-icon :icon="section.icon" :color="section.color" size="15" />
                         </v-avatar>
-                        <span
-                            class="font-weight-bold"
-                            style="font-family: 'Manrope', sans-serif"
-                        >{{
+                        <span class="font-weight-bold" style="font-family: 'Manrope', sans-serif">{{
                             section.title
                         }}</span>
                         <v-chip
