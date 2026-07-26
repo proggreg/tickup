@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
             }
 
             // Transform snake_case fields to camelCase
-            return (data || []).map(todo => ({
+            return (data || []).map((todo) => ({
                 ...todo,
                 dueDate: todo.due_date,
                 completedDate: todo.completed_date,
@@ -75,7 +75,7 @@ export default defineEventHandler(async (event) => {
             }
 
             // Transform snake_case fields to camelCase
-            return (data || []).map(todo => ({
+            return (data || []).map((todo) => ({
                 ...todo,
                 dueDate: todo.due_date,
                 completedDate: todo.completed_date,
@@ -97,7 +97,7 @@ export default defineEventHandler(async (event) => {
         }
 
         // Transform snake_case fields to camelCase
-        return (data || []).map(todo => ({
+        return (data || []).map((todo) => ({
             ...todo,
             dueDate: todo.due_date,
             completedDate: todo.completed_date,
@@ -109,8 +109,7 @@ export default defineEventHandler(async (event) => {
             createdAt: todo.created_at,
             updatedAt: todo.updated_at,
         }));
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error fetching todos:', error);
         return [];
     }
