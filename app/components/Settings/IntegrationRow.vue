@@ -13,33 +13,22 @@ const emit = defineEmits<{ click: [] }>();
 </script>
 
 <template>
-    <div
-        class="integration-row"
-        @click="emit('click')"
-    >
+    <div class="integration-row" @click="emit('click')">
         <div class="integration-row__icon-tile">
-            <v-icon
-                :icon="icon"
-                :size="20"
-                color="#2a3439"
-            />
+            <v-icon :icon="icon" :size="20" color="#2a3439" />
         </div>
 
         <div class="integration-row__text">
             <div class="integration-row__name-row">
                 <span class="integration-row__name">{{ name }}</span>
-                <span
-                    v-if="connected"
-                    class="connected-pill"
-                >
+                <span v-if="connected" class="connected-pill">
                     <span class="connected-pill__dot" />
                     Connected
                 </span>
             </div>
             <div class="integration-row__description">
-                <template v-if="connected && accountName">
-                    {{ accountName }} ·
-                </template>{{ shortDescription || description }}
+                <template v-if="connected && accountName"> {{ accountName }} · </template
+                >{{ shortDescription || description }}
             </div>
         </div>
 
@@ -50,13 +39,7 @@ const emit = defineEmits<{ click: [] }>();
                 :size="18"
                 style="color: rgba(42, 52, 57, 0.42)"
             />
-            <button
-                v-else
-                class="connect-btn"
-                @click.stop="emit('click')"
-            >
-                Connect
-            </button>
+            <button v-else class="connect-btn" @click.stop="emit('click')">Connect</button>
         </div>
     </div>
 </template>

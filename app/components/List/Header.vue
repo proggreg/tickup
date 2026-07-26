@@ -15,8 +15,7 @@ watch(rename, (newVal: boolean) => {
         }
 
         store.updateList(store.currentList);
-    }
-    else {
+    } else {
         if (listNameRef.value) {
             listNameRef.value.focus();
         }
@@ -80,10 +79,7 @@ function removeImage() {
 </script>
 
 <template>
-    <v-col
-        cols="12"
-        class="pt-0"
-    >
+    <v-col cols="12" class="pt-0">
         <v-card
             rounded="0"
             height="100%"
@@ -108,10 +104,7 @@ function removeImage() {
                         @keyup.enter="store.currentList.name ? (rename = false) : null"
                         @blur="store.currentList.name ? (rename = false) : null"
                     />
-                    <div
-                        class="pt-2"
-                        style="width: 14px"
-                    >
+                    <div class="pt-2" style="width: 14px">
                         <ListMenu :list-id="router.params.id as string" />
                     </div>
                 </v-row>
@@ -126,11 +119,7 @@ function removeImage() {
                         :disabled="imageGenerating"
                         @click="generateImage"
                     >
-                        <v-icon start>
-                            mdi-creation
-                        </v-icon><v-icon start>
-                            mdi-image
-                        </v-icon>
+                        <v-icon start> mdi-creation </v-icon><v-icon start> mdi-image </v-icon>
                     </v-btn>
 
                     <v-btn

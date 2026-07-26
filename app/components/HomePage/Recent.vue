@@ -15,7 +15,7 @@ onBeforeMount(() => {
 
 const filterLabel = computed(() => {
     if (listFilter.value === 'all') return 'All lists';
-    return listsStore.lists.find(l => l.id === listFilter.value)?.name ?? 'All lists';
+    return listsStore.lists.find((l) => l.id === listFilter.value)?.name ?? 'All lists';
 });
 
 const filterActive = computed(() => listFilter.value !== 'all');
@@ -89,8 +89,7 @@ onUnmounted(() => document.removeEventListener('mousedown', onOutsideClick));
 function toggleStatus(todo: Todo) {
     if (isTodoClosed(todo.status)) {
         setOpen(todo);
-    }
-    else {
+    } else {
         setClosed(todo);
     }
 }
@@ -102,26 +101,17 @@ function toggleStatus(todo: Todo) {
         <div class="recent-header">
             <div class="recent-header-left">
                 <div class="icon-tile-sm accent-tile">
-                    <v-icon
-                        size="17"
-                        class="accent-deep-icon"
-                    >
-                        mdi-history
-                    </v-icon>
+                    <v-icon size="17" class="accent-deep-icon"> mdi-history </v-icon>
                 </div>
                 <span class="recent-title">Recent</span>
-                <span class="recent-count">{{ rows.length }} {{ rows.length === 1 ? 'todo' : 'todos' }}</span>
+                <span class="recent-count"
+                    >{{ rows.length }} {{ rows.length === 1 ? 'todo' : 'todos' }}</span
+                >
             </div>
             <div class="flex-1" />
             <!-- Search box -->
-            <div
-                class="search-box"
-                :class="{ 'search-box--focused': searchFocused }"
-            >
-                <v-icon
-                    size="17"
-                    :class="searchFocused ? 'search-icon--active' : 'search-icon'"
-                >
+            <div class="search-box" :class="{ 'search-box--focused': searchFocused }">
+                <v-icon size="17" :class="searchFocused ? 'search-icon--active' : 'search-icon'">
                     mdi-magnify
                 </v-icon>
                 <input
@@ -130,21 +120,13 @@ function toggleStatus(todo: Todo) {
                     placeholder="Search name, list, branch or date…"
                     @focus="searchFocused = true"
                     @blur="searchFocused = false"
-                >
-                <v-icon
-                    v-if="searchQuery"
-                    size="15"
-                    class="search-clear"
-                    @click="searchQuery = ''"
-                >
+                />
+                <v-icon v-if="searchQuery" size="15" class="search-clear" @click="searchQuery = ''">
                     mdi-close-circle
                 </v-icon>
             </div>
             <!-- List filter -->
-            <div
-                ref="filterRef"
-                class="list-filter"
-            >
+            <div ref="filterRef" class="list-filter">
                 <button
                     class="lf-btn"
                     :class="{
@@ -153,35 +135,20 @@ function toggleStatus(todo: Todo) {
                     }"
                     @click="filterOpen = !filterOpen"
                 >
-                    <v-icon
-                        size="16"
-                        class="lf-icon"
-                    >
-                        mdi-filter-variant
-                    </v-icon>
+                    <v-icon size="16" class="lf-icon"> mdi-filter-variant </v-icon>
                     <span class="lf-label">{{ filterLabel }}</span>
-                    <v-icon
-                        size="17"
-                        class="lf-icon"
-                    >
+                    <v-icon size="17" class="lf-icon">
                         {{ filterOpen ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
                     </v-icon>
                 </button>
-                <div
-                    v-if="filterOpen"
-                    class="lf-menu"
-                >
+                <div v-if="filterOpen" class="lf-menu">
                     <div
                         class="lf-option"
                         :class="{ 'lf-option--selected': listFilter === 'all' }"
                         @click="selectFilter('all')"
                     >
                         <span class="lf-option-label">All lists</span>
-                        <v-icon
-                            v-if="listFilter === 'all'"
-                            size="15"
-                            class="lf-check"
-                        >
+                        <v-icon v-if="listFilter === 'all'" size="15" class="lf-check">
                             mdi-check
                         </v-icon>
                     </div>
@@ -194,11 +161,7 @@ function toggleStatus(todo: Todo) {
                     >
                         <span class="lf-dot" />
                         <span class="lf-option-label">{{ list.name }}</span>
-                        <v-icon
-                            v-if="listFilter === list.id"
-                            size="15"
-                            class="lf-check"
-                        >
+                        <v-icon v-if="listFilter === list.id" size="15" class="lf-check">
                             mdi-check
                         </v-icon>
                     </div>
@@ -209,31 +172,13 @@ function toggleStatus(todo: Todo) {
         <v-divider />
 
         <!-- No results -->
-        <div
-            v-if="rows.length === 0 && (searchQuery || filterActive)"
-            class="no-results"
-        >
-            <v-icon
-                size="40"
-                class="no-results-icon"
-            >
-                mdi-magnify-remove-outline
-            </v-icon>
-            <div class="no-results-title">
-                No matches
-            </div>
-            <div
-                v-if="searchQuery"
-                class="no-results-body"
-            >
+        <div v-if="rows.length === 0 && (searchQuery || filterActive)" class="no-results">
+            <v-icon size="40" class="no-results-icon"> mdi-magnify-remove-outline </v-icon>
+            <div class="no-results-title">No matches</div>
+            <div v-if="searchQuery" class="no-results-body">
                 Nothing recent matches "{{ searchQuery }}".
             </div>
-            <div
-                v-else
-                class="no-results-body"
-            >
-                No recent todos in {{ filterLabel }}.
-            </div>
+            <div v-else class="no-results-body">No recent todos in {{ filterLabel }}.</div>
         </div>
 
         <!-- Table -->
@@ -263,11 +208,7 @@ function toggleStatus(todo: Todo) {
                         "
                         @click.stop="toggleStatus(row.todo)"
                     >
-                        <v-icon
-                            v-if="isTodoClosed(row.todo.status)"
-                            size="12"
-                            color="white"
-                        >
+                        <v-icon v-if="isTodoClosed(row.todo.status)" size="12" color="white">
                             mdi-check
                         </v-icon>
                     </div>
@@ -291,8 +232,8 @@ function toggleStatus(todo: Todo) {
                                     row.todo.status === 'Closed'
                                         ? 'Done'
                                         : row.todo.status === 'in_progress'
-                                            ? 'In progress'
-                                            : 'Open'
+                                          ? 'In progress'
+                                          : 'Open'
                                 }}
                             </span>
                         </div>
@@ -301,31 +242,19 @@ function toggleStatus(todo: Todo) {
 
                 <!-- List cell -->
                 <div>
-                    <span
-                        v-if="row.todo.list?.name"
-                        class="list-chip"
-                    >
+                    <span v-if="row.todo.list?.name" class="list-chip">
                         <span class="list-chip-dot" />{{ row.todo.list.name }}
                     </span>
-                    <span
-                        v-else
-                        class="fglow-text"
-                    >—</span>
+                    <span v-else class="fglow-text">—</span>
                 </div>
 
                 <!-- Branch cell -->
                 <div>
-                    <span
-                        v-if="row.todo.githubBranchName"
-                        class="branch-tag"
-                    >
+                    <span v-if="row.todo.githubBranchName" class="branch-tag">
                         <v-icon size="13">mdi-source-branch</v-icon>
                         <span class="branch-name">{{ row.todo.githubBranchName }}</span>
                     </span>
-                    <span
-                        v-else
-                        class="fglow-text"
-                    >—</span>
+                    <span v-else class="fglow-text">—</span>
                 </div>
 
                 <!-- Last activity cell -->

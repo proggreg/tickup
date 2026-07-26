@@ -36,7 +36,7 @@ describe('get_todos MCP tool', () => {
             const todos = parseTodos(result);
             expect(Array.isArray(todos)).toBe(true);
 
-            const found = todos.find(t => t.name === name);
+            const found = todos.find((t) => t.name === name);
             expect(found).toBeDefined();
             expect(found).toMatchObject({
                 id: expect.anything(),
@@ -90,7 +90,7 @@ describe('get_todos MCP tool', () => {
             const todos = parseTodos(result);
             expect(Array.isArray(todos)).toBe(true);
 
-            const found = todos.find(t => t.name === name);
+            const found = todos.find((t) => t.name === name);
             expect(found).toBeDefined();
             expect(found).toMatchObject({
                 id: expect.anything(),

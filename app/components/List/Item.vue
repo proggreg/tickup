@@ -51,10 +51,7 @@ const isSelected = (todo: Task) => listsStore.currentTodo?.id === todo.id && lis
 </script>
 
 <template>
-    <template
-        v-for="todo in itemProps.todos"
-        :key="todo.id"
-    >
+    <template v-for="todo in itemProps.todos" :key="todo.id">
         <div
             v-if="todo.status === itemProps.status"
             class="todo-item"
@@ -72,10 +69,7 @@ const isSelected = (todo: Task) => listsStore.currentTodo?.id === todo.id && lis
                     :aria-label="`Toggle ${todo.name}`"
                     @click.stop="toggleStatus(todo)"
                 >
-                    <i
-                        v-if="todo.status === 'Closed'"
-                        class="mdi mdi-check check-btn__icon"
-                    />
+                    <i v-if="todo.status === 'Closed'" class="mdi mdi-check check-btn__icon" />
                 </button>
             </div>
 
@@ -106,132 +100,132 @@ const isSelected = (todo: Task) => listsStore.currentTodo?.id === todo.id && lis
 
 <style scoped>
 .todo-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  border-left: 3px solid transparent;
-  transition: background 0.1s;
-  user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background 0.1s;
+    user-select: none;
 }
 
 .todo-item:hover {
-  background: rgba(var(--v-border-color), 0.07);
+    background: rgba(var(--v-border-color), 0.07);
 }
 
 .todo-item--selected {
-  background: rgb(var(--v-theme-primary-container));
-  border-left-color: rgb(var(--v-theme-primary));
+    background: rgb(var(--v-theme-primary-container));
+    border-left-color: rgb(var(--v-theme-primary));
 }
 
 .todo-item--selected:hover {
-  background: rgb(var(--v-theme-primary-container));
+    background: rgb(var(--v-theme-primary-container));
 }
 
 .todo-item--closed {
-  opacity: 0.6;
+    opacity: 0.6;
 }
 
 .todo-item__check {
-  flex-shrink: 0;
+    flex-shrink: 0;
 }
 
 .check-btn {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  border: 2px solid rgba(var(--v-border-color), 0.38);
-  background: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    border-color 0.15s,
-    background 0.15s;
-  padding: 0;
-  flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 2px solid rgba(var(--v-border-color), 0.38);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+        border-color 0.15s,
+        background 0.15s;
+    padding: 0;
+    flex-shrink: 0;
 }
 
 .check-btn:hover {
-  border-color: rgb(var(--v-theme-primary));
+    border-color: rgb(var(--v-theme-primary));
 }
 
 .check-btn--done {
-  background: rgb(var(--v-theme-primary));
-  border-color: rgb(var(--v-theme-primary));
+    background: rgb(var(--v-theme-primary));
+    border-color: rgb(var(--v-theme-primary));
 }
 
 .check-btn__icon {
-  font-size: 10px;
-  color: rgb(var(--v-theme-on-primary));
+    font-size: 10px;
+    color: rgb(var(--v-theme-on-primary));
 }
 
 .todo-item__title {
-  flex: 1;
-  font-size: 0.9rem;
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: rgb(var(--v-theme-on-surface));
+    flex: 1;
+    font-size: 0.9rem;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgb(var(--v-theme-on-surface));
 }
 
 .todo-item--closed .todo-item__title {
-  text-decoration: line-through;
+    text-decoration: line-through;
 }
 
 .todo-item__due {
-  flex-shrink: 0;
-  font-size: 0.75rem;
-  color: rgba(var(--v-theme-on-surface), 0.45);
-  display: flex;
-  align-items: center;
-  gap: 3px;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    color: rgba(var(--v-theme-on-surface), 0.45);
+    display: flex;
+    align-items: center;
+    gap: 3px;
 }
 
 .todo-item__due--overdue {
-  color: rgb(var(--v-theme-tertiary));
-  font-weight: 500;
+    color: rgb(var(--v-theme-tertiary));
+    font-weight: 500;
 }
 
 .todo-item__due--today {
-  color: rgb(var(--v-theme-primary));
-  font-weight: 500;
+    color: rgb(var(--v-theme-primary));
+    font-weight: 500;
 }
 
 .status-menu {
-  list-style: none;
-  margin: 0;
-  padding: 4px;
-  min-width: 140px;
-  background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(var(--v-border-color), 0.12);
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+    min-width: 140px;
+    background: rgb(var(--v-theme-surface));
+    border: 1px solid rgba(var(--v-border-color), 0.12);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .status-menu__item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.875rem;
-  transition: background 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background 0.1s;
 }
 
 .status-menu__item:hover {
-  background: rgba(var(--v-border-color), 0.08);
+    background: rgba(var(--v-border-color), 0.08);
 }
 
 .status-menu__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
 }
 </style>

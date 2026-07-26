@@ -18,12 +18,7 @@ onBeforeMount(() => {
 <template>
     <div class="d-flex justify-center mb-4 px-4">
         <div class="pill-tabs-container pa-1">
-            <v-btn-toggle
-                v-model="modelValue"
-                mandatory
-                density="comfortable"
-                class="pill-tabs"
-            >
+            <v-btn-toggle v-model="modelValue" mandatory density="comfortable" class="pill-tabs">
                 <v-btn
                     value="overdue"
                     class="pill-tab-btn"

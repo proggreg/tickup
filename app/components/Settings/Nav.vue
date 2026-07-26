@@ -28,10 +28,7 @@ const navItems = [
                 :size="16"
                 :style="{ opacity: activeSection === item.id ? 1 : 0.7 }"
             />
-            <span
-                class="settings-nav__label"
-                style="margin-left: 8px"
-            >{{ item.label }}</span>
+            <span class="settings-nav__label" style="margin-left: 8px">{{ item.label }}</span>
         </v-list-item>
     </v-list>
 </template>

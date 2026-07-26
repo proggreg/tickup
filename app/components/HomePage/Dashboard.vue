@@ -6,10 +6,10 @@ const { isTodoClosed } = useTodoStatus();
 const { user } = useCurrentUser();
 
 const todayCount = computed(
-    () => listsStore.todaysTodos.filter(todo => !isTodoClosed(todo.status)).length,
+    () => listsStore.todaysTodos.filter((todo) => !isTodoClosed(todo.status)).length,
 );
 const doneCount = computed(
-    () => listsStore.todaysTodos.filter(todo => isTodoClosed(todo.status)).length,
+    () => listsStore.todaysTodos.filter((todo) => isTodoClosed(todo.status)).length,
 );
 
 const greetingWord = computed(() => {
@@ -27,7 +27,7 @@ const displayName = computed(() => {
 const dateSubtitle = computed(() => {
     const d = new Date();
     const opts: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
-    return d.toLocaleDateString('en-GB', opts) + ' · here\'s where things stand.';
+    return d.toLocaleDateString('en-GB', opts) + " · here's where things stand.";
 });
 
 onBeforeMount(() => {
@@ -40,9 +40,7 @@ onBeforeMount(() => {
         <div class="dash-inner">
             <!-- Greeting -->
             <div>
-                <h1 class="dash-h1">
-                    {{ greetingWord }}, {{ displayName }}
-                </h1>
+                <h1 class="dash-h1">{{ greetingWord }}, {{ displayName }}</h1>
                 <p class="dash-sub">
                     {{ dateSubtitle }}
                 </p>
@@ -51,10 +49,7 @@ onBeforeMount(() => {
             <!-- Stat row -->
             <div class="stat-row">
                 <div class="stat-card">
-                    <div
-                        class="stat-bar"
-                        style="background: #ba1b24"
-                    />
+                    <div class="stat-bar" style="background: #ba1b24" />
                     <div
                         class="icon-tile"
                         style="
@@ -62,20 +57,13 @@ onBeforeMount(() => {
                             border: 1px solid color-mix(in srgb, #ba1b24 22%, #ffffff);
                         "
                     >
-                        <v-icon
-                            color="#ba1b24"
-                            :size="22"
-                        >
-                            mdi-clock-alert-outline
-                        </v-icon>
+                        <v-icon color="#ba1b24" :size="22"> mdi-clock-alert-outline </v-icon>
                     </div>
                     <div>
                         <div class="stat-value">
                             {{ listsStore.overdueTodos.length }}
                         </div>
-                        <div class="stat-label">
-                            Overdue
-                        </div>
+                        <div class="stat-label">Overdue</div>
                     </div>
                 </div>
 
@@ -91,10 +79,7 @@ onBeforeMount(() => {
                             border: 1px solid color-mix(in srgb, #005ac2 26%, #ffffff);
                         "
                     >
-                        <v-icon
-                            style="color: color-mix(in srgb, #005ac2 78%, #1a2230)"
-                            :size="22"
-                        >
+                        <v-icon style="color: color-mix(in srgb, #005ac2 78%, #1a2230)" :size="22">
                             mdi-calendar-today
                         </v-icon>
                     </div>
@@ -102,17 +87,12 @@ onBeforeMount(() => {
                         <div class="stat-value">
                             {{ todayCount }}
                         </div>
-                        <div class="stat-label">
-                            Due today
-                        </div>
+                        <div class="stat-label">Due today</div>
                     </div>
                 </div>
 
                 <div class="stat-card">
-                    <div
-                        class="stat-bar"
-                        style="background: #2f8a5e"
-                    />
+                    <div class="stat-bar" style="background: #2f8a5e" />
                     <div
                         class="icon-tile"
                         style="
@@ -120,28 +100,18 @@ onBeforeMount(() => {
                             border: 1px solid color-mix(in srgb, #2f8a5e 11%, #ffffff);
                         "
                     >
-                        <v-icon
-                            color="#2f8a5e"
-                            :size="22"
-                        >
-                            mdi-check-circle-outline
-                        </v-icon>
+                        <v-icon color="#2f8a5e" :size="22"> mdi-check-circle-outline </v-icon>
                     </div>
                     <div>
                         <div class="stat-value">
                             {{ doneCount }}
                         </div>
-                        <div class="stat-label">
-                            Done today
-                        </div>
+                        <div class="stat-label">Done today</div>
                     </div>
                 </div>
 
                 <div class="stat-card">
-                    <div
-                        class="stat-bar"
-                        style="background: #506076"
-                    />
+                    <div class="stat-bar" style="background: #506076" />
                     <div
                         class="icon-tile"
                         style="
@@ -149,20 +119,13 @@ onBeforeMount(() => {
                             border: 1px solid color-mix(in srgb, #506076 10%, #ffffff);
                         "
                     >
-                        <v-icon
-                            color="#506076"
-                            :size="22"
-                        >
-                            mdi-format-list-bulleted
-                        </v-icon>
+                        <v-icon color="#506076" :size="22"> mdi-format-list-bulleted </v-icon>
                     </div>
                     <div>
                         <div class="stat-value">
                             {{ listsStore.lists.length }}
                         </div>
-                        <div class="stat-label">
-                            Lists
-                        </div>
+                        <div class="stat-label">Lists</div>
                     </div>
                 </div>
             </div>
@@ -176,12 +139,7 @@ onBeforeMount(() => {
                             class="icon-tile-sm"
                             style="background: color-mix(in srgb, #ba1b24 9%, #ffffff)"
                         >
-                            <v-icon
-                                color="#ba1b24"
-                                :size="16"
-                            >
-                                mdi-clock-alert-outline
-                            </v-icon>
+                            <v-icon color="#ba1b24" :size="16"> mdi-clock-alert-outline </v-icon>
                         </div>
                         <span class="col-title">Overdue</span>
                         <span
@@ -249,12 +207,7 @@ onBeforeMount(() => {
                             class="icon-tile-sm"
                             style="background: color-mix(in srgb, #2f8a5e 11%, #ffffff)"
                         >
-                            <v-icon
-                                color="#2f8a5e"
-                                :size="16"
-                            >
-                                mdi-check-circle-outline
-                            </v-icon>
+                            <v-icon color="#2f8a5e" :size="16"> mdi-check-circle-outline </v-icon>
                         </div>
                         <span class="col-title">Done Today</span>
                         <span
@@ -270,21 +223,11 @@ onBeforeMount(() => {
                     </div>
                     <v-divider />
                     <div class="col-body">
-                        <div
-                            v-if="doneCount === 0"
-                            class="done-empty"
-                        >
+                        <div v-if="doneCount === 0" class="done-empty">
                             <div class="done-empty-icon">
-                                <v-icon
-                                    color="#2f8a5e"
-                                    :size="26"
-                                >
-                                    mdi-check
-                                </v-icon>
+                                <v-icon color="#2f8a5e" :size="26"> mdi-check </v-icon>
                             </div>
-                            <div class="done-empty-title">
-                                All caught up
-                            </div>
+                            <div class="done-empty-title">All caught up</div>
                             <div class="done-empty-body">
                                 Nothing closed yet today. Finished tasks will show up here.
                             </div>

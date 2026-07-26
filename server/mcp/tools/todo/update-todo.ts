@@ -31,8 +31,8 @@ export default defineMcpTool({
 
         // Coerce parent_id to number if it's a string
         if (rest.parent_id !== undefined) {
-            rest.parent_id
-                = typeof rest.parent_id === 'string' ? parseInt(rest.parent_id, 10) : rest.parent_id;
+            rest.parent_id =
+                typeof rest.parent_id === 'string' ? parseInt(rest.parent_id, 10) : rest.parent_id;
         }
 
         // DB column is `desc`, not `description`

@@ -1,6 +1,7 @@
 import { describe, expect } from 'vitest';
 import { mcpTest } from '../fixtures/mcp';
 import { randomUUID } from 'crypto';
+
 describe('get_list MCP tool', () => {
     mcpTest('should list tools and find get_list', async ({ client }) => {
         const result = await client.listTools();
