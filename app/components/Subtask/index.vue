@@ -285,6 +285,17 @@ function formatDueDate(date: Date | string | undefined): string {
                     {{ subtask.githubBranchName }}
                 </span>
 
+                <a
+                    v-if="subtask.vercelDeploymentUrl"
+                    :href="subtask.vercelDeploymentUrl"
+                    target="_blank"
+                    class="subtasks__meta subtasks__meta--mono"
+                    :data-testid="`subtask-deploy-${index}`"
+                    @click.stop
+                >
+                    <v-icon size="12">mdi-rocket-launch-outline</v-icon>
+                </a>
+
                 <div
                     class="subtasks__priority-wrap"
                     :class="{ 'subtasks__priority-wrap--set': subtask.priorityLev }"

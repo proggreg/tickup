@@ -21,6 +21,9 @@ declare global {
         githubRepo?: string;
         githubLink?: string;
         githubPrLink?: string;
+        vercelProjectId?: string;
+        vercelDeploymentUrl?: string;
+        vercelDeploymentStatus?: string;
         links?: {
             id?: string;
             title: string;
