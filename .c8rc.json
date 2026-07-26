@@ -1,0 +1,8 @@
+{
+    "all": true,
+    "include": ["server/mcp/**/*.ts", "server/api/**/*.ts"],
+    "exclude": ["node_modules/", "test/", "**/*.d.ts", "**/*.test.ts", "**/*.spec.ts"],
+    "reporter": ["text", "text-summary", "html", "json"],
+    "report-dir": ".coverage/merged",
+    "temp-dir": ".nyc_output"
+}

@@ -8,9 +8,14 @@ async function signOut() {
     router.push('/login');
 }
 </script>
+
 <template>
     <v-card class="settings-card">
-        <SettingsAccountRow icon="mdi-email-outline" label="Email" :value="user?.email" />
+        <SettingsAccountRow
+            icon="mdi-email-outline"
+            label="Email"
+            :value="user?.email"
+        />
         <div class="card-divider" />
         <SettingsAccountRow
             icon="mdi-logout"
@@ -20,6 +25,7 @@ async function signOut() {
         />
     </v-card>
 </template>
+
 <style scoped>
 .settings-card {
     background: #ffffff;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-    todos: Todo[];
+    todos: Task[];
     groupByStatus?: boolean;
     showDueDates?: boolean;
     emptyState?: boolean;
@@ -19,82 +19,105 @@ const { isTodoClosed } = useTodoStatus();
 const opened = ref(['Open']);
 
 const openTodos = computed(() => {
-    return props.todos.filter((todo: Todo) => !isTodoClosed(todo.status));
+    return props.todos.filter((todo: Task) => !isTodoClosed(todo.status));
 });
 
 const closedTodos = computed(() => {
-    return props.todos.filter((todo: Todo) => isTodoClosed(todo.status));
+    return props.todos.filter((todo: Task) => isTodoClosed(todo.status));
 });
 
-const handleSetClosed = (todo: Todo, event?: any) => {
+const handleSetClosed = (todo: Task, event?: any) => {
     if (event?.target) {
         event.target.checked = true;
     }
     setClosed(todo, 200);
 };
 
-const handleSetOpen = (todo: Todo, event?: any) => {
+const handleSetOpen = (todo: Task, event?: any) => {
     if (event?.target) {
         event.target.checked = false;
     }
     setOpen(todo, 200);
 };
 
-const handleSetClosedSimple = (todo: Todo) => {
+const handleSetClosedSimple = (todo: Task) => {
     setClosed(todo);
 };
 
-const handleSetOpenSimple = (todo: Todo) => {
+const handleSetOpenSimple = (todo: Task) => {
     setOpen(todo);
+};
+
+const longPressTodo = ref<Task | null>(null);
+const longPressTimer = ref<ReturnType<typeof setTimeout> | null>(null);
+const showActionSheet = ref(false);
+const showDeleteConfirm = ref(false);
+
+const startLongPress = (todo: Task) => {
+    longPressTimer.value = setTimeout(() => {
+        longPressTodo.value = todo;
+        showActionSheet.value = true;
+    }, 500);
+};
+
+const endLongPress = () => {
+    if (longPressTimer.value) {
+        clearTimeout(longPressTimer.value);
+        longPressTimer.value = null;
+    }
 };
 
 const deleteError = ref<string | null>(null);
 
-const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
-    if (!todo.id) return;
+const deleteTodo = async () => {
+    if (!longPressTodo.value?.id) return;
     deleteError.value = null;
     try {
-        await listsStore.deleteTodo(todo.id);
-        closeDialog?.();
-    }
-    catch {
+        await listsStore.deleteTodo(longPressTodo.value.id);
+        showDeleteConfirm.value = false;
+        showActionSheet.value = false;
+        longPressTodo.value = null;
+    } catch {
         deleteError.value = 'Failed to delete todo. Please try again.';
     }
 };
 </script>
 
 <template>
-    <v-card
-        v-if="todos && todos.length"
-        variant="flat"
-        class="todo-list-card"
-    >
+    <v-card v-if="todos && todos.length" variant="flat" class="todo-list-card">
         <!-- Grouped view (for OverDue) -->
-        <v-list
-            v-if="groupByStatus"
-            :opened="opened"
-            variant="plain"
-        >
+        <v-list v-if="groupByStatus" :opened="opened" variant="plain" class="grouped-list">
             <v-list-group value="Open">
                 <template #activator="{ props: activatorProps }">
-                    <v-list-item
-                        v-bind="activatorProps"
-                        prepend-icon="mdi mdi-border-all-variant"
-                        title="Open"
-                    />
+                    <v-list-item v-bind="activatorProps" slim class="grouped-header">
+                        <template #prepend>
+                            <v-icon icon="mdi-circle-outline" size="20" class="group-icon" />
+                        </template>
+                        <v-list-item-title class="todo-title font-weight-bold"
+                            >Open</v-list-item-title
+                        >
+                    </v-list-item>
                 </template>
 
                 <v-list-item
                     v-for="todo in openTodos"
                     :key="todo.id"
                     slim
-                    nav
-                    style="padding: 0 16px !important"
-                    class="pa-0 todo-list-item"
+                    class="todo-list-item"
                     @click="selectTodo(todo)"
+                    @touchstart.passive="startLongPress(todo)"
+                    @touchend="endLongPress"
+                    @touchmove="endLongPress"
+                    @mousedown="startLongPress(todo)"
+                    @mouseup="endLongPress"
+                    @mouseleave="endLongPress"
                 >
                     <template #prepend>
-                        <v-checkbox @click.stop="(el: any) => handleSetClosed(todo, el)" />
+                        <v-checkbox
+                            size="20"
+                            density="compact"
+                            @click.stop="(el: any) => handleSetClosed(todo, el)"
+                        />
                     </template>
                     <v-list-item-title class="todo-title">
                         {{ todo.name }}
@@ -103,68 +126,19 @@ const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
                     <v-list-item-subtitle v-if="showDueDates && todo.dueDate">
                         {{ formatDate(todo.dueDate) }}
                     </v-list-item-subtitle>
-
-                    <template #append>
-                        <v-menu>
-                            <template #activator="{ props: menuProps }">
-                                <v-btn
-                                    v-bind="menuProps"
-                                    icon="mdi-dots-vertical"
-                                    variant="text"
-                                    size="small"
-                                    @click.stop
-                                />
-                            </template>
-                            <v-list>
-                                <v-dialog width="250px">
-                                    <template #activator="{ props: dialogProps }">
-                                        <v-list-item
-                                            v-bind="dialogProps"
-                                            prepend-icon="mdi-trash-can"
-                                            title="Delete"
-                                            base-color="red"
-                                            @click.stop
-                                        />
-                                    </template>
-                                    <template #default="{ isActive }">
-                                        <v-card>
-                                            <v-card-text>
-                                                Are you sure you want to delete this
-                                                todo?
-                                            </v-card-text>
-                                            <v-card-actions>
-                                                <v-spacer />
-                                                <v-btn
-                                                    color="red"
-                                                    @click="
-                                                        deleteTodo(
-                                                            todo,
-                                                            () => (isActive.value = false),
-                                                        )
-                                                    "
-                                                >
-                                                    Yes
-                                                </v-btn>
-                                                <v-btn @click="isActive.value = false">
-                                                    No
-                                                </v-btn>
-                                            </v-card-actions>
-                                        </v-card>
-                                    </template>
-                                </v-dialog>
-                            </v-list>
-                        </v-menu>
-                    </template>
                 </v-list-item>
             </v-list-group>
 
             <v-list-group value="Closed">
                 <template #activator="{ props: activatorProps }">
-                    <v-list-item
-                        v-bind="activatorProps"
-                        prepend-icon="mdi mdi-check-all"
-                        title="Closed"
-                    />
+                    <v-list-item v-bind="activatorProps" slim class="grouped-header">
+                        <template #prepend>
+                            <v-icon icon="mdi-check-all" size="20" class="group-icon" />
+                        </template>
+                        <v-list-item-title class="todo-title font-weight-bold"
+                            >Closed</v-list-item-title
+                        >
+                    </v-list-item>
                 </template>
 
                 <v-list-item
@@ -173,9 +147,17 @@ const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
                     slim
                     class="todo-list-item"
                     @click="selectTodo(todo)"
+                    @touchstart.passive="startLongPress(todo)"
+                    @touchend="endLongPress"
+                    @touchmove="endLongPress"
+                    @mousedown="startLongPress(todo)"
+                    @mouseup="endLongPress"
+                    @mouseleave="endLongPress"
                 >
                     <template #prepend>
                         <v-checkbox
+                            size="20"
+                            density="compact"
                             :model-value="true"
                             @click.stop="(el: any) => handleSetOpen(todo, el)"
                         />
@@ -187,58 +169,6 @@ const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
                     <v-list-item-subtitle v-if="showDueDates && todo.dueDate">
                         {{ formatDate(todo.dueDate) }}
                     </v-list-item-subtitle>
-
-                    <template #append>
-                        <v-menu>
-                            <template #activator="{ props: menuProps }">
-                                <v-btn
-                                    v-bind="menuProps"
-                                    icon="mdi-dots-vertical"
-                                    variant="text"
-                                    size="small"
-                                    @click.stop
-                                />
-                            </template>
-                            <v-list>
-                                <v-dialog width="250px">
-                                    <template #activator="{ props: dialogProps }">
-                                        <v-list-item
-                                            v-bind="dialogProps"
-                                            prepend-icon="mdi-trash-can"
-                                            title="Delete"
-                                            base-color="red"
-                                            @click.stop
-                                        />
-                                    </template>
-                                    <template #default="{ isActive }">
-                                        <v-card>
-                                            <v-card-text>
-                                                Are you sure you want to delete this
-                                                todo?
-                                            </v-card-text>
-                                            <v-card-actions>
-                                                <v-spacer />
-                                                <v-btn
-                                                    color="red"
-                                                    @click="
-                                                        deleteTodo(
-                                                            todo,
-                                                            () => (isActive.value = false),
-                                                        )
-                                                    "
-                                                >
-                                                    Yes
-                                                </v-btn>
-                                                <v-btn @click="isActive.value = false">
-                                                    No
-                                                </v-btn>
-                                            </v-card-actions>
-                                        </v-card>
-                                    </template>
-                                </v-dialog>
-                            </v-list>
-                        </v-menu>
-                    </template>
                 </v-list-item>
             </v-list-group>
         </v-list>
@@ -262,6 +192,12 @@ const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
                     padding-right: 4px;
                 "
                 @click="selectTodo(todo)"
+                @touchstart.passive="startLongPress(todo)"
+                @touchend="endLongPress"
+                @touchmove="endLongPress"
+                @mousedown="startLongPress(todo)"
+                @mouseup="endLongPress"
+                @mouseleave="endLongPress"
             >
                 <template #prepend>
                     <v-checkbox
@@ -276,63 +212,9 @@ const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
                         @click.stop="handleSetOpenSimple(todo)"
                     />
                 </template>
-                <v-list-item-title
-                    class="todo-title"
-                    data-testid="todo-title"
-                >
+                <v-list-item-title class="todo-title" data-testid="todo-title">
                     {{ todo.name }}
                 </v-list-item-title>
-
-                <template #append>
-                    <v-menu>
-                        <template #activator="{ props: menuProps }">
-                            <v-btn
-                                v-bind="menuProps"
-                                icon="mdi-dots-vertical"
-                                variant="text"
-                                size="small"
-                                :ripple="false"
-                                class="no-active"
-                                @click.stop
-                            />
-                        </template>
-                        <v-list>
-                            <v-dialog width="250px">
-                                <template #activator="{ props: dialogProps }">
-                                    <v-list-item
-                                        v-bind="dialogProps"
-                                        prepend-icon="mdi-trash-can"
-                                        title="Delete"
-                                        base-color="red"
-                                        @click.stop
-                                    />
-                                </template>
-                                <template #default="{ isActive }">
-                                    <v-card>
-                                        <v-card-text>
-                                            Are you sure you want to delete this todo?
-                                        </v-card-text>
-                                        <v-card-actions>
-                                            <v-spacer />
-                                            <v-btn
-                                                color="red"
-                                                @click="
-                                                    deleteTodo(todo);
-                                                    isActive.value = false;
-                                                "
-                                            >
-                                                Yes
-                                            </v-btn>
-                                            <v-btn @click="isActive.value = false">
-                                                No
-                                            </v-btn>
-                                        </v-card-actions>
-                                    </v-card>
-                                </template>
-                            </v-dialog>
-                        </v-list>
-                    </v-menu>
-                </template>
             </v-list-item>
         </v-list>
     </v-card>
@@ -343,6 +225,35 @@ const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
     >
         <AppEmptyState height="100%" />
     </v-card>
+
+    <v-bottom-sheet v-model="showActionSheet">
+        <v-list>
+            <v-list-subheader v-if="longPressTodo">
+                {{ longPressTodo.name }}
+            </v-list-subheader>
+            <v-divider />
+            <v-list-item
+                prepend-icon="mdi-trash-can"
+                title="Delete"
+                base-color="red"
+                @click="
+                    showActionSheet = false;
+                    showDeleteConfirm = true;
+                "
+            />
+        </v-list>
+    </v-bottom-sheet>
+
+    <v-dialog v-model="showDeleteConfirm" width="250px">
+        <v-card>
+            <v-card-text>Are you sure you want to delete this todo?</v-card-text>
+            <v-card-actions>
+                <v-spacer />
+                <v-btn color="red" @click="deleteTodo">Yes</v-btn>
+                <v-btn @click="showDeleteConfirm = false">No</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 
     <v-snackbar
         :model-value="!!deleteError"
@@ -379,10 +290,29 @@ const deleteTodo = async (todo: Todo, closeDialog?: () => void) => {
 }
 
 .todo-title {
-    font-size: 1.05rem !important;
+    font-size: 0.875rem !important;
 }
 
-.no-active:deep(.v-btn__overlay) {
-    display: none;
+:deep(.grouped-list .v-list-group__items) {
+    --indent-padding: 0px;
+    --list-indent-size: 0px;
+}
+
+:deep(.grouped-list .v-list-group__items .v-list-item) {
+    padding-inline-start: 8px !important;
+}
+
+:deep(.grouped-list > .v-list-item) {
+    padding-inline-start: 8px !important;
+}
+
+.grouped-header :deep(.v-list-item__prepend) {
+    width: 40px;
+    margin-right: 8px;
+    justify-content: center;
+}
+
+.group-icon {
+    opacity: 0.7;
 }
 </style>

@@ -3,6 +3,7 @@ const searchStore = useSearchStore();
 const router = useRouter();
 const { isMobile } = useDevice();
 const open = ref(false);
+defineExpose({ open });
 const loading = ref(false);
 
 function onKeyDown(e: KeyboardEvent) {
@@ -63,16 +64,6 @@ onMounted(() => {
         :model-value="open"
         @after-leave="open = false"
     >
-        <template #activator="{ props }">
-            <v-text-field
-                placeholder="ctrl + k"
-                class="mx-6"
-                append-inner-icon="mdi-magnify"
-                @click="open = true"
-                v-on="props"
-            />
-        </template>
-
         <template #default="{ isActive }">
             <v-card
                 v-show="isActive"

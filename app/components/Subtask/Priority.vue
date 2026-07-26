@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { subtask, index } = defineProps<{ subtask: Todo; index: number }>();
+const { subtask, index } = defineProps<{ subtask: Task; index: number }>();
 const emit = defineEmits(['updatePriority']);
 
 function getPriorityColor(priority: string | undefined): string {

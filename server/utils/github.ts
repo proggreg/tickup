@@ -1,7 +1,7 @@
 import { serverSupabaseClient } from '#supabase/server';
 import type { Octokit } from 'octokit';
 import { App } from 'octokit';
-import type { Database } from '~/types/database.types';
+import type { Database } from '~~/types/database.types';
 
 export async function getGithubToken(event) {
     const supabase = await serverSupabaseClient<Database>(event);

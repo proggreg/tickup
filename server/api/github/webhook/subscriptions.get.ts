@@ -1,6 +1,6 @@
 import { defineEventHandler, createError } from 'h3';
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
-import type { Database } from '~/types/database.types';
+import type { Database } from '~~/types/database.types';
 import { App } from 'octokit';
 import { listWebhooks } from '~~/server/utils/github';
 

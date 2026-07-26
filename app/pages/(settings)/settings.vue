@@ -3,8 +3,7 @@ definePageMeta({ layout: 'settings' });
 
 const { mdAndUp } = useDisplay();
 const store = useSettingsStore();
-const supabase = useSupabaseClient();
-const router = useRouter();
+
 const route = useRoute();
 
 const activeSection = ref('account');
@@ -13,100 +12,88 @@ const githubConnected = ref(false);
 const githubLoading = ref(false);
 
 async function checkGithubStatus() {
-  githubLoading.value = true;
-  try {
-    const result = await $fetch('/api/github/check');
-    githubConnected.value = !!result;
-  }
-  catch {
-    githubConnected.value = false;
-  }
-  githubLoading.value = false;
+    githubLoading.value = true;
+    try {
+        const result = await $fetch('/api/github/check');
+        githubConnected.value = !!result;
+    }
+    catch {
+        githubConnected.value = false;
+    }
+    githubLoading.value = false;
 }
 
 await useAsyncData(() => store.getUserSettings().then(() => true));
 
-
-
-
-
-
-
-
-
-async function signOut() {
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    console.error(error);
-    return;
-  }
-  router.push('/login');
-}
-
 onMounted(async () => {
-  if (route.query.github === 'pending' && route.query.installation_id) {
-    githubLoading.value = true;
-    try {
-      await $fetch('/api/github/connect', {
-        method: 'POST',
-        body: {
-          installation_id: route.query.installation_id,
-          code: route.query.code || undefined,
-        },
-      });
-      githubConnected.value = true;
+    if (route.query.github === 'pending' && route.query.installation_id) {
+        githubLoading.value = true;
+        try {
+            await $fetch('/api/github/connect', {
+                method: 'POST',
+                body: {
+                    installation_id: route.query.installation_id,
+                    code: route.query.code || undefined,
+                },
+            });
+            githubConnected.value = true;
+        }
+        catch (e) {
+            console.error('Failed to complete GitHub connection:', e);
+        }
+        githubLoading.value = false;
     }
-    catch (e) {
-      console.error('Failed to complete GitHub connection:', e);
+    else {
+        await checkGithubStatus();
+        if (route.query.github === 'connected') {
+            githubConnected.value = true;
+        }
     }
-    githubLoading.value = false;
-  }
-  else {
-    await checkGithubStatus();
-    if (route.query.github === 'connected') {
-      githubConnected.value = true;
-    }
-  }
 });
-
-
 </script>
 
 <template>
-  <!-- ── Desktop: two-column ── -->
-  <v-row v-if="mdAndUp" class="settings-desktop full-height" no-gutters>
-    <v-col cols="2">
-      <SettingsNav :active-section="activeSection" @navigate="activeSection = $event" />
-    </v-col>
+    <!-- ── Desktop: two-column ── -->
+    <v-row
+        v-if="mdAndUp"
+        class="settings-desktop full-height"
+        no-gutters
+    >
+        <v-col cols="2">
+            <SettingsNav
+                :active-section="activeSection"
+                @navigate="activeSection = $event"
+            />
+        </v-col>
 
-    <v-col cols="10">
-      <v-container>
-        <v-row>
-          <v-col cols="12" class="text-capitalize">
-            <h1>{{ route.path.split('/').pop() }}</h1>
-          </v-col>
-          <v-col>
-            <NuxtPage />
-          </v-col>
-        </v-row>
-
-      </v-container>
-    </v-col>
-
-
+        <v-col cols="10">
+            <v-container>
+                <v-row>
+                    <v-col
+                        cols="12"
+                        class="text-capitalize"
+                    >
+                        <h1>{{ route.path.split('/').pop() }}</h1>
+                    </v-col>
+                    <v-col>
+                        <NuxtPage />
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-col>
 
     <!-- <router-view></router-view> -->
+    </v-row>
 
-  </v-row>
-
-  <!-- ── Mobile: single column ── -->
-  <div v-else class="settings-mobile">
-    <h1 class="settings-mobile__title">
-      Settings
-    </h1>
-
-
-  </div>
+    <!-- ── Mobile: single column ── -->
+    <div
+        v-else
+        class="settings-mobile"
+    >
+        <h1 class="settings-mobile__title">
+            Settings
+        </h1>
+    </div>
 </template>
 
 <style scoped>

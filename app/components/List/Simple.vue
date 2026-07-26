@@ -1,163 +1,233 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
-// const { isMobile } = useDevice()
-const opened = ref(['Open']);
+const settingsStore = useSettingsStore();
+const { mobile } = useDisplay();
 
-function selectTodo(todo: Todo) {
+function selectTodo(todo: Task) {
     listsStore.setCurrentTodo(todo);
-    navigateTo(`/todo/${todo.id}`);
-}
-function setClosed(todo: Todo) {
-    todo.status = 'Closed';
-    listsStore.updateTodo(todo);
-}
-function setOpen(todo: Todo) {
-    todo.status = 'Open';
-    listsStore.updateTodo(todo);
-}
-function formatDate(date: Date) {
-    if (!date) {
-        return '';
+    if (mobile.value) {
+        navigateTo(`/todo/${todo.id}`);
     }
-    return new Date(date).toLocaleDateString('en-GB');
+    else {
+        listsStore.panelOpen = true;
+    }
 }
 
-const openTodos = computed(() => {
-    return listsStore.currentList.todos?.filter((todo: Todo) => todo.status !== 'Closed');
-});
+function toggleTodo(todo: Todo) {
+    todo.status = todo.status === 'Closed' ? 'Open' : 'Closed';
+    listsStore.updateTodo(todo);
+}
 
-const closedTodos = computed(() => {
-    return listsStore.currentList.todos?.filter((todo: Todo) => todo.status === 'Closed');
-});
+function statusColor(status: string): string {
+    return settingsStore.statuses.find((s: Status) => s.name === status)?.color ?? '#005ac2';
+}
+
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+function relativeDue(
+    dueDate: string | null | undefined,
+    done: boolean,
+): { text: string; overdue: boolean } | null {
+    if (!dueDate) return null;
+    const d = new Date(dueDate);
+    d.setHours(0, 0, 0, 0);
+    const diff = Math.round((d.getTime() - today.getTime()) / 86400000);
+    const overdue = diff < 0 && !done;
+    let text: string;
+    if (diff < 0) text = diff === -1 ? 'Yesterday' : `${-diff}d ago`;
+    else if (diff === 0) text = 'Today';
+    else if (diff === 1) text = 'Tomorrow';
+    else text = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    return { text, overdue };
+}
+
+const openTodos = computed(
+    () => listsStore.currentList.todos?.filter((t: Task) => t.status !== 'Closed') ?? [],
+);
+
+const closedTodos = computed(
+    () => listsStore.currentList.todos?.filter((t: Task) => t.status === 'Closed') ?? [],
+);
 </script>
 
 <template>
-    <v-card
-        v-if="listsStore.currentList.todos && listsStore.currentList.todos.length"
-        variant="flat"
-    >
-        <v-list
-            :opened="opened"
-            variant="plain"
+    <div>
+        <!-- Open todos -->
+        <div
+            class="todo-card mb-5"
+            :class="{ 'pa-2': openTodos.length }"
         >
-            <v-list-group
-                value="Open"
-                fluid
+            <div
+                v-if="openTodos.length === 0"
+                class="text-center pa-8 text-medium-emphasis text-body-2"
             >
-                <template #activator="{ props }">
-                    <v-list-item
-                        v-bind="props"
-                        :title="`Open (${openTodos.length})`"
-                        class="todo-group-header"
-                    />
-                </template>
-
-                <v-list-item
-                    v-for="todo in openTodos"
-                    :key="todo.id"
-                    slim
-                    @click="selectTodo(todo)"
+                No open tasks. You're all caught up.
+            </div>
+            <div
+                v-for="todo in openTodos"
+                :key="todo.id"
+                class="todo-row d-flex align-center ga-3 px-4 py-3 rounded-lg"
+                :class="{
+                    'todo-row--selected':
+                        listsStore.currentTodo?.id === todo.id && listsStore.panelOpen,
+                }"
+                @click="selectTodo(todo)"
+            >
+                <button
+                    class="todo-check d-flex align-center justify-center flex-shrink-0"
+                    :style="{ border: `2px solid ${statusColor(todo.status)}` }"
+                    @click.stop="toggleTodo(todo)"
+                />
+                <span
+                    class="flex-grow-1 text-truncate text-body-2 font-weight-medium todo-name"
+                    data-testid="todo-title"
                 >
-                    <template #prepend>
-                        <v-checkbox @click.stop="setClosed(todo)" />
-                    </template>
-                    <v-list-item-title
-                        data-testid="todo-title"
-                        class="todo-title text-truncate"
-                    >
-                        {{ todo.name }}
-                    </v-list-item-title>
+                    {{ todo.name }}
+                </span>
+                <v-icon
+                    v-if="todo.priorityLev === 'high'"
+                    size="14"
+                    color="error"
+                >
+                    mdi-flag
+                </v-icon>
+                <span
+                    v-if="relativeDue(todo.dueDate, false)"
+                    class="d-inline-flex align-center ga-1 text-caption font-weight-medium flex-shrink-0"
+                    :class="relativeDue(todo.dueDate, false)?.overdue ? 'text-error' : 'text-disabled'
+                    "
+                >
+                    <v-icon size="13">
+                        {{
+                            relativeDue(todo.dueDate, false)?.overdue
+                                ? 'mdi-calendar-alert'
+                                : 'mdi-calendar-blank-outline'
+                        }}
+                    </v-icon>
+                    {{ relativeDue(todo.dueDate, false)?.text }}
+                </span>
+                <v-icon
+                    class="todo-chevron flex-shrink-0"
+                    size="18"
+                    color="medium-emphasis"
+                >
+                    mdi-chevron-right
+                </v-icon>
+            </div>
+        </div>
 
-                    <v-list-item-subtitle
-                        v-if="todo.dueDate"
-                        class="todo-subtitle"
-                    >
-                        {{ formatDate(todo.dueDate) }}
-                    </v-list-item-subtitle>
-
-                    <template #append>
-                        <AppDeleteButton :todo="todo" />
-                    </template>
-                </v-list-item>
-            </v-list-group>
-
-            <v-list-group
-                value="Closed"
-                fluid
+        <!-- Completed todos -->
+        <template v-if="closedTodos.length">
+            <div
+                class="text-caption font-weight-bold text-uppercase text-disabled mb-2 px-2"
+                style="letter-spacing: 0.07em"
             >
-                <template #activator="{ props }">
-                    <v-list-item
-                        v-bind="props"
-                        :title="`Closed (${closedTodos.length})`"
-                        class="todo-group-header"
-                    />
-                </template>
-
-                <v-list-item
+                Completed · {{ closedTodos.length }}
+            </div>
+            <div class="todo-card pa-2">
+                <div
                     v-for="todo in closedTodos"
                     :key="todo.id"
-                    slim
+                    class="todo-row todo-row--closed d-flex align-center ga-3 px-4 py-3 rounded-lg"
                     @click="selectTodo(todo)"
                 >
-                    <template #prepend>
-                        <v-checkbox
-                            :model-value="true"
-                            @click.stop="setOpen(todo)"
-                        />
-                    </template>
-                    <v-list-item-title class="todo-title text-truncate">
-                        {{ todo.name }}
-                    </v-list-item-title>
-
-                    <v-list-item-subtitle
-                        v-if="todo.dueDate"
-                        class="todo-subtitle"
+                    <button
+                        class="todo-check todo-check--done d-flex align-center justify-center flex-shrink-0"
+                        :style="{ background: statusColor(todo.status) }"
+                        @click.stop="toggleTodo(todo)"
                     >
-                        {{ formatDate(todo.dueDate) }}
-                    </v-list-item-subtitle>
+                        <v-icon
+                            size="11"
+                            color="white"
+                        >
+                            mdi-check
+                        </v-icon>
+                    </button>
+                    <span
+                        class="flex-grow-1 text-truncate text-body-2 font-weight-medium todo-name todo-name--done"
+                        data-testid="todo-title"
+                    >
+                        {{ todo.name }}
+                    </span>
+                    <span
+                        v-if="relativeDue(todo.dueDate, true)"
+                        class="d-inline-flex align-center ga-1 text-caption font-weight-medium text-disabled flex-shrink-0"
+                    >
+                        <v-icon size="13">mdi-calendar-blank-outline</v-icon>
+                        {{ relativeDue(todo.dueDate, true)?.text }}
+                    </span>
+                    <v-icon
+                        class="todo-chevron flex-shrink-0"
+                        size="18"
+                        color="medium-emphasis"
+                    >
+                        mdi-chevron-right
+                    </v-icon>
+                </div>
+            </div>
+        </template>
 
-                    <template #append>
-                        <AppDeleteButton :todo="todo" />
-                    </template>
-                </v-list-item>
-            </v-list-group>
-        </v-list>
-    </v-card>
-    <v-card
-        v-else
-        variant="flat"
-        :class="['d-flex flex-column justify-center align-center']"
-    >
-        <AppEmptyState height="100%" />
-    </v-card>
+        <AppEmptyState v-if="!listsStore.currentList.todos?.length" />
+    </div>
 </template>
 
 <style scoped>
-.todo-group-header :deep(.v-list-item-title) {
-    font-weight: 600;
-    letter-spacing: 0.01em;
+.todo-card {
+  background: white;
+  border: 1px solid rgba(113, 124, 130, 0.18);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(42, 52, 57, 0.06);
 }
 
-.todo-title {
-    font-weight: 500;
+.todo-row {
+  cursor: pointer;
+  transition: background 0.1s;
 }
 
-.todo-subtitle {
-    opacity: 0.8;
+.todo-row:hover {
+  background: rgba(80, 96, 118, 0.06);
 }
 
-@media (max-width: 600px) {
-    .todo-group-header :deep(.v-list-item-title) {
-        font-size: 1rem; /* ~16px, slightly larger on mobile */
-    }
+.todo-row:hover .todo-chevron {
+  opacity: 1;
+}
 
-    .todo-title {
-        font-size: 1.1rem; /* ~17.6px, similar to many mobile todo apps */
-        line-height: 1.4;
-    }
+.todo-row--selected {
+  background: rgb(var(--v-theme-primary-container));
+}
 
-    .todo-subtitle {
-        font-size: 0.9rem; /* ~14.4px */
-    }
+.todo-row--closed {
+  opacity: 0.65;
+}
+
+.todo-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background 0.12s,
+    border-color 0.12s;
+}
+
+.todo-check--done {
+  border: none !important;
+}
+
+.todo-name {
+  font-size: 0.9375rem;
+}
+
+.todo-name--done {
+  text-decoration: line-through;
+  color: rgba(42, 52, 57, 0.6);
+}
+
+.todo-chevron {
+  opacity: 0;
+  transition: opacity 0.1s;
 }
 </style>

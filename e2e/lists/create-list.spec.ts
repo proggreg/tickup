@@ -22,15 +22,18 @@ test.describe('a user can create a list', () => {
         const listName = `List ${testId}`;
         const newListInput = await page.getByRole('textbox', { name: 'New List' });
         await newListInput.type(listName);
-        const requestPromise = page.waitForRequest(
-            request => request.url().includes('/api/list') && request.method() === 'POST',
+        const responsePromise = page.waitForResponse(
+            response => response.url().includes('/api/list') && response.request().method() === 'POST',
         );
         await page.keyboard.press('Enter');
-        await requestPromise;
+        const createResponse = await responsePromise;
+        const created = await createResponse.json();
 
         await page.waitForTimeout(500);
 
-        const newListNavItem = await page.locator(`[data-test-id="${listName}"]`);
+        // Select by list id (not the user-entered name) since names can
+        // contain characters that are unsafe to interpolate into a CSS selector.
+        const newListNavItem = await page.locator(`[data-list-id="${created.id}"]`);
 
         expect(newListNavItem).not.toBeHidden();
     });
@@ -55,15 +58,18 @@ test.describe('a user can create a list', () => {
         const listName = `List ${testId}`;
         const newListInput = await page.getByRole('textbox', { name: 'New List' });
         await newListInput.type(listName);
-        const requestPromise = page.waitForRequest(
-            request => request.url().includes('/api/list') && request.method() === 'POST',
+        const responsePromise = page.waitForResponse(
+            response => response.url().includes('/api/list') && response.request().method() === 'POST',
         );
         await page.keyboard.press('Enter');
 
-        await requestPromise;
+        const createResponse = await responsePromise;
+        const created = await createResponse.json();
         await page.waitForTimeout(500);
 
-        const newListNavItem = await page.locator(`[data-test-id="${listName}"]`);
+        // Select by list id (not the user-entered name) since names can
+        // contain characters that are unsafe to interpolate into a CSS selector.
+        const newListNavItem = await page.locator(`[data-list-id="${created.id}"]`);
 
         expect(newListNavItem).not.toBeHidden();
     });

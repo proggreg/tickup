@@ -4,16 +4,16 @@ interface Props {
     icon?: string;
     description?: string;
     /**
-     * Optional status label shown as a chip in the header, e.g. "Connected" / "Not connected".
-     */
+   * Optional status label shown as a chip in the header, e.g. "Connected" / "Not connected".
+   */
     statusLabel?: string;
     /**
-     * Status chip color, e.g. "success", "error", "warning" or any Vuetify color.
-     */
+   * Status chip color, e.g. "success", "error", "warning" or any Vuetify color.
+   */
     statusColor?: string;
     /**
-     * Optional data-testid for Playwright and other tests.
-     */
+   * Optional data-testid for Playwright and other tests.
+   */
     testId?: string;
 }
 
@@ -74,7 +74,7 @@ const props = defineProps<Props>();
 
 <style scoped>
 .settings-column {
-    /* Ensure consistent vertical spacing between columns */
-    margin-bottom: 16px;
+  /* Ensure consistent vertical spacing between columns */
+  margin-bottom: 16px;
 }
 </style>
