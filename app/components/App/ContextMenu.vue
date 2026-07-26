@@ -69,14 +69,8 @@ onUnmounted(() => {
             }"
             @contextmenu.prevent
         >
-            <template
-                v-for="(item, i) in items"
-                :key="i"
-            >
-                <div
-                    v-if="item.divider"
-                    class="ctx-divider"
-                />
+            <template v-for="(item, i) in items" :key="i">
+                <div v-if="item.divider" class="ctx-divider" />
                 <button
                     v-else
                     class="ctx-item"
@@ -99,10 +93,7 @@ onUnmounted(() => {
                         }"
                     />
                     <span class="ctx-item__label">{{ item.label }}</span>
-                    <span
-                        v-if="item.shortcut"
-                        class="ctx-item__shortcut"
-                    >{{ item.shortcut }}</span>
+                    <span v-if="item.shortcut" class="ctx-item__shortcut">{{ item.shortcut }}</span>
                 </button>
             </template>
         </div>

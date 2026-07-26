@@ -7,8 +7,7 @@ onMounted(async () => {
     try {
         const connected = await $fetch('/api/github/check');
         githubConnected.value = !!connected;
-    }
-    catch {
+    } catch {
         githubConnected.value = false;
     }
 });

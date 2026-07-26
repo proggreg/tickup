@@ -96,8 +96,7 @@ export const apiTest = test.extend<APITestContext>({
                 if (!response.ok && response.status !== 404) {
                     console.warn('Failed to delete test todo:', response.statusText);
                 }
-            }
-            catch (err) {
+            } catch (err) {
                 console.warn('Failed to delete test todo:', err);
             }
         }
@@ -108,8 +107,7 @@ export const apiTest = test.extend<APITestContext>({
             if (error) {
                 console.warn('Failed to delete test user:', error.message);
             }
-        }
-        catch (err) {
+        } catch (err) {
             console.warn('Error deleting test user:', err);
         }
     },

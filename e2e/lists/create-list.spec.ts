@@ -23,7 +23,8 @@ test.describe('a user can create a list', () => {
         const newListInput = await page.getByRole('textbox', { name: 'New List' });
         await newListInput.type(listName);
         const responsePromise = page.waitForResponse(
-            response => response.url().includes('/api/list') && response.request().method() === 'POST',
+            (response) =>
+                response.url().includes('/api/list') && response.request().method() === 'POST',
         );
         await page.keyboard.press('Enter');
         const createResponse = await responsePromise;
@@ -59,7 +60,8 @@ test.describe('a user can create a list', () => {
         const newListInput = await page.getByRole('textbox', { name: 'New List' });
         await newListInput.type(listName);
         const responsePromise = page.waitForResponse(
-            response => response.url().includes('/api/list') && response.request().method() === 'POST',
+            (response) =>
+                response.url().includes('/api/list') && response.request().method() === 'POST',
         );
         await page.keyboard.press('Enter');
 

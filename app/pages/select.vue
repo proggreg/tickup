@@ -26,7 +26,7 @@ const selectedIds = ref<Set<string>>(new Set());
 onMounted(async () => {
     await listsStore.getLists();
     await Promise.all(
-        listsStore.lists.filter(l => l.id).map(l => listsStore.getListTodos(l.id)),
+        listsStore.lists.filter((l) => l.id).map((l) => listsStore.getListTodos(l.id)),
     );
 });
 
@@ -48,17 +48,17 @@ const selectableItems = computed<SelectableItem[]>(() => {
 });
 
 const categoryOptions = computed(() => {
-    const set = new Set(selectableItems.value.map(i => i.category).filter(Boolean) as string[]);
+    const set = new Set(selectableItems.value.map((i) => i.category).filter(Boolean) as string[]);
     return Array.from(set).sort();
 });
 
 const filteredItems = computed(() => {
     const query = q.value?.trim().toLowerCase() ?? '';
     return selectableItems.value.filter((i) => {
-        const matchesQuery
-            = !query
-                || i.title.toLowerCase().includes(query)
-                || (i.subtitle?.toLowerCase().includes(query) ?? false);
+        const matchesQuery =
+            !query ||
+            i.title.toLowerCase().includes(query) ||
+            (i.subtitle?.toLowerCase().includes(query) ?? false);
 
         const matchesCategory = !category.value || i.category === category.value;
         return matchesQuery && matchesCategory;
@@ -75,8 +75,7 @@ function toggle(id: string) {
     if (multi.value) {
         if (next.has(id)) next.delete(id);
         else next.add(id);
-    }
-    else {
+    } else {
         if (next.has(id)) next.clear();
         else {
             next.clear();
@@ -105,35 +104,23 @@ function initials(name: string) {
     return name
         .split(/\s+/)
         .slice(0, 2)
-        .map(p => p[0]?.toUpperCase() ?? '')
+        .map((p) => p[0]?.toUpperCase() ?? '')
         .join('');
 }
 </script>
 
 <template>
-    <v-container
-        class="py-4"
-        style="max-width: 900px"
-    >
+    <v-container class="py-4" style="max-width: 900px">
         <div class="d-flex align-center justify-space-between mb-4">
-            <h1 class="text-h5">
-                Select items
-            </h1>
-            <v-btn
-                variant="text"
-                :disabled="selectedIds.size === 0"
-                @click="clearSelection"
-            >
+            <h1 class="text-h5">Select items</h1>
+            <v-btn variant="text" :disabled="selectedIds.size === 0" @click="clearSelection">
                 Clear
             </v-btn>
         </div>
 
         <!-- Search + filter row -->
         <v-row dense>
-            <v-col
-                cols="12"
-                md="8"
-            >
+            <v-col cols="12" md="8">
                 <v-text-field
                     v-model="q"
                     label="Search"
@@ -143,10 +130,7 @@ function initials(name: string) {
                 />
             </v-col>
 
-            <v-col
-                cols="12"
-                md="4"
-            >
+            <v-col cols="12" md="4">
                 <v-select
                     v-model="category"
                     :items="categoryOptions"
@@ -159,25 +143,14 @@ function initials(name: string) {
 
         <!-- Mode toggle -->
         <div class="d-flex align-center justify-space-between mt-2 mb-2">
-            <v-switch
-                v-model="multi"
-                inset
-                color="primary"
-                label="Multi-select"
-                hide-details
-            />
+            <v-switch v-model="multi" inset color="primary" label="Multi-select" hide-details />
 
-            <div class="text-caption">
-                {{ selectedIds.size }} selected
-            </div>
+            <div class="text-caption">{{ selectedIds.size }} selected</div>
         </div>
 
         <!-- List -->
         <v-card variant="outlined">
-            <v-list
-                lines="two"
-                density="comfortable"
-            >
+            <v-list lines="two" density="comfortable">
                 <template v-if="filteredItems.length">
                     <v-list-item
                         v-for="item in filteredItems"
@@ -188,14 +161,8 @@ function initials(name: string) {
                     >
                         <template #prepend>
                             <v-avatar size="36">
-                                <v-img
-                                    v-if="item.avatarUrl"
-                                    :src="item.avatarUrl"
-                                />
-                                <span
-                                    v-else
-                                    class="text-caption"
-                                >{{ initials(item.title) }}</span>
+                                <v-img v-if="item.avatarUrl" :src="item.avatarUrl" />
+                                <span v-else class="text-caption">{{ initials(item.title) }}</span>
                             </v-avatar>
                         </template>
 
@@ -229,22 +196,10 @@ function initials(name: string) {
 
         <!-- Sticky bottom actions -->
         <div class="sticky-actions">
-            <v-card
-                variant="elevated"
-                class="px-3 py-2"
-            >
+            <v-card variant="elevated" class="px-3 py-2">
                 <div class="d-flex ga-2 justify-end">
-                    <v-btn
-                        variant="text"
-                        @click="cancel"
-                    >
-                        Cancel
-                    </v-btn>
-                    <v-btn
-                        color="primary"
-                        :disabled="selectedIds.size === 0"
-                        @click="confirm"
-                    >
+                    <v-btn variant="text" @click="cancel"> Cancel </v-btn>
+                    <v-btn color="primary" :disabled="selectedIds.size === 0" @click="confirm">
                         Confirm
                     </v-btn>
                 </div>

@@ -9,7 +9,7 @@ const listsStore = useListsStore();
 const menu = ref<{ x: number; y: number } | null>(null);
 const confirmOpen = ref(false);
 
-const listName = computed(() => listsStore.lists.find(l => l.id === props.listId)?.name ?? '');
+const listName = computed(() => listsStore.lists.find((l) => l.id === props.listId)?.name ?? '');
 
 function openMenu(e: MouseEvent) {
     e.stopPropagation();
@@ -60,49 +60,24 @@ onUnmounted(() => document.removeEventListener('keydown', handleEsc));
         title="List options"
         @click="openMenu"
     >
-        <i
-            class="mdi mdi-dots-horizontal"
-            style="font-size: 16px"
-        />
+        <i class="mdi mdi-dots-horizontal" style="font-size: 16px" />
     </button>
 
-    <AppContextMenu
-        v-if="menu"
-        :x="menu.x"
-        :y="menu.y"
-        :items="menuItems"
-        @close="menu = null"
-    />
+    <AppContextMenu v-if="menu" :x="menu.x" :y="menu.y" :items="menuItems" @close="menu = null" />
 
     <Teleport to="body">
-        <div
-            v-if="confirmOpen"
-            class="lm-backdrop"
-            @click="confirmOpen = false"
-        >
-            <div
-                class="lm-dialog"
-                @click.stop
-            >
+        <div v-if="confirmOpen" class="lm-backdrop" @click="confirmOpen = false">
+            <div class="lm-dialog" @click.stop>
                 <div class="lm-dialog__icon">
-                    <i
-                        class="mdi mdi-trash-can-outline"
-                        style="font-size: 22px; color: #ba1b24"
-                    />
+                    <i class="mdi mdi-trash-can-outline" style="font-size: 22px; color: #ba1b24" />
                 </div>
-                <div class="lm-dialog__title">
-                    Delete list
-                </div>
+                <div class="lm-dialog__title">Delete list</div>
                 <div class="lm-dialog__body">
-                    Are you sure you want to delete <strong>{{ listName }}</strong>? All tasks in this list will be permanently removed.
+                    Are you sure you want to delete <strong>{{ listName }}</strong
+                    >? All tasks in this list will be permanently removed.
                 </div>
                 <div class="lm-dialog__actions">
-                    <button
-                        class="lm-dialog__cancel"
-                        @click="confirmOpen = false"
-                    >
-                        Cancel
-                    </button>
+                    <button class="lm-dialog__cancel" @click="confirmOpen = false">Cancel</button>
                     <button
                         class="lm-dialog__delete"
                         data-testid="delete-list"
