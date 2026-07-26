@@ -23,11 +23,7 @@ function toRepoTestId(fullName: string): string {
 </script>
 
 <template>
-    <v-menu
-        v-model="menuOpen"
-        :close-on-content-click="false"
-        location="bottom end"
-    >
+    <v-menu v-model="menuOpen" :close-on-content-click="false" location="bottom end">
         <template #activator="{ props: menuProps }">
             <v-btn
                 v-bind="menuProps"
@@ -38,23 +34,12 @@ function toRepoTestId(fullName: string): string {
             />
         </template>
 
-        <v-card
-            min-width="320"
-            max-width="420"
-        >
-            <v-card-title class="text-subtitle-1">
-                Webhook subscriptions
-            </v-card-title>
+        <v-card min-width="320" max-width="420">
+            <v-card-title class="text-subtitle-1"> Webhook subscriptions </v-card-title>
             <v-card-subtitle> Choose which repos trigger todo status updates. </v-card-subtitle>
             <v-card-text>
-                <div
-                    v-if="props.subscriptionsLoading"
-                    class="d-flex align-center ga-2"
-                >
-                    <v-progress-circular
-                        indeterminate
-                        size="18"
-                    />
+                <div v-if="props.subscriptionsLoading" class="d-flex align-center ga-2">
+                    <v-progress-circular indeterminate size="18" />
                     Loading subscriptions...
                 </div>
 
@@ -69,15 +54,8 @@ function toRepoTestId(fullName: string): string {
                     {{ props.subscriptionsError }}
                 </v-alert>
 
-                <v-list
-                    v-else
-                    density="compact"
-                >
-                    <v-list-item
-                        v-for="repo in props.repos"
-                        :key="repo.id"
-                        class="px-0"
-                    >
+                <v-list v-else density="compact">
+                    <v-list-item v-for="repo in props.repos" :key="repo.id" class="px-0">
                         <div class="d-flex align-center justify-space-between ga-3 w-100">
                             <span class="text-body-2">
                                 {{ repo.full_name }}
@@ -113,12 +91,7 @@ function toRepoTestId(fullName: string): string {
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
-                <v-btn
-                    variant="text"
-                    @click="menuOpen = false"
-                >
-                    Close
-                </v-btn>
+                <v-btn variant="text" @click="menuOpen = false"> Close </v-btn>
                 <v-btn
                     color="primary"
                     :loading="props.subscriptionsSaving"

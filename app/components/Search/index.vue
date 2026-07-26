@@ -65,10 +65,7 @@ onMounted(() => {
         @after-leave="open = false"
     >
         <template #default="{ isActive }">
-            <v-card
-                v-show="isActive"
-                min-height="300"
-            >
+            <v-card v-show="isActive" min-height="300">
                 <v-card-item class="pa-4">
                     <v-text-field
                         v-model="searchStore.searchQuery"
@@ -82,10 +79,7 @@ onMounted(() => {
 
                 <v-card-item>
                     <v-list v-if="loading">
-                        <v-list-item
-                            v-for="n in 5"
-                            :key="n"
-                        >
+                        <v-list-item v-for="n in 5" :key="n">
                             <v-skeleton-loader type="list-item" />
                         </v-list-item>
                     </v-list>

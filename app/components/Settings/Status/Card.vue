@@ -42,12 +42,7 @@ function addStatus() {
 
 <template>
     <v-card class="settings-card">
-        <draggable
-            :list="store.userStatuses"
-            item-key="name"
-            handle=".drag-handle"
-            :move="canMove"
-        >
+        <draggable :list="store.userStatuses" item-key="name" handle=".drag-handle" :move="canMove">
             <template #item="{ element: status, index: i }">
                 <SettingsStatusRow
                     :ref="
@@ -65,14 +60,8 @@ function addStatus() {
                 />
             </template>
         </draggable>
-        <button
-            class="add-status-btn"
-            @click="addStatus"
-        >
-            <v-icon
-                icon="mdi-plus"
-                :size="16"
-            />
+        <button class="add-status-btn" @click="addStatus">
+            <v-icon icon="mdi-plus" :size="16" />
             Add status
         </button>
     </v-card>

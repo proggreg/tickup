@@ -11,11 +11,7 @@ async function signOut() {
 
 <template>
     <v-card class="settings-card">
-        <SettingsAccountRow
-            icon="mdi-email-outline"
-            label="Email"
-            :value="user?.email"
-        />
+        <SettingsAccountRow icon="mdi-email-outline" label="Email" :value="user?.email" />
         <div class="card-divider" />
         <SettingsAccountRow
             icon="mdi-logout"

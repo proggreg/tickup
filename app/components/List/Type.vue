@@ -1,9 +1,7 @@
 <script setup lang="ts">
 const listTypeOptions = ref<ListType[]>(['table', 'simple']);
 const props = defineProps<{ currentListType?: ListType }>();
-const selectedType = ref<ListType>(
-    props.currentListType ? props.currentListType : 'simple',
-);
+const selectedType = ref<ListType>(props.currentListType ? props.currentListType : 'simple');
 const emit = defineEmits<{
     listTypeUpdated: [listType: ListType];
 }>();
@@ -48,9 +46,9 @@ watch(selectedType, (newVal: ListType, oldVal: ListType) => {
 
 <style scoped>
 :deep(.v-field__input) {
-  padding: 0.75em;
-  min-height: 0;
-  height: 100%;
-  /* max-height: 48px; */
+    padding: 0.75em;
+    min-height: 0;
+    height: 100%;
+    /* max-height: 48px; */
 }
 </style>

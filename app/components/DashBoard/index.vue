@@ -4,8 +4,5 @@ const { data: todos } = await useFetch<Task[]>('/api/list/todos', { query: { id:
 </script>
 
 <template>
-    <Board
-        v-if="todos"
-        :todos="todos"
-    />
+    <Board v-if="todos" :todos="todos" />
 </template>

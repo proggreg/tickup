@@ -87,11 +87,7 @@ function onComposerKey(e: KeyboardEvent) {
 <template>
     <div class="d-flex flex-column">
         <!-- Column header -->
-        <v-row
-            no-gutters
-            align="center"
-            class="pb-3 px-1"
-        >
+        <v-row no-gutters align="center" class="pb-3 px-1">
             <v-col class="d-flex align-center ga-2">
                 <span
                     :style="{
@@ -105,19 +101,12 @@ function onComposerKey(e: KeyboardEvent) {
                 <span class="text-subtitle-2 font-weight-bold text-truncate">{{
                     status.name
                 }}</span>
-                <v-chip
-                    density="compact"
-                    size="x-small"
-                    class="font-weight-medium"
-                >
+                <v-chip density="compact" size="x-small" class="font-weight-medium">
                     {{ todos.length }}
                 </v-chip>
             </v-col>
             <v-col />
-            <v-col
-                cols="auto"
-                class="d-flex align-center"
-            >
+            <v-col cols="auto" class="d-flex align-center">
                 <v-btn
                     icon
                     density="compact"
@@ -126,9 +115,7 @@ function onComposerKey(e: KeyboardEvent) {
                     title="Add card"
                     @click="isComposing = true"
                 >
-                    <v-icon size="18">
-                        mdi-plus
-                    </v-icon>
+                    <v-icon size="18"> mdi-plus </v-icon>
                 </v-btn>
                 <BoardOptions :status="status" />
             </v-col>
@@ -204,21 +191,16 @@ function onComposerKey(e: KeyboardEvent) {
                         @click="router.push(`/todo/${todo.id}`)"
                     >
                         <v-card-item class="pa-3">
-                            <v-row
-                                no-gutters
-                                align="start"
-                            >
+                            <v-row no-gutters align="start">
                                 <!-- Checkbox -->
-                                <v-col
-                                    cols="auto"
-                                    class="pt-1 pr-2"
-                                >
+                                <v-col cols="auto" class="pt-1 pr-2">
                                     <button
                                         class="card-check"
                                         :class="{ 'card-check--done': todo.status === 'Closed' }"
-                                        :style="todo.status === 'Closed'
-                                            ? { background: status.color }
-                                            : {}
+                                        :style="
+                                            todo.status === 'Closed'
+                                                ? { background: status.color }
+                                                : {}
                                         "
                                         @click.stop="toggleStatus(todo)"
                                     >
@@ -253,9 +235,9 @@ function onComposerKey(e: KeyboardEvent) {
                                     <!-- Meta row -->
                                     <v-row
                                         v-if="
-                                            todo.priorityLev
-                                                || todo.dueDate
-                                                || todo.subtasks?.length
+                                            todo.priorityLev ||
+                                            todo.dueDate ||
+                                            todo.subtasks?.length
                                         "
                                         no-gutters
                                         align="center"
@@ -280,9 +262,10 @@ function onComposerKey(e: KeyboardEvent) {
                                             v-if="todo.dueDate"
                                             cols="auto"
                                             class="d-flex align-center ga-1 text-caption font-weight-medium"
-                                            :class="isOverdue(todo)
-                                                ? 'text-error'
-                                                : 'text-medium-emphasis'
+                                            :class="
+                                                isOverdue(todo)
+                                                    ? 'text-error'
+                                                    : 'text-medium-emphasis'
                                             "
                                         >
                                             <v-icon size="13">
@@ -295,17 +278,15 @@ function onComposerKey(e: KeyboardEvent) {
                                             {{ formatDue(todo) }}
                                         </v-col>
 
-                                        <v-col
-                                            v-if="todo.subtasks?.length"
-                                            cols="auto"
-                                        >
+                                        <v-col v-if="todo.subtasks?.length" cols="auto">
                                             <span
                                                 class="d-inline-flex align-center ga-1 text-caption font-weight-medium"
-                                                :class="todo.subtasks.filter(
-                                                    (s) => s.status === 'Closed',
-                                                ).length === todo.subtasks.length
-                                                    ? 'text-success'
-                                                    : 'text-medium-emphasis'
+                                                :class="
+                                                    todo.subtasks.filter(
+                                                        (s) => s.status === 'Closed',
+                                                    ).length === todo.subtasks.length
+                                                        ? 'text-success'
+                                                        : 'text-medium-emphasis'
                                                 "
                                             >
                                                 <v-icon size="13">
@@ -350,29 +331,29 @@ function onComposerKey(e: KeyboardEvent) {
 
 <style scoped>
 .card-check {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  flex-shrink: 0;
-  margin-top: 2px;
-  padding: 0;
-  cursor: pointer;
-  border: 1.5px solid rgba(var(--v-border-color), 0.38);
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background 0.12s,
-    border-color 0.12s;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    padding: 0;
+    cursor: pointer;
+    border: 1.5px solid rgba(var(--v-border-color), 0.38);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+        background 0.12s,
+        border-color 0.12s;
 }
 
 .card-check--done {
-  border-width: 0;
+    border-width: 0;
 }
 
 .todo-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
 }
 </style>

@@ -23,8 +23,7 @@ export default defineMcpTool({
                 );
             }
             throw new Error('Must provide either id, name, or githubBranchName');
-        }
-        catch (error) {
+        } catch (error) {
             const message = error instanceof Error ? error.message : 'Failed to retrieve todo';
             return { text: message };
         }
