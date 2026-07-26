@@ -61,6 +61,7 @@ const rows = computed<RecentRow[]>(() => {
                 todo.name,
                 listName,
                 todo.githubBranchName || '',
+                todo.vercelDeploymentUrl || '',
                 relLabel(todo.createdAt),
                 relLabel(todo.updatedAt),
                 todo.createdAt ? new Date(todo.createdAt).toLocaleDateString('en-GB') : '',
@@ -254,7 +255,20 @@ function toggleStatus(todo: Todo) {
                         <v-icon size="13">mdi-source-branch</v-icon>
                         <span class="branch-name">{{ row.todo.githubBranchName }}</span>
                     </span>
-                    <span v-else class="fglow-text">—</span>
+                    <a
+                        v-if="row.todo.vercelDeploymentUrl"
+                        :href="row.todo.vercelDeploymentUrl"
+                        target="_blank"
+                        class="branch-tag"
+                        @click.stop
+                    >
+                        <v-icon size="13">mdi-rocket-launch-outline</v-icon>
+                    </a>
+                    <span
+                        v-if="!row.todo.githubBranchName && !row.todo.vercelDeploymentUrl"
+                        class="fglow-text"
+                        >—</span
+                    >
                 </div>
 
                 <!-- Last activity cell -->
