@@ -3,6 +3,7 @@ const listsStore = useListsStore();
 const { statuses } = useSettingsStore();
 const router = useRouter();
 const hasGithub = await useHasGithub();
+const hasVercel = await useHasVercel();
 const { mainWidth } = defineProps<{ mainWidth?: string }>();
 
 function updateName() {
@@ -160,6 +161,16 @@ async function deleteTodo() {
                     </div>
                     <div class="prop-row__value">
                         <GithubButton :todo="listsStore.currentTodo" />
+                    </div>
+                </div>
+
+                <div v-if="hasVercel" class="prop-row">
+                    <div class="prop-row__label">
+                        <i class="mdi mdi-triangle prop-row__icon" />
+                        <span>Vercel</span>
+                    </div>
+                    <div class="prop-row__value">
+                        <VercelButton :todo="listsStore.currentTodo" />
                     </div>
                 </div>
 
