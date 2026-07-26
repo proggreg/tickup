@@ -12,4 +12,17 @@ test.describe('Links', () => {
             'Deploying AI Models with Hugging Face – Hands-On Course - YouTube',
         );
     });
+
+    test('one unreachable url does not block titles for the others in the same request', async ({ request }) => {
+        const badUrl = 'http://localhost:1/does-not-exist';
+        const goodUrl = 'https://example.com';
+        const urls = JSON.stringify([badUrl, goodUrl]);
+
+        const response = await request.get(`/api/metadata?urls=${urls}`);
+        expect(response.ok()).toBeTruthy();
+
+        const titles = await response.json();
+        expect(Array.isArray(titles)).toBe(true);
+        expect(titles.find(t => t.url === goodUrl)).toBeTruthy();
+    });
 });

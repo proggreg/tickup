@@ -2,24 +2,27 @@ import * as cheerio from 'cheerio';
 import type { Meta } from '~~/types/link.types';
 
 async function getTitle(url: string) {
-    return await $fetch(url, {
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...',
-        },
-    }).then((response: any) => {
-        try {
-            const $ = cheerio.load(response);
-            const title = $('title').text() as string;
+    try {
+        const response = await $fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...',
+            },
+        });
 
-            if (!title) {
-                return url.split('?')[0];
-            }
-            return title;
+        const $ = cheerio.load(response as any);
+        const title = $('title').text() as string;
+
+        if (!title) {
+            return url.split('?')[0];
         }
-        catch (error) {
-            console.error('getting title', error);
-        }
-    });
+        return title;
+    }
+    catch (error) {
+        // A single unreachable/unauthorized URL shouldn't fail title lookups
+        // for the other URLs in the same request.
+        console.error('getting title', error);
+        return undefined;
+    }
 }
 
 export default defineEventHandler(async (event): Promise<Meta[] | { error: string }> => {
