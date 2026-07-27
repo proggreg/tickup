@@ -59,28 +59,27 @@ onUnmounted(() => {
             <VercelDeploymentUnlink />
         </template>
     </v-chip>
-    <v-autocomplete
-        v-else
-        v-model="selectedProject"
-        :items="projects"
-        :loading="loading"
-        item-value="id"
-        item-title="name"
-        return-object
-        label="Vercel Project"
-        placeholder="Select a project"
-        variant="outlined"
-        density="compact"
-        hide-details
-        no-data-text="No projects found"
-        :error-messages="error"
-        prepend-inner-icon="mdi-triangle"
-    >
-        <template #item="{ props, item }">
-            <v-list-item v-bind="props" :subtitle="item.raw.framework ?? ''" />
-        </template>
-        <template #append>
-            <VercelDeploymentLink />
-        </template>
-    </v-autocomplete>
+    <div v-else>
+        <v-autocomplete
+            v-model="selectedProject"
+            :items="projects"
+            :loading="loading"
+            item-value="id"
+            item-title="name"
+            return-object
+            label="Vercel Project"
+            placeholder="Select a project"
+            variant="outlined"
+            density="compact"
+            hide-details
+            no-data-text="No projects found"
+            :error-messages="error"
+            prepend-inner-icon="mdi-triangle"
+        >
+            <template #item="{ props, item }">
+                <v-list-item v-bind="props" :subtitle="item.raw.framework ?? ''" />
+            </template>
+        </v-autocomplete>
+        <VercelDeploymentLink />
+    </div>
 </template>
