@@ -19,7 +19,7 @@ describe('lists store - updateTodo concurrency', () => {
             callOrder.push(id);
             // Simulated latency so overlapping calls would actually overlap
             // in `inFlight`, the way real concurrent PUTs did in production.
-            await new Promise(resolve => setTimeout(resolve, 20));
+            await new Promise((resolve) => setTimeout(resolve, 20));
             inFlight--;
             return { id };
         });
@@ -33,9 +33,9 @@ describe('lists store - updateTodo concurrency', () => {
         // todo, which produced a burst of concurrent PUT /api/todo/:id calls
         // that started failing with 500s under real load.
         const todos = [5013, 5014, 4405, 4404, 4401].map(
-            id => ({ id, status: 'Closed' }) as Task,
+            (id) => ({ id, status: 'Closed' }) as Task,
         );
-        await Promise.all(todos.map(todo => store.updateTodo(todo)));
+        await Promise.all(todos.map((todo) => store.updateTodo(todo)));
 
         expect(fetchMock).toHaveBeenCalledTimes(5);
         // The regression this guards against: if updateTodo stops serializing
