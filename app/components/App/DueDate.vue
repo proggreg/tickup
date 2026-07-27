@@ -98,33 +98,15 @@ const isToday_ = computed(() => sameDay(effectiveDate.value, new Date()));
 
 const chipStyle = computed(() => {
     if (!effectiveDate.value) {
-        return {
-            color: 'rgba(42,52,57,0.38)',
-            background: 'transparent',
-            borderColor: 'rgba(113,124,130,0.24)',
-        };
+        return { color: 'rgba(42,52,57,0.38)', background: 'transparent' };
     }
     if (isOverdue.value) {
-        return { color: '#ba1b24', background: 'rgba(186,27,36,0.08)', borderColor: 'transparent' };
+        return { color: '#ba1b24', background: 'rgba(186,27,36,0.08)' };
     }
     if (isToday_.value) {
-        return { color: '#005ac2', background: '#dce8ff', borderColor: 'transparent' };
+        return { color: '#005ac2', background: '#dce8ff' };
     }
-    return { color: '#2a3439', background: '#f0f4f7', borderColor: 'transparent' };
-    if (!effectiveDate.value) {
-        return {
-            color: 'rgba(42,52,57,0.38)',
-            background: 'transparent',
-            borderColor: 'rgba(113,124,130,0.24)',
-        };
-    }
-    if (isOverdue.value) {
-        return { color: '#ba1b24', background: 'rgba(186,27,36,0.08)', borderColor: 'transparent' };
-    }
-    if (isToday_.value) {
-        return { color: '#005ac2', background: '#dce8ff', borderColor: 'transparent' };
-    }
-    return { color: '#2a3439', background: '#f0f4f7', borderColor: 'transparent' };
+    return { color: '#2a3439', background: '#f0f4f7' };
 });
 
 const rowStyle = computed(() => ({
@@ -276,7 +258,7 @@ onUnmounted(() => {
             :class="isOverdue ? 'mdi-calendar-alert' : 'mdi-calendar'"
             style="font-size: 14px"
         />
-        <span>{{ effectiveDate ? formatRelative(effectiveDate) : 'Set date' }}</span>
+        <span v-if="effectiveDate">{{ formatRelative(effectiveDate) }}</span>
     </button>
 
     <!-- Row variant (showDetail) -->
@@ -390,7 +372,7 @@ onUnmounted(() => {
     gap: 6px;
     padding: 4px 10px;
     border-radius: 20px;
-    border: 1px solid transparent;
+    border: none;
     font-size: 0.8125rem;
     font-weight: 500;
     font-family: Inter, sans-serif;

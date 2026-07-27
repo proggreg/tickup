@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server';
+import { objectToCamel } from 'ts-case-convert';
 
 export default defineEventHandler(async (event) => {
     try {
@@ -51,18 +52,9 @@ export default defineEventHandler(async (event) => {
                 return [];
             }
 
-            return (data || []).map((todo) => ({
-                ...todo,
-                dueDate: todo.due_date,
-                completedDate: todo.completed_date,
-                userId: todo.user_id,
-                listId: todo.list_id,
-                githubBranchName: todo.github_branch_name,
-                notificationDateTime: todo.notification_date_time,
-                notificationSent: todo.notification_sent,
-                createdAt: todo.created_at,
-                updatedAt: todo.updated_at,
-                list: todo.Lists ? { id: todo.Lists.id, name: todo.Lists.name } : null,
+            return (data || []).map(({ Lists, ...todo }) => ({
+                ...objectToCamel(todo),
+                list: Lists ? objectToCamel(Lists) : null,
             }));
         }
 

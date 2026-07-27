@@ -14,6 +14,11 @@ registerRoute(
         url.pathname == '/' || url.pathname.startsWith('/list') || url.pathname.startsWith('/todo'),
     new StaleWhileRevalidate({
         cacheName: 'pages',
+        plugins: [
+            {
+                handlerDidError: async () => caches.match('/offline.html'),
+            },
+        ],
     }),
 );
 

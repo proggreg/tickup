@@ -1,5 +1,10 @@
 import { createNewTodoState, createNewListState } from './helpers';
 
+// Serializes updateTodo calls so rapid bulk actions (e.g. checking several
+// todos in quick succession) don't fire a burst of concurrent PUT requests,
+// which was observed causing intermittent 500s (Bugsnag error 6a5cbb44fdca5cb0d6f889aa).
+let updateQueue: Promise<unknown> = Promise.resolve();
+
 export const useListsStore = defineStore('lists', {
     state: (): listsState => ({
         newTodo: createNewTodoState(),
@@ -195,11 +200,15 @@ export const useListsStore = defineStore('lists', {
             if (!todo) {
                 todo = this.currentTodo;
             }
+            const targetTodo = todo;
 
-            const updatedTodo = await $fetch<Task>(`/api/todo/${todo.id}`, {
-                method: 'PUT',
-                body: todo,
-            });
+            const run = () =>
+                $fetch<Task>(`/api/todo/${targetTodo.id}`, {
+                    method: 'PUT',
+                    body: targetTodo,
+                });
+            updateQueue = updateQueue.then(run, run);
+            const updatedTodo = (await updateQueue) as Task;
 
             // Update local state to match server response
             if (this.currentTodo && this.currentTodo.id === updatedTodo.id) {
