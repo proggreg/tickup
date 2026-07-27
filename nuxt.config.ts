@@ -84,6 +84,7 @@ export default defineNuxtConfig({
             supabaseUrl: process.env.SUPABASE_URL,
             supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
             githubAppName: process.env.NUXT_PUBLIC_GITHUB_APP_NAME,
+            vercelClientId: process.env.VERCEL_INTEGRATION_CLIENT_ID,
         },
     },
 
