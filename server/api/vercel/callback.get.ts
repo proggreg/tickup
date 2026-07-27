@@ -19,7 +19,8 @@ export default defineEventHandler(async (event) => {
             body: { code },
             headers: { cookie: getHeader(event, 'cookie') || '' },
         });
-    } catch {
+    } catch (e) {
+        console.error('Failed to connect Vercel:', e);
         return sendRedirect(event, '/settings/vercel?vercel=error&reason=connect_failed');
     }
 
