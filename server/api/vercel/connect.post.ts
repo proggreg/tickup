@@ -1,4 +1,5 @@
-import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
+import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server';
+import type { Database, TablesInsert } from '~~/types/database.types';
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event);
@@ -34,9 +35,9 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    const supabase = await serverSupabaseClient(event);
+    const supabase = serverSupabaseServiceRole<Database>(event);
 
-    const updateData: Record<string, unknown> = {
+    const updateData: TablesInsert<'Users'> = {
         id: user.id,
         vercel_access_token: tokenData.access_token,
     };
