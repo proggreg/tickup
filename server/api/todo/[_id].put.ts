@@ -6,6 +6,9 @@ export default defineEventHandler(async (event) => {
 
     delete body.subtasks;
     delete body.edit;
+    // Joined display-only field added by GET /api/todos?recent=true (server/api/todos.ts)
+    // - not a real Todos column, so Supabase rejects the update if it's sent back.
+    delete body.list;
 
     if (!event.context.params || !event.context.params._id) {
         throw createError({
