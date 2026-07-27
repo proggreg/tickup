@@ -28,7 +28,6 @@ export default defineEventHandler(async (event) => {
 
     const params = new URLSearchParams({
         projectId: safeProjectId,
-        target: 'production',
         limit: '1',
     });
     if (userData.vercel_team_id) {
