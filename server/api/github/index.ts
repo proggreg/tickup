@@ -71,8 +71,7 @@ export default defineEventHandler(async (event) => {
                         alreadyExists: true,
                     };
                 }
-            }
-            catch (error: any) {
+            } catch (error: any) {
                 if (error.status !== 404) {
                     throw error;
                 }
@@ -108,8 +107,7 @@ export default defineEventHandler(async (event) => {
             createRefResponse.data.url = `https://github.com/${owner}/${repo.name}/tree/${ref}`;
 
             return createRefResponse.data;
-        }
-        catch (error: any) {
+        } catch (error: any) {
             console.error('Error creating branch:', error);
 
             if (error.status === 401 || error.message?.includes('Bad credentials')) {
@@ -124,8 +122,7 @@ export default defineEventHandler(async (event) => {
                 message: error.message || 'Failed to create branch',
             });
         }
-    }
-    else {
+    } else {
         return createError({ statusCode: 405, message: 'Method Not Allowed' });
     }
 });

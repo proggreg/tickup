@@ -2,15 +2,15 @@
 const router = useRouter();
 
 const githubConnected = ref(false);
+const vercelConnected = ref(false);
 
 onMounted(async () => {
-    try {
-        const connected = await $fetch('/api/github/check');
-        githubConnected.value = !!connected;
-    }
-    catch {
-        githubConnected.value = false;
-    }
+    const [github, vercel] = await Promise.allSettled([
+        $fetch('/api/github/check'),
+        $fetch('/api/vercel/check'),
+    ]);
+    githubConnected.value = github.status === 'fulfilled' && !!github.value;
+    vercelConnected.value = vercel.status === 'fulfilled' && !!vercel.value;
 });
 </script>
 
@@ -22,6 +22,14 @@ onMounted(async () => {
             description="Create branches and link pull requests directly from your todos"
             :connected="githubConnected"
             @click="router.push('/settings/github')"
+        />
+        <v-divider />
+        <SettingsIntegrationRow
+            icon="mdi-triangle"
+            name="Vercel"
+            description="Link deployments to todos and auto-update status on new deploys"
+            :connected="vercelConnected"
+            @click="router.push('/settings/vercel')"
         />
     </v-card>
 </template>

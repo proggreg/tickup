@@ -13,15 +13,8 @@ const emit = defineEmits<{ click: [] }>();
 </script>
 
 <template>
-    <div
-        class="account-row"
-        :class="{ 'account-row--danger': danger }"
-        @click="emit('click')"
-    >
-        <div
-            class="account-row__icon-tile"
-            :class="{ 'account-row__icon-tile--danger': danger }"
-        >
+    <div class="account-row" :class="{ 'account-row--danger': danger }" @click="emit('click')">
+        <div class="account-row__icon-tile" :class="{ 'account-row__icon-tile--danger': danger }">
             <v-icon
                 :icon="icon"
                 :size="16"
@@ -30,25 +23,16 @@ const emit = defineEmits<{ click: [] }>();
         </div>
 
         <div class="account-row__text">
-            <div
-                class="account-row__label"
-                :class="{ 'account-row__label--danger': danger }"
-            >
+            <div class="account-row__label" :class="{ 'account-row__label--danger': danger }">
                 {{ label }}
             </div>
-            <div
-                v-if="value"
-                class="account-row__value"
-            >
+            <div v-if="value" class="account-row__value">
                 {{ value }}
             </div>
         </div>
 
         <div class="account-row__action">
-            <span
-                v-if="action"
-                class="account-row__action-text"
-            >{{ action }}</span>
+            <span v-if="action" class="account-row__action-text">{{ action }}</span>
             <v-icon
                 v-if="actionIcon"
                 :icon="actionIcon"

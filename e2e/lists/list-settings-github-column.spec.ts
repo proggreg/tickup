@@ -26,7 +26,7 @@ test.describe('list settings GitHub column', () => {
         await newListInput.type(listName);
 
         const createResponse = page.waitForResponse(
-            response =>
+            (response) =>
                 response.url().includes('/api/list') && response.request().method() === 'POST',
         );
         await page.keyboard.press('Enter');

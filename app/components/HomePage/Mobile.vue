@@ -76,7 +76,7 @@ const openPanels = ref<string[]>(
     (() => {
         try {
             const stored = localStorage.getItem(STORAGE_KEY);
-            return stored ? JSON.parse(stored) : [];
+            return stored ? JSON.parse(stored) : ['today'];
         } catch {
             return [];
         }

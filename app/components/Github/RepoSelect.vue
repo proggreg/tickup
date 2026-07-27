@@ -27,8 +27,7 @@ async function loadRepos() {
     try {
         const data = await $fetch('/api/github/repos');
         repos.value = data.repositories;
-    }
-    catch (e: any) {
+    } catch (e: any) {
         error.value = e?.data?.message || 'Failed to load repositories';
     }
     loading.value = false;
@@ -69,7 +68,7 @@ onBeforeMount(async () => {
     await loadRepos();
     if (!listStore.currentList.githubRepo) return;
     selectedRepo.value = repos.value.find(
-        repo => repo?.name === listStore.currentList.githubRepo,
+        (repo) => repo?.name === listStore.currentList.githubRepo,
     );
 });
 onUnmounted(() => {
@@ -79,7 +78,7 @@ onUnmounted(() => {
 watch(
     () => liststore.currentList.githubRepo,
     (repo) => {
-        const listsDefaultRepo = repos.value.find(r => r.name === repo);
+        const listsDefaultRepo = repos.value.find((r) => r.name === repo);
         if (listsDefaultRepo) {
             selectedRepo.value = listsDefaultRepo;
         }
@@ -112,11 +111,7 @@ watch(
         @update:menu="handleMenuUpdate"
     >
         <template #item="{ props, item }">
-            <v-list-item
-                v-bind="props"
-                :subtitle="item.raw.description"
-                slim
-            >
+            <v-list-item v-bind="props" :subtitle="item.raw.description" slim>
                 <template #prepend>
                     <v-icon size="small">
                         {{ item.raw.private ? 'mdi-lock' : 'mdi-source-repository' }}
