@@ -19,10 +19,10 @@ export default defineEventHandler(async (event) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
-            client_id: config.vercel.clientId,
-            client_secret: config.vercel.clientSecret,
+            client_id: config.private.vercel.clientId,
+            client_secret: config.private.vercel.clientSecret,
             code,
-            redirect_uri: config.vercel.redirectUri,
+            redirect_uri: config.private.vercel.redirectUri,
         }),
     });
     const tokenData = await tokenRes.json();
