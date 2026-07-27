@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
     const supabase = serverSupabaseServiceRole<Database>(event);
 
     const updateData: TablesInsert<'Users'> = {
-        id: user.id,
+        id: user.sub,
         vercel_access_token: tokenData.access_token,
     };
     if (tokenData.team_id) {
