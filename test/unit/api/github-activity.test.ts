@@ -27,9 +27,10 @@ function pullRequestEvent(overrides: Partial<RawRepoEvent> = {}): RawRepoEvent {
         payload: {
             action: 'opened',
             pull_request: {
+                number: 42,
                 title: 'Fix overdue badge on list cards',
-                html_url: `https://github.com/${REPO}/pull/42`,
                 merged: false,
+                head: { ref: 'fix/overdue-badge' },
             },
         },
         ...overrides,
@@ -79,7 +80,7 @@ describe('normalizeEvent', () => {
 
         expect(result).toMatchObject({
             type: 'pr',
-            summary: 'Opened PR: Fix overdue badge on list cards',
+            summary: 'Opened PR: #42',
             url: `https://github.com/${REPO}/pull/42`,
         });
     });
@@ -89,16 +90,17 @@ describe('normalizeEvent', () => {
             payload: {
                 action: 'closed',
                 pull_request: {
+                    number: 41,
                     title: 'Search full-text index',
-                    html_url: `https://github.com/${REPO}/pull/41`,
                     merged: true,
+                    head: { ref: 'feature/search-index' },
                 },
             },
         });
 
         const [result] = normalizeEvent(event, REPO);
 
-        expect(result.summary).toBe('Merged PR: Search full-text index');
+        expect(result.summary).toBe('Merged PR: #41');
     });
 
     it('drops a closed-but-not-merged PullRequestEvent', () => {
@@ -106,9 +108,10 @@ describe('normalizeEvent', () => {
             payload: {
                 action: 'closed',
                 pull_request: {
+                    number: 99,
                     title: 'Abandoned change',
-                    html_url: `https://github.com/${REPO}/pull/99`,
                     merged: false,
+                    head: { ref: 'feature/abandoned' },
                 },
             },
         });
@@ -187,5 +190,73 @@ describe('buildActivityFeed', () => {
         );
 
         expect(feed.map((e) => e.type)).toEqual(['pr', 'commit', 'branch']);
+    });
+
+    describe('branch scoping', () => {
+        it('keeps a PushEvent whose ref matches the branch and drops others', () => {
+            const onBranch = pushEvent({
+                payload: {
+                    ref: 'refs/heads/feature/x',
+                    commits: [{ sha: 'sha1', message: 'On branch' }],
+                },
+            });
+            const offBranch = pushEvent({
+                id: 'push-2',
+                payload: { ref: 'refs/heads/main', commits: [{ sha: 'sha2', message: 'On main' }] },
+            });
+
+            const feed = buildActivityFeed([onBranch, offBranch], REPO, 'feature/x');
+
+            expect(feed.map((e) => e.summary)).toEqual(['On branch']);
+        });
+
+        it('keeps a PullRequestEvent whose head ref matches the branch and drops others', () => {
+            const onBranch = pullRequestEvent();
+            const offBranch = pullRequestEvent({
+                id: 'pr-2',
+                payload: {
+                    action: 'opened',
+                    pull_request: {
+                        number: 43,
+                        title: 'Other',
+                        merged: false,
+                        head: { ref: 'other-branch' },
+                    },
+                },
+            });
+
+            const feed = buildActivityFeed([onBranch, offBranch], REPO, 'fix/overdue-badge');
+
+            expect(feed.map((e) => e.id)).toEqual(['pr-1']);
+        });
+
+        it('keeps a branch CreateEvent whose ref matches the branch and drops a tag CreateEvent', () => {
+            const branchCreated = createBranchEvent();
+            const tagCreated = createBranchEvent({
+                id: 'create-2',
+                payload: { ref: 'feature/kanban-drag', ref_type: 'tag' },
+            });
+            const otherBranch = createBranchEvent({
+                id: 'create-3',
+                payload: { ref: 'other-branch', ref_type: 'branch' },
+            });
+
+            const feed = buildActivityFeed(
+                [branchCreated, tagCreated, otherBranch],
+                REPO,
+                'feature/kanban-drag',
+            );
+
+            expect(feed.map((e) => e.id)).toEqual(['create-1']);
+        });
+
+        it('returns the unfiltered repo-wide feed when no branch is given', () => {
+            const feed = buildActivityFeed(
+                [createBranchEvent(), pushEvent(), pullRequestEvent()],
+                REPO,
+            );
+
+            expect(feed).toHaveLength(3);
+        });
     });
 });
