@@ -158,7 +158,7 @@ describe('buildActivityFeed', () => {
 
         const feed = buildActivityFeed([oldest, newest, middle], REPO);
 
-        expect(feed.map(e => e.id)).toEqual([newest.id, `${middle.id}-0`, oldest.id]);
+        expect(feed.map((e) => e.id)).toEqual([newest.id, `${middle.id}-0`, oldest.id]);
     });
 
     it('caps the feed at 40 events', () => {
@@ -186,6 +186,6 @@ describe('buildActivityFeed', () => {
             REPO,
         );
 
-        expect(feed.map(e => e.type)).toEqual(['pr', 'commit', 'branch']);
+        expect(feed.map((e) => e.type)).toEqual(['pr', 'commit', 'branch']);
     });
 });

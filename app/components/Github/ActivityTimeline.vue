@@ -58,7 +58,7 @@ const days = computed<DayGroup[]>(() => {
     const groups: DayGroup[] = [];
     for (const evt of events.value) {
         const label = dayLabel(evt.createdAt);
-        let group = groups.find(g => g.label === label);
+        let group = groups.find((g) => g.label === label);
         if (!group) {
             group = { label, events: [] };
             groups.push(group);
@@ -71,10 +71,9 @@ const days = computed<DayGroup[]>(() => {
 async function resolveOwner(): Promise<string | null> {
     try {
         const data = await $fetch<{ repositories: Repo[] }>('/api/github/repos');
-        const repo = data.repositories.find(r => r.name === props.repoName);
+        const repo = data.repositories.find((r) => r.name === props.repoName);
         return repo?.full_name?.split('/').shift() ?? null;
-    }
-    catch {
+    } catch {
         return null;
     }
 }
@@ -94,8 +93,7 @@ async function load() {
             query: { owner, repo: props.repoName },
         });
         events.value = data.events;
-    }
-    catch (e: any) {
+    } catch (e: any) {
         error.value = e?.data?.message || 'Failed to load GitHub activity';
     }
     loading.value = false;
@@ -107,23 +105,11 @@ watch(() => props.repoName, load);
 
 <template>
     <div class="activity-timeline">
-        <div
-            v-if="loading"
-            class="d-flex align-center justify-center py-8"
-        >
-            <v-progress-circular
-                indeterminate
-                size="28"
-                color="primary"
-            />
+        <div v-if="loading" class="d-flex align-center justify-center py-8">
+            <v-progress-circular indeterminate size="28" color="primary" />
         </div>
 
-        <v-alert
-            v-else-if="error"
-            type="error"
-            variant="tonal"
-            class="ma-4"
-        >
+        <v-alert v-else-if="error" type="error" variant="tonal" class="ma-4">
             {{ error }}
         </v-alert>
 
@@ -135,34 +121,19 @@ watch(() => props.repoName, load);
         />
 
         <template v-else>
-            <div
-                v-if="repoFullName"
-                class="d-flex align-center ga-2 mb-4"
-            >
-                <v-icon
-                    icon="mdi-github"
-                    size="20"
-                />
+            <div v-if="repoFullName" class="d-flex align-center ga-2 mb-4">
+                <v-icon icon="mdi-github" size="20" />
                 <span class="text-body-2 text-medium-emphasis">{{ repoFullName }}</span>
             </div>
 
-            <div
-                v-for="group in days"
-                :key="group.label"
-                class="mb-6"
-            >
+            <div v-for="group in days" :key="group.label" class="mb-6">
                 <div
                     class="text-caption text-medium-emphasis text-uppercase font-weight-bold mb-2"
                     style="letter-spacing: 0.04em"
                 >
                     {{ group.label }}
                 </div>
-                <v-timeline
-                    density="compact"
-                    align="start"
-                    side="end"
-                    truncate-line="both"
-                >
+                <v-timeline density="compact" align="start" side="end" truncate-line="both">
                     <v-timeline-item
                         v-for="evt in group.events"
                         :key="evt.id"

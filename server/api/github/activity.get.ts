@@ -54,8 +54,7 @@ export default defineEventHandler(async (event): Promise<{ events: GithubActivit
         const events = buildActivityFeed(data as unknown as RawRepoEvent[], repoFullName);
 
         return { events };
-    }
-    catch (error: any) {
+    } catch (error: any) {
         console.error('Error loading GitHub activity:', error);
         throw createError({
             statusCode: error.status || 500,
