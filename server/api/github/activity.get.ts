@@ -28,6 +28,7 @@ export default defineEventHandler(async (event): Promise<{ events: GithubActivit
     const query = getQuery(event);
     const owner = String(query.owner ?? '');
     const repo = String(query.repo ?? '');
+    const branch = query.branch ? String(query.branch) : undefined;
 
     if (!owner || !repo) {
         throw createError({
@@ -51,11 +52,10 @@ export default defineEventHandler(async (event): Promise<{ events: GithubActivit
         });
 
         const repoFullName = `${owner}/${repo}`;
-        const events = buildActivityFeed(data as unknown as RawRepoEvent[], repoFullName);
+        const events = buildActivityFeed(data as unknown as RawRepoEvent[], repoFullName, branch);
 
         return { events };
-    }
-    catch (error: any) {
+    } catch (error: any) {
         console.error('Error loading GitHub activity:', error);
         throw createError({
             statusCode: error.status || 500,

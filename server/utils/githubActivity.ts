@@ -17,8 +17,21 @@ export interface RawRepoEvent {
         ref_type?: string;
         action?: string;
         commits?: { sha: string; message: string }[];
-        pull_request?: { number: number; title: string; merged: boolean };
+        pull_request?: { number: number; title: string; merged: boolean; head?: { ref: string } };
     };
+}
+
+function matchesBranch(event: RawRepoEvent, branch: string): boolean {
+    if (event.type === 'PushEvent') {
+        return event.payload?.ref === `refs/heads/${branch}`;
+    }
+    if (event.type === 'PullRequestEvent') {
+        return event.payload?.pull_request?.head?.ref === branch;
+    }
+    if (event.type === 'CreateEvent' && event.payload?.ref_type === 'branch') {
+        return event.payload?.ref === branch;
+    }
+    return false;
 }
 
 export function normalizeEvent(event: RawRepoEvent, repoFullName: string): GithubActivityEvent[] {
@@ -73,8 +86,10 @@ export function normalizeEvent(event: RawRepoEvent, repoFullName: string): Githu
 export function buildActivityFeed(
     rawEvents: RawRepoEvent[],
     repoFullName: string,
+    branch?: string,
 ): GithubActivityEvent[] {
-    return rawEvents
+    const scopedEvents = branch ? rawEvents.filter((e) => matchesBranch(e, branch)) : rawEvents;
+    return scopedEvents
         .flatMap((raw) => normalizeEvent(raw, repoFullName))
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .slice(0, 40);
