@@ -48,26 +48,16 @@ const views = computed(() => {
 
 <template>
     <div class="overflow-y-auto fill-height flex-grow-1">
-        <div
-            class="mx-auto px-7 pt-7 pb-12"
-            style="width: 100%"
-        >
+        <div class="mx-auto px-7 pt-7 pb-12" style="width: 100%">
             <div>
                 <!-- Header -->
-                <v-row
-                    no-gutters
-                    align="center"
-                    class="mb-4 flex-nowrap ga-3"
-                >
+                <v-row no-gutters align="center" class="mb-4 flex-nowrap ga-3">
                     <v-col class="overflow-hidden">
                         <h1 class="list-title text-truncate ma-0">
                             {{ listsStore.currentList?.name }}
                         </h1>
                     </v-col>
-                    <v-col
-                        cols="auto"
-                        class="d-flex align-center ga-3 flex-shrink-0"
-                    >
+                    <v-col cols="auto" class="d-flex align-center ga-3 flex-shrink-0">
                         <span
                             class="text-medium-emphasis text-body-2 font-weight-medium text-no-wrap"
                         >
@@ -95,18 +85,13 @@ const views = computed(() => {
                     class="add-task-bar d-flex align-center px-4 mb-5 ga-3"
                     data-testid="new-todo-input"
                 >
-                    <v-icon
-                        color="primary"
-                        size="18"
-                    >
-                        mdi-plus
-                    </v-icon>
+                    <v-icon color="primary" size="18"> mdi-plus </v-icon>
                     <input
                         v-model="newTodoName"
                         placeholder="Add a task…"
                         class="add-task-input flex-grow-1"
                         @keydown.enter="addTodo"
-                    >
+                    />
                 </div>
             </div>
 
