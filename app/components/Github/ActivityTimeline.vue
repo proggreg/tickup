@@ -137,140 +137,61 @@ watch(() => props.repoName, load);
         <template v-else>
             <div
                 v-if="repoFullName"
-                class="activity-repo d-flex align-center ga-2 mb-4"
+                class="d-flex align-center ga-2 mb-4"
             >
                 <v-icon
                     icon="mdi-github"
                     size="20"
                 />
-                <span class="activity-repo__name">{{ repoFullName }}</span>
+                <span class="text-body-2 text-medium-emphasis">{{ repoFullName }}</span>
             </div>
 
             <div
                 v-for="group in days"
                 :key="group.label"
-                class="activity-day"
+                class="mb-6"
             >
-                <div class="activity-day__label">
+                <div
+                    class="text-caption text-medium-emphasis text-uppercase font-weight-bold mb-2"
+                    style="letter-spacing: 0.04em"
+                >
                     {{ group.label }}
                 </div>
-                <div class="activity-day__rail">
-                    <div class="activity-day__line" />
-                    <div
+                <v-timeline
+                    density="compact"
+                    align="start"
+                    side="end"
+                    truncate-line="both"
+                >
+                    <v-timeline-item
                         v-for="evt in group.events"
                         :key="evt.id"
-                        class="activity-event"
+                        size="small"
+                        :icon="iconFor[evt.type]"
+                        :dot-color="tintFor[evt.type]"
+                        :icon-color="iconColorFor[evt.type]"
                     >
-                        <div
-                            class="activity-event__dot"
-                            :style="{ background: tintFor[evt.type] }"
-                        >
-                            <v-icon
-                                :icon="iconFor[evt.type]"
-                                size="12"
-                                :color="iconColorFor[evt.type]"
-                            />
+                        <div class="d-flex align-center ga-2">
+                            <a
+                                :href="evt.url"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-body-2 font-weight-bold text-truncate text-decoration-none text-high-emphasis flex-grow-1"
+                            >
+                                {{ evt.summary }}
+                            </a>
+                            <span class="text-caption text-medium-emphasis text-no-wrap">
+                                {{
+                                    new Date(evt.createdAt).toLocaleTimeString('en-US', {
+                                        hour: 'numeric',
+                                        minute: '2-digit',
+                                    })
+                                }}
+                            </span>
                         </div>
-                        <a
-                            :href="evt.url"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="activity-event__summary text-truncate"
-                        >
-                            {{ evt.summary }}
-                        </a>
-                        <div class="activity-event__time">
-                            {{
-                                new Date(evt.createdAt).toLocaleTimeString('en-US', {
-                                    hour: 'numeric',
-                                    minute: '2-digit',
-                                })
-                            }}
-                        </div>
-                    </div>
-                </div>
+                    </v-timeline-item>
+                </v-timeline>
             </div>
         </template>
     </div>
 </template>
-
-<style scoped>
-.activity-repo__name {
-    font-size: 0.8125rem;
-    color: rgba(42, 52, 57, 0.6);
-}
-
-.activity-day {
-    margin-bottom: 24px;
-}
-
-.activity-day__label {
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: rgba(42, 52, 57, 0.6);
-    margin-bottom: 10px;
-}
-
-.activity-day__rail {
-    position: relative;
-    padding-left: 30px;
-}
-
-.activity-day__line {
-    position: absolute;
-    left: 9px;
-    top: 4px;
-    bottom: 4px;
-    width: 2px;
-    background: rgba(113, 124, 130, 0.16);
-}
-
-.activity-event {
-    position: relative;
-    padding: 9px 0 9px 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.activity-event__dot {
-    position: absolute;
-    left: -30px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-    flex-shrink: 0;
-}
-
-.activity-event__summary {
-    flex: 1;
-    min-width: 0;
-    font-family: Manrope, sans-serif;
-    font-weight: 700;
-    font-size: 0.9375rem;
-    color: #2a3439;
-    text-decoration: none;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.activity-event__summary:hover {
-    color: #005ac2;
-}
-
-.activity-event__time {
-    font-size: 0.8125rem;
-    color: rgba(42, 52, 57, 0.6);
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-</style>
