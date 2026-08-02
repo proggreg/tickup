@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
 
-type View = 'list' | 'table' | 'board';
+type View = 'list' | 'table' | 'board' | 'activity';
 
 const currentView = ref<View>('list');
 const newTodoName = ref('');
@@ -34,25 +34,40 @@ async function addTodo() {
     newTodoName.value = '';
 }
 
-const views: { key: View; icon: string; label: string }[] = [
+const baseViews: { key: View; icon: string; label: string }[] = [
     { key: 'list', icon: 'mdi-format-list-bulleted', label: 'List' },
     { key: 'table', icon: 'mdi-table', label: 'Table' },
     { key: 'board', icon: 'mdi-view-column-outline', label: 'Board' },
 ];
+
+const views = computed(() => {
+    if (!listsStore.currentList?.githubRepo) return baseViews;
+    return [...baseViews, { key: 'activity' as View, icon: 'mdi-github', label: 'Activity' }];
+});
 </script>
 
 <template>
     <div class="overflow-y-auto fill-height flex-grow-1">
-        <div class="mx-auto px-7 pt-7 pb-12" style="width: 100%">
+        <div
+            class="mx-auto px-7 pt-7 pb-12"
+            style="width: 100%"
+        >
             <div>
                 <!-- Header -->
-                <v-row no-gutters align="center" class="mb-4 flex-nowrap ga-3">
+                <v-row
+                    no-gutters
+                    align="center"
+                    class="mb-4 flex-nowrap ga-3"
+                >
                     <v-col class="overflow-hidden">
                         <h1 class="list-title text-truncate ma-0">
                             {{ listsStore.currentList?.name }}
                         </h1>
                     </v-col>
-                    <v-col cols="auto" class="d-flex align-center ga-3 flex-shrink-0">
+                    <v-col
+                        cols="auto"
+                        class="d-flex align-center ga-3 flex-shrink-0"
+                    >
                         <span
                             class="text-medium-emphasis text-body-2 font-weight-medium text-no-wrap"
                         >
@@ -80,13 +95,18 @@ const views: { key: View; icon: string; label: string }[] = [
                     class="add-task-bar d-flex align-center px-4 mb-5 ga-3"
                     data-testid="new-todo-input"
                 >
-                    <v-icon color="primary" size="18"> mdi-plus </v-icon>
+                    <v-icon
+                        color="primary"
+                        size="18"
+                    >
+                        mdi-plus
+                    </v-icon>
                     <input
                         v-model="newTodoName"
                         placeholder="Add a task…"
                         class="add-task-input flex-grow-1"
                         @keydown.enter="addTodo"
-                    />
+                    >
                 </div>
             </div>
 
@@ -109,6 +129,10 @@ const views: { key: View; icon: string; label: string }[] = [
                 <ListTable />
             </div>
             <Board v-else-if="currentView === 'board'" />
+            <GithubActivityTimeline
+                v-else-if="currentView === 'activity'"
+                :repo-name="listsStore.currentList.githubRepo"
+            />
         </div>
     </div>
 </template>
