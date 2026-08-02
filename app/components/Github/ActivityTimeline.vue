@@ -59,6 +59,10 @@ function dayLabel(dateStr: string): string {
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+const latestDeploymentUrl = computed(
+    () => events.value.find((evt) => evt.type === 'deployment')?.url,
+);
+
 const days = computed<DayGroup[]>(() => {
     const groups: DayGroup[] = [];
     for (const evt of events.value) {
@@ -141,9 +145,21 @@ watch(() => [props.repoName, props.branch, props.vercelProjectId], load);
         />
 
         <template v-else>
-            <div v-if="repoFullName" class="d-flex align-center ga-2 mb-4">
-                <v-icon icon="mdi-github" size="20" />
-                <span class="text-body-2 text-medium-emphasis">{{ repoFullName }}</span>
+            <div v-if="repoFullName" class="d-flex align-center ga-4 mb-4">
+                <div class="d-flex align-center ga-2">
+                    <v-icon icon="mdi-github" size="20" />
+                    <span class="text-body-2 text-medium-emphasis">{{ repoFullName }}</span>
+                </div>
+                <a
+                    v-if="latestDeploymentUrl"
+                    :href="latestDeploymentUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="d-flex align-center ga-2 text-decoration-none"
+                >
+                    <v-icon icon="mdi-triangle" size="14" />
+                    <span class="text-body-2 text-medium-emphasis">Vercel</span>
+                </a>
             </div>
 
             <div v-for="group in days" :key="group.label" class="mb-6">
