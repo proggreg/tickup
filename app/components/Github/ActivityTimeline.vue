@@ -69,11 +69,19 @@ const days = computed<DayGroup[]>(() => {
     return groups;
 });
 
-async function resolveOwner(): Promise<string | null> {
+// currentTodo.githubRepo may already be "owner/repo" (set by GithubButton's
+// selectedRepo.full_name) or just the bare repo name (older data) — handle both.
+function parseOwnerRepo(): { owner: string; repo: string } | null {
+    if (!props.repoName.includes('/')) return null;
+    const [owner, repo] = props.repoName.split('/');
+    return owner && repo ? { owner, repo } : null;
+}
+
+async function resolveOwner(repo: string): Promise<string | null> {
     try {
         const data = await $fetch<{ repositories: Repo[] }>('/api/github/repos');
-        const repo = data.repositories.find((r) => r.name === props.repoName);
-        return repo?.full_name?.split('/').shift() ?? null;
+        const match = data.repositories.find((r) => r.name === repo);
+        return match?.full_name?.split('/').shift() ?? null;
     } catch {
         return null;
     }
@@ -84,20 +92,23 @@ async function load() {
     loading.value = true;
     error.value = '';
     try {
-        const owner = await resolveOwner();
+        const direct = parseOwnerRepo();
+        const repo = direct?.repo ?? props.repoName;
+        const owner = direct?.owner ?? (await resolveOwner(repo));
         if (!owner) {
             error.value = 'Could not find repository owner';
             return;
         }
-        repoFullName.value = `${owner}/${props.repoName}`;
+        repoFullName.value = `${owner}/${repo}`;
         const data = await $fetch<{ events: ActivityEvent[] }>('/api/github/activity', {
-            query: { owner, repo: props.repoName, branch: props.branch },
+            query: { owner, repo, branch: props.branch },
         });
         events.value = data.events;
     } catch (e: any) {
         error.value = e?.data?.message || 'Failed to load GitHub activity';
+    } finally {
+        loading.value = false;
     }
-    loading.value = false;
 }
 
 onMounted(load);
