@@ -17,7 +17,7 @@ export interface RawRepoEvent {
         ref_type?: string;
         action?: string;
         commits?: { sha: string; message: string }[];
-        pull_request?: { title: string; html_url: string; merged: boolean };
+        pull_request?: { number: number; title: string; merged: boolean };
     };
 }
 
@@ -46,8 +46,8 @@ export function normalizeEvent(event: RawRepoEvent, repoFullName: string): Githu
             {
                 id: event.id,
                 type: 'pr' as const,
-                summary: `${merged ? 'Merged PR' : 'Opened PR'}: ${pr.title}`,
-                url: pr.html_url,
+                summary: `${merged ? 'Merged PR' : 'Opened PR'}: #${pr.number}`,
+                url: `https://github.com/${repoFullName}/pull/${pr.number}`,
                 createdAt,
             },
         ];
@@ -75,7 +75,7 @@ export function buildActivityFeed(
     repoFullName: string,
 ): GithubActivityEvent[] {
     return rawEvents
-        .flatMap(raw => normalizeEvent(raw, repoFullName))
+        .flatMap((raw) => normalizeEvent(raw, repoFullName))
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .slice(0, 40);
 }
