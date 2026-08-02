@@ -24,6 +24,8 @@ export interface RawRepoEvent {
 export interface RawVercelDeployment {
     uid: string;
     url: string;
+    name?: string;
+    inspectorUrl?: string;
     state?: string;
     readyState?: string;
     createdAt?: number;
@@ -61,7 +63,7 @@ export function normalizeVercelDeployment(
         id: `vercel-${deployment.uid}`,
         type: 'deployment',
         summary: `Deployment: ${state.toLowerCase()}`,
-        url: `https://${deployment.url}`,
+        url: deployment.inspectorUrl || `https://${deployment.url}`,
         createdAt: new Date(createdAtMs).toISOString(),
     };
 }

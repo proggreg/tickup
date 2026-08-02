@@ -177,6 +177,19 @@ describe('normalizeVercelDeployment', () => {
         });
     });
 
+    it('prefers inspectorUrl (Vercel dashboard link) over the deployed site url', () => {
+        const result = normalizeVercelDeployment(
+            vercelDeployment({
+                inspectorUrl:
+                    'https://vercel.com/greg-fields-projects/tickup/4AMr8F1MShYG1v581TGNzeVgg5am',
+            }),
+        );
+
+        expect(result?.url).toBe(
+            'https://vercel.com/greg-fields-projects/tickup/4AMr8F1MShYG1v581TGNzeVgg5am',
+        );
+    });
+
     it('maps an ERROR deployment to a deployment entry', () => {
         const result = normalizeVercelDeployment(vercelDeployment({ readyState: 'ERROR' }));
 

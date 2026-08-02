@@ -11,6 +11,31 @@ import {
     type RawVercelDeployment,
 } from '../../utils/githubActivity';
 
+async function resolveVercelOwnerSlug(
+    accessToken: string,
+    teamId?: string | null,
+): Promise<string | null> {
+    try {
+        if (teamId) {
+            const res = await fetch(`https://api.vercel.com/v2/teams/${teamId}`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+            if (!res.ok) return null;
+            const team: { slug?: string } = await res.json();
+            return team.slug ?? null;
+        }
+
+        const res = await fetch('https://api.vercel.com/v2/user', {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        if (!res.ok) return null;
+        const data: { user?: { username?: string } } = await res.json();
+        return data.user?.username ?? null;
+    } catch {
+        return null;
+    }
+}
+
 async function fetchVercelDeploymentEvents(
     supabase: Awaited<ReturnType<typeof serverSupabaseClient<Database>>>,
     userId: string,
@@ -31,14 +56,25 @@ async function fetchVercelDeploymentEvents(
             params.set('teamId', userData.vercel_team_id);
         }
 
-        const res = await fetch(`https://api.vercel.com/v6/deployments?${params.toString()}`, {
-            headers: { Authorization: `Bearer ${userData.vercel_access_token}` },
-        });
+        const [res, ownerSlug] = await Promise.all([
+            fetch(`https://api.vercel.com/v6/deployments?${params.toString()}`, {
+                headers: { Authorization: `Bearer ${userData.vercel_access_token}` },
+            }),
+            resolveVercelOwnerSlug(userData.vercel_access_token, userData.vercel_team_id),
+        ]);
         if (!res.ok) return [];
 
         const data: { deployments?: RawVercelDeployment[] } = await res.json();
         return (data.deployments ?? [])
-            .map((deployment) => normalizeVercelDeployment(deployment, branch))
+            .map((deployment) => {
+                if (ownerSlug && deployment.name) {
+                    deployment = {
+                        ...deployment,
+                        inspectorUrl: `https://vercel.com/${ownerSlug}/${deployment.name}/${deployment.uid.replace(/^dpl_/, '')}`,
+                    };
+                }
+                return normalizeVercelDeployment(deployment, branch);
+            })
             .filter((e): e is GithubActivityEvent => e !== null);
     } catch (error) {
         console.error('Error loading Vercel deployment activity:', error);
