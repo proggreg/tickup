@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Repo } from '~/components/Github/RepoSelect.vue';
 
-type EventType = 'commit' | 'pr' | 'branch';
+type EventType = 'commit' | 'pr' | 'branch' | 'deployment' | 'workflow';
 
 interface ActivityEvent {
     id: string;
@@ -30,18 +30,24 @@ const iconFor: Record<EventType, string> = {
     commit: 'mdi-source-commit',
     pr: 'mdi-source-pull',
     branch: 'mdi-source-branch',
+    deployment: 'mdi-rocket-launch-outline',
+    workflow: 'mdi-cog-play-outline',
 };
 
 const tintFor: Record<EventType, string> = {
     commit: '#d8e2ff',
     pr: '#d3f5df',
     branch: '#e1e9ee',
+    deployment: '#f3e5f5',
+    workflow: '#fff3d6',
 };
 
 const iconColorFor: Record<EventType, string> = {
     commit: '#004eaa',
     pr: '#1b8a3d',
     branch: 'rgba(42, 52, 57, 0.6)',
+    deployment: '#7b1fa2',
+    workflow: '#a15c00',
 };
 
 function dayLabel(dateStr: string): string {

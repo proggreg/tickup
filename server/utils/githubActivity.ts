@@ -1,4 +1,4 @@
-export type GithubActivityEventType = 'commit' | 'pr' | 'branch';
+export type GithubActivityEventType = 'commit' | 'pr' | 'branch' | 'deployment' | 'workflow';
 
 export interface GithubActivityEvent {
     id: string;
@@ -18,8 +18,18 @@ export interface RawRepoEvent {
         action?: string;
         commits?: { sha: string; message: string }[];
         pull_request?: { number: number; title: string; merged: boolean; head?: { ref: string } };
+        deployment_status?: { state: string; target_url?: string };
+        deployment?: { ref: string };
+        workflow_run?: {
+            name: string;
+            head_branch: string;
+            conclusion: string | null;
+            html_url: string;
+        };
     };
 }
+
+const DEPLOYMENT_STATES_SHOWN = new Set(['success', 'failure', 'error']);
 
 function matchesBranch(event: RawRepoEvent, branch: string): boolean {
     if (event.type === 'PushEvent') {
@@ -30,6 +40,12 @@ function matchesBranch(event: RawRepoEvent, branch: string): boolean {
     }
     if (event.type === 'CreateEvent' && event.payload?.ref_type === 'branch') {
         return event.payload?.ref === branch;
+    }
+    if (event.type === 'DeploymentStatusEvent') {
+        return event.payload?.deployment?.ref === branch;
+    }
+    if (event.type === 'WorkflowRunEvent') {
+        return event.payload?.workflow_run?.head_branch === branch;
     }
     return false;
 }
@@ -75,6 +91,35 @@ export function normalizeEvent(event: RawRepoEvent, repoFullName: string): Githu
                 type: 'branch' as const,
                 summary: `Created branch ${ref}`,
                 url: `https://github.com/${repoFullName}/tree/${ref}`,
+                createdAt,
+            },
+        ];
+    }
+
+    if (event.type === 'DeploymentStatusEvent') {
+        const status = event.payload?.deployment_status;
+        if (!status || !DEPLOYMENT_STATES_SHOWN.has(status.state)) return [];
+        return [
+            {
+                id: event.id,
+                type: 'deployment' as const,
+                summary: `Deployment: ${status.state}`,
+                url: status.target_url || `https://github.com/${repoFullName}`,
+                createdAt,
+            },
+        ];
+    }
+
+    if (event.type === 'WorkflowRunEvent') {
+        if (event.payload?.action !== 'completed') return [];
+        const run = event.payload?.workflow_run;
+        if (!run || !run.conclusion) return [];
+        return [
+            {
+                id: event.id,
+                type: 'workflow' as const,
+                summary: `${run.name}: ${run.conclusion}`,
+                url: run.html_url,
                 createdAt,
             },
         ];
