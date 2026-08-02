@@ -1,4 +1,4 @@
-export type GithubActivityEventType = 'commit' | 'pr' | 'branch' | 'deployment' | 'workflow';
+export type GithubActivityEventType = 'commit' | 'pr' | 'branch' | 'deployment';
 
 export interface GithubActivityEvent {
     id: string;
@@ -18,18 +18,20 @@ export interface RawRepoEvent {
         action?: string;
         commits?: { sha: string; message: string }[];
         pull_request?: { number: number; title: string; merged: boolean; head?: { ref: string } };
-        deployment_status?: { state: string; target_url?: string };
-        deployment?: { ref: string };
-        workflow_run?: {
-            name: string;
-            head_branch: string;
-            conclusion: string | null;
-            html_url: string;
-        };
     };
 }
 
-const DEPLOYMENT_STATES_SHOWN = new Set(['success', 'failure', 'error']);
+export interface RawVercelDeployment {
+    uid: string;
+    url: string;
+    state?: string;
+    readyState?: string;
+    createdAt?: number;
+    created?: number;
+    meta?: { githubCommitRef?: string };
+}
+
+const VERCEL_STATES_SHOWN = new Set(['READY', 'ERROR', 'CANCELED']);
 
 function matchesBranch(event: RawRepoEvent, branch: string): boolean {
     if (event.type === 'PushEvent') {
@@ -41,13 +43,27 @@ function matchesBranch(event: RawRepoEvent, branch: string): boolean {
     if (event.type === 'CreateEvent' && event.payload?.ref_type === 'branch') {
         return event.payload?.ref === branch;
     }
-    if (event.type === 'DeploymentStatusEvent') {
-        return event.payload?.deployment?.ref === branch;
-    }
-    if (event.type === 'WorkflowRunEvent') {
-        return event.payload?.workflow_run?.head_branch === branch;
-    }
     return false;
+}
+
+export function normalizeVercelDeployment(
+    deployment: RawVercelDeployment,
+    branch?: string,
+): GithubActivityEvent | null {
+    const state = (deployment.readyState || deployment.state || '').toUpperCase();
+    if (!VERCEL_STATES_SHOWN.has(state)) return null;
+    if (branch && deployment.meta?.githubCommitRef !== branch) return null;
+
+    const createdAtMs = deployment.createdAt ?? deployment.created;
+    if (!createdAtMs) return null;
+
+    return {
+        id: `vercel-${deployment.uid}`,
+        type: 'deployment',
+        summary: `Deployment: ${state.toLowerCase()}`,
+        url: `https://${deployment.url}`,
+        createdAt: new Date(createdAtMs).toISOString(),
+    };
 }
 
 export function normalizeEvent(event: RawRepoEvent, repoFullName: string): GithubActivityEvent[] {
@@ -96,36 +112,14 @@ export function normalizeEvent(event: RawRepoEvent, repoFullName: string): Githu
         ];
     }
 
-    if (event.type === 'DeploymentStatusEvent') {
-        const status = event.payload?.deployment_status;
-        if (!status || !DEPLOYMENT_STATES_SHOWN.has(status.state)) return [];
-        return [
-            {
-                id: event.id,
-                type: 'deployment' as const,
-                summary: `Deployment: ${status.state}`,
-                url: status.target_url || `https://github.com/${repoFullName}`,
-                createdAt,
-            },
-        ];
-    }
-
-    if (event.type === 'WorkflowRunEvent') {
-        if (event.payload?.action !== 'completed') return [];
-        const run = event.payload?.workflow_run;
-        if (!run || !run.conclusion) return [];
-        return [
-            {
-                id: event.id,
-                type: 'workflow' as const,
-                summary: `${run.name}: ${run.conclusion}`,
-                url: run.html_url,
-                createdAt,
-            },
-        ];
-    }
-
     return [];
+}
+
+export function sortAndCapFeed(events: GithubActivityEvent[]): GithubActivityEvent[] {
+    return events
+        .slice()
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 40);
 }
 
 export function buildActivityFeed(
@@ -134,8 +128,5 @@ export function buildActivityFeed(
     branch?: string,
 ): GithubActivityEvent[] {
     const scopedEvents = branch ? rawEvents.filter((e) => matchesBranch(e, branch)) : rawEvents;
-    return scopedEvents
-        .flatMap((raw) => normalizeEvent(raw, repoFullName))
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-        .slice(0, 40);
+    return sortAndCapFeed(scopedEvents.flatMap((raw) => normalizeEvent(raw, repoFullName)));
 }

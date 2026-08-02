@@ -101,6 +101,7 @@ async function deleteTodo() {
                     <GithubActivityTimeline
                         :repo-name="listsStore.currentTodo.githubRepo"
                         :branch="listsStore.currentTodo.githubBranchName"
+                        :vercel-project-id="listsStore.currentTodo.vercelProjectId"
                     />
                 </v-col>
             </template>

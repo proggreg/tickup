@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Repo } from '~/components/Github/RepoSelect.vue';
 
-type EventType = 'commit' | 'pr' | 'branch' | 'deployment' | 'workflow';
+type EventType = 'commit' | 'pr' | 'branch' | 'deployment';
 
 interface ActivityEvent {
     id: string;
@@ -19,6 +19,7 @@ interface DayGroup {
 const props = defineProps<{
     repoName: string;
     branch?: string;
+    vercelProjectId?: string;
 }>();
 
 const loading = ref(false);
@@ -31,7 +32,6 @@ const iconFor: Record<EventType, string> = {
     pr: 'mdi-source-pull',
     branch: 'mdi-source-branch',
     deployment: 'mdi-rocket-launch-outline',
-    workflow: 'mdi-cog-play-outline',
 };
 
 const tintFor: Record<EventType, string> = {
@@ -39,7 +39,6 @@ const tintFor: Record<EventType, string> = {
     pr: '#d3f5df',
     branch: '#e1e9ee',
     deployment: '#f3e5f5',
-    workflow: '#fff3d6',
 };
 
 const iconColorFor: Record<EventType, string> = {
@@ -47,7 +46,6 @@ const iconColorFor: Record<EventType, string> = {
     pr: '#1b8a3d',
     branch: 'rgba(42, 52, 57, 0.6)',
     deployment: '#7b1fa2',
-    workflow: '#a15c00',
 };
 
 function dayLabel(dateStr: string): string {
@@ -107,7 +105,7 @@ async function load() {
         }
         repoFullName.value = `${owner}/${repo}`;
         const data = await $fetch<{ events: ActivityEvent[] }>('/api/github/activity', {
-            query: { owner, repo, branch: props.branch },
+            query: { owner, repo, branch: props.branch, vercelProjectId: props.vercelProjectId },
         });
         events.value = data.events;
     } catch (e: any) {
@@ -118,7 +116,7 @@ async function load() {
 }
 
 onMounted(load);
-watch(() => [props.repoName, props.branch], load);
+watch(() => [props.repoName, props.branch, props.vercelProjectId], load);
 </script>
 
 <template>

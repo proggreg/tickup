@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import {
     buildActivityFeed,
     normalizeEvent,
+    normalizeVercelDeployment,
     type RawRepoEvent,
+    type RawVercelDeployment,
 } from '../../../server/utils/githubActivity';
 
 const REPO = 'proggreg/tickup';
@@ -47,37 +49,13 @@ function createBranchEvent(overrides: Partial<RawRepoEvent> = {}): RawRepoEvent 
     };
 }
 
-function deploymentStatusEvent(overrides: Partial<RawRepoEvent> = {}): RawRepoEvent {
+function vercelDeployment(overrides: Partial<RawVercelDeployment> = {}): RawVercelDeployment {
     return {
-        id: 'deploy-1',
-        type: 'DeploymentStatusEvent',
-        created_at: '2026-08-02T15:00:00Z',
-        payload: {
-            action: 'created',
-            deployment_status: {
-                state: 'success',
-                target_url: 'https://tickup-git-fix-overdue-badge.vercel.app',
-            },
-            deployment: { ref: 'fix/overdue-badge' },
-        },
-        ...overrides,
-    };
-}
-
-function workflowRunEvent(overrides: Partial<RawRepoEvent> = {}): RawRepoEvent {
-    return {
-        id: 'workflow-1',
-        type: 'WorkflowRunEvent',
-        created_at: '2026-08-02T15:05:00Z',
-        payload: {
-            action: 'completed',
-            workflow_run: {
-                name: 'Playwright Tests Only',
-                head_branch: 'fix/overdue-badge',
-                conclusion: 'success',
-                html_url: `https://github.com/${REPO}/actions/runs/123`,
-            },
-        },
+        uid: 'dpl_1',
+        url: 'tickup-git-fix-overdue-badge-greg-fields-projects.vercel.app',
+        readyState: 'READY',
+        createdAt: Date.parse('2026-08-02T15:00:00Z'),
+        meta: { githubCommitRef: 'fix/overdue-badge' },
         ...overrides,
     };
 }
@@ -186,67 +164,63 @@ describe('normalizeEvent', () => {
 
         expect(normalizeEvent(event, REPO)).toEqual([]);
     });
+});
 
-    it('maps a successful DeploymentStatusEvent to a deployment entry', () => {
-        const [result] = normalizeEvent(deploymentStatusEvent(), REPO);
+describe('normalizeVercelDeployment', () => {
+    it('maps a READY deployment to a deployment entry', () => {
+        const result = normalizeVercelDeployment(vercelDeployment());
 
         expect(result).toMatchObject({
             type: 'deployment',
-            summary: 'Deployment: success',
-            url: 'https://tickup-git-fix-overdue-badge.vercel.app',
+            summary: 'Deployment: ready',
+            url: 'https://tickup-git-fix-overdue-badge-greg-fields-projects.vercel.app',
         });
     });
 
-    it('maps a failed DeploymentStatusEvent to a deployment entry', () => {
-        const event = deploymentStatusEvent({
-            payload: {
-                action: 'created',
-                deployment_status: { state: 'failure', target_url: 'https://example.com/logs' },
-                deployment: { ref: 'fix/overdue-badge' },
-            },
-        });
+    it('maps an ERROR deployment to a deployment entry', () => {
+        const result = normalizeVercelDeployment(vercelDeployment({ readyState: 'ERROR' }));
 
-        const [result] = normalizeEvent(event, REPO);
-
-        expect(result.summary).toBe('Deployment: failure');
+        expect(result?.summary).toBe('Deployment: error');
     });
 
-    it('drops an in-progress DeploymentStatusEvent', () => {
-        const event = deploymentStatusEvent({
-            payload: {
-                action: 'created',
-                deployment_status: { state: 'in_progress' },
-                deployment: { ref: 'fix/overdue-badge' },
-            },
-        });
-
-        expect(normalizeEvent(event, REPO)).toEqual([]);
+    it('drops a BUILDING deployment (not a terminal state)', () => {
+        expect(normalizeVercelDeployment(vercelDeployment({ readyState: 'BUILDING' }))).toBeNull();
     });
 
-    it('maps a completed WorkflowRunEvent to a workflow entry', () => {
-        const [result] = normalizeEvent(workflowRunEvent(), REPO);
-
-        expect(result).toMatchObject({
-            type: 'workflow',
-            summary: 'Playwright Tests Only: success',
-            url: `https://github.com/${REPO}/actions/runs/123`,
-        });
+    it('drops a QUEUED deployment (not a terminal state)', () => {
+        expect(normalizeVercelDeployment(vercelDeployment({ readyState: 'QUEUED' }))).toBeNull();
     });
 
-    it('drops a WorkflowRunEvent that is not yet completed', () => {
-        const event = workflowRunEvent({
-            payload: {
-                action: 'in_progress',
-                workflow_run: {
-                    name: 'Playwright Tests Only',
-                    head_branch: 'fix/overdue-badge',
-                    conclusion: null,
-                    html_url: `https://github.com/${REPO}/actions/runs/123`,
-                },
-            },
+    it('drops a deployment with no createdAt/created timestamp', () => {
+        const deployment = vercelDeployment({ createdAt: undefined, created: undefined });
+
+        expect(normalizeVercelDeployment(deployment)).toBeNull();
+    });
+
+    it('falls back to the "state" field when "readyState" is absent', () => {
+        const deployment = vercelDeployment({ readyState: undefined, state: 'READY' });
+
+        expect(normalizeVercelDeployment(deployment)?.summary).toBe('Deployment: ready');
+    });
+
+    describe('branch scoping', () => {
+        it('keeps a deployment whose githubCommitRef matches the branch', () => {
+            const result = normalizeVercelDeployment(vercelDeployment(), 'fix/overdue-badge');
+
+            expect(result).not.toBeNull();
         });
 
-        expect(normalizeEvent(event, REPO)).toEqual([]);
+        it('drops a deployment whose githubCommitRef does not match the branch', () => {
+            const result = normalizeVercelDeployment(vercelDeployment(), 'main');
+
+            expect(result).toBeNull();
+        });
+
+        it('keeps any-branch deployments when no branch filter is given', () => {
+            const result = normalizeVercelDeployment(vercelDeployment());
+
+            expect(result).not.toBeNull();
+        });
     });
 });
 
@@ -345,42 +319,6 @@ describe('buildActivityFeed', () => {
             );
 
             expect(feed.map((e) => e.id)).toEqual(['create-1']);
-        });
-
-        it('keeps a DeploymentStatusEvent whose deployment ref matches the branch and drops others', () => {
-            const onBranch = deploymentStatusEvent();
-            const offBranch = deploymentStatusEvent({
-                id: 'deploy-2',
-                payload: {
-                    action: 'created',
-                    deployment_status: { state: 'success', target_url: 'https://example.com' },
-                    deployment: { ref: 'main' },
-                },
-            });
-
-            const feed = buildActivityFeed([onBranch, offBranch], REPO, 'fix/overdue-badge');
-
-            expect(feed.map((e) => e.id)).toEqual(['deploy-1']);
-        });
-
-        it('keeps a WorkflowRunEvent whose head branch matches the branch and drops others', () => {
-            const onBranch = workflowRunEvent();
-            const offBranch = workflowRunEvent({
-                id: 'workflow-2',
-                payload: {
-                    action: 'completed',
-                    workflow_run: {
-                        name: 'Playwright Tests Only',
-                        head_branch: 'main',
-                        conclusion: 'success',
-                        html_url: `https://github.com/${REPO}/actions/runs/124`,
-                    },
-                },
-            });
-
-            const feed = buildActivityFeed([onBranch, offBranch], REPO, 'fix/overdue-badge');
-
-            expect(feed.map((e) => e.id)).toEqual(['workflow-1']);
         });
 
         it('returns the unfiltered repo-wide feed when no branch is given', () => {
