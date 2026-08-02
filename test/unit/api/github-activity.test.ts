@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import {
     buildActivityFeed,
     normalizeEvent,
+    normalizeVercelDeployment,
     type RawRepoEvent,
+    type RawVercelDeployment,
 } from '../../../server/utils/githubActivity';
 
 const REPO = 'proggreg/tickup';
@@ -27,9 +29,10 @@ function pullRequestEvent(overrides: Partial<RawRepoEvent> = {}): RawRepoEvent {
         payload: {
             action: 'opened',
             pull_request: {
+                number: 42,
                 title: 'Fix overdue badge on list cards',
-                html_url: `https://github.com/${REPO}/pull/42`,
                 merged: false,
+                head: { ref: 'fix/overdue-badge' },
             },
         },
         ...overrides,
@@ -42,6 +45,17 @@ function createBranchEvent(overrides: Partial<RawRepoEvent> = {}): RawRepoEvent 
         type: 'CreateEvent',
         created_at: '2026-08-01T16:30:00Z',
         payload: { ref: 'feature/kanban-drag', ref_type: 'branch' },
+        ...overrides,
+    };
+}
+
+function vercelDeployment(overrides: Partial<RawVercelDeployment> = {}): RawVercelDeployment {
+    return {
+        uid: 'dpl_1',
+        url: 'tickup-git-fix-overdue-badge-greg-fields-projects.vercel.app',
+        readyState: 'READY',
+        createdAt: Date.parse('2026-08-02T15:00:00Z'),
+        meta: { githubCommitRef: 'fix/overdue-badge' },
         ...overrides,
     };
 }
@@ -79,7 +93,7 @@ describe('normalizeEvent', () => {
 
         expect(result).toMatchObject({
             type: 'pr',
-            summary: 'Opened PR: Fix overdue badge on list cards',
+            summary: 'Opened PR: #42',
             url: `https://github.com/${REPO}/pull/42`,
         });
     });
@@ -89,16 +103,17 @@ describe('normalizeEvent', () => {
             payload: {
                 action: 'closed',
                 pull_request: {
+                    number: 41,
                     title: 'Search full-text index',
-                    html_url: `https://github.com/${REPO}/pull/41`,
                     merged: true,
+                    head: { ref: 'feature/search-index' },
                 },
             },
         });
 
         const [result] = normalizeEvent(event, REPO);
 
-        expect(result.summary).toBe('Merged PR: Search full-text index');
+        expect(result.summary).toBe('Merged PR: #41');
     });
 
     it('drops a closed-but-not-merged PullRequestEvent', () => {
@@ -106,9 +121,10 @@ describe('normalizeEvent', () => {
             payload: {
                 action: 'closed',
                 pull_request: {
+                    number: 99,
                     title: 'Abandoned change',
-                    html_url: `https://github.com/${REPO}/pull/99`,
                     merged: false,
+                    head: { ref: 'feature/abandoned' },
                 },
             },
         });
@@ -150,6 +166,77 @@ describe('normalizeEvent', () => {
     });
 });
 
+describe('normalizeVercelDeployment', () => {
+    it('maps a READY deployment to a deployment entry', () => {
+        const result = normalizeVercelDeployment(vercelDeployment());
+
+        expect(result).toMatchObject({
+            type: 'deployment',
+            summary: 'Deployment: ready',
+            url: 'https://tickup-git-fix-overdue-badge-greg-fields-projects.vercel.app',
+        });
+    });
+
+    it('prefers inspectorUrl (Vercel dashboard link) over the deployed site url', () => {
+        const result = normalizeVercelDeployment(
+            vercelDeployment({
+                inspectorUrl:
+                    'https://vercel.com/greg-fields-projects/tickup/4AMr8F1MShYG1v581TGNzeVgg5am',
+            }),
+        );
+
+        expect(result?.url).toBe(
+            'https://vercel.com/greg-fields-projects/tickup/4AMr8F1MShYG1v581TGNzeVgg5am',
+        );
+    });
+
+    it('maps an ERROR deployment to a deployment entry', () => {
+        const result = normalizeVercelDeployment(vercelDeployment({ readyState: 'ERROR' }));
+
+        expect(result?.summary).toBe('Deployment: error');
+    });
+
+    it('drops a BUILDING deployment (not a terminal state)', () => {
+        expect(normalizeVercelDeployment(vercelDeployment({ readyState: 'BUILDING' }))).toBeNull();
+    });
+
+    it('drops a QUEUED deployment (not a terminal state)', () => {
+        expect(normalizeVercelDeployment(vercelDeployment({ readyState: 'QUEUED' }))).toBeNull();
+    });
+
+    it('drops a deployment with no createdAt/created timestamp', () => {
+        const deployment = vercelDeployment({ createdAt: undefined, created: undefined });
+
+        expect(normalizeVercelDeployment(deployment)).toBeNull();
+    });
+
+    it('falls back to the "state" field when "readyState" is absent', () => {
+        const deployment = vercelDeployment({ readyState: undefined, state: 'READY' });
+
+        expect(normalizeVercelDeployment(deployment)?.summary).toBe('Deployment: ready');
+    });
+
+    describe('branch scoping', () => {
+        it('keeps a deployment whose githubCommitRef matches the branch', () => {
+            const result = normalizeVercelDeployment(vercelDeployment(), 'fix/overdue-badge');
+
+            expect(result).not.toBeNull();
+        });
+
+        it('drops a deployment whose githubCommitRef does not match the branch', () => {
+            const result = normalizeVercelDeployment(vercelDeployment(), 'main');
+
+            expect(result).toBeNull();
+        });
+
+        it('keeps any-branch deployments when no branch filter is given', () => {
+            const result = normalizeVercelDeployment(vercelDeployment());
+
+            expect(result).not.toBeNull();
+        });
+    });
+});
+
 describe('buildActivityFeed', () => {
     it('sorts merged events newest-first regardless of input order', () => {
         const oldest = createBranchEvent(); // 2026-08-01T16:30:00Z
@@ -187,5 +274,73 @@ describe('buildActivityFeed', () => {
         );
 
         expect(feed.map((e) => e.type)).toEqual(['pr', 'commit', 'branch']);
+    });
+
+    describe('branch scoping', () => {
+        it('keeps a PushEvent whose ref matches the branch and drops others', () => {
+            const onBranch = pushEvent({
+                payload: {
+                    ref: 'refs/heads/feature/x',
+                    commits: [{ sha: 'sha1', message: 'On branch' }],
+                },
+            });
+            const offBranch = pushEvent({
+                id: 'push-2',
+                payload: { ref: 'refs/heads/main', commits: [{ sha: 'sha2', message: 'On main' }] },
+            });
+
+            const feed = buildActivityFeed([onBranch, offBranch], REPO, 'feature/x');
+
+            expect(feed.map((e) => e.summary)).toEqual(['On branch']);
+        });
+
+        it('keeps a PullRequestEvent whose head ref matches the branch and drops others', () => {
+            const onBranch = pullRequestEvent();
+            const offBranch = pullRequestEvent({
+                id: 'pr-2',
+                payload: {
+                    action: 'opened',
+                    pull_request: {
+                        number: 43,
+                        title: 'Other',
+                        merged: false,
+                        head: { ref: 'other-branch' },
+                    },
+                },
+            });
+
+            const feed = buildActivityFeed([onBranch, offBranch], REPO, 'fix/overdue-badge');
+
+            expect(feed.map((e) => e.id)).toEqual(['pr-1']);
+        });
+
+        it('keeps a branch CreateEvent whose ref matches the branch and drops a tag CreateEvent', () => {
+            const branchCreated = createBranchEvent();
+            const tagCreated = createBranchEvent({
+                id: 'create-2',
+                payload: { ref: 'feature/kanban-drag', ref_type: 'tag' },
+            });
+            const otherBranch = createBranchEvent({
+                id: 'create-3',
+                payload: { ref: 'other-branch', ref_type: 'branch' },
+            });
+
+            const feed = buildActivityFeed(
+                [branchCreated, tagCreated, otherBranch],
+                REPO,
+                'feature/kanban-drag',
+            );
+
+            expect(feed.map((e) => e.id)).toEqual(['create-1']);
+        });
+
+        it('returns the unfiltered repo-wide feed when no branch is given', () => {
+            const feed = buildActivityFeed(
+                [createBranchEvent(), pushEvent(), pullRequestEvent()],
+                REPO,
+            );
+
+            expect(feed).toHaveLength(3);
+        });
     });
 });

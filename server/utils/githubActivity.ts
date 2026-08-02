@@ -1,4 +1,4 @@
-export type GithubActivityEventType = 'commit' | 'pr' | 'branch';
+export type GithubActivityEventType = 'commit' | 'pr' | 'branch' | 'deployment';
 
 export interface GithubActivityEvent {
     id: string;
@@ -17,7 +17,54 @@ export interface RawRepoEvent {
         ref_type?: string;
         action?: string;
         commits?: { sha: string; message: string }[];
-        pull_request?: { number: number; title: string; merged: boolean };
+        pull_request?: { number: number; title: string; merged: boolean; head?: { ref: string } };
+    };
+}
+
+export interface RawVercelDeployment {
+    uid: string;
+    url: string;
+    name?: string;
+    inspectorUrl?: string;
+    state?: string;
+    readyState?: string;
+    createdAt?: number;
+    created?: number;
+    meta?: { githubCommitRef?: string };
+}
+
+const VERCEL_STATES_SHOWN = new Set(['READY', 'ERROR', 'CANCELED']);
+
+function matchesBranch(event: RawRepoEvent, branch: string): boolean {
+    if (event.type === 'PushEvent') {
+        return event.payload?.ref === `refs/heads/${branch}`;
+    }
+    if (event.type === 'PullRequestEvent') {
+        return event.payload?.pull_request?.head?.ref === branch;
+    }
+    if (event.type === 'CreateEvent' && event.payload?.ref_type === 'branch') {
+        return event.payload?.ref === branch;
+    }
+    return false;
+}
+
+export function normalizeVercelDeployment(
+    deployment: RawVercelDeployment,
+    branch?: string,
+): GithubActivityEvent | null {
+    const state = (deployment.readyState || deployment.state || '').toUpperCase();
+    if (!VERCEL_STATES_SHOWN.has(state)) return null;
+    if (branch && deployment.meta?.githubCommitRef !== branch) return null;
+
+    const createdAtMs = deployment.createdAt ?? deployment.created;
+    if (!createdAtMs) return null;
+
+    return {
+        id: `vercel-${deployment.uid}`,
+        type: 'deployment',
+        summary: `Deployment: ${state.toLowerCase()}`,
+        url: deployment.inspectorUrl || `https://${deployment.url}`,
+        createdAt: new Date(createdAtMs).toISOString(),
     };
 }
 
@@ -70,12 +117,18 @@ export function normalizeEvent(event: RawRepoEvent, repoFullName: string): Githu
     return [];
 }
 
+export function sortAndCapFeed(events: GithubActivityEvent[]): GithubActivityEvent[] {
+    return events
+        .slice()
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 40);
+}
+
 export function buildActivityFeed(
     rawEvents: RawRepoEvent[],
     repoFullName: string,
+    branch?: string,
 ): GithubActivityEvent[] {
-    return rawEvents
-        .flatMap((raw) => normalizeEvent(raw, repoFullName))
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-        .slice(0, 40);
+    const scopedEvents = branch ? rawEvents.filter((e) => matchesBranch(e, branch)) : rawEvents;
+    return sortAndCapFeed(scopedEvents.flatMap((raw) => normalizeEvent(raw, repoFullName)));
 }

@@ -86,6 +86,25 @@ async function deleteTodo() {
             <v-col>
                 <TodoLinks />
             </v-col>
+
+            <template
+                v-if="
+                    hasGithub &&
+                    listsStore.currentTodo.githubRepo &&
+                    listsStore.currentTodo.githubBranchName
+                "
+            >
+                <v-divider />
+
+                <v-col>
+                    <div class="section-label">GitHub Activity</div>
+                    <GithubActivityTimeline
+                        :repo-name="listsStore.currentTodo.githubRepo"
+                        :branch="listsStore.currentTodo.githubBranchName"
+                        :vercel-project-id="listsStore.currentTodo.vercelProjectId"
+                    />
+                </v-col>
+            </template>
         </v-col>
 
         <v-col cols="auto" class="todo-sidebar flex-grow-1">
