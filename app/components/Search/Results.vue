@@ -56,7 +56,7 @@ function formatDate(dateStr: string) {
 
     <v-list v-else class="px-3 flex-grow-1 bg-transparent" style="overflow-y: auto">
         <v-list-item
-            v-for="item in store.results"
+            v-for="item in store.filteredResults"
             :key="item.id"
             :to="`/todo/${item.id}`"
             rounded="xl"

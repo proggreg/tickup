@@ -73,6 +73,22 @@ onMounted(() => {
                         autofocus
                         clearable
                     />
+                    <div
+                        v-if="searchStore.availableLists.length"
+                        class="d-flex flex-wrap ga-2 mt-2"
+                    >
+                        <v-chip
+                            v-for="list in searchStore.availableLists"
+                            :key="list.id"
+                            size="small"
+                            :variant="searchStore.selectedListId === list.id ? 'flat' : 'tonal'"
+                            :color="searchStore.selectedListId === list.id ? 'primary' : undefined"
+                            label
+                            @click="searchStore.selectList(list.id!)"
+                        >
+                            {{ list.name }}
+                        </v-chip>
+                    </div>
                 </v-card-item>
 
                 <v-divider />
