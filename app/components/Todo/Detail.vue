@@ -21,15 +21,9 @@ function setStatus(status: Status) {
     listsStore.updateTodo(listsStore.currentTodo);
 }
 
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-
-const isOverdue = computed(() => {
-    if (!listsStore.currentTodo.dueDate) return false;
-    const d = new Date(listsStore.currentTodo.dueDate);
-    d.setHours(0, 0, 0, 0);
-    return d < today && listsStore.currentTodo.status !== 'Closed';
-});
+const isOverdue = computed(() =>
+    isTodoOverdue(listsStore.currentTodo.dueDate, listsStore.currentTodo.status),
+);
 
 function updateDueDate(newDate: Date) {
     listsStore.currentTodo.dueDate = newDate;

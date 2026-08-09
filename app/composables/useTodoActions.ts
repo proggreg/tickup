@@ -32,7 +32,7 @@ export const useTodoActions = () => {
         if (!date) {
             return '';
         }
-        return new Date(date).toLocaleDateString('en-GB');
+        return new Date(date).toLocaleDateString('en-GB', { timeZone: 'UTC' });
     };
 
     return {

@@ -5,16 +5,10 @@ export default defineEventHandler(async (event) => {
     try {
         const supabase = await serverSupabaseClient(event);
 
-        const start = new Date();
-        start.setHours(0, 0, 0, 0);
+        const now = new Date();
+        const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
         const end = new Date(
-            start.getFullYear(),
-            start.getMonth(),
-            start.getDate(),
-            23,
-            59,
-            59,
-            999,
+            Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999),
         );
 
         const { data, error } = await supabase
@@ -28,9 +22,10 @@ export default defineEventHandler(async (event) => {
             return [];
         }
 
-        return data || [];
-    } catch (error) {
-        console.error("Error fetching today's tasks:", error);
+        return (data || []).map(mapTodoToTask);
+    }
+    catch (error) {
+        console.error('Error fetching today\'s tasks:', error);
         return [];
     }
 });

@@ -9,31 +9,25 @@ const itemProps = defineProps<{
 const emit = defineEmits(['TodoClicked', 'updateTodos']);
 
 const today = new Date();
-today.setHours(0, 0, 0, 0);
+today.setUTCHours(0, 0, 0, 0);
 
 function isOverdue(todo: Task) {
-    if (!todo.dueDate || todo.status === 'Closed') return false;
-    const d = new Date(todo.dueDate);
-    d.setHours(0, 0, 0, 0);
-    return d < today;
+    return isTodoOverdue(todo.dueDate, todo.status);
 }
 
 function isToday(todo: Task) {
-    if (!todo.dueDate) return false;
-    const d = new Date(todo.dueDate);
-    d.setHours(0, 0, 0, 0);
-    return d.getTime() === today.getTime();
+    return isTodoDueToday(todo.dueDate);
 }
 
 function formatDue(todo: Task) {
     if (!todo.dueDate) return '';
     const d = new Date(todo.dueDate);
-    d.setHours(0, 0, 0, 0);
+    d.setUTCHours(0, 0, 0, 0);
     const diff = Math.round((d.getTime() - today.getTime()) / 86400000);
     if (diff === -1) return 'Yesterday';
     if (diff === 0) return 'Today';
     if (diff === 1) return 'Tomorrow';
-    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 }
 
 function selectTodo(todo: Task) {

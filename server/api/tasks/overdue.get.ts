@@ -5,8 +5,8 @@ export default defineEventHandler(async (event) => {
     try {
         const supabase = await serverSupabaseClient(event);
 
-        const start = new Date();
-        start.setHours(0, 0, 0, 0);
+        const now = new Date();
+        const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 
         const { data, error } = await supabase
             .from('Todos')
