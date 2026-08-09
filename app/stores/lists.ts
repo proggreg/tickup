@@ -276,7 +276,7 @@ export const useListsStore = defineStore('lists', {
             return data;
         },
         async getTodos() {
-            const { data } = await useFetch<Task[]>('/api/todos');
+            const { data } = await useFetch<Task[]>('/api/tasks');
 
             if (data.value) {
                 this.todos = data.value;
@@ -322,26 +322,20 @@ export const useListsStore = defineStore('lists', {
             }
         },
         async getTodaysTodos() {
-            const todos = await $fetch<Task[]>('/api/todos', {
-                query: { today: true },
-            });
+            const todos = await $fetch<Task[]>('/api/tasks/today');
 
             if (todos) {
                 this.todaysTodos = todos;
             }
         },
         async getRecentTodos() {
-            const todos = await $fetch<Task[]>('/api/todos', {
-                query: { recent: true },
-            });
+            const todos = await $fetch<Task[]>('/api/tasks/recent');
             if (todos) {
                 this.recentTodos = todos;
             }
         },
         async getOverdueTodos() {
-            const todos = await $fetch<Task[]>('/api/todos', {
-                query: { overdue: true },
-            });
+            const todos = await $fetch<Task[]>('/api/tasks/overdue');
 
             if (todos) {
                 this.overdueTodos = todos;

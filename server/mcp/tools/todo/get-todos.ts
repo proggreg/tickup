@@ -14,10 +14,11 @@ export default defineMcpTool({
             .describe('User ID (used when neither today nor overdue is set)'),
     },
     handler: async (args) => {
+        if (args.today) return await callApi('/api/tasks/today');
+        if (args.overdue) return await callApi('/api/tasks/overdue');
+
         const query: Record<string, string> = {};
-        if (args.today) query.today = '1';
-        if (args.overdue) query.overdue = '1';
         if (args.userId) query.id = args.userId;
-        return await callApi('/api/todos', { query });
+        return await callApi('/api/tasks', { query });
     },
 });
