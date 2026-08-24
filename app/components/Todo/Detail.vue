@@ -6,6 +6,19 @@ const hasGithub = await useHasGithub();
 const hasVercel = await useHasVercel();
 const { mainWidth } = defineProps<{ mainWidth?: string }>();
 
+// The title font (Manrope) loads via a `font-display: swap` Google Fonts
+// link, so it can swap in after the textarea's auto-grow height was
+// already calculated from fallback-font metrics - remount once fonts are
+// ready so auto-grow recalculates against the final font.
+const titleFontsReadyKey = ref('loading');
+onMounted(() => {
+    document.fonts?.ready
+        ?.then(() => {
+            titleFontsReadyKey.value = 'ready';
+        })
+        .catch(() => {});
+});
+
 function updateName() {
     if (listsStore.currentTodo.name) {
         listsStore.updateTodo(listsStore.currentTodo);
@@ -54,6 +67,7 @@ async function deleteTodo() {
             <!-- Title -->
             <v-col>
                 <v-textarea
+                    :key="titleFontsReadyKey"
                     v-model="listsStore.currentTodo.name"
                     class="title-input"
                     data-testid="todo-detail-title"
