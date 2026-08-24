@@ -6,17 +6,6 @@ const hasGithub = await useHasGithub();
 const hasVercel = await useHasVercel();
 const { mainWidth } = defineProps<{ mainWidth?: string }>();
 
-const titleInput = useTemplateRef<HTMLTextAreaElement>('titleInput');
-
-function resizeTitleInput() {
-    const el = titleInput.value;
-    if (!el) return;
-    el.style.height = 'auto';
-    el.style.height = `${el.scrollHeight}px`;
-}
-
-watch(() => listsStore.currentTodo?.name, () => nextTick(resizeTitleInput), { immediate: true });
-
 function updateName() {
     if (listsStore.currentTodo.name) {
         listsStore.updateTodo(listsStore.currentTodo);
@@ -64,13 +53,15 @@ async function deleteTodo() {
         <v-col cols="12" :md="mainWidth ? mainWidth : 8" class="todo-main flex-grow-1">
             <!-- Title -->
             <v-col>
-                <textarea
-                    ref="titleInput"
+                <v-textarea
                     v-model="listsStore.currentTodo.name"
                     class="title-input"
                     data-testid="todo-detail-title"
-                    rows="1"
-                    @input="resizeTitleInput"
+                    variant="plain"
+                    density="compact"
+                    :rows="1"
+                    auto-grow
+                    hide-details
                     @blur="updateName"
                 />
             </v-col>
@@ -257,25 +248,19 @@ async function deleteTodo() {
 }
 
 /* Title input */
-.title-input {
-    width: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
+.title-input :deep(textarea) {
     font-family: 'Manrope', sans-serif;
     font-size: 1.3125rem;
     font-weight: 700;
     color: rgb(var(--v-theme-on-surface));
     line-height: 1.3;
-    padding: 2px 0;
-    resize: none;
-    box-sizing: border-box;
-    overflow: hidden;
-    white-space: pre-wrap;
-    word-break: break-word;
 }
 
-.title-input:focus {
+.title-input :deep(.v-field__input) {
+    padding: 2px 0;
+}
+
+.title-input :deep(.v-field--focused) {
     outline: 2px solid rgb(var(--v-theme-primary));
     outline-offset: 2px;
     border-radius: 4px;
