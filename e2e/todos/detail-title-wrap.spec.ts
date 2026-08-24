@@ -29,7 +29,12 @@ test.describe('todo detail title wrapping', () => {
         await page.goto(`/todo/${todo.id}`);
         await page.waitForLoadState('networkidle');
 
-        const titleField = page.getByTestId('todo-detail-title').locator('textarea');
+        // Vuetify's auto-grow textarea renders a second, hidden "sizer"
+        // textarea (used internally to measure content height) alongside
+        // the real input - exclude it so the locator stays unambiguous.
+        const titleField = page
+            .getByTestId('todo-detail-title')
+            .locator('textarea:not(.v-textarea__sizer)');
         await expect(titleField).toHaveValue(longTitle);
 
         // The title box must grow to fit every wrapped line rather than
