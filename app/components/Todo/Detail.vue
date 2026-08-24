@@ -6,6 +6,17 @@ const hasGithub = await useHasGithub();
 const hasVercel = await useHasVercel();
 const { mainWidth } = defineProps<{ mainWidth?: string }>();
 
+const titleInput = useTemplateRef<HTMLTextAreaElement>('titleInput');
+
+function resizeTitleInput() {
+    const el = titleInput.value;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+}
+
+watch(() => listsStore.currentTodo?.name, () => nextTick(resizeTitleInput), { immediate: true });
+
 function updateName() {
     if (listsStore.currentTodo.name) {
         listsStore.updateTodo(listsStore.currentTodo);
@@ -54,10 +65,12 @@ async function deleteTodo() {
             <!-- Title -->
             <v-col>
                 <textarea
+                    ref="titleInput"
                     v-model="listsStore.currentTodo.name"
                     class="title-input"
                     data-testid="todo-detail-title"
                     rows="1"
+                    @input="resizeTitleInput"
                     @blur="updateName"
                 />
             </v-col>
@@ -258,6 +271,8 @@ async function deleteTodo() {
     resize: none;
     box-sizing: border-box;
     overflow: hidden;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .title-input:focus {
