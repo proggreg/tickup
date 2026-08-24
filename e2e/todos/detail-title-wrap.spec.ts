@@ -10,6 +10,7 @@ test.describe('todo detail title wrapping', () => {
 
     test('wraps a long title onto multiple lines instead of clipping it', async ({
         listAPI,
+        request,
         page,
     }) => {
         const testId = uuidv4();
@@ -18,18 +19,16 @@ test.describe('todo detail title wrapping', () => {
             listType: 'simple',
         });
 
-        await page.goto(`/list/${list.id}`);
-        await page.waitForLoadState('networkidle');
-
         const longTitle = `As a user I should be able to create and select a list when adding a new todo ${testId}`;
 
-        const newTodoInput = page.getByTestId('new-todo-input').locator('input');
-        await newTodoInput.fill(longTitle);
-        await newTodoInput.press('Enter');
-        await page.waitForLoadState('networkidle');
+        const todoResponse = await request.post('/api/todo', {
+            data: { name: longTitle, listId: list.id },
+        });
+        expect(todoResponse.ok()).toBeTruthy();
+        const todo = await todoResponse.json();
 
-        await page.getByTestId('todo-title').filter({ hasText: testId }).click();
-        await page.waitForURL(/\/todo\//, { timeout: 5000 });
+        await page.goto(`/todo/${todo.id}`);
+        await page.waitForLoadState('networkidle');
 
         const titleField = page.getByTestId('todo-detail-title').locator('textarea');
         await expect(titleField).toHaveValue(longTitle);
