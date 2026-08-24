@@ -3,8 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { deleteLists } from '../helpers/teardown';
 
 test.describe('todo detail title wrapping', () => {
-    test.beforeEach(async ({ isMobile }) => {
-        test.skip(isMobile, 'This feature is desktop only');
+    test.beforeEach(async () => {
         await deleteLists();
     });
 
