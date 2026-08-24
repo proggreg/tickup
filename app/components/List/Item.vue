@@ -165,11 +165,11 @@ const isSelected = (todo: Task) => listsStore.currentTodo?.id === todo.id && lis
 
 .todo-item__title {
     flex: 1;
+    min-width: 0;
     font-size: 0.9rem;
     font-weight: 500;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-wrap: break-word;
+    white-space: normal;
     color: rgb(var(--v-theme-on-surface));
 }
 
