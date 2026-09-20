@@ -22,7 +22,7 @@ const currentPriority = computed(
     () => priorities.find(p => p.value === priorityLev.value) ?? priorities[3],
 );
 
-const todo = computed<Todo>(() => ({
+const todo = computed<Task>(() => ({
     name: name.value,
     dueDate: dueDate.value,
     listId: selectedListId.value ?? undefined,

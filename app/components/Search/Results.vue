@@ -4,7 +4,7 @@ const props = withDefaults(defineProps<{ disableStatusButton?: boolean }>(), {
     disableStatusButton: false,
 });
 const _emit = defineEmits<{
-    'item-click': [item: Todo];
+    'item-click': [item: Task];
 }>();
 const { isMobile } = useDevice();
 

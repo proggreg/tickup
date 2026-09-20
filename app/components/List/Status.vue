@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const settings = useSettingsStore();
 const store = useListsStore();
-const statusProps = withDefaults(defineProps<{ todo: Todo; disabled?: boolean }>(), {
+const statusProps = withDefaults(defineProps<{ todo: Task; disabled?: boolean }>(), {
     disabled: false,
 });
 const statuses = computed(() => settings.statuses);

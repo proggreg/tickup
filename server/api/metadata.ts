@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import type { Meta } from '~/types/link.types';
+import type { Meta } from '~~/types/link.types';
 
 async function getTitle(url: string) {
     return await $fetch(url, {

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls docs/tickets/mcp-test-*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push origin *)"
+    ],
+    "deny": [
+      "Bash(git push origin main)"
+    ]
+  }
+}

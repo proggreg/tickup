@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Meta } from '~/types/link.types';
+import type { Meta } from '~~/types/link.types';
 import { logger } from '../../../utils/logger';
 
 const listsStore = useListsStore();
@@ -73,7 +73,7 @@ watch(
 </script>
 
 <template>
-    <v-list>
+    <v-list title="adsa">
         <v-list-subheader>Links</v-list-subheader>
 
         <v-list-item v-for="(link, index) in listsStore.currentTodo.links" :key="index">

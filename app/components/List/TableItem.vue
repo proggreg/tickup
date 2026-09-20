@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppDeleteButton from '../App/DeleteButton.vue';
-import type { Column, GroupItem, TableItem } from '../../types/table-item.types';
+import type { Column, GroupItem, TableItem } from '~~/types/table-item.types';
 import ListStatus from './Status.vue';
 
 const store = useListsStore();

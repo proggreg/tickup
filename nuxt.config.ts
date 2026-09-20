@@ -1,3 +1,4 @@
+import type { ModuleOptions as McpToolkitOptions } from '@nuxtjs/mcp-toolkit';
 import { defineNuxtConfig } from 'nuxt/config';
 import vuetify from './config/vuetify';
 
@@ -6,7 +7,6 @@ export default defineNuxtConfig({
         '@vite-pwa/nuxt',
         'vuetify-nuxt-module',
         '@pinia/nuxt',
-        // "pinia-plugin-persistedstate/nuxt",
         '@vueuse/nuxt',
         '@nuxtjs/color-mode',
         '@nuxt/eslint',
@@ -14,7 +14,7 @@ export default defineNuxtConfig({
         '@nuxt/test-utils/module',
         'nuxt-bugsnag',
         '@nuxtjs/supabase',
-        'nuxt-mcp',
+        '@nuxtjs/mcp-toolkit',
     ],
 
     pages: true,
@@ -34,6 +34,26 @@ export default defineNuxtConfig({
         enabled: true,
     },
 
+    app: {
+        head: {
+            link: [
+                {
+                    rel: 'preconnect',
+                    href: 'https://fonts.googleapis.com',
+                },
+                {
+                    rel: 'preconnect',
+                    href: 'https://fonts.gstatic.com',
+                    crossorigin: '',
+                },
+                {
+                    rel: 'stylesheet',
+                    href: 'https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&display=swap',
+                },
+            ],
+        },
+    },
+
     runtimeConfig: {
         private: {
             vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
@@ -43,6 +63,11 @@ export default defineNuxtConfig({
                 clientId: process.env.GITHUB_CLIENT_ID,
                 clientSecret: process.env.GITHUB_CLIENT_SECRET,
                 webhookSecret: process.env.GITHUB_WEBHOOK_SECRET,
+            },
+            vercel: {
+                clientId: process.env.VERCEL_INTEGRATION_CLIENT_ID,
+                clientSecret: process.env.VERCEL_INTEGRATION_CLIENT_SECRET,
+                redirectUri: process.env.VERCEL_INTEGRATION_REDIRECT_URI,
             },
         },
 
@@ -59,6 +84,7 @@ export default defineNuxtConfig({
             supabaseUrl: process.env.SUPABASE_URL,
             supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
             githubAppName: process.env.NUXT_PUBLIC_GITHUB_APP_NAME,
+            vercelClientId: process.env.VERCEL_INTEGRATION_CLIENT_ID,
         },
     },
 
@@ -75,20 +101,39 @@ export default defineNuxtConfig({
     experimental: {
         payloadExtraction: false,
         typedPages: false,
+        asyncContext: true,
     },
     compatibilityDate: '2026-02-28',
-
     nitro: {
         esbuild: {
             options: {
                 target: 'esnext',
             },
         },
+        typescript: {
+            tsConfig: {
+                include: ['../index.d.ts', '../types/**/*.ts'],
+            },
+        },
+    },
+
+    vite: {
+        server: {
+            allowedHosts: ['dev.gregfield.dev'],
+            // hmr: {
+            //   protocol: 'wss',
+            //   host: 'localhost',
+            //   clientPort: 443
+            // }
+        },
     },
 
     typescript: {
         strict: false,
         typeCheck: false,
+        tsConfig: {
+            include: ['../types/**/*.ts'],
+        },
     },
 
     bugsnag: {
@@ -110,6 +155,11 @@ export default defineNuxtConfig({
             },
         },
     },
+
+    mcp: {
+        name: 'Tickup',
+        description: 'Tickup MCP server — tools and resources for the todo app.',
+    } as McpToolkitOptions,
 
     pinia: {},
 
@@ -201,9 +251,10 @@ export default defineNuxtConfig({
     supabase: {
         redirectOptions: {
             login: '/login',
+
             callback: '/confirm',
             include: undefined,
-            exclude: [],
+            exclude: ['/oauth/consent'],
             saveRedirectToCookie: false,
         },
     },

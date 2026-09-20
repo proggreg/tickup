@@ -1,20 +1,22 @@
 <script setup lang="ts">
 const listTypeOptions = ref<ListType[]>(['table', 'simple']);
 const props = defineProps<{ currentListType?: ListType }>();
-const selectedType = ref<ListType>(
-    props.currentListType && props.currentListType !== '' ? props.currentListType : 'simple',
-);
+const selectedType = ref<ListType>(props.currentListType ? props.currentListType : 'simple');
 const emit = defineEmits<{
     listTypeUpdated: [listType: ListType];
 }>();
+
+const listsStore = useListsStore();
 
 // Watch for prop changes to update selectedType
 watch(
     () => props.currentListType,
     (newVal) => {
-        const validValue = newVal && newVal !== '' ? newVal : 'simple';
-        if (validValue !== selectedType.value) {
-            selectedType.value = validValue;
+        if (newVal !== selectedType.value) {
+            selectedType.value = newVal;
+            if (newVal === 'table' && !listsStore.panelOpen) {
+                listsStore.panelOpen = false;
+            }
         }
     },
     { immediate: true },

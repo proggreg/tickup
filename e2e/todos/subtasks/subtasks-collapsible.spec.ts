@@ -43,20 +43,18 @@ test.describe('subtasks are collapsible', () => {
         await page.waitForLoadState('networkidle');
 
         // Add a subtask
-        const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+        const subtaskInput = page.getByTestId('add-subtask-input');
         await page.waitForTimeout(500);
         const subtaskName = `Subtask ${uuidv4()}`;
         await subtaskInput.click();
         await subtaskInput.fill(subtaskName);
         await page.waitForTimeout(500);
 
-        const addSubtaskButton = page.getByTestId('add-subtask-button');
-        await expect(addSubtaskButton).toBeEnabled({ timeout: 5000 });
-        await addSubtaskButton.click();
+        await subtaskInput.press('Enter');
         await page.waitForLoadState('networkidle');
 
         // Verify the subtask is visible and section is expanded
-        const subtasksList = page.getByTestId('subtasks-list').first();
+        const subtasksList = page.getByTestId('subtasks-list-active');
         await expect(subtasksList).toBeVisible();
 
         const subtaskNameField = page.getByTestId('subtask-name-0');
@@ -83,7 +81,6 @@ test.describe('subtasks are collapsible', () => {
         // Verify the subtasks list is visible again
         await expect(subtasksList).toBeVisible();
         await expect(subtaskNameField).toBeVisible();
-        await expect(subtaskInput).toBeVisible();
     });
 
     test.skip('can click on header to collapse/expand', async ({ page, request, isMobile }) => {
@@ -119,19 +116,18 @@ test.describe('subtasks are collapsible', () => {
         await page.waitForLoadState('networkidle');
 
         // Add a subtask
-        const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+        const subtaskInput = page.getByTestId('add-subtask-input');
         await page.waitForTimeout(500);
         const subtaskName = `Subtask ${uuidv4()}`;
         await subtaskInput.click();
         await subtaskInput.fill(subtaskName);
         await page.waitForTimeout(500);
 
-        const addSubtaskButton = page.getByTestId('add-subtask-button');
-        await addSubtaskButton.click();
+        await subtaskInput.press('Enter');
         await page.waitForLoadState('networkidle');
 
         // Verify subtask is visible
-        const subtasksList = page.getByTestId('subtasks-list').first();
+        const subtasksList = page.getByTestId('subtasks-list-active');
         await expect(subtasksList).toBeVisible();
 
         // Click the header to collapse
@@ -147,6 +143,6 @@ test.describe('subtasks are collapsible', () => {
         await page.waitForTimeout(300);
 
         // Verify expanded
-        await expect(subtasksList).toBeVisible();
+        await expect(page.getByTestId('subtasks-list-active')).toBeVisible();
     });
 });

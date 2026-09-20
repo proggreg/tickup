@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody, getQuery } from 'h3';
 import { serverSupabaseServiceRole } from '#supabase/server';
-import type { Database } from '~/types/database.types';
+import type { Database } from '~~/types/database.types';
 import { handleDelete, handlePullRequest, handlePush } from './events';
 import type { EmitterWebhookEvent } from '@octokit/webhooks';
 

@@ -56,16 +56,14 @@ test.describe('back button always goes to list from parent task', () => {
         await expect(titleField).toHaveValue(todo1Name);
 
         // Add a subtask to first todo
-        const subtaskInput = page.getByTestId('add-subtask-input').locator('input').first();
+        const subtaskInput = page.getByTestId('add-subtask-input');
         await page.waitForTimeout(500);
         const subtaskName = `Subtask ${uuidv4()}`;
         await subtaskInput.click();
         await subtaskInput.fill(subtaskName);
         await page.waitForTimeout(500);
 
-        const addSubtaskButton = page.getByTestId('add-subtask-button');
-        await expect(addSubtaskButton).toBeEnabled({ timeout: 5000 });
-        await addSubtaskButton.click();
+        await subtaskInput.press('Enter');
         await page.waitForLoadState('networkidle');
 
         // Click on the subtask link to navigate to subtask detail

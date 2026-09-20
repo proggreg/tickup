@@ -1,0 +1,16 @@
+{
+    "mcpServers": {
+        "tickup-ewrmrye0m-greg-fields-projects": {
+            "type": "http",
+            "url": "https://tickup-ewrmrye0m-greg-fields-projects.vercel.app/mcp"
+        },
+        "tickup-oabmmvtcd-greg-fields-projects": {
+            "type": "http",
+            "url": "https://tickup-oabmmvtcd-greg-fields-projects.vercel.app/mcp"
+        },
+        "tickup": {
+            "type": "http",
+            "url": "https://tickup.gregfield.dev/mcp"
+        }
+    }
+}

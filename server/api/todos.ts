@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server';
+import { objectToCamel } from 'ts-case-convert';
 
 export default defineEventHandler(async (event) => {
     try {
@@ -38,6 +39,25 @@ export default defineEventHandler(async (event) => {
             }));
         }
 
+        if (query.recent) {
+            const { data, error } = await supabase
+                .from('Todos')
+                .select('*, Lists(id, name)')
+                .is('parent_id', null)
+                .order('updated_at', { ascending: false, nullsFirst: false })
+                .limit(25);
+
+            if (error) {
+                console.error('Supabase error:', error);
+                return [];
+            }
+
+            return (data || []).map(({ Lists, ...todo }) => ({
+                ...objectToCamel(todo),
+                list: Lists ? objectToCamel(Lists) : null,
+            }));
+        }
+
         if (query.overdue) {
             const start = new Date();
             start.setHours(0, 0, 0, 0);
@@ -69,11 +89,7 @@ export default defineEventHandler(async (event) => {
             }));
         }
 
-        const { data, error } = await supabase
-            .from('Todos')
-            .select('*')
-            .eq('user_id', query.id)
-            .is('parent_id', null);
+        const { data, error } = await supabase.from('Todos').select('*').is('parent_id', null);
 
         if (error) {
             console.error('Supabase error:', error);
