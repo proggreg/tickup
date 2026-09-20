@@ -4,8 +4,6 @@ import { deleteLists } from '../helpers/teardown';
 
 test.describe('Task priorities', () => {
     test.beforeEach(async ({ page }) => {
-        test.skip(await page.evaluate(() => window.innerWidth < 960), 'desktop only');
-
         await deleteLists();
 
         await page.goto('/');
@@ -44,6 +42,7 @@ test.describe('Task priorities', () => {
         await page.getByTestId('dialog-priority-medium').click();
 
         // Re-open menu and switch to low to verify changes apply
+        await expect(page.getByTestId('dialog-priority-medium')).toBeHidden();
         await page.getByTestId('dialog-priority-button').click();
         await page.getByTestId('dialog-priority-low').click();
 
@@ -72,8 +71,9 @@ test.describe('Task priorities', () => {
         await page.waitForLoadState('networkidle');
 
         await page.getByTestId('todo-title').filter({ hasText: todoName }).click();
-        await page.waitForURL(/\/todo\//, { timeout: 5000 });
 
+        // Desktop opens the detail side panel; mobile routes to /todo/:id. Both render TodoDetail.
+        await expect(page.getByTestId('todo-priority-button')).toBeVisible();
         await page.getByTestId('todo-priority-button').click();
         await page.getByTestId('todo-priority-high').click();
 
