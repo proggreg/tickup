@@ -150,6 +150,16 @@ async function deleteTodo() {
 
                 <div class="prop-row">
                     <div class="prop-row__label">
+                        <i class="mdi mdi-flag prop-row__icon" />
+                        <span>Priority</span>
+                    </div>
+                    <div class="prop-row__value">
+                        <TodoPriority />
+                    </div>
+                </div>
+
+                <div class="prop-row">
+                    <div class="prop-row__label">
                         <i class="mdi mdi-calendar prop-row__icon" />
                         <span>Due date</span>
                     </div>
