@@ -6,6 +6,19 @@ const hasGithub = await useHasGithub();
 const hasVercel = await useHasVercel();
 const { mainWidth } = defineProps<{ mainWidth?: string }>();
 
+// The title font (Manrope) loads via a `font-display: swap` Google Fonts
+// link, so it can swap in after the textarea's auto-grow height was
+// already calculated from fallback-font metrics - remount once fonts are
+// ready so auto-grow recalculates against the final font.
+const titleFontsReadyKey = ref('loading');
+onMounted(() => {
+    document.fonts?.ready
+        ?.then(() => {
+            titleFontsReadyKey.value = 'ready';
+        })
+        .catch(() => {});
+});
+
 function updateName() {
     if (listsStore.currentTodo.name) {
         listsStore.updateTodo(listsStore.currentTodo);
@@ -53,11 +66,16 @@ async function deleteTodo() {
         <v-col cols="12" :md="mainWidth ? mainWidth : 8" class="todo-main flex-grow-1">
             <!-- Title -->
             <v-col>
-                <textarea
+                <v-textarea
+                    :key="titleFontsReadyKey"
                     v-model="listsStore.currentTodo.name"
                     class="title-input"
                     data-testid="todo-detail-title"
-                    rows="1"
+                    variant="plain"
+                    density="compact"
+                    :rows="1"
+                    auto-grow
+                    hide-details
                     @blur="updateName"
                 />
             </v-col>
@@ -244,23 +262,19 @@ async function deleteTodo() {
 }
 
 /* Title input */
-.title-input {
-    width: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
+.title-input :deep(textarea) {
     font-family: 'Manrope', sans-serif;
     font-size: 1.3125rem;
     font-weight: 700;
     color: rgb(var(--v-theme-on-surface));
     line-height: 1.3;
-    padding: 2px 0;
-    resize: none;
-    box-sizing: border-box;
-    overflow: hidden;
 }
 
-.title-input:focus {
+.title-input :deep(.v-field__input) {
+    padding: 2px 0;
+}
+
+.title-input :deep(.v-field--focused) {
     outline: 2px solid rgb(var(--v-theme-primary));
     outline-offset: 2px;
     border-radius: 4px;
