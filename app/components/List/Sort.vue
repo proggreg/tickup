@@ -8,9 +8,12 @@ const sortOptions = ref([
 ]);
 const sortDirection = ref('ascending');
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 watch([selectedSort, sortDirection], ([newOption, newDirection]) => {
-    store.sortByDate(newDirection);
+    if (newOption === 'priority') {
+        store.sortByPriority(newDirection);
+    } else if (newOption === 'dueDate') {
+        store.sortByDate(newDirection);
+    }
 });
 const icon = ref('mdi-arrow-down');
 function changeIcon() {
@@ -29,6 +32,7 @@ function changeIcon() {
         <v-col>
             <v-select
                 v-model="selectedSort"
+                data-testid="list-sort-select"
                 :items="sortOptions"
                 item-title="text"
                 item-value="value"

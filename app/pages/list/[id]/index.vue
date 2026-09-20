@@ -94,6 +94,9 @@ const views: { key: View; icon: string; label: string }[] = [
             <template v-if="currentView === 'list'">
                 <div class="d-flex ga-4">
                     <div class="flex-grow-1 overflow-hidden">
+                        <div class="mb-3" style="max-width: 320px">
+                            <ListSort />
+                        </div>
                         <ListSimple />
                     </div>
                     <Transition name="panel">

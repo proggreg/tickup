@@ -366,6 +366,16 @@ export const useListsStore = defineStore('lists', {
                 return newDirection === 'ascending' ? result : -result;
             });
         },
+        sortByPriority(newDirection: string) {
+            const rank: Record<string, number> = { high: 0, medium: 1, low: 2 };
+            this.currentList.todos.sort((a, b) => {
+                const rankA = rank[a.priorityLev?.toLowerCase() ?? ''] ?? 3;
+                const rankB = rank[b.priorityLev?.toLowerCase() ?? ''] ?? 3;
+                const result = rankA - rankB;
+
+                return newDirection === 'ascending' ? result : -result;
+            });
+        },
         newResetAll() {
             this.resetList();
             this.resetTodo();
