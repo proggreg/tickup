@@ -1,5 +1,19 @@
 import { test } from 'vitest';
 import { createClient } from '@supabase/supabase-js';
+import type { Session } from '@supabase/supabase-js';
+
+function buildSupabaseCookieHeader(supabaseUrl: string, session: Session): string {
+    const projectRef = new URL(supabaseUrl).hostname.split('.')[0];
+    const cookieName = `sb-${projectRef}-auth-token`;
+    const sessionJson = JSON.stringify(session);
+    // base64url encoding (URL-safe, no padding) — matches @supabase/ssr stringToBase64URL
+    const base64url = Buffer.from(sessionJson, 'utf8')
+        .toString('base64')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=/g, '');
+    return `${cookieName}=base64-${base64url}`;
+}
 
 interface APITestContext {
     apiCall: (path: string, options?: RequestInit) => Promise<Response>;
@@ -10,6 +24,7 @@ interface APITestContext {
     ) => Promise<Record<string, unknown>>;
     deleteTodo: (id: string | number) => Promise<void>;
     getTodo: (id: string | number) => Promise<Record<string, unknown>>;
+    createList: (data: Record<string, unknown>) => Promise<Record<string, unknown>>;
 }
 
 export const apiTest = test.extend<APITestContext>({
@@ -58,12 +73,18 @@ export const apiTest = test.extend<APITestContext>({
             throw new Error('No access token received');
         }
 
+        // Some routes read the session via serverSupabaseClient() (cookie-based),
+        // others via event.context.supabase (Bearer-token-based) — send both.
+        const sessionCookie = buildSupabaseCookieHeader(supabaseUrl, signInData.session!);
+
         const createdTodoIds: (string | number)[] = [];
+        const createdListIds: (string | number)[] = [];
 
         const apiCall = async (path: string, options?: RequestInit): Promise<Response> => {
             const url = new URL(path, 'http://localhost:3000');
             const headers = new Headers(options?.headers || {});
             headers.set('Authorization', `Bearer ${authToken}`);
+            headers.set('Cookie', sessionCookie);
             headers.set('Content-Type', 'application/json');
 
             const response = fetch(url.toString(), {
@@ -84,6 +105,19 @@ export const apiTest = test.extend<APITestContext>({
                 return res;
             }
 
+            // Track created lists
+            if (options?.method === 'POST' && path === '/api/list') {
+                const res = await response;
+                if (res.ok) {
+                    const clone = res.clone();
+                    const data = await clone.json();
+                    if (data.id) {
+                        createdListIds.push(data.id);
+                    }
+                }
+                return res;
+            }
+
             return response;
         };
 
@@ -96,8 +130,22 @@ export const apiTest = test.extend<APITestContext>({
                 if (!response.ok && response.status !== 404) {
                     console.warn('Failed to delete test todo:', response.statusText);
                 }
-            } catch (err) {
+            }
+            catch (err) {
                 console.warn('Failed to delete test todo:', err);
+            }
+        }
+
+        // Cleanup lists
+        for (const listId of createdListIds) {
+            try {
+                const response = await apiCall(`/api/list/${listId}`, { method: 'DELETE' });
+                if (!response.ok && response.status !== 404) {
+                    console.warn('Failed to delete test list:', response.statusText);
+                }
+            }
+            catch (err) {
+                console.warn('Failed to delete test list:', err);
             }
         }
 
@@ -107,7 +155,8 @@ export const apiTest = test.extend<APITestContext>({
             if (error) {
                 console.warn('Failed to delete test user:', error.message);
             }
-        } catch (err) {
+        }
+        catch (err) {
             console.warn('Error deleting test user:', err);
         }
     },
@@ -180,5 +229,25 @@ export const apiTest = test.extend<APITestContext>({
         };
 
         await use(getTodo);
+    },
+
+    async createList({ apiCall }, use) {
+        const createList = async (
+            data: Record<string, unknown>,
+        ): Promise<Record<string, unknown>> => {
+            const response = await apiCall('/api/list', {
+                method: 'POST',
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(`Create list failed: ${response.statusText} - ${text}`);
+            }
+
+            return response.json();
+        };
+
+        await use(createList);
     },
 });

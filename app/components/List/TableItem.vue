@@ -17,7 +17,7 @@ function showModal(item: TableItem) {
 
 function formatDate(date: Date) {
     if (!date) return '';
-    return new Date(date).toLocaleDateString('en-GB');
+    return new Date(date).toLocaleDateString('en-GB', { timeZone: 'UTC' });
 }
 </script>
 

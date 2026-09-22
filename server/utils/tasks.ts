@@ -1,5 +1,21 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+export function mapTodoToTask(todo: any) {
+    return {
+        ...todo,
+        dueDate: todo.due_date,
+        completedDate: todo.completed_date,
+        userId: todo.user_id,
+        listId: todo.list_id,
+        parentId: todo.parent_id,
+        githubBranchName: todo.github_branch_name,
+        notificationDateTime: todo.notification_date_time,
+        notificationSent: todo.notification_sent,
+        createdAt: todo.created_at,
+        updatedAt: todo.updated_at,
+    };
+}
+
 export class TaskService {
     private supabase: SupabaseClient;
     constructor(supabase: SupabaseClient) {

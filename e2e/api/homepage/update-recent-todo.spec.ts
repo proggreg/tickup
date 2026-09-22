@@ -18,9 +18,9 @@ test.describe('Homepage - update todo from Recent section', () => {
             listId: list.id,
         });
 
-        // GET /api/todos?recent=true joins Lists and attaches a `list` object
-        // to each todo (server/api/todos.ts) for display purposes.
-        const recentResponse = await request.get('/api/todos?recent=true');
+        // GET /api/tasks/recent joins Lists and attaches a `list` object
+        // to each todo (server/api/tasks/recent.get.ts) for display purposes.
+        const recentResponse = await request.get('/api/tasks/recent');
         const recentTodos = await recentResponse.json();
         const todo = recentTodos.find((t) => t.name === todoName);
         expect(todo).toBeTruthy();

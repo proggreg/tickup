@@ -28,7 +28,8 @@ registerRoute(
     ({ url }) => {
         const p = url.pathname;
         return (
-            p === '/api/todos' ||
+            p === '/api/tasks' ||
+            p.startsWith('/api/tasks/') ||
             p === '/api/lists' ||
             p === '/api/list/todos' ||
             p.startsWith('/api/todo/') ||

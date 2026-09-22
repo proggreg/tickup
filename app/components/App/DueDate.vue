@@ -35,6 +35,19 @@ function startOfDay(d: Date): Date {
     return x;
 }
 
+// Due dates are stored as UTC-midnight of the intended calendar day, so the
+// raw date component always matches the day picked, regardless of timezone.
+function toStorageDate(d: Date): Date {
+    return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+}
+
+// Converts a stored UTC-midnight date back to a local-midnight Date so the
+// existing local-based comparison helpers below (sameDay, formatRelative, ...)
+// keep working unchanged.
+function fromStorageDate(d: Date): Date {
+    return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+}
+
 function addDays(d: Date, n: number): Date {
     const x = new Date(d);
     x.setDate(x.getDate() + n);
@@ -84,7 +97,7 @@ function buildMonthGrid(year: number, month: number): (Date | null)[] {
 // ── Derived state ─────────────────────────────────────────────────────────────
 const effectiveDate = computed<Date | null>(() => {
     const raw = props.todoDueDate ?? props.date;
-    return raw ? new Date(raw) : null;
+    return raw ? fromStorageDate(new Date(raw)) : null;
 });
 
 const isOverdue = computed(
@@ -207,7 +220,8 @@ function closePicker() {
 }
 
 function handleSelect(d: Date) {
-    emit('setDate', d, { ...props.todo, dueDate: d });
+    const stored = toStorageDate(d);
+    emit('setDate', stored, { ...props.todo, dueDate: stored });
     closePicker();
 }
 

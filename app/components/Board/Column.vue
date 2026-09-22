@@ -8,7 +8,7 @@ const isComposing = ref(false);
 const newTodoName = ref('');
 
 const today = new Date();
-today.setHours(0, 0, 0, 0);
+today.setUTCHours(0, 0, 0, 0);
 
 const todos = computed(() => {
     if (!listsStore.currentList?.todos?.length || !status?.name) return [];
@@ -16,21 +16,18 @@ const todos = computed(() => {
 });
 
 function isOverdue(todo: Task): boolean {
-    if (!todo.dueDate || todo.status === 'Closed') return false;
-    const d = new Date(todo.dueDate);
-    d.setHours(0, 0, 0, 0);
-    return d < today;
+    return isTodoOverdue(todo.dueDate, todo.status);
 }
 
 function formatDue(todo: Task): string {
     if (!todo.dueDate) return '';
     const d = new Date(todo.dueDate);
-    d.setHours(0, 0, 0, 0);
+    d.setUTCHours(0, 0, 0, 0);
     const diff = Math.round((d.getTime() - today.getTime()) / 86400000);
     if (diff === -1) return 'Yesterday';
     if (diff === 0) return 'Today';
     if (diff === 1) return 'Tomorrow';
-    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 }
 
 const PRIORITY_COLORS: Record<string, string> = {

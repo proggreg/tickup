@@ -22,7 +22,7 @@ function statusColor(status: string): string {
 }
 
 const today = new Date();
-today.setHours(0, 0, 0, 0);
+today.setUTCHours(0, 0, 0, 0);
 
 function relativeDue(
     dueDate: string | null | undefined,
@@ -30,14 +30,14 @@ function relativeDue(
 ): { text: string; overdue: boolean } | null {
     if (!dueDate) return null;
     const d = new Date(dueDate);
-    d.setHours(0, 0, 0, 0);
+    d.setUTCHours(0, 0, 0, 0);
     const diff = Math.round((d.getTime() - today.getTime()) / 86400000);
     const overdue = diff < 0 && !done;
     let text: string;
     if (diff < 0) text = diff === -1 ? 'Yesterday' : `${-diff}d ago`;
     else if (diff === 0) text = 'Today';
     else if (diff === 1) text = 'Tomorrow';
-    else text = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    else text = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
     return { text, overdue };
 }
 

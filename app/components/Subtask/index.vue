@@ -128,7 +128,11 @@ function toggleStatus(subtask: Todo) {
 
 function formatDueDate(date: Date | string | undefined): string {
     if (!date) return '';
-    return new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    return new Date(date).toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        timeZone: 'UTC',
+    });
 }
 </script>
 
