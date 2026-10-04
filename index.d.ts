@@ -9,7 +9,7 @@ declare global {
         name: string;
         status?: string;
         id?: string;
-        dueDate?: Date;
+        dueDate?: string;
         listId?: string;
         list?: List;
         desc?: string;
