@@ -99,6 +99,7 @@ const closedTodos = computed(
                     data-testid="todo-priority-icon"
                     size="14"
                     :color="priorityColor(todo.priorityLev)"
+                    style="margin-top: -2px"
                 >
                     mdi-flag
                 </v-icon>
