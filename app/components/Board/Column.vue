@@ -253,6 +253,7 @@ function onComposerKey(e: KeyboardEvent) {
                                             <v-icon
                                                 size="13"
                                                 :color="priorityColor(todo.priorityLev)!"
+                                                style="margin-top: -2px"
                                             >
                                                 {{ priorityIcon(todo.priorityLev) }}
                                             </v-icon>
