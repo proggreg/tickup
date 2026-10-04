@@ -21,6 +21,19 @@ function statusColor(status: string): string {
     return settingsStore.statuses.find((s: Status) => s.name === status)?.color ?? '#005ac2';
 }
 
+function priorityColor(level: string | undefined): string | null {
+    switch (level?.toLowerCase()) {
+        case 'high':
+            return 'error';
+        case 'medium':
+            return 'warning';
+        case 'low':
+            return 'success';
+        default:
+            return null;
+    }
+}
+
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
@@ -81,7 +94,12 @@ const closedTodos = computed(
                 >
                     {{ todo.name }}
                 </span>
-                <v-icon v-if="todo.priorityLev === 'high'" size="14" color="error">
+                <v-icon
+                    v-if="priorityColor(todo.priorityLev)"
+                    data-testid="todo-priority-icon"
+                    size="14"
+                    :color="priorityColor(todo.priorityLev)"
+                >
                     mdi-flag
                 </v-icon>
                 <span
