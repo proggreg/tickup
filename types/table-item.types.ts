@@ -14,4 +14,4 @@ export interface GroupItem {
     items: TableItem[];
 }
 
-export type ViewType = 'board' | 'list';
+export type View = 'board' | 'list';

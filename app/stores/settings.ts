@@ -18,6 +18,12 @@ export const useSettingsStore = defineStore('settings', () => {
         },
     ];
 
+    const sortOptions = ref<SortOptions>([
+        { text: 'Default', value: 'default' },
+        { text: 'Priority', value: 'priority' },
+        { text: 'Due Date', value: 'dueDate' },
+    ]);
+
     const statuses = computed((): Status[] => {
         if (!userStatuses.value) {
             getUserSettings();
@@ -30,11 +36,13 @@ export const useSettingsStore = defineStore('settings', () => {
     });
 
     async function getUserSettings() {
-        const settings = await $fetch<{ statuses: Status[] }>('/api/settings');
+        const settings = await $fetch<{ statuses: Status[]; defaultSortOption: SortValue }>(
+            '/api/settings',
+        );
         userStatuses.value = settings.statuses?.length ? settings.statuses : [...defaultStatuses];
     }
 
-    return { darkMode, statuses, getUserSettings, userStatuses };
+    return { darkMode, statuses, getUserSettings, userStatuses, sortOptions };
 });
 if (import.meta.hot) {
     import.meta.hot.accept(acceptHMRUpdate(useSettingsStore, import.meta.hot));

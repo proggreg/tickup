@@ -1,26 +1,36 @@
 <script setup lang="ts">
 const store = useListsStore();
-const selectedSort = ref(null);
-const sortOptions = ref([
-    { text: 'Default', value: 'default' },
-    { text: 'Priority', value: 'priority' },
-    { text: 'Due Date', value: 'dueDate' },
-]);
+const { sortOptions } = storeToRefs(useSettingsStore());
+const selectedSort = ref<SortValue | null>(null);
 const sortDirection = ref('ascending');
 
-watch([selectedSort, sortDirection], ([newOption, newDirection]) => {
-    if (newOption === 'priority') {
-        store.sortByPriority(newDirection);
-    } else if (newOption === 'dueDate') {
-        store.sortByDate(newDirection);
+function applySort() {
+    if (selectedSort.value === 'priority') {
+        store.sortByPriority(sortDirection.value);
     }
-});
+    else if (selectedSort.value === 'dueDate') {
+        store.sortByDate(sortDirection.value);
+    }
+}
+
+// Start each list on its saved default sort
+watch(
+    () => store.currentList,
+    (list) => {
+        selectedSort.value = list?.defaultSort ?? null;
+        applySort();
+    },
+    { immediate: true },
+);
+
+watch([selectedSort, sortDirection], applySort);
 const icon = ref('mdi-arrow-down');
 function changeIcon() {
     if (sortDirection.value === 'ascending') {
         sortDirection.value = 'descending';
         icon.value = 'mdi-arrow-down';
-    } else {
+    }
+    else {
         sortDirection.value = 'ascending';
         icon.value = 'mdi-arrow-up';
     }
@@ -41,7 +51,10 @@ function changeIcon() {
             />
         </v-col>
         <v-col>
-            <v-btn :icon="icon" @click="changeIcon" />
+            <v-btn
+                :icon="icon"
+                @click="changeIcon"
+            />
         </v-col>
     </v-row>
 </template>

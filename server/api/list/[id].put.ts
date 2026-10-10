@@ -18,13 +18,15 @@ export default defineEventHandler(async (event) => {
             name: string;
             github_repo: string;
             list_type: ListType;
-            default_view: ViewType;
+            default_view: View;
+            default_sort: SortValue;
         }> = {};
 
         if (body.name !== undefined) updateData.name = body.name;
         if (body.githubRepo !== undefined) updateData.github_repo = body.githubRepo;
         if (body.listType !== undefined) updateData.list_type = body.listType;
         if (body.defaultView !== undefined) updateData.default_view = body.defaultView;
+        if (body.defaultSort !== undefined) updateData.default_sort = body.defaultSort;
 
         // Use objectToSnake for full conversion (handles any additional fields)
         const snakeUpdateData = objectToSnake(updateData);

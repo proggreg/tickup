@@ -52,9 +52,10 @@ test.describe('list settings GitHub column', () => {
 
         const githubColumn = page.getByTestId('list-settings-github-column');
         await expect(githubColumn).toBeVisible();
-        await expect(githubColumn.getByText('GitHub Integration')).toBeVisible();
+        await expect(githubColumn.getByText('GitHub', { exact: true })).toBeVisible();
 
-        // The column should contain the repo selector label
-        await expect(githubColumn.getByText('Repository')).toBeVisible();
+        // Linking reveals the repo selector
+        await githubColumn.getByRole('button', { name: 'Link repository' }).click();
+        await expect(githubColumn.getByText('Repository', { exact: true })).toBeVisible();
     });
 });

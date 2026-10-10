@@ -55,18 +55,14 @@ test.describe('list default view setting', () => {
         // Select "board" as the default view
         const defaultViewSelect = page.getByTestId('list-default-view-select');
         await expect(defaultViewSelect).toBeVisible();
-        await defaultViewSelect.click();
-
-        const boardOption = page.getByRole('option', { name: 'board' });
-        await expect(boardOption).toBeVisible();
-        await boardOption.click();
+        await defaultViewSelect.getByRole('button', { name: 'Board' }).click();
 
         // Save settings (this persists defaultView on the list)
         const saveRequestPromise = page.waitForRequest(
             (request) =>
                 request.url().includes(`/api/list/${listId}`) && request.method() === 'PUT',
         );
-        const saveButton = page.getByRole('button', { name: 'Save' });
+        const saveButton = page.getByRole('button', { name: 'Save changes' });
         await saveButton.click();
         await saveRequestPromise;
 

@@ -1,8 +1,5 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
-
-type View = 'list' | 'table' | 'board';
-
 const currentView = ref<View>('list');
 const newTodoName = ref('');
 

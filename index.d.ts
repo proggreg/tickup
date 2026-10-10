@@ -1,7 +1,7 @@
 export { Task, Status, List };
 
 declare global {
-    type ViewType = 'list' | 'board';
+    type View = 'list' | 'table' | 'board';
     type ListType = 'simple' | 'table' | '';
 
     interface Task {
@@ -62,6 +62,7 @@ declare global {
         icon?: string;
         githubRepo?: string;
         defaultView?: View;
+        defaultSort?: SortValue;
     }
 
     interface listsState {
@@ -73,13 +74,23 @@ declare global {
         todaysTodos: Task[];
         overdueTodos: Task[];
         recentTodos: Task[];
-        view: ViewType;
+        view: View;
         newTodo: Task;
         panelOpen: boolean;
     }
 
+    type SortValue = 'default' | 'priority' | 'dueDate';
+
+    interface SortOption {
+        text: string;
+        value: SortValue;
+    }
+
+    type SortOptions = SortOption[];
+
     interface Settings {
         statuses: Status[];
+        defaultSortOption: SortOptions;
     }
 
     export interface PwaInjection {
