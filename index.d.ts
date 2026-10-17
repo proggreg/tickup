@@ -3,6 +3,7 @@ export { Task, Status, List };
 declare global {
     type ViewType = 'list' | 'board';
     type ListType = 'simple' | 'table' | '';
+    type ListTemplateKey = 'blank' | 'shopping';
 
     interface Task {
         userId?: string;
