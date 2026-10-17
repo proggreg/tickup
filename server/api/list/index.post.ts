@@ -1,21 +1,46 @@
 import { serverSupabaseClient } from '#supabase/server';
+import { objectToCamel, objectToSnake } from 'ts-case-convert';
+
+interface CreateListBody {
+    name?: string;
+    icon?: string;
+    defaultView?: string;
+    template?: string;
+}
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody<List>(event);
+    const body = (await readBody<CreateListBody>(event)) ?? {};
     const supabase = await serverSupabaseClient(event);
     try {
-        const listData: any = {
-            name: body.name,
+        const template = body.template
+            ? LIST_TEMPLATES[body.template as keyof typeof LIST_TEMPLATES]
+            : undefined;
+
+        if (body.template && !template) {
+            throw createError({
+                statusCode: 400,
+                statusMessage: 'Unknown list template',
+            });
+        }
+
+        // Explicit body values win over the template, which wins over the defaults
+        const listData = {
+            name: body.name || template?.name,
+            icon: body.icon ?? template?.icon,
+            defaultView: body.defaultView ?? template?.defaultView,
         };
 
         if (!listData.name) {
             throw createError({
                 statusCode: 400,
-                statusText: 'List name is required',
+                statusMessage: 'List name is required',
             });
         }
 
-        const { data, error } = await supabase.from('Lists').insert([listData]).select();
+        const { data, error } = await supabase
+            .from('Lists')
+            .insert([objectToSnake(listData)])
+            .select();
 
         if (error) {
             throw createError({
@@ -24,19 +49,12 @@ export default defineEventHandler(async (event) => {
             });
         }
 
-        // Transform snake_case fields to camelCase for API response
+        // Keep the snake_case fields for existing callers and add camelCase ones
         const result = data[0];
-        if (result) {
-            return {
-                ...result,
-                userId: result.user_id,
-                createdAt: result.created_at,
-                updatedAt: result.updated_at,
-            };
-        }
-
-        return result;
+        return result ? { ...result, ...objectToCamel(result) } : result;
     } catch (error) {
+        if (isError(error)) throw error;
+
         console.error('Error creating list:', error);
         throw createError({
             statusCode: 500,
