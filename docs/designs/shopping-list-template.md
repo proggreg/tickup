@@ -37,7 +37,7 @@ Users who want a shopping list today create a blank list and set it up by hand. 
 
 ## Data model
 
-Migration `supabase/migrations/20261017000000_list_icon.sql`:
+Migration `supabase/migrations/20261017120000_list_icon.sql`:
 
 ```sql
 ALTER TABLE "public"."Lists" ADD COLUMN icon text;
