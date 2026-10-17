@@ -73,6 +73,15 @@ test.describe('Lists — create from template', () => {
         expect(fetched.icon).toEqual('mdi-star');
     });
 
+    // Regression: an undefined defaultView was inserted as NULL, skipping the DB default.
+    test('defaultView falls back to the DB default when not provided', async ({ request }) => {
+        const response = await postList(request, { name: `No view ${uuidv4()}` });
+        expect(response.status()).toEqual(200);
+
+        const list = await response.json();
+        expect(list.defaultView).toEqual('list');
+    });
+
     test('ignores unknown body fields such as todos', async ({ request }) => {
         const name = `Extra fields ${uuidv4()}`;
         const response = await postList(request, { name, todos: [], listType: 'simple' });

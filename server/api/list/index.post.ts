@@ -37,10 +37,12 @@ export default defineEventHandler(async (event) => {
             });
         }
 
-        const { data, error } = await supabase
-            .from('Lists')
-            .insert([objectToSnake(listData)])
-            .select();
+        // Drop unset fields so the DB column defaults apply instead of NULL
+        const row = Object.fromEntries(
+            Object.entries(objectToSnake(listData)).filter(([, value]) => value !== undefined),
+        );
+
+        const { data, error } = await supabase.from('Lists').insert([row]).select();
 
         if (error) {
             throw createError({
