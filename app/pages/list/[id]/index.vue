@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const listsStore = useListsStore();
 
-type View = 'list' | 'table' | 'board';
+type View = 'list' | 'table' | 'board' | 'activity';
 
 const currentView = ref<View>('list');
 const newTodoName = ref('');
@@ -34,11 +34,16 @@ async function addTodo() {
     newTodoName.value = '';
 }
 
-const views: { key: View; icon: string; label: string }[] = [
+const baseViews: { key: View; icon: string; label: string }[] = [
     { key: 'list', icon: 'mdi-format-list-bulleted', label: 'List' },
     { key: 'table', icon: 'mdi-table', label: 'Table' },
     { key: 'board', icon: 'mdi-view-column-outline', label: 'Board' },
 ];
+
+const views = computed(() => {
+    if (!listsStore.currentList?.githubRepo) return baseViews;
+    return [...baseViews, { key: 'activity' as View, icon: 'mdi-github', label: 'Activity' }];
+});
 </script>
 
 <template>
@@ -109,6 +114,10 @@ const views: { key: View; icon: string; label: string }[] = [
                 <ListTable />
             </div>
             <Board v-else-if="currentView === 'board'" />
+            <GithubActivityTimeline
+                v-else-if="currentView === 'activity'"
+                :repo-name="listsStore.currentList.githubRepo"
+            />
         </div>
     </div>
 </template>
