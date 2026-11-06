@@ -67,9 +67,9 @@ async function submitCard() {
     if (!name) return;
     listsStore.newTodo.name = name;
     listsStore.newTodo.status = status.name;
-    await listsStore.addTodo();
     newTodoName.value = '';
     isComposing.value = false;
+    await listsStore.addTodo();
 }
 
 function onComposerKey(e: KeyboardEvent) {

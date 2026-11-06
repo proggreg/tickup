@@ -35,9 +35,13 @@ function resetState() {
 }
 
 async function addTodo() {
-    const created = await listsStore.addTodo(todo.value);
-    if (created.id) {
-        close();
+    if (!name.value.trim()) return;
+    const newTodo = todo.value;
+    // Close immediately so the typed text doesn't linger while the todo is being created
+    name.value = '';
+    close();
+    const created = await listsStore.addTodo(newTodo);
+    if (created?.id) {
         notify('Todo Created', { link: `/todo/${created.id}` });
     }
 }
