@@ -22,9 +22,10 @@ async function createTodo(status: string) {
         //     edit: false,
         //     links: [],
         // };
-        await listStore.addTodo(newTodo.value);
+        const todo = newTodo.value;
         newTodo.value = createNewTodoState();
         openNewTodo.value = false;
+        await listStore.addTodo(todo);
     }
 }
 </script>

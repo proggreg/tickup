@@ -152,6 +152,9 @@ export const useListsStore = defineStore('lists', {
 
             this.optimisticallyUpdateTodos(todo);
 
+            // Clear the input straight away so the text doesn't linger while the request is in flight
+            this.resetTodo();
+
             const createdTodo = await $fetch<Task>('/api/todo', {
                 method: 'POST',
                 body: todo,
@@ -160,8 +163,6 @@ export const useListsStore = defineStore('lists', {
             console.debug('Todo created!', createdTodo);
 
             this.updateTodosId(createdTodo);
-
-            this.resetTodo();
 
             return todo;
         },
