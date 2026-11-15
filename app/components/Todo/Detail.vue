@@ -23,6 +23,11 @@ onMounted(() => {
 // Description grows with its content. Very long descriptions are capped at
 // DESC_COLLAPSED_ROWS until the user expands them (or focuses the field to edit).
 const DESC_COLLAPSED_ROWS = 15;
+// Fade the last lines of a collapsed description to hint that there is more.
+const DESC_FADE_STYLE = {
+    maskImage: 'linear-gradient(to bottom, #000 75%, transparent)',
+    WebkitMaskImage: 'linear-gradient(to bottom, #000 75%, transparent)',
+};
 const descField = ref<{ $el: HTMLElement } | null>(null);
 const descExpanded = ref(false);
 const descIsLong = ref(false);
@@ -133,6 +138,7 @@ async function deleteTodo() {
                     density="compact"
                     :rows="3"
                     :max-rows="descExpanded ? undefined : DESC_COLLAPSED_ROWS"
+                    :style="descIsLong && !descExpanded ? DESC_FADE_STYLE : undefined"
                     auto-grow
                     hide-details
                     @focus="descExpanded = true"
@@ -142,11 +148,11 @@ async function deleteTodo() {
                 <v-btn
                     v-if="descIsLong"
                     data-testid="todo-description-toggle"
-                    variant="text"
+                    variant="tonal"
                     size="small"
-                    color="primary"
-                    class="px-0"
-                    :prepend-icon="descExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                    rounded="pill"
+                    class="text-none text-body-2 mt-2"
+                    :append-icon="descExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
                     @click="descExpanded = !descExpanded"
                 >
                     {{ descExpanded ? 'Show less' : 'Show more' }}
