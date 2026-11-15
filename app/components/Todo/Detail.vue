@@ -15,9 +15,55 @@ onMounted(() => {
     document.fonts?.ready
         ?.then(() => {
             titleFontsReadyKey.value = 'ready';
+            measureDescOverflow();
         })
         .catch(() => {});
 });
+
+// Description grows with its content. Very long descriptions are capped at
+// DESC_COLLAPSED_ROWS until the user expands them (or focuses the field to edit).
+const DESC_COLLAPSED_ROWS = 15;
+// Fade the last lines of a collapsed description to hint that there is more.
+const DESC_FADE_STYLE = {
+    maskImage: 'linear-gradient(to bottom, #000 75%, transparent)',
+    WebkitMaskImage: 'linear-gradient(to bottom, #000 75%, transparent)',
+};
+const descField = ref<{ $el: HTMLElement } | null>(null);
+const descExpanded = ref(false);
+const descIsLong = ref(false);
+const descTextarea = computed(
+    () =>
+        descField.value?.$el.querySelector<HTMLTextAreaElement>(
+            'textarea:not(.v-textarea__sizer)',
+        ) ?? null,
+);
+
+// Vuetify recalculates the auto-grow height over a couple of ticks, so measure
+// on the next frame once the field has its final height. scrollHeight is the
+// full content height whether or not the field is currently capped.
+function measureDescOverflow() {
+    requestAnimationFrame(() => {
+        const el = descTextarea.value;
+        if (!el) return;
+        const style = getComputedStyle(el);
+        const padding = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+        const lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.5;
+        const contentRows = (el.scrollHeight - padding) / lineHeight;
+        descIsLong.value = contentRows > DESC_COLLAPSED_ROWS + 0.5;
+    });
+}
+
+watch(() => [listsStore.currentTodo.desc, descExpanded.value], measureDescOverflow, {
+    flush: 'post',
+});
+useResizeObserver(descTextarea, measureDescOverflow);
+
+watch(
+    () => listsStore.currentTodo.id,
+    () => {
+        descExpanded.value = false;
+    },
+);
 
 function updateName() {
     if (listsStore.currentTodo.name) {
@@ -83,13 +129,34 @@ async function deleteTodo() {
             <!-- Description -->
             <v-col>
                 <div class="section-label">Description</div>
-                <textarea
+                <v-textarea
+                    ref="descField"
                     v-model="listsStore.currentTodo.desc"
-                    class="desc-textarea"
+                    data-testid="todo-description"
                     placeholder="Add a description…"
+                    variant="plain"
+                    density="compact"
+                    :rows="3"
+                    :max-rows="descExpanded ? undefined : DESC_COLLAPSED_ROWS"
+                    :style="descIsLong && !descExpanded ? DESC_FADE_STYLE : undefined"
+                    auto-grow
+                    hide-details
+                    @focus="descExpanded = true"
                     @input="listsStore.debounceUpdateTodo(listsStore.currentTodo)"
                     @blur="listsStore.updateTodo(listsStore.currentTodo)"
                 />
+                <v-btn
+                    v-if="descIsLong"
+                    data-testid="todo-description-toggle"
+                    variant="tonal"
+                    size="small"
+                    rounded="pill"
+                    class="text-none text-body-2 mt-2"
+                    :append-icon="descExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                    @click="descExpanded = !descExpanded"
+                >
+                    {{ descExpanded ? 'Show less' : 'Show more' }}
+                </v-btn>
             </v-col>
 
             <v-divider />
@@ -288,25 +355,6 @@ async function deleteTodo() {
     text-transform: uppercase;
     color: rgba(var(--v-theme-on-surface), 0.45);
     margin-bottom: 8px;
-}
-
-/* Description textarea */
-.desc-textarea {
-    width: 100%;
-    min-height: 80px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    color: rgb(var(--v-theme-on-surface));
-    font-size: 0.9rem;
-    font-family: inherit;
-    line-height: 1.6;
-    resize: none;
-    outline: none;
-}
-
-.desc-textarea::placeholder {
-    color: rgba(var(--v-theme-on-surface), 0.35);
 }
 
 /* Subtasks header */
