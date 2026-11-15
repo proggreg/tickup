@@ -96,7 +96,6 @@ onUnmounted(() => {
                     <template #append-inner>
                         <GithubBranchCopy />
                         <GithubBranchOpen />
-                        <GithubBranchOpenInIde />
                         <GithubBranchCreate />
                         <GithubPROpen />
                     </template>
