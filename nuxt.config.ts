@@ -2,6 +2,12 @@ import type { ModuleOptions as McpToolkitOptions } from '@nuxtjs/mcp-toolkit';
 import { defineNuxtConfig } from 'nuxt/config';
 import vuetify from './config/vuetify';
 
+// Production builds keep only console.error; the other console methods are stripped.
+const isProduction = process.env.NODE_ENV === 'production';
+const stripConsoleInProduction = isProduction
+    ? ['console.log', 'console.info', 'console.debug', 'console.warn', 'console.trace']
+    : [];
+
 export default defineNuxtConfig({
     modules: [
         '@vite-pwa/nuxt',
@@ -108,6 +114,9 @@ export default defineNuxtConfig({
         esbuild: {
             options: {
                 target: 'esnext',
+                pure: stripConsoleInProduction,
+                // esbuild only drops `pure` calls when syntax minification is on.
+                minifySyntax: isProduction,
             },
         },
         typescript: {
@@ -118,6 +127,15 @@ export default defineNuxtConfig({
     },
 
     vite: {
+        esbuild: {
+            pure: stripConsoleInProduction,
+        },
+        // The SSR bundle isn't minified by default, so `pure` calls would be kept.
+        $server: {
+            build: {
+                minify: isProduction,
+            },
+        },
         server: {
             allowedHosts: ['dev.gregfield.dev'],
             // hmr: {
